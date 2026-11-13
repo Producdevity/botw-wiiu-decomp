@@ -69,14 +69,23 @@ FUNCTIONS = {"fn_03000000": {"id": "fn_03000000", "size": 128, "status": "unmatc
 class RemoteGitHub(FakeGitHub):
     COMMIT = "a" * 40
     TREE = "b" * 40
+    BLOB = "c" * 40
 
     def __init__(self, sources=(), issues=(), comments=None):
         super().__init__(issues, comments)
         self.calls = []
         self.rows = {key: {**row, "source": f"reconstructions/{key}.cpp"}
                      for key, row in FUNCTIONS.items()}
+        self.set_manifest({"functions": list(self.rows.values())})
         self.tree = {"truncated": False, "tree": [
-            {"path": path, "type": "blob", "mode": "100644"} for path in sources]}
+            {"path": path, "type": "blob", "mode": "100644"} for path in sources] + [
+                {"path": "config/functions.json", "type": "blob", "mode": "100644",
+                 "sha": self.BLOB, "size": self.blob["size"]}]}
+
+    def set_manifest(self, value):
+        manifest = json.dumps(value).encode()
+        self.blob = {"sha": self.BLOB, "encoding": "base64", "size": len(manifest),
+                     "content": base64.b64encode(manifest).decode()}
 
     def call(self, method, path, payload=None):
         self.calls.append((method, path, payload))
@@ -85,10 +94,8 @@ class RemoteGitHub(FakeGitHub):
                 return {"default_branch": "branch/default"}
             if path == "commits/branch%2Fdefault":
                 return {"sha": self.COMMIT, "commit": {"tree": {"sha": self.TREE}}}
-            if path == f"contents/config/functions.json?ref={self.COMMIT}":
-                manifest = json.dumps({"functions": list(self.rows.values())}).encode()
-                return {"type": "file", "encoding": "base64",
-                        "content": base64.b64encode(manifest).decode()}
+            if path == f"git/blobs/{self.BLOB}":
+                return self.blob
             if path == f"git/trees/{self.TREE}?recursive=1":
                 return self.tree
         if method == "POST" and path == "issues":
@@ -267,8 +274,76 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
         self.assertEqual([path for _, path, _ in api.calls], [
             "", "commits/branch%2Fdefault",
-            f"contents/config/functions.json?ref={api.COMMIT}",
-            f"git/trees/{api.TREE}?recursive=1"])
+            f"git/trees/{api.TREE}?recursive=1", f"git/blobs/{api.BLOB}"])
+
+    def test_remote_manifest_larger_than_contents_limit_uses_pinned_blob(self):
+        api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
+        api.set_manifest({"functions": list(api.rows.values()), "padding": "x" * 1_100_000})
+        api.tree["tree"][-1]["size"] = api.blob["size"]
+        self.assertGreater(api.blob["size"], 1_000_000)
+        self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "matched")
+        self.assertEqual([path for _, path, _ in api.calls], [
+            "", "commits/branch%2Fdefault",
+            f"git/trees/{api.TREE}?recursive=1", f"git/blobs/{api.BLOB}"])
+
+    def test_remote_manifest_metadata_rejects_unsafe_or_oversized_blobs(self):
+        invalid = [{"mode": "120000"}, {"type": "commit"}, {"sha": "main"},
+                   {"sha": None}, {"size": 0}, {"size": True}, {"size": "100"},
+                   {"size": queue.MAX_REMOTE_MANIFEST_BYTES + 1}]
+        for fields in invalid:
+            with self.subTest(fields=fields):
+                api = RemoteGitHub()
+                api.tree["tree"][-1].update(fields)
+                with self.assertRaises(queue.QueueError):
+                    queue.remote_functions(api)
+                self.assertFalse(any("git/blobs/" in path for _, path, _ in api.calls))
+
+    def test_remote_manifest_requires_one_tree_entry(self):
+        for entries in ([], ["duplicate"], [None], [{"path": None}]):
+            with self.subTest(entries=entries):
+                api = RemoteGitHub()
+                if entries == ["duplicate"]:
+                    api.tree["tree"].append(dict(api.tree["tree"][-1]))
+                else:
+                    api.tree["tree"] = entries
+                with self.assertRaises(queue.QueueError):
+                    queue.remote_functions(api)
+
+    def test_remote_manifest_blob_rejects_invalid_responses(self):
+        invalid = [None, [], {"sha": "d" * 40}, {"encoding": "none"},
+                   {"size": -1}, {"size": True}, {"content": None}, {"content": 12},
+                   {"content": "!" * 180}, {"content": ""},
+                   {"content": base64.b64encode(b"invalid json").decode(), "size": 12}]
+        for fields in invalid:
+            with self.subTest(fields=fields):
+                api = RemoteGitHub()
+                if isinstance(fields, dict):
+                    api.blob.update(fields)
+                else:
+                    api.blob = fields
+                with self.assertRaises(queue.QueueError):
+                    queue.remote_functions(api)
+
+    def test_remote_manifest_rejects_invalid_base64_and_json_with_matching_sizes(self):
+        for encoded, size in (("!!!!", 3), ("eA==", 2), ("eA==", 1)):
+            with self.subTest(encoded=encoded, size=size):
+                api = RemoteGitHub()
+                api.blob.update(content=encoded, size=size)
+                api.tree["tree"][-1]["size"] = size
+                with self.assertRaises(queue.QueueError):
+                    queue.remote_functions(api)
+
+    def test_remote_manifest_invalid_schema_fails_with_clean_json_output(self):
+        for value in ({}, {"functions": None}, [None]):
+            with self.subTest(value=value):
+                api = RemoteGitHub()
+                api.set_manifest(value)
+                api.tree["tree"][-1]["size"] = api.blob["size"]
+                output, errors = io.StringIO(), io.StringIO()
+                with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output), redirect_stderr(errors):
+                    self.assertEqual(queue.main(["list"]), 1)
+                self.assertEqual(output.getvalue(), "")
+                self.assertIn("Function", errors.getvalue())
 
     def test_incomplete_remote_tree_fails_closed(self):
         api = RemoteGitHub()
