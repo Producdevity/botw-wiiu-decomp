@@ -3,7 +3,7 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from botw_decomp.disassembly import disassemble, locate
+from botw_decomp.disassembly import _overlay, disassemble, locate
 from botw_decomp.elf import parse_object
 
 
@@ -30,6 +30,38 @@ class DisassemblyTests(unittest.TestCase):
                 patch("botw_decomp.disassembly.subprocess.run", side_effect=run):
             self.assertEqual(disassemble(SYNTHETIC_CODE, 0x02001234, "fn_02001234"),
                              "synthetic output\n")
+
+    def test_overlay_preserves_original_columns_and_ordinary_rows(self):
+        code = bytes.fromhex("e0230008100004844e800020")
+        output = ("header\n"
+                  " 2001000: e0 23 00 08  lq 1, 8(3)\n"
+                  " 2001004: 10 00 04 84  vor 0, 0, 0\n"
+                  " 2001008: 4e 80 00 20  blr\n")
+        expected = ("header\n"
+                    " 2001000: e0 23 00 08  psq_l f1, 8(r3), 0, 0\n"
+                    " 2001004: 10 00 04 84  <unsupported Espresso opcode 4>\n"
+                    " 2001008: 4e 80 00 20  blr\n")
+        self.assertEqual(_overlay(output, code, 0x2001000), expected)
+
+    def test_overlay_fails_closed_on_missing_mismatched_or_duplicate_rows(self):
+        code = bytes.fromhex("e0230008")
+        row = " 2001000: e0 23 00 08  unknown\n"
+        for output in ("header\n", row.replace("e0 23", "e0 24"), row + row):
+            with self.subTest(output=output), self.assertRaisesRegex(ValueError, "Espresso"):
+                _overlay(output, code, 0x2001000)
+
+    def test_real_llvm_espresso_overlay(self):
+        try:
+            locate()
+        except ValueError as exc:
+            self.skipTest(str(exc))
+        result = disassemble(bytes.fromhex("e0230008f0230008100004844e800020"),
+                             0x2001000, "example")
+        self.assertRegex(result, r"2001000:\s+e0 23 00 08\s+psq_l f1, 8\(r3\), 0, 0")
+        self.assertIn("psq_st f1, 8(r3), 0, 0", result)
+        self.assertIn("<unsupported Espresso opcode 4>", result)
+        self.assertNotIn("vor", result)
+        self.assertRegex(result, r"200100c:\s+4e 80 00 20\s+blr")
 
     def test_reports_missing_llvm(self):
         with patch("botw_decomp.disassembly.shutil.which", return_value=None), \

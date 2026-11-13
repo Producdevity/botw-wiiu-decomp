@@ -26,6 +26,20 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(items[0]["bindings"], {})
         self.assertIn("RPX entry", items[0]["boundary"])
 
+    def test_psq_is_floating_point_without_changing_hash_or_boundary(self):
+        for word in (0xE0230008, 0xE423FFFF, 0xF0238008, 0xF4237008):
+            with self.subTest(word=hex(word)):
+                item = inventory([word, BLR])[0]
+                self.assertEqual(item["category"], "floating-point")
+                self.assertEqual(item["size"], 8)
+                self.assertEqual(item["sha256"], hashlib.sha256(struct.pack(">II", word, BLR)).hexdigest())
+        for word in (0x10000484, 0xE4000000, 0xF4000000):
+            self.assertEqual(inventory([word, BLR])[0]["category"], "integer")
+
+    def test_psq_preserves_call_and_loop_category_priority(self):
+        self.assertEqual(inventory([0xE0230008, 0x4082FFFC, BLR])[0]["category"], "loops")
+        self.assertEqual(inventory([0xE0230008, 0x48000009, BLR, LI, BLR])[0]["category"], "calls")
+
     def test_direct_call_creates_a_trusted_address_binding(self):
         items = inventory([0x48000009, BLR, LI, BLR])
         self.assertEqual(len(items), 2)

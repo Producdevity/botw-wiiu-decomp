@@ -3,6 +3,7 @@ import array
 import hashlib
 import sys
 
+from .espresso import decode
 from .rpx import Rpx
 
 
@@ -63,7 +64,9 @@ def discover(image: Rpx) -> list[dict]:
                 if word == 0 or op in (0, 1, 2, 3, 17):
                     valid = False
                     break
-                floats += op in (48, 49, 50, 51, 52, 53, 54, 55, 59, 63)
+                espresso = decode(word) if op in (4, 56, 57, 60, 61) else None
+                floats += (op in (48, 49, 50, 51, 52, 53, 54, 55, 59, 63)
+                           or (espresso is not None and espresso.floating_point))
                 if op in (16, 18):
                     target = branch_target(word, address)
                     if word & 1:
