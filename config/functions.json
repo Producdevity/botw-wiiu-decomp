@@ -36439,6 +36439,218 @@
       "symbol": "fn_04270428",
       "bindings": {},
       "compiler_profile": "ghs-5.3.22-auto"
+    },
+    {
+      "id": "fn_02b5bee0",
+      "address": "0x02b5bee0",
+      "size": 8,
+      "sha256": "db91ad63b65dea4d9a8c250d7c3cf2a9a97767625909f90832aa5f46383203fd",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous fully visited direct-tail",
+      "status": "matched",
+      "source": "reconstructions/fn_02b5bee0.cpp",
+      "symbol": "fn_02b5bee0",
+      "bindings": {
+        "fn_02b5bcc8": "0x02b5bcc8"
+      },
+      "discovery_evidence": {
+        "mode": "direct-tail",
+        "entry_callsite": "0x02221c18",
+        "entry_direct_call_count": 7,
+        "max_size": 64,
+        "tail_target_policy": "direct-call",
+        "tail_target_proof": "independent direct-call entry only",
+        "tail_target_callsite": "0x02220a24",
+        "limitations": "Boundary/binding evidence only; no original C++ ABI or return-type inference."
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "behavior": "forward the input pointer and index zero to the bound callee",
+      "contract_evidence": "Original helper sets r4=0 and tailcalls 02b5bcc8. Published fn028f1b94 forwards returned pointer to existing bool fn0378da88(void*) which dereferences it. Tail target has six independent direct-call sites, plus bounded body context from prior ABI review; it is not a baseline accepted boundary. General index signedness remains inferred; adapter supplies0 only."
+    },
+    {
+      "id": "fn_02d35acc",
+      "address": "0x02d35acc",
+      "size": 8,
+      "sha256": "c734c7f1372bae8173480ab7968338d0dc8d0883b76d6a38bb38f020d5ede452",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous fully visited direct-tail",
+      "status": "matched",
+      "source": "reconstructions/fn_02d35acc.cpp",
+      "symbol": "fn_02d35acc",
+      "bindings": {
+        "fn_02c19904": "0x02c19904"
+      },
+      "discovery_evidence": {
+        "mode": "direct-tail",
+        "entry_callsite": "0x02d6e528",
+        "entry_direct_call_count": 1,
+        "max_size": 64,
+        "tail_target_policy": "bounded",
+        "tail_target_proof": "baseline bounded body",
+        "tail_target_callsite": "0x0200225c",
+        "limitations": "Boundary/binding evidence only; no original C++ ABI or return-type inference."
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "behavior": "forward the input pointer and index zero to the bound callee",
+      "contract_evidence": "Original helper sets r4=0 and tailcalls 02c19904; original published fn02d6e51c dereferences returned r3 word24. Tail target has a baseline contiguous bounded body, with downstream pointer selection documented in prior call ABI evidence. Index is fixed0 at this adapter; signedness of general callee index remains inferred."
+    },
+    {
+      "id": "fn_02f4c3bc",
+      "address": "0x02f4c3bc",
+      "size": 4,
+      "sha256": "f332ea5b5437103cbb6f1508679da89eec9288ad775c96c439a17fccabe3de8e",
+      "category": "integer",
+      "boundary": "direct-call target; contiguous fully visited single-blr",
+      "status": "matched",
+      "source": "reconstructions/fn_02f4c3bc.cpp",
+      "symbol": "fn_02f4c3bc",
+      "bindings": {},
+      "discovery_evidence": {
+        "mode": "single-blr",
+        "entry_callsite": "0x02f4c3ec",
+        "entry_direct_call_count": 94,
+        "max_size": 64,
+        "tail_target_policy": "bounded",
+        "tail_target_proof": null,
+        "tail_target_callsite": null,
+        "limitations": "Boundary/binding evidence only; no original C++ ABI or return-type inference."
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "behavior": "return the input pointer unchanged",
+      "contract_evidence": "Single blr cannot itself infer a C++ contract. This specific identity contract is established separately: published fn03a77668 declaration consumes returned pointer as receiver; adjacent original caller02f4c3ec immediately dereferences returned r3 after call. Original helper preserves receiver r3 unchanged. No identity contract assigned to the unrelated leaf pool."
+    },
+    {
+      "id": "fn_02c1974c",
+      "address": "0x02c1974c",
+      "size": 60,
+      "sha256": "d0abfa06f81d8d1188c9a92ee8cb058ff9071da53c6fd9ca83911d48d7e4f5bc",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "matched",
+      "source": "reconstructions/fn_02c1974c.cpp",
+      "symbol": "fn_02c1974c",
+      "bindings": {
+        "fn_02c13674": "0x02c13674",
+        "fn_02c1962c": "0x02c1962c"
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "void* (void* context, int index)",
+        "caller_evidence": "Call 02035afc passes object in r3 and loop index in r4; 02035b08 dereferences returned r3 at +164. Call 02038d88 passes r20 loop index in r4.",
+        "callee_evidence": "02c13674 reads component +36, sign-loads count at entries +1664 and compares it against r4; successful return computes entries + 208 * index. 02c1974c preserves r4 across 02c1962c and forwards it to 02c13674."
+      }
+    },
+    {
+      "id": "fn_02c197d4",
+      "address": "0x02c197d4",
+      "size": 52,
+      "sha256": "7a71fc20b23502996092cdb1ed98cb3b30f5830fe60223d855ef3e45d1f1c606",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "matched",
+      "source": "reconstructions/fn_02c197d4.cpp",
+      "symbol": "fn_02c197d4",
+      "bindings": {
+        "fn_02c13344": "0x02c13344",
+        "fn_02c1962c": "0x02c1962c"
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "int (void* context)",
+        "caller_evidence": "Call 02035ad4 returns signed count into r22 and immediately takes signed <=0 branch; 02038cb0 similarly establishes positive loop bound.",
+        "callee_evidence": "02c13344 reads pointer at component +36, returns sign-extended 16-bit count at entries +1664, or zero. Wrapper forwards recovered component to the count getter, explicitly returning integer zero on null."
+      }
+    },
+    {
+      "id": "fn_02c198d8",
+      "address": "0x02c198d8",
+      "size": 44,
+      "sha256": "37bcad5d856cae4ccb683ab329d2a128a79abb7ecfe955835e3d69258e13bf8a",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "matched",
+      "source": "reconstructions/fn_02c198d8.cpp",
+      "symbol": "fn_02c198d8",
+      "bindings": {
+        "fn_02c1962c": "0x02c1962c"
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "void* (void* context)",
+        "caller_evidence": "Call 02026c54 forwards return directly to 02b74f10; that callee null-checks r3 then stores a 16-bit field at r3 +20. Call 0202ee54 similarly forwards return to 02b74f4c.",
+        "callee_evidence": "02c1962c pointer result is null-tested; nonnull path loads pointer at component +56 and returns it."
+      }
+    },
+    {
+      "id": "fn_02c19904",
+      "address": "0x02c19904",
+      "size": 60,
+      "sha256": "f1089bbae454e79c2517bb41f7459850be3cdf8bdf86c0a04cde2468fdba06c6",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "matched",
+      "source": "reconstructions/fn_02c19904.cpp",
+      "symbol": "fn_02c19904",
+      "bindings": {
+        "fn_02c1363c": "0x02c1363c",
+        "fn_02c1962c": "0x02c1962c"
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "void* (void* context, int index)",
+        "caller_evidence": "Published fn_02d35acc declares and returns void* fn_02c19904(void*, int), passing explicit index 0. Raw call 0200225c passes r4=0, then dereferences result +24; call 0208b244 null-checks and forwards returned pointer.",
+        "callee_evidence": "02c1363c reads component +12, sign-loads count at entries +608, compares against signed r4 and returns entries +76 * index when valid. Wrapper preserves index across 02c1962c and forwards it."
+      }
+    },
+    {
+      "id": "fn_02c1998c",
+      "address": "0x02c1998c",
+      "size": 52,
+      "sha256": "5df2f4ca51f264efee5a4d5712efc64317c153407e896a418f6322e771478e8a",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "matched",
+      "source": "reconstructions/fn_02c1998c.cpp",
+      "symbol": "fn_02c1998c",
+      "bindings": {
+        "fn_02c13328": "0x02c13328",
+        "fn_02c1962c": "0x02c1962c"
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "int (void* context)",
+        "caller_evidence": "Call 0213f994 stores result in r28 and uses signed comparison of loop index against it before calls to 02c19904. Call 021fc0f0 uses signed positive test and loop bound.",
+        "callee_evidence": "02c13328 reads pointer at component +12, returns sign-extended 16-bit count at entries +608, or zero. Wrapper forwards recovered component and explicitly returns integer zero on null."
+      }
+    },
+    {
+      "id": "fn_02c199c0",
+      "address": "0x02c199c0",
+      "size": 44,
+      "sha256": "b8a7591b8e4924221a89d11adb8d19d4ced24aebdd3eb6711425d8a294349ed0",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "matched",
+      "source": "reconstructions/fn_02c199c0.cpp",
+      "symbol": "fn_02c199c0",
+      "bindings": {
+        "fn_02c1962c": "0x02c1962c"
+      },
+      "compiler_profile": "ghs-5.3.22-speed",
+      "signature_confidence": "inferred from original callers and callees; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "void* (void* context)",
+        "caller_evidence": "Call 02005710 directly forwards returned r3 to 02b74e68; that callee null-checks r3 then stores field at r3 +24. Call 0200573c forwards return to 02b74e94, which also stores through r3.",
+        "callee_evidence": "02c1962c pointer result is null-tested; nonnull path loads pointer at component +32 and returns it."
+      }
     }
   ]
 }

@@ -16,6 +16,8 @@
 | call-wrappers | 30 | 1,108 | All verified |
 | call-dependencies | 1 | 8 | All verified |
 | community-references | 500 | 46,280 | Unmatched |
+| short-call-dependencies | 3 | 20 | All verified |
+| related-call-dependencies | 6 | 312 | All verified |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -38,3 +40,7 @@ The scalar-pairs and conditional-operations batches add 95 independently verifie
 The community-references batch adds 500 unimplemented tasks, 100 per category. Selection prioritizes 14 eligible callees used by published functions, then varies size bands and code locations across 432 distinct 4 KiB pages. Of these tasks, 497 are 32–256 bytes and three dependency functions are 8, 8 and 16 bytes. The original 75 unresolved tasks remain available, for 575 tasks at publication.
 
 All 500 new hashes are unique and distinct from existing references. Each boundary and hash was independently checked against the pinned RPX; spans do not overlap or contain original relocations. All 171 call bindings were decoded independently from original direct-link instructions. A conservative, instruction-specific operand filter excludes apparent r2/r13 dependencies and unsupported decodes; it distinguishes GPRs from floating registers and immediates. This is reference selection, not a promise of matching compiler support or added implementation coverage.
+
+The short-call-dependencies batch adds two eight-byte tail adapters and a four-byte identity helper used by existing reconstructions. The opt-in [short-function discovery](inventory.md) requires independent direct-call entry evidence and disjoint, relocation-free spans. One adapter target has a bounded body; the other has independent entry evidence only. Each C++ contract was reviewed separately against original callers/callees, and all three implementations were rebuilt against the pinned RPX. Existing references and the 532 open tasks are unchanged.
+
+The related-call-dependencies batch adds six wrappers sharing a component lookup: two indexed pointer accessors, two signed-count wrappers and two nullable pointer-field getters. Each boundary was rediscovered and each implementation independently matched against the pinned RPX. Caller uses and original callee bodies support the inferred contracts; the shared component lookup itself remains unreconstructed. Two nonmatching count-getter proposals were excluded.
