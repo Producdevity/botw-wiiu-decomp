@@ -7,6 +7,8 @@ import struct
 import subprocess
 import tempfile
 
+from .espresso import decode
+
 
 def locate() -> str:
     for candidate in ("/opt/homebrew/opt/llvm/bin/llvm-objdump", "llvm-objdump", "llvm-objdump-18"):
@@ -70,4 +72,30 @@ def disassemble(code: bytes, address: int, symbol: str) -> str:
             raise ValueError("llvm-objdump failed:\n" + process.stderr[-4000:])
         if not process.stdout.strip():
             raise ValueError("llvm-objdump returned no disassembly")
-        return process.stdout
+        return _overlay(process.stdout, code, address)
+
+
+def _overlay(output: str, code: bytes, address: int) -> str:
+    overrides = {}
+    for offset in range(0, len(code), 4):
+        instruction = decode(int.from_bytes(code[offset:offset + 4], "big"))
+        if instruction is not None:
+            overrides[address + offset] = (code[offset:offset + 4], instruction.text)
+    if not overrides:
+        return output
+    row = re.compile(r"^(\s*([0-9a-fA-F]+):[ \t]+)((?:[0-9a-fA-F]{2}[ \t]+){4})([^\r\n]*)(\r?\n)?$")
+    seen = set()
+    lines = []
+    for line in output.splitlines(keepends=True):
+        match = row.fullmatch(line)
+        site = int(match[2], 16) if match else None
+        if site in overrides:
+            original, text = overrides[site]
+            if site in seen or bytes.fromhex(match[3]) != original:
+                raise ValueError("llvm-objdump Espresso row disagrees with original bytes")
+            seen.add(site)
+            line = match[1] + match[3] + text + (match[5] or "")
+        lines.append(line)
+    if seen != overrides.keys():
+        raise ValueError("llvm-objdump omitted an Espresso instruction row")
+    return "".join(lines)
