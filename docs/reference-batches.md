@@ -18,6 +18,7 @@
 | community-references | 500 | 46,280 | Unmatched |
 | short-call-dependencies | 3 | 20 | All verified |
 | related-call-dependencies | 6 | 312 | All verified |
+| data-call-dependencies | 12 | 1,096 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -44,3 +45,13 @@ All 500 new hashes are unique and distinct from existing references. Each bounda
 The short-call-dependencies batch adds two eight-byte tail adapters and a four-byte identity helper used by existing reconstructions. The opt-in [short-function discovery](inventory.md) requires independent direct-call entry evidence and disjoint, relocation-free spans. One adapter target has a bounded body; the other has independent entry evidence only. Each C++ contract was reviewed separately against original callers/callees, and all three implementations were rebuilt against the pinned RPX. Existing references and the 532 open tasks are unchanged.
 
 The related-call-dependencies batch adds six wrappers sharing a component lookup: two indexed pointer accessors, two signed-count wrappers and two nullable pointer-field getters. Each boundary was rediscovered and each implementation independently matched against the pinned RPX. Caller uses and original callee bodies support the inferred contracts; the shared component lookup itself remains unreconstructed. Two nonmatching count-getter proposals were excluded.
+
+The data-call-dependencies batch adds 12 callees referenced by existing
+reconstructions, spanning 16–360 bytes. Each has a separately checked direct-call
+entry and bounded contiguous control flow, with no overlapping reference spans.
+Their absolute data relocations use the [data-address profile](data-relocations.md):
+original symbol/addend resolution, raw field values and complete per-field
+provenance agree. Function call bindings are independently decoded. Existing
+references and completed source remain unchanged. These tasks include global
+state reads, floating-point helpers and indexed accessors. Published callers
+provide contract evidence for source reconstruction.

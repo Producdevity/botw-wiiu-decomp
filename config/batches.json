@@ -1839,6 +1839,23 @@
         "fn_02c1998c",
         "fn_02c199c0"
       ]
+    },
+    {
+      "id": "data-call-dependencies",
+      "functions": [
+        "fn_02f53050",
+        "fn_02e55450",
+        "fn_03089fb4",
+        "fn_027f0e4c",
+        "fn_035194bc",
+        "fn_02c1363c",
+        "fn_02c13674",
+        "fn_02ea6a4c",
+        "fn_02b5bcc8",
+        "fn_02d8f970",
+        "fn_02e74378",
+        "fn_04210514"
+      ]
     }
   ]
 }

@@ -14,6 +14,6 @@
       "sha256": "a7f50c85813ac64157d9b41751f8545163df670fdfd714761e7fbcf4fad133f9"
     }
   ],
-  "matching_scope": "Contiguous functions without RPX relocations; exact original code bytes and resolved compiled references. Local rodata and unsupported relocations are rejected.",
+  "matching_scope": "Contiguous functions with exact original code bytes and trusted compiled references. Original absolute data relocations require the cafe-data-address-v1 profile and per-field provenance; allocated object data and unsupported relocations reject.",
   "compiler_origin": "GHS 5.3.22 produces verified matches with speed/general/space profiles; Clang matches some leaves. Exact historical GHS version remains unconfirmed."
 }
