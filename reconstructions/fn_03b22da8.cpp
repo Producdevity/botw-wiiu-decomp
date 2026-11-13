@@ -1,6 +1,6 @@
 #include "botw/memory.h"
 
-extern "C" void fn_03a4d6dc(unsigned*);
+extern "C" void fn_03a4d6dc(void*);
 
 extern "C" void fn_03b22da8(unsigned* object) {
     if (object[639]) {

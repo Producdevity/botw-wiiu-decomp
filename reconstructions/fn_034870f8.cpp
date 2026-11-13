@@ -1,10 +1,11 @@
 namespace {
 struct InferredObject {
     unsigned char padding_0[92];
-    unsigned int value;
+    char* value;
 };
 }
 
-extern "C" unsigned int fn_034870f8(const InferredObject* object) {
-    return object->value + 16u;
+extern "C" char* fn_034870f8(void* context) {
+    const InferredObject* object = static_cast<const InferredObject*>(context);
+    return object->value + 16;
 }

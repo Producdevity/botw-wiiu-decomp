@@ -1,4 +1,5 @@
-extern "C" void* fn_030980ac(void* context);
-extern "C" void fn_030937cc(void* context) {
-    fn_030980ac(context);
+#include "botw/memory.h"
+
+extern "C" void* fn_030937cc(void* context, void* member) {
+    return fn_030980ac(context, member);
 }
