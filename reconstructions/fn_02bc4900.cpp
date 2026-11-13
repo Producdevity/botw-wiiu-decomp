@@ -9,6 +9,7 @@ struct InferredObject {
 };
 }
 
-extern "C" unsigned char fn_02bc4900(const InferredObject* object) {
+extern "C" unsigned char fn_02bc4900(void* context) {
+    const InferredObject* object = static_cast<const InferredObject*>(context);
     return object->inner->value;
 }

@@ -11,6 +11,10 @@
 | scalar-copies | 50 | 1,224 | All verified |
 | conditional-fields | 25 | 500 | All verified |
 | repeated-scalar-fields | 94 | 1,356 | All verified |
+| scalar-pairs | 52 | 1,648 | All verified |
+| conditional-operations | 43 | 1,576 | All verified |
+| call-wrappers | 30 | 1,108 | All verified |
+| call-dependencies | 1 | 8 | All verified |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -25,3 +29,7 @@ The repeated-functions batch contains independently discovered addresses with ma
 The scalar-fields batch contains 262 new, unique 12–16-byte bodies reconstructed as typed C++ field reads, updates and bit operations. All were rediscovered from the pinned RPX, checked for overlap and original relocations, and rebuilt against original bytes before publication. Fifteen nonmatching proposals were excluded. Structure names, signatures and field layouts remain inferred for the Wii U ABI. Existing references and the 75 unresolved larger tasks were preserved.
 
 The scalar-copies and conditional-fields batches add 75 distinct 20–52-byte functions: ordered scalar copies, equality tests, initializations, bounded selection and conditional updates. The repeated-scalar-fields batch adds 94 distinct addresses whose bodies match recorded scalar seeds. All 169 additions were independently rediscovered and compiled against original RPX bytes, with no overlapping references or original relocations. Existing references, implementations and unresolved tasks were preserved.
+
+The scalar-pairs and conditional-operations batches add 95 independently verified functions, including native float-pair copies, packing, swaps, enum tests and conditional state updates. Thirty call wrappers and their eight-byte shared dependency were checked against original caller/callee context as well as exact bytes. Twenty-one existing source contracts were reconciled in the same review; only inferred pointer-field metadata changed for three references. All existing addresses, sizes, hashes and call bindings remain unchanged.
+
+`source_seed` records the source used when a repeated-body batch was accepted. Later caller evidence can distinguish the types of functions whose machine-code bodies happen to be identical; such corrections apply only to the functions supported by that evidence.

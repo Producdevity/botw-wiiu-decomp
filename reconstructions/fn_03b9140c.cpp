@@ -1,7 +1,7 @@
 namespace {
 struct InferredInner {
     unsigned char padding_0[12];
-    unsigned int value;
+    char* value;
 };
 
 struct InferredObject {
@@ -10,6 +10,7 @@ struct InferredObject {
 };
 }
 
-extern "C" unsigned int fn_03b9140c(const InferredObject* object) {
+extern "C" char* fn_03b9140c(void* context) {
+    const InferredObject* object = static_cast<const InferredObject*>(context);
     return object->inner->value;
 }

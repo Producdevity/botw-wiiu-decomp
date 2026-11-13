@@ -1,6 +1,6 @@
 #include "botw/atomic.h"
 
-extern "C" void fn_037fbff0(unsigned*);
+extern "C" int fn_037fbff0();
 extern "C" void fn_037f5f70(unsigned* object) {
     unsigned flags = object[2];
     flags >>= 19;
@@ -9,6 +9,6 @@ extern "C" void fn_037f5f70(unsigned* object) {
         unsigned* result = reinterpret_cast<unsigned*>(
             fn_037f5f54(reinterpret_cast<unsigned char*>(object)));
         result[2] &= ~(1u << 19);
-        fn_037fbff0(result);
+        fn_037fbff0();
     }
 }
