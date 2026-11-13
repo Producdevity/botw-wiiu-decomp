@@ -31,7 +31,11 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
             raise ValueError(f"invalid source/symbol convention: {key}")
         if row["status"] not in ("matched", "unmatched"):
             raise ValueError(f"invalid status: {key}")
-        if row.get("compiler_profile", "clang-ppc") not in ("clang-ppc", "ghs-5.3.22-speed", "ghs-5.3.22-general", "ghs-5.3.22-space", "ghs-5.3.22-auto"):
+        if row.get("compiler_profile", "clang-ppc") not in (
+                "clang-ppc", "ghs-5.3.22-speed", "ghs-5.3.22-general",
+                "ghs-5.3.22-space", "ghs-5.3.22-auto",
+                "ghs-5.3.22-speed-notailrecursion-nopipeline",
+                "ghs-5.3.22-speed-nounroll", "ghs-5.3.22-speed-noconstprop"):
             raise ValueError(f"invalid compiler profile: {key}")
         for name, value in row.get("bindings", {}).items():
             number = int(value, 16)

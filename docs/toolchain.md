@@ -99,3 +99,27 @@ renderer code. Record shared layouts with evidence and compile-time offset/size
 checks so one correction can unblock many functions. Matching function bytes
 does not identify its original name or parameter types; those remain explicit
 inferences in the manifest.
+
+## Additional verified profiles
+
+Three further fixed profiles recover code-generation differences without changing
+reference bytes or permitting source-level assembly:
+
+- `ghs-5.3.22-speed-notailrecursion-nopipeline`: `-Ospeed -Onotailrecursion -Onopipeline`. This restores ordinary call frames and the observed operation/epilogue order in 12 pilot wrappers.
+- `ghs-5.3.22-speed-nounroll`: `-Ospeed -Onounroll`. This preserves the counted store loops in three pilot functions.
+- `ghs-5.3.22-speed-noconstprop`: `-Ospeed -Onoconstprop`. This preserves the instruction order in the atomic-clear loop.
+
+All retain `-bigendian --no_exceptions --no_rtti`. The flags are documented in
+[Green Hills' compiler manual](https://community.renesas.com/cfs-file/__key/communityserver-discussions-components-files/259/0576.build_5F00_v800.pdf);
+that manual is for another target/version, so the relevant PowerPC 5.3.22 outputs
+were also measured locally against the pinned RPX. This establishes working
+profiles, not the historical compilation options of every original module.
+
+## Intrinsic declarations
+
+`include/botw/ghs_intrinsics.h` centralizes measured PowerPC intrinsic signatures.
+`__LWARX`, `__STWCX` and `__DCBST` compile to the corresponding instructions;
+the indexed-address argument is required. No assembly or SDK header is included.
+`__memory_changed` is a documented compiler barrier that emits no fence
+instruction. It preserves the two observed counted loops under `-Ogeneral`;
+the original purpose of those loops is not established.
