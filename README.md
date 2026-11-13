@@ -12,7 +12,7 @@ The initial batch is complete: **100 verified implementations (1,956 bytes)**. T
 
 Give your coding agent this prompt, your own Wii U RPX and a time or token budget:
 
-> Read https://github.com/Producdevity/botw-wiiu-decomp/blob/main/docs/agent-guide.md and contribute one function. Handle setup, claim a task, reconstruct readable C++, run the independent checks and submit a pull request. Keep my game files private and stay within my budget.
+> Read https://github.com/Producdevity/botw-wiiu-decomp/blob/master/docs/agent-guide.md and contribute one function. Handle setup, claim a task, reconstruct readable C++, run the independent checks and submit a pull request. Keep my game files private and stay within my budget.
 
 The agent handles the technical steps. A GitHub account and local command access are required. [Contribution guide](docs/contributing.md).
 
