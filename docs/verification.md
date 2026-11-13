@@ -14,11 +14,12 @@ An exact byte match proves that the checked machine-code span is identical under
 ## Supported today
 
 - Object relocations: `ADDR32`, `ADDR16_LO`, `ADDR16_HI`, `ADDR16_HA`, `REL24`, `REL14`, `REL32`, with range/opcode checks.
-- Local references contained within the checked function; external references only through manifest bindings.
+- Local references contained within the checked function; external function and data references only through separate manifest bindings.
+- Opt-in [`cafe-data-address-v1`](data-relocations.md) for original absolute data relocations whose fields already equal their link-address values. Original and compiled relocation provenance must agree field by field.
 - Rebuild of all implemented functions when any shared header changes.
 - Private extraction and disassembly from the contributor's own dump.
 
-The pilot excludes any original span affected by an RPX relocation. Compiled references to local `.rodata`, jump tables outside the span, unsupported relocations, malformed ELF and unresolved symbols fail closed. Extending support requires fixtures and a reference update; contributors cannot bypass it by changing expected hashes.
+The default reference profile excludes any original span affected by an RPX relocation. A separately reviewed reference may opt into the data-address profile. Compiled references to local `.rodata`, jump tables outside the span, unsupported relocations, malformed ELF and unresolved symbols fail closed. Extending support requires fixtures and a reference update; contributors cannot bypass it by changing expected hashes.
 
 ## Inventory
 

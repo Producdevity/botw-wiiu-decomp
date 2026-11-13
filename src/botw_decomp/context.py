@@ -7,7 +7,7 @@ from pathlib import Path
 from .disassembly import disassemble
 from .inventory import branch_target
 from .project import write_json
-from .rpx import Rpx, RpxError
+from .rpx import Rpx, reference_bytes, RpxError
 
 
 PREVIEW_LIMIT = 256
@@ -135,7 +135,7 @@ def write_context(root: Path, path: Path, row: dict, rows: dict[str, dict], imag
         try:
             if known:
                 _text_section(image, address, known["size"])
-                data = image.read(address, known["size"])
+                data = reference_bytes(image, known)
                 if hashlib.sha256(data).hexdigest() != known["sha256"]:
                     raise ValueError("callee manifest hash disagrees with supplied RPX")
                 label = "VERIFIED_MANIFEST_SPAN"
