@@ -1,0 +1,18 @@
+name: Reserve a function
+description: Reserve a reconstruction task for six hours.
+title: "Claim: "
+body:
+  - type: input
+    id: function
+    attributes:
+      label: Function
+      description: Copy an unmatched function ID from config/functions.json.
+      placeholder: fn_03000000
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        The queue bot confirms ownership in a comment. A request is pending until then.
+        Close the issue when you stop working. Keep any partial source in a draft PR.
+        Do not attach game files, compiler binaries, disassembly or object files.

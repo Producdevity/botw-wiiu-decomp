@@ -1,0 +1,48 @@
+name: Verify reconstructions
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, wiiu-foundation]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out trusted verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          path: trusted
+          persist-credentials: false
+      - name: Check out candidate as data
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: candidate
+          persist-credentials: false
+      - name: Install PowerPC compiler
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y clang-18
+      - name: Install hash-pinned GHS toolchain
+        run: python3 trusted/tools/toolchain.py
+      - name: Test trusted verifier
+        working-directory: trusted
+        env:
+          PYTHONPATH: src
+        run: python3 -m unittest discover -s tests -v
+      - name: Match candidate sources against trusted references
+        working-directory: trusted
+        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18

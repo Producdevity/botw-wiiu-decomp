@@ -1,0 +1,14 @@
+{
+  "ghs-5.3.22": {
+    "url": "https://github.com/decompme/compilers/releases/download/compilers/ghs5.3.22.tar.gz",
+    "sha256": "41cd0a4723acfbddf8f70a9c3ff84bce7e85087b1d1ccef8bbf5f03d82c2b520"
+  },
+  "wibo-macos": {
+    "url": "https://github.com/decompals/wibo/releases/download/1.2.0/wibo-macos",
+    "sha256": "2b3000ef6a7a490c24ccd71967735ae0005e218922e51806cca1b8d77fd3cf7c"
+  },
+  "wibo-linux-x86_64": {
+    "url": "https://github.com/decompals/wibo/releases/download/1.2.0/wibo-x86_64",
+    "sha256": "13f86a2d618f0dbe67179d349625345eabf9b46450295cb4c904e49f6aff85af"
+  }
+}

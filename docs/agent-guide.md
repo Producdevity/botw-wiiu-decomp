@@ -1,0 +1,39 @@
+# Agent contribution guide
+
+This project reconstructs Breath of the Wild for Wii U from a contributor's own v208 RPX. Work inside the contributor's stated time or token budget. Do not run indefinitely. If no budget is given, finish one function attempt and report the result.
+
+## Set up
+
+1. Read the repository README, [toolchain status](toolchain.md), [contribution rules](contributing.md) and current function manifest.
+2. Use a fresh checkout or preserve the contributor's existing changes. Authenticate `gh` with the contributor's GitHub account. Fork `Producdevity/botw-wiiu-decomp` if that account cannot push to it. Create a responsibility-based branch in the fork.
+3. Locate the contributor-supplied RPX. Do not download or upload game files. Run:
+
+   ```sh
+   python3 tools/toolchain.py
+   python3 tools/decomp.py setup --rpx /path/to/U-King.rpx --compiler /path/to/clang++
+   python3 tools/decomp.py doctor
+   ```
+
+   Follow the documented compiler setup. Do not replace a required toolchain with an arbitrary compiler or claim a build was verified without running the check.
+
+## Work loop
+
+1. Run `python3 tools/community.py list`, then `python3 tools/community.py claim FUNCTION`. Wait for `accepted: true` from `python3 tools/community.py status ISSUE`.
+2. Run `python3 tools/decomp.py packet FUNCTION`. Inspect the local context, relevant declarations and references. Game-derived packet contents stay local.
+3. Reconstruct the function as readable C++. Follow the manifest's source and symbol conventions. Do not change the expected hash, address, size or checker to make a submission pass.
+4. Run `python3 tools/decomp.py check FUNCTION`. Fix mismatches within the user's budget. A compilation error, unsupported relocation or unresolved symbol is a failed check, not a partial match.
+5. Before submission, run `python3 tools/decomp.py check --all` and the repository tests. Inspect the staged diff for generated or proprietary files.
+6. Commit with the contributor's configured Git author. Push to their fork and open a focused PR against `main`. Provide function IDs, compiler version, check results and naming evidence. Link the claim issue; do not mark source accepted yourself.
+7. Release the claim when finished or stopped. If blocked, preserve useful source in a draft PR and describe the missing type, toolchain behaviour or reference mapping without publishing disassembly.
+
+Claims expire after six hours and have no difficulty tiers. `community.py` returns JSON for automation. Its commands are `list`, `claim`, `status` and `release`; it talks to GitHub over HTTP through `gh`. A separate MCP service is unnecessary for agents that can execute these commands.
+
+Public CI compiles the submitted sources with the base branch's checker and reference hashes. It checks every existing reconstruction, including those affected by shared headers. Normal contribution PRs may change listed reconstruction sources, `include/botw/*.h` and Markdown documentation. Reference metadata, checker, tests and workflow changes require a separate maintainer-reviewed change. Once verified source lands, the queue marks its task complete without editing the reference manifest.
+
+## Shared blockers
+
+Search existing issues before opening a blocker. Group functions blocked by the same field, class or binding into one issue. Record affected function IDs, the evidence needed and a suggested declaration change. Changes to shared definitions must recheck every dependent function. Prefer fixing a high-impact shared dependency over repeating the same failed attempt on many functions.
+
+## Stop conditions
+
+Stop on the user's budget, a missing required compiler or a checker limitation. Release unfinished claims and state exactly what remains. Do not silently skip checks, weaken reference matching, upload game-derived artifacts or send unsolicited bulk pull requests.
