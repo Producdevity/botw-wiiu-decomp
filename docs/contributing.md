@@ -2,7 +2,7 @@
 
 You can contribute through your coding agent. Give it this instruction:
 
-> Read https://github.com/Producdevity/botw-wiiu-decomp/blob/main/docs/agent-guide.md and help me contribute. Use my own Wii U game dump. Work within the time or token budget I give you, and submit only source that passes the checker.
+> Read https://github.com/Producdevity/botw-wiiu-decomp/blob/master/docs/agent-guide.md and help me contribute. Use my own Wii U game dump. Work within the time or token budget I give you, and submit only source that passes the checker.
 
 You need your own supported Wii U RPX, a GitHub account and an agent that can run local commands. The agent handles setup, task selection, verification and a pull request. GitHub may ask you to sign in once. You keep your game files and compiler locally.
 
