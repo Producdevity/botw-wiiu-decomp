@@ -1,12 +1,13 @@
 # Verification contract
 
-Acceptance is a deterministic compiler-and-comparison operation. It does not ask a model or reviewer whether two implementations appear equivalent.
+Machine-code matching is a deterministic compiler-and-comparison operation. It does not ask a model or reviewer whether two implementations appear equivalent. Review of inferred source contracts is separate.
 
 1. Local setup verifies the entire original RPX SHA-256, then verifies every manifest span against that file.
 2. The checker compiles readable C++ to ELF32 big-endian PowerPC. It rejects assembly, compiler pragma overrides, non-project includes and unsupported object dependencies.
 3. It places the function at its original address and resolves supported relocations using trusted bindings. It compares every resulting byte; no instruction, immediate or relocation field is masked.
 4. Local checks compare the original bytes directly. Public CI compares length and SHA-256 against the fixed reference. No game files are needed on GitHub.
 5. PR checks use the base branch's workflow, checker and reference manifest. Candidate code is compiled on a disposable hosted runner with a read-only token and no project secrets. Candidate scripts are never run.
+6. The strict [declaration audit](contract-audit.md) compares available caller/callee declarations and definitions. It rejects conflicts and incomplete analyses; unknown definitions and unproven layouts remain explicit.
 
 An exact byte match proves that the checked machine-code span is identical under those bindings. Human or agent judgment is still needed when establishing function boundaries, signatures and shared types, and when changing the trusted checker or reference. The current source-level type annotations are explicitly inferred. Matching does not recover original names or guarantee how different future compiler flags transform the source.
 
