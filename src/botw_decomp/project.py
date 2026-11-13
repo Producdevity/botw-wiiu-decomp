@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import re
 
+from .data_relocations import DATA_PROFILE, contract
+
 ROOT = Path(__file__).resolve().parents[2]
 FUNCTION_ID = re.compile(r"fn_[0-9a-f]{8}\Z")
 HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -41,6 +43,23 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
             number = int(value, 16)
             if not FUNCTION_ID.fullmatch(name) or name != f"fn_{number:08x}" or number % 4:
                 raise ValueError(f"invalid external binding: {key}")
+        profile = row.get("original_profile", "unrelocated")
+        if profile not in ("unrelocated", DATA_PROFILE):
+            raise ValueError(f"invalid original profile: {key}")
+        data_bindings = row.get("data_bindings", {})
+        if not isinstance(data_bindings, dict) or (data_bindings and profile != DATA_PROFILE):
+            raise ValueError(f"invalid data bindings: {key}")
+        for name, value in data_bindings.items():
+            if (not isinstance(name, str) or not isinstance(value, str) or
+                    not re.fullmatch(r"0x[0-9a-f]{8}", value) or
+                    name != f"data_{int(value, 16):08x}"):
+                raise ValueError(f"invalid data binding: {key}")
+        relocations = row.get("data_relocations", [])
+        if ("data_bindings" in row or "data_relocations" in row) and profile != DATA_PROFILE:
+            raise ValueError(f"data contract requires the data-address profile: {key}")
+        if profile == DATA_PROFILE and "data_relocations" not in row:
+            raise ValueError(f"missing data relocation contract: {key}")
+        contract(size, {name: int(value, 16) for name, value in data_bindings.items()}, relocations)
         result[key] = row
         ranges.append((address, address + size))
     ranges.sort()

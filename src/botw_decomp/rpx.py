@@ -6,6 +6,10 @@ from pathlib import Path
 import struct
 import zlib
 
+from .data_relocations import DATA_PROFILE, contract
+
+_RELOCATION_RECORD = struct.Struct(">IBiIIHBB")
+
 
 _RELOCATION_WIDTHS = {0: 0, 1: 4, 4: 2, 5: 2, 6: 2, 10: 4, 11: 4,
                       26: 4, 68: 4, 78: 4}
@@ -34,6 +38,7 @@ class Rpx:
     relocation_sites: frozenset[int]
     sorted_relocation_sites: tuple[int, ...]
     sorted_relocation_ends: tuple[int, ...]
+    relocation_records: bytes = b""
 
     def has_relocation(self, address: int, size: int) -> bool:
         index = bisect_left(self.sorted_relocation_sites, address)
@@ -41,7 +46,7 @@ class Rpx:
                 (index < len(self.sorted_relocation_sites) and
                  self.sorted_relocation_sites[index] < address + size))
 
-    def read(self, address: int, size: int) -> bytes:
+    def _code_section(self, address: int, size: int) -> Section:
         if (type(address) is not int or type(size) is not int or
                 size <= 0 or address < 0 or address + size > 0x100000000):
             raise RpxError("invalid function range")
@@ -49,9 +54,61 @@ class Rpx:
                     s.address <= address and address + size <= s.address + len(s.data)]
         if len(sections) != 1:
             raise RpxError("function must lie in exactly one executable section")
-        if self.has_relocation(address, size):
+        return sections[0]
+
+    def _data_section(self, address: int) -> Section:
+        sections = [s for s in self.sections if s.kind in (1, 8) and s.flags & 2 and
+                    not s.flags & (4 | 0x400 | 0x04000000) and
+                    s.address <= address < s.address + s.size]
+        if len(sections) != 1:
+            raise RpxError("relocation destination must lie in allocated non-TLS data")
+        return sections[0]
+
+    def data_references(self, address: int, size: int) -> tuple[dict, ...]:
+        section = self._code_section(address, size)
+        if len(self.relocation_records) != len(self.sorted_relocation_sites) * _RELOCATION_RECORD.size:
+            raise RpxError("original relocation metadata is unavailable")
+        first = bisect_left(self.sorted_relocation_sites, address)
+        if first and self.sorted_relocation_ends[first - 1] > address:
+            first -= 1
+        last = bisect_left(self.sorted_relocation_sites, address + size)
+        result = []
+        for index in range(first, last):
+            site, kind, addend, value, symbol_size, shndx, info, other = _RELOCATION_RECORD.unpack_from(
+                self.relocation_records, index * _RELOCATION_RECORD.size)
+            width = _RELOCATION_WIDTHS[kind]
+            if site < address or site + width > address + size:
+                raise RpxError("original relocation crosses a function boundary")
+            if kind not in (1, 4, 5, 6):
+                raise RpxError("unsupported original relocation in data-address profile")
+            if not 0 < shndx < len(self.sections) or info >> 4 not in (0, 1, 2) or info & 15 not in (0, 1, 3):
+                raise RpxError("original relocation requires a defined data symbol")
+            anchor = self.sections[shndx]
+            if (self._data_section(value) != anchor or value + symbol_size > anchor.address + anchor.size or
+                    other & ~3):
+                raise RpxError("original data symbol disagrees with its section")
+            destination = value + addend
+            if not 0 <= destination <= 0xFFFFFFFF:
+                raise RpxError("original relocation address exceeds 32 bits")
+            self._data_section(destination)
+            expected = (destination if kind == 1 else destination & 0xFFFF if kind == 4
+                        else destination >> 16 if kind == 5
+                        else ((destination + 0x8000) >> 16) & 0xFFFF)
+            offset = site - section.address
+            actual = int.from_bytes(section.data[offset:offset + width], "big")
+            if actual != expected:
+                raise RpxError("original relocation field differs from its link-address value")
+            result.append({"site": site, "type": kind, "destination": destination})
+        return tuple(result)
+
+    def read(self, address: int, size: int, *, profile: str = "unrelocated") -> bytes:
+        if profile not in ("unrelocated", DATA_PROFILE):
+            raise RpxError("unsupported original reference profile")
+        section = self._code_section(address, size)
+        if profile == DATA_PROFILE:
+            self.data_references(address, size)
+        elif self.has_relocation(address, size):
             raise RpxError("original RPX relocations require a verified canonicalisation profile")
-        section = sections[0]
         return section.data[address - section.address:address - section.address + size]
 
 
@@ -145,7 +202,7 @@ def parse(data: bytes) -> Rpx:
             if destination.kind != 1 or not destination.flags & 2:
                 raise RpxError("relocations must target allocated PROGBITS")
             for offset in range(0, len(block), 12):
-                site, info, _ = struct.unpack_from(">IIi", block, offset)
+                site, info, addend = struct.unpack_from(">IIi", block, offset)
                 kind = info & 0xFF
                 if info >> 8 >= len(symbols) // 16:
                     raise RpxError("relocation has an invalid symbol index")
@@ -158,15 +215,16 @@ def parse(data: bytes) -> Rpx:
                     raise RpxError("relocation write is outside or misaligned in its target section")
                 if site in relocations:
                     raise RpxError("overlapping relocation writes")
-                relocations[site] = site + width
+                _, value, symbol_size, symbol_info, other, shndx = struct.unpack_from(">IIIBBH", symbols, (info >> 8) * 16)
+                relocations[site] = _RELOCATION_RECORD.pack(site, kind, addend, value, symbol_size, shndx, symbol_info, other)
         elif typ == 9:
             raise RpxError("implicit-addend RPX relocations are unsupported")
     sites = tuple(sorted(relocations))
-    ends = tuple(relocations[site] for site in sites)
+    ends = tuple(site + _RELOCATION_WIDTHS[relocations[site][4]] for site in sites)
     if any(end > site for end, site in zip(ends, sites[1:])):
         raise RpxError("overlapping relocation writes")
     return Rpx(hashlib.sha256(data).hexdigest(), entry, tuple(sections),
-               frozenset(sites), sites, ends)
+               frozenset(sites), sites, ends, b"".join(relocations[site] for site in sites))
 
 
 def load(path: Path, expected_sha256: str) -> Rpx:
@@ -175,3 +233,23 @@ def load(path: Path, expected_sha256: str) -> Rpx:
     if actual != expected_sha256:
         raise RpxError(f"wrong RPX: expected {expected_sha256}, received {actual}")
     return parse(data)
+
+
+def reference_bytes(image: Rpx, row: dict) -> bytes:
+    address, size = int(row["address"], 16), row["size"]
+    profile = row.get("original_profile", "unrelocated")
+    if profile == "unrelocated":
+        if "data_bindings" in row or "data_relocations" in row:
+            raise RpxError("data bindings require the data-address profile")
+        return image.read(address, size)
+    data = image.read(address, size, profile=profile)
+    bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
+    try:
+        expected = contract(size, bindings, row.get("data_relocations", []))
+    except ValueError as exc:
+        raise RpxError(str(exc)) from exc
+    actual = tuple(sorted((item["site"] - address, item["type"], f"data_{item['destination']:08x}",
+                           item["destination"]) for item in image.data_references(address, size)))
+    if actual != expected:
+        raise RpxError("trusted data relocation contract disagrees with original fields")
+    return data

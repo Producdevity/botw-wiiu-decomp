@@ -12,7 +12,7 @@ from .context import write_context
 from .disassembly import disassemble
 from .matching import compare_function, compare_function_hash
 from .project import ROOT, functions, local_config, read_json, write_json
-from .rpx import load
+from .rpx import load, reference_bytes
 
 
 def emit(value):
@@ -38,13 +38,14 @@ def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, 
         obj = compiler.compile_source(cxx, source, root / "include", profile)
         address = int(row["address"], 16)
         bindings = {key: int(value, 16) for key, value in row.get("bindings", {}).items()}
+        data_bindings = {key: int(value, 16) for key, value in row.get("data_bindings", {}).items()}
         if image is not None:
-            original = image.read(address, row["size"])
+            original = reference_bytes(image, row)
             if hashlib.sha256(original).hexdigest() != row["sha256"]:
                 raise ValueError("reference manifest disagrees with supplied RPX")
-            compared = compare_function(obj, row["symbol"], original, address, bindings)
+            compared = compare_function(obj, row["symbol"], original, address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []))
         else:
-            compared = compare_function_hash(obj, row["symbol"], row["sha256"], row["size"], address, bindings)
+            compared = compare_function_hash(obj, row["symbol"], row["sha256"], row["size"], address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []))
         return {**result, **compared, "compiler": compiler.identity(cxx, profile),
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
     except (ValueError, OSError, subprocess.TimeoutExpired) as error:
@@ -116,7 +117,7 @@ def main(argv=None) -> int:
         if args.command == "setup":
             image = load(args.rpx.expanduser().resolve(), target["rpx_sha256"])
             for row in rows.values():
-                if hashlib.sha256(image.read(int(row["address"], 16), row["size"])).hexdigest() != row["sha256"]:
+                if hashlib.sha256(reference_bytes(image, row)).hexdigest() != row["sha256"]:
                     raise ValueError(f"reference disagrees with original: {row['id']}")
             cxx = compiler.locate(args.compiler)
             identity = compiler.version(cxx)
@@ -137,7 +138,7 @@ def main(argv=None) -> int:
             profiles = {p for r in rows.values() for p in compiler.profiles(r)}
             identities = {profile: compiler.identity(settings["compiler"], profile) for profile in sorted(profiles)}
             for row in rows.values():
-                if hashlib.sha256(image.read(int(row["address"], 16), row["size"])).hexdigest() != row["sha256"]:
+                if hashlib.sha256(reference_bytes(image, row)).hexdigest() != row["sha256"]:
                     raise ValueError(f"reference disagrees with original: {row['id']}")
             emit({"status": "ready", "target": target["id"], "compilers": identities,
                   "reference_functions": len(rows), "gh_available": shutil.which("gh") is not None,
@@ -150,7 +151,7 @@ def main(argv=None) -> int:
             semantic_name = symbols.load(ROOT).get(args.function)
             settings = local_config()
             image = load(Path(settings["rpx"]), target["rpx_sha256"])
-            data = image.read(int(row["address"], 16), row["size"])
+            data = reference_bytes(image, row)
             if hashlib.sha256(data).hexdigest() != row["sha256"]:
                 raise ValueError("reference mismatch")
             path = ROOT / ".local/packets" / args.function

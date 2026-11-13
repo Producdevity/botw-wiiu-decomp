@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from botw_decomp import compiler, matching, project
 from botw_decomp.register_proof import report
-from botw_decomp.rpx import load
+from botw_decomp.rpx import load, reference_bytes
 
 
 def main(argv=None):
@@ -27,10 +27,11 @@ def main(argv=None):
         target = project.read_json(project.ROOT / "config/target.json")
         image = load(Path(settings["rpx"]), target["rpx_sha256"])
         address = int(row["address"], 16)
-        original = image.read(address, row["size"])
+        original = reference_bytes(image, row)
         if hashlib.sha256(original).hexdigest() != row["sha256"]:
             raise ValueError("reference manifest disagrees with supplied RPX")
         bindings = {name: int(value, 16) for name, value in row.get("bindings", {}).items()}
+        data_bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
         results = []
         for profile in compiler.profiles(row):
             item = {"compiler_profile": profile}
@@ -38,7 +39,7 @@ def main(argv=None):
                 obj = compiler.compile_source(settings["compiler"], args.source,
                                               project.ROOT / "include", profile)
                 resolved, candidate = matching._resolve_function(
-                    obj, row["symbol"], row["size"], address, bindings)
+                    obj, row["symbol"], row["size"], address, bindings, data_bindings, row.get("data_relocations", []))
                 if candidate is None:
                     item.update(equivalent=False, reason=resolved["reason"])
                 else:
