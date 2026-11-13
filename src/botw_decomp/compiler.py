@@ -46,7 +46,7 @@ def identity(cxx: str, profile: str) -> str:
 
 
 def locate(requested: str | None = None) -> str:
-    choices = [requested] if requested else ["/opt/homebrew/opt/llvm/bin/clang++", "clang++"]
+    choices = [requested] if requested else ["/opt/homebrew/opt/llvm/bin/clang++", "clang++", "clang++-18"]
     for item in choices:
         found = shutil.which(item) if item else None
         if found:

@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime as dt
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
+from urllib.parse import quote
 
 
 REPO = "Producdevity/botw-wiiu-decomp"
@@ -44,16 +46,16 @@ def iso(value: dt.datetime) -> str:
     return value.astimezone(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
-def read_functions(path: Path, root: Path | None = None) -> dict[str, dict]:
-    root = root or path.resolve().parents[1]
-    value = json.loads(path.read_text())
+def parse_functions(value, completed_sources: set[str] | None = None) -> dict[str, dict]:
     rows = value["functions"] if isinstance(value, dict) else value
     if not isinstance(rows, list):
         raise QueueError("Function manifest must contain a list")
     result = {}
     for row in rows:
+        if not isinstance(row, dict):
+            raise QueueError("Function entries must be objects")
         key = row.get("id", "")
-        if not FUNCTION.fullmatch(key) or key in result:
+        if not isinstance(key, str) or not FUNCTION.fullmatch(key) or key in result:
             raise QueueError("Invalid or duplicate function id")
         if row.get("status") not in ("unmatched", "matched"):
             raise QueueError(f"Unsupported status for {key}")
@@ -61,13 +63,57 @@ def read_functions(path: Path, root: Path | None = None) -> dict[str, dict]:
         if "source" in row:
             if row["source"] != f"reconstructions/{key}.cpp":
                 raise QueueError(f"Invalid source path for {key}")
-            source = root / row["source"]
-            if (root / "reconstructions").is_symlink() or source.is_symlink():
-                raise QueueError("Reconstruction symlinks are not accepted")
-            if source.is_file():
+            if row["source"] in (completed_sources or set()):
                 row["status"] = "matched"
         result[key] = row
     return result
+
+
+def read_functions(path: Path, root: Path | None = None) -> dict[str, dict]:
+    root = root or path.resolve().parents[1]
+    result = parse_functions(json.loads(path.read_text()))
+    for row in result.values():
+        if "source" not in row:
+            continue
+        source = root / row["source"]
+        if (root / "reconstructions").is_symlink() or source.is_symlink():
+            raise QueueError("Reconstruction symlinks are not accepted")
+        if source.is_file():
+            row["status"] = "matched"
+    return result
+
+
+def remote_functions(api: GitHub) -> dict[str, dict]:
+    metadata = api.call("GET", api.route(""))
+    branch = metadata.get("default_branch")
+    if not isinstance(branch, str) or not branch:
+        raise QueueError("Repository has no default branch")
+    commit = api.call("GET", api.route(f"commits/{quote(branch, safe='')}"))
+    commit_sha = commit.get("sha", "")
+    tree_sha = commit.get("commit", {}).get("tree", {}).get("sha", "")
+    if not re.fullmatch(r"[0-9a-f]{40}", commit_sha) or not re.fullmatch(r"[0-9a-f]{40}", tree_sha):
+        raise QueueError("Invalid default-branch commit or tree")
+    manifest = api.call("GET", api.route(f"contents/config/functions.json?ref={commit_sha}"))
+    if manifest.get("type") != "file" or manifest.get("encoding") != "base64":
+        raise QueueError("Remote manifest must be a base64-encoded file")
+    try:
+        encoded = "".join(manifest["content"].splitlines())
+        value = json.loads(base64.b64decode(encoded, validate=True))
+    except (KeyError, ValueError, TypeError) as error:
+        raise QueueError("Invalid remote function manifest") from error
+    tree = api.call("GET", api.route(f"git/trees/{tree_sha}?recursive=1"))
+    if tree.get("truncated") is not False or not isinstance(tree.get("tree"), list):
+        raise QueueError("Remote source tree is incomplete")
+    completed = set()
+    for entry in tree["tree"]:
+        path = entry.get("path", "")
+        if path == "reconstructions" or path.startswith("reconstructions/"):
+            if entry.get("type") == "tree" and entry.get("mode") == "040000":
+                continue
+            if entry.get("type") != "blob" or entry.get("mode") not in ("100644", "100755"):
+                raise QueueError("Remote reconstructions must be regular files")
+            completed.add(path)
+    return parse_functions(value, completed)
 
 
 def requested_function(issue: dict) -> str:
@@ -126,7 +172,7 @@ class GitHub:
             command += ["--input", "-"]
         response = subprocess.run(
             command, input=json.dumps(payload) if payload is not None else None,
-            text=True, capture_output=True, check=False,
+            text=True, capture_output=True, check=False, timeout=30,
         )
         if response.returncode:
             raise QueueError(response.stderr.strip() or "GitHub request failed")
@@ -145,7 +191,7 @@ class GitHub:
         raise QueueError("Queue exceeds the 10,000-entry safety bound")
 
     def route(self, suffix: str) -> str:
-        return f"repos/{self.repository}/{suffix}"
+        return f"repos/{self.repository}/{suffix}".rstrip("/")
 
     def issues(self) -> list[dict]:
         return [issue for issue in self.pages(self.route("issues?state=open&sort=created&direction=asc"))
@@ -265,7 +311,8 @@ def reconcile(api: GitHub, functions: dict[str, dict], now: dt.datetime) -> dict
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default=REPO)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "config/functions.json")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "config/functions.json",
+                        help="Trusted local manifest for reconcile only")
     commands = parser.add_subparsers(dest="command", required=True)
     listing = commands.add_parser("list", help="List available tasks")
     listing.add_argument("--limit", type=int, default=10)
@@ -280,7 +327,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         api = GitHub(args.repo)
         now = dt.datetime.now(dt.timezone.utc)
-        functions = read_functions(args.manifest)
+        functions = (read_functions(args.manifest) if args.command == "reconcile"
+                     else {} if args.command == "release" else remote_functions(api))
         if args.command == "reconcile":
             result = reconcile(api, functions, now)
         elif args.command == "status" and args.issue:
@@ -316,7 +364,7 @@ def main(argv: list[str] | None = None) -> int:
                               "state": "pending", "next": f"python3 tools/community.py status {created['number']}"}
         print(json.dumps(result, indent=2))
         return 0
-    except (QueueError, OSError, json.JSONDecodeError) as error:
+    except (QueueError, OSError, json.JSONDecodeError, subprocess.TimeoutExpired) as error:
         print(f"community: {error}", file=sys.stderr)
         return 1
 

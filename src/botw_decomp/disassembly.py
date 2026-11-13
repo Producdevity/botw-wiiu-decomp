@@ -9,7 +9,7 @@ import tempfile
 
 
 def locate() -> str:
-    for candidate in ("/opt/homebrew/opt/llvm/bin/llvm-objdump", "llvm-objdump"):
+    for candidate in ("/opt/homebrew/opt/llvm/bin/llvm-objdump", "llvm-objdump", "llvm-objdump-18"):
         executable = shutil.which(candidate)
         if executable:
             return str(Path(executable).resolve())

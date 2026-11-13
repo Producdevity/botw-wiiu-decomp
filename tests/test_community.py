@@ -1,10 +1,14 @@
+import base64
+from contextlib import redirect_stderr, redirect_stdout
 import copy
 import datetime as dt
 import importlib.util
+import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 spec = importlib.util.spec_from_file_location("community", Path(__file__).resolve().parents[1] / "tools/community.py")
@@ -60,6 +64,36 @@ class FakeGitHub:
 
 
 FUNCTIONS = {"fn_03000000": {"id": "fn_03000000", "size": 128, "status": "unmatched"}}
+
+
+class RemoteGitHub(FakeGitHub):
+    COMMIT = "a" * 40
+    TREE = "b" * 40
+
+    def __init__(self, sources=(), issues=(), comments=None):
+        super().__init__(issues, comments)
+        self.calls = []
+        self.rows = {key: {**row, "source": f"reconstructions/{key}.cpp"}
+                     for key, row in FUNCTIONS.items()}
+        self.tree = {"truncated": False, "tree": [
+            {"path": path, "type": "blob", "mode": "100644"} for path in sources]}
+
+    def call(self, method, path, payload=None):
+        self.calls.append((method, path, payload))
+        if method == "GET":
+            if path == "":
+                return {"default_branch": "branch/default"}
+            if path == "commits/branch%2Fdefault":
+                return {"sha": self.COMMIT, "commit": {"tree": {"sha": self.TREE}}}
+            if path == f"contents/config/functions.json?ref={self.COMMIT}":
+                manifest = json.dumps({"functions": list(self.rows.values())}).encode()
+                return {"type": "file", "encoding": "base64",
+                        "content": base64.b64encode(manifest).decode()}
+            if path == f"git/trees/{self.TREE}?recursive=1":
+                return self.tree
+        if method == "POST" and path == "issues":
+            return {"number": 2, "html_url": "https://github.com/example/project/issues/2"}
+        return super().call(method, path, payload)
 
 
 class QueueTests(unittest.TestCase):
@@ -194,6 +228,65 @@ class QueueTests(unittest.TestCase):
             path.write_text(json.dumps({"functions": [row]}))
             with self.assertRaisesRegex(queue.QueueError, "Invalid source path"):
                 queue.read_functions(path)
+
+    def test_client_status_ignores_unmerged_local_source(self):
+        request = issue(1)
+        now = dt.datetime.now(dt.timezone.utc)
+        record = comment_for(request, issued=now - dt.timedelta(minutes=1),
+                             expires=now + dt.timedelta(hours=1))
+        api = RemoteGitHub(issues=[request], comments={1: [record]})
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = root / "config/functions.json"
+            manifest.parent.mkdir()
+            manifest.write_text(json.dumps({"functions": list(api.rows.values())}))
+            source = root / "reconstructions/fn_03000000.cpp"
+            source.parent.mkdir()
+            source.write_text("unfinished local source\n")
+            output = io.StringIO()
+            with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output):
+                result = queue.main(["--manifest", str(manifest), "status", "1"])
+        self.assertEqual(result, 0)
+        self.assertTrue(json.loads(output.getvalue())["accepted"])
+
+    def test_client_list_and_claim_ignore_stale_local_manifest(self):
+        api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = Path(directory) / "functions.json"
+            manifest.write_text(json.dumps({"functions": list(api.rows.values())}))
+            output, errors = io.StringIO(), io.StringIO()
+            with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output), redirect_stderr(errors):
+                self.assertEqual(queue.main(["--manifest", str(manifest), "list"]), 0)
+                self.assertEqual(queue.main(["--manifest", str(manifest), "claim", "fn_03000000"]), 1)
+        self.assertEqual(json.loads(output.getvalue()), [])
+        self.assertIn("No available task", errors.getvalue())
+        self.assertFalse(any(call[0] == "POST" for call in api.calls))
+
+    def test_remote_reads_pin_manifest_and_sources_to_one_commit(self):
+        api = RemoteGitHub()
+        self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
+        self.assertEqual([path for _, path, _ in api.calls], [
+            "", "commits/branch%2Fdefault",
+            f"contents/config/functions.json?ref={api.COMMIT}",
+            f"git/trees/{api.TREE}?recursive=1"])
+
+    def test_incomplete_remote_tree_fails_closed(self):
+        api = RemoteGitHub()
+        api.tree["truncated"] = True
+        with self.assertRaisesRegex(queue.QueueError, "incomplete"):
+            queue.remote_functions(api)
+
+    def test_remote_symlink_cannot_mark_task_complete(self):
+        api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
+        api.tree["tree"][0]["mode"] = "120000"
+        with self.assertRaisesRegex(queue.QueueError, "regular files"):
+            queue.remote_functions(api)
+
+    def test_github_request_timeout_is_bounded_and_handled(self):
+        timeout = queue.subprocess.TimeoutExpired(["gh", "api"], 30)
+        with patch.object(queue.subprocess, "run", side_effect=timeout) as run, redirect_stderr(io.StringIO()):
+            self.assertEqual(queue.main(["list"]), 1)
+        self.assertEqual(run.call_args.kwargs["timeout"], 30)
 
 
 if __name__ == "__main__":

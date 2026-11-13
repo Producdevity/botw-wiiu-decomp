@@ -35,7 +35,7 @@ jobs:
       - name: Install PowerPC compiler
         run: |
           sudo apt-get update -qq
-          sudo apt-get install --no-install-recommends -y clang-18
+          sudo apt-get install --no-install-recommends -y clang-18 llvm-18
       - name: Install hash-pinned GHS toolchain
         run: python3 trusted/tools/toolchain.py
       - name: Test trusted verifier
