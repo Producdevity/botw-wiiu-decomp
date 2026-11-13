@@ -7,6 +7,7 @@ import argparse
 import base64
 import datetime as dt
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -170,9 +171,13 @@ class GitHub:
         command = ["gh", "api", "--method", method, path]
         if payload is not None:
             command += ["--input", "-"]
+        environment = os.environ.copy()
+        environment.pop("CLICOLOR_FORCE", None)
+        environment.pop("GH_FORCE_TTY", None)
+        environment.update(CLICOLOR="0", NO_COLOR="1")
         response = subprocess.run(
             command, input=json.dumps(payload) if payload is not None else None,
-            text=True, capture_output=True, check=False, timeout=30,
+            text=True, capture_output=True, check=False, timeout=30, env=environment,
         )
         if response.returncode:
             raise QueueError(response.stderr.strip() or "GitHub request failed")
