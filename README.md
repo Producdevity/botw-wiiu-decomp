@@ -6,15 +6,9 @@ Community C++ reconstruction of **Wii U v208**, with deterministic matching agai
 
 **Verified code coverage: 20,172 of 36,994,060 bytes in the pinned `.text` section (0.0545%), across 1,185 functions.**
 
-The initial batch is complete: **100 verified implementations (1,956 bytes)**. The next batch has **100 tasks, 68–184 bytes each (12,288 bytes): 25 implementations verified and 75 available**, spanning integer, floating-point, control-flow, calls and loops. These are selected reference batches, not whole-game completion percentages or a playable decompilation. GHS 5.3.22 reproduces 92 initial implementations; Clang reproduces eight leaves. The exact historical compiler version remains unconfirmed.
+**575 tasks are available**, including 500 newly reviewed references across integer, floating-point, control-flow, loops and calls. The new queue includes 14 missing callees used by published functions. Most new tasks are 32–256 bytes; three small dependencies are included. [Reference batches and selection evidence](docs/reference-batches.md).
 
-A further **503 repeated functions (4,528 bytes)** reuse existing readable reconstructions whose original machine-code bodies are identical. Most are small accessors and constant-return functions. Each distinct address is independently discovered and checked; the manifest records its source seed. The 75 unresolved tasks remain available.
-
-The **scalar-fields batch adds 262 distinct function bodies (3,516 bytes)**: typed field reads, nested getters, bit operations and scalar updates. All match with the fixed GHS speed profile; inferred types and offsets are recorded with each reference.
-
-Another **75 copies, comparisons and conditional updates (1,724 bytes)** and **94 repeated scalar bodies (1,356 bytes)** are verified independently.
-
-Further batches add **95 scalar/pair operations and conditional functions (3,224 bytes)** plus **30 call wrappers and one shared dependency (1,116 bytes)**. A caller/callee review also corrected 21 existing source contracts without changing their accepted machine code.
+Matching uses fixed GHS 5.3.22 profiles and Clang for eight bootstrap leaves. Source contracts are inferred from caller/callee evidence; the exact historical compiler version remains unconfirmed. [Verification contract](docs/verification.md).
 
 ## Contribute with your agent
 
