@@ -1,43 +1,133 @@
 # Agent contribution guide
 
-This project reconstructs Breath of the Wild for Wii U from a contributor's own v208 RPX. Work inside the contributor's stated time or token budget. Do not run indefinitely. If no budget is given, finish one function attempt and report the result.
+Follow the user's actual scope, permissions and budget. A usual request to
+contribute covers one focused reconstruction and its pull request. With no
+explicit budget, make one function attempt. The contributor supplies a
+GitHub account and their own Wii U v208 RPX. Handle setup and technical work
+without requiring them to know decompilation or PowerPC.
 
-## Set up
+## Prepare
 
-1. Read the repository README, [toolchain status](toolchain.md) and [contribution rules](contributing.md). Use the task list and selected function packet below; avoid loading the entire function manifest into context.
-2. Use a fresh checkout or preserve the contributor's existing changes. Authenticate `gh` with the contributor's GitHub account. Fork `Producdevity/botw-wiiu-decomp` if that account cannot push to it. Create a responsibility-based branch in the fork.
-3. Locate the contributor-supplied RPX. Do not download or upload game files. Run:
+1. Read [contribution policy](contributing.md), [toolchain](toolchain.md),
+   [verification](verification.md) and [naming](naming.md). Preserve any existing
+   changes; use a separate checkout when necessary.
+2. Use only a game path the user has volunteered. If none is available, ask once
+   for the path to their `U-King.rpx`. Do not search their disks for game files.
+3. Run the readiness check and follow its reported actions:
 
    ```sh
+   python3 tools/preflight.py --rpx /path/to/U-King.rpx
    python3 tools/toolchain.py
-   python3 tools/decomp.py setup --rpx /path/to/U-King.rpx --compiler /path/to/clang++
+   python3 tools/decomp.py setup --rpx /path/to/U-King.rpx
    python3 tools/decomp.py doctor
+   python3 tools/preflight.py --rpx /path/to/U-King.rpx
    ```
 
-   Follow the documented compiler setup. Do not replace a required toolchain with an arbitrary compiler or claim a build was verified without running the check.
+   Preflight reads local readiness and GitHub authentication; it does not install
+   tools. `toolchain.py` downloads hash-pinned GHS and wibo into ignored `.local/`.
+   Follow platform prerequisites in the toolchain guide. Supply
+   `--compiler /path/to/clang++` to setup when needed. A missing tool is a setup
+   problem to resolve or report, not a reason to skip verification.
+4. Authenticate `gh` as the contributor. Fork `Producdevity/botw-wiiu-decomp` if
+   needed, configure remotes, and create a descriptive branch in their fork.
+   Use their configured Git author. Do not invent an author or add AI attribution.
 
-## Work loop
+## Claim and investigate
 
-1. Run `python3 tools/community.py list`, then `python3 tools/community.py claim FUNCTION`. Wait for `accepted: true` from `python3 tools/community.py status ISSUE`.
-2. Run `python3 tools/decomp.py packet FUNCTION`. Read the private `context.json`, existing caller/callee reconstruction sources, shared headers and callee disassembly previews under `.local/packets/FUNCTION/`. Inspect the caller/callee contract before assuming a void or pointer return, choosing parameters or trying compiler flags: a small wrapper can forward an aggregate return or preserve arguments that are only apparent in its callee. Forward every observed callee argument and propagated return explicitly, even when the pinned compiler happens to leave the corresponding registers untouched. Match declarations to published definitions; use a shared declaration or an opaque entry point with an internal layout cast when the owning class is still unknown. Do not expose anonymous or other translation-unit-local record types in exported signatures; keep inferred layouts behind opaque pointer boundaries until a shared declaration exists. Names and types remain inferred. Consolidate recovered shared contracts under `include/botw/` and recheck both caller and callee.
+```sh
+python3 tools/community.py summary
+python3 tools/community.py list
+python3 tools/community.py list --category calls --max-size 128
+python3 tools/community.py claim FUNCTION --wait 120
+python3 tools/community.py status ISSUE --wait 120
+python3 tools/decomp.py packet FUNCTION
+```
 
-   Callee previews use verified manifest spans or `UNVERIFIED_BOUNDARY` windows of at most 256 bytes. The latter can include adjacent code or stop inside a function. `direct_callers` reports all matching raw direct callsites and previews at most eight, with 64 bytes before and 32 after each call. `UNVERIFIED_CALLER_WINDOW` does not establish a function boundary. Indirect calls and relocated call instructions are excluded.
+Use real function IDs and issue numbers. Inspect linked open pull requests
+before duplicating work; submission reports are advisory, and a follow-up may
+still need a new claim. The default list prefers tasks without open PRs. Claim
+without a function selects an available task. Do not start until `accepted: true`; a pending issue does not
+reserve work. Each account can hold eight six-hour reservations. There is no
+experience gate. Queue commands return JSON and use GitHub through `gh`.
 
-   Both preview types keep bytes unchanged and annotate original relocations without applying or masking them. They are investigation context, not acceptance proof. Keep all packets private.
-3. Check `candidates/FUNCTION.cpp` for an existing unaccepted starting point. [Register diagnostics](register-diagnostics.md) can distinguish some allocation differences, but never replace the exact-byte check. Reconstruct the function as readable C++. GHS 5.3.22 does not support `nullptr`; use the null pointer constant `0`. Follow the manifest's source and symbol conventions. Do not change the expected hash, address, size or checker to make a submission pass.
-4. Run `python3 tools/decomp.py check FUNCTION`. Fix mismatches within the user's budget. A compilation error, unsupported relocation or unresolved symbol is a failed check, not a partial match.
-5. Before submission, run `python3 tools/decomp.py check --all`, `python3 tools/contract_audit.py --strict` and the repository tests. Reconcile any declaration conflicts across affected callers and definitions, then repeat the checks. Inspect the staged diff for generated or proprietary files.
-6. Commit with the contributor's configured Git author. Push to their fork and open a focused PR against `master`. Provide function IDs, compiler version, check results and naming evidence. Link the claim issue; do not mark source accepted yourself.
-7. Release the claim when finished or stopped. If blocked, preserve useful source in a draft PR and describe the missing type, toolchain behaviour or reference mapping without publishing disassembly.
+Load only the selected packet under `.local/packets/FUNCTION/`, relevant shared
+headers, and caller/callee sources. Inspect `context.json`, original register
+flow and uses at call sites before choosing parameters or return types. Trace
+r3–r10, floating-point argument registers, hidden aggregate-return pointers and
+how callers consume results. A callee that leaves r3 unused does not establish a
+`void` signature; an omitted argument can still produce matching bytes. Explicitly
+forward every observed argument and propagated return.
 
-Claims expire after six hours and have no difficulty tiers. `community.py` returns JSON for automation. Its commands are `list`, `claim`, `status` and `release`; it talks to GitHub over HTTP through `gh`. A separate MCP service is unnecessary for agents that can execute these commands.
+Use established shared declarations under `include/botw/`. Keep unknown layouts
+behind opaque pointer boundaries with internal layout casts. Do not export
+translation-unit-local record types. Recheck callers and callees after a shared
+contract change. The [static contract audit](contract-audit.md) compares known
+source declarations; it cannot recover the original signature or validate an
+inferred layout.
 
-Public CI compiles the submitted sources with the base branch's checker and reference hashes. It checks every existing reconstruction, including those affected by shared headers. Normal contribution PRs may change listed reconstruction sources, `include/botw/*.h` and Markdown documentation. Reference metadata, checker, tests and workflow changes require a separate maintainer-reviewed change. Once verified source lands, the queue marks its task complete without editing the reference manifest.
+Packet previews marked `UNVERIFIED_BOUNDARY` are at most 256 bytes and may cross
+function boundaries. `UNVERIFIED_CALLER_WINDOW` is callsite context, not a function
+boundary. Direct caller previews are capped at eight; indirect and relocated
+calls are excluded. Relocation annotations preserve original bytes. These are
+private investigation aids, not acceptance proof.
 
-## Shared blockers
+## Reconstruct and verify
 
-Search existing issues before opening a blocker. Group functions blocked by the same field, class or binding into one issue. Record affected function IDs, the evidence needed and a suggested declaration change. Changes to shared definitions must recheck every dependent function. Prefer fixing a high-impact shared dependency over repeating the same failed attempt on many functions.
+Check `candidates/FUNCTION.cpp` for a starting point. Write readable C++ under
+`reconstructions/` using the manifest's source and symbol conventions. GHS 5.3.22
+requires `0` rather than `nullptr`. Use [register diagnostics](register-diagnostics.md)
+when useful; they do not replace exact comparison. Keep stable function IDs and
+follow [naming evidence](naming.md).
 
-## Stop conditions
+```sh
+python3 tools/decomp.py check FUNCTION
+python3 tools/decomp.py check --all --summary
+python3 tools/contract_audit.py --strict --summary
+PYTHONPATH=src python3 -m unittest discover -s tests
+```
 
-Stop on the user's budget, a missing required compiler or a checker limitation. Release unfinished claims and state exactly what remains. Do not silently skip checks, weaken reference matching, upload game-derived artifacts or send unsolicited bulk pull requests.
+The full compilation report is retained in `.local/last-check.json`; `--summary` keeps terminal output concise.
+
+A compile error, unsupported relocation or unresolved symbol is a failed check.
+Never modify expected hashes, boundaries, bindings or verification tools to make
+a source submission pass. Resolve declaration conflicts, then repeat affected
+checks. Inspect the diff for private inputs and generated output.
+
+Use inexpensive coding agents for bounded functions with established contracts.
+Escalate difficult ABI or layout inference selectively, based on evidence and the
+remaining budget. No model is required or whitelisted. Stop when further work
+would exceed the user's budget.
+
+## Submit and finish
+
+Commit verified work with the configured Git author, push to the contributor's
+fork and open a focused PR against `master`. Use the PR template: record function
+IDs, claim, exact commands/results, and contract/naming evidence. Check the PR's
+CI and fix failures within the remaining budget. Report the PR URL and any
+unfinished checks; do not declare acceptance yourself.
+
+Routine work preserves established contracts and passes exact verification.
+New or changed signatures, layouts or semantic identities require maintainer
+technical review with caller/callee evidence, even when bytes match. Propose
+names in the PR description or ordinary documentation; promotion into
+`config/symbols.json` requires a separate maintainer-reviewed maintenance PR.
+Checker, reference, test and workflow changes also belong in a separate
+maintenance PR. Public
+CI uses the base branch's trusted checker and reference hashes.
+
+Keep the claim while actively working through PR submission and CI. Release it
+with `python3 tools/community.py release ISSUE` when finished or stopped; claims
+still expire after six hours. List IDs under the PR template's exact `## Functions`
+heading, one per line, so later contributors can find the open submission. Preserve useful partial source in a draft PR, explicitly
+marking failed or unrun checks. Remove only temporary build/log files created by
+this attempt; preserve user inputs, pre-existing work and useful private evidence.
+
+## Report shared blockers
+
+Search existing issues first. Use the shared-blocker template for a missing
+contract, layout, binding or checker capability. List affected function IDs under
+`Functions`, group the common cause, and explain the evidence needed without
+publishing disassembly. Blocker labels help task selection; they are advisory,
+not acceptance decisions. Use the setup template for toolchain/authentication
+failures and include redacted diagnostics. Do not repeat the same blocked attempt
+across many functions or submit unsolicited bulk PRs.

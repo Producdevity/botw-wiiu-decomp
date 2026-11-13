@@ -144,7 +144,8 @@ class ContextTests(unittest.TestCase):
         image = parse(make_rpx(code=CODE))
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            with patch.object(cli, "ROOT", root), patch.object(cli, "functions", return_value={target["id"]: target}), \
+            with patch.object(cli.symbols, "load", return_value={}), \
+                    patch.object(cli, "ROOT", root), patch.object(cli, "functions", return_value={target["id"]: target}), \
                     patch.object(cli, "read_json", return_value={"id": "test", "rpx_sha256": image.sha256}), \
                     patch.object(cli, "local_config", return_value={"rpx": "/private/original.rpx"}), \
                     patch.object(cli, "load", return_value=image), patch.object(cli, "disassemble", return_value="synthetic\n"), \

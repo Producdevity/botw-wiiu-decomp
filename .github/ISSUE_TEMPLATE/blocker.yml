@@ -1,0 +1,27 @@
+name: Shared reconstruction blocker
+description: Group tasks blocked by the same contract, layout, binding or checker capability.
+title: "Blocker: "
+labels: [blocker]
+body:
+  - type: textarea
+    id: functions
+    attributes:
+      label: Functions
+      description: One affected function ID per line.
+      placeholder: fn_03000000
+    validations:
+      required: true
+  - type: textarea
+    id: blocker
+    attributes:
+      label: Shared cause
+      description: What prevents progress, and which existing issue or declaration is relevant?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence needed
+      description: Describe caller/callee observations, the proposed contract change and checks already attempted. Do not attach disassembly, game bytes or private packets.
+    validations:
+      required: true
