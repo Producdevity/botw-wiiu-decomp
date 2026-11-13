@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "wiiu-usa-v208",
+  "game": "The Legend of Zelda: Breath of the Wild",
+  "platform": "Wii U",
+  "region": "USA",
+  "update": 208,
+  "rpx_sha256": "ba58da5b95ce929e005d058ceb08b9b2788d1ab2bbc8a6c189bbadca0bb34d30",
+  "machine": "PowerPC 32-bit big-endian",
+  "text": [
+    {
+      "address": "0x2000020",
+      "size": 36994060,
+      "sha256": "a7f50c85813ac64157d9b41751f8545163df670fdfd714761e7fbcf4fad133f9"
+    }
+  ],
+  "matching_scope": "Contiguous functions without RPX relocations; exact original code bytes and resolved compiled references. Local rodata and unsupported relocations are rejected.",
+  "compiler_origin": "GHS 5.3.22 produces verified matches with speed/general/space profiles; Clang matches some leaves. Exact historical GHS version remains unconfirmed."
+}

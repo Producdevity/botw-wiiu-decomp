@@ -1,0 +1,162 @@
+"""Local contributor commands and public hash verification."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+from . import compiler
+from .disassembly import disassemble
+from .matching import compare_function, compare_function_hash
+from .project import ROOT, functions, local_config, read_json, write_json
+from .rpx import load
+
+
+def emit(value):
+    print(json.dumps(value, indent=2, sort_keys=True))
+
+
+def verify(row: dict, cxx: str, root: Path = ROOT, image=None, source: Path | None = None) -> dict:
+    attempts = []
+    for profile in compiler.profiles(row):
+        result = verify_profile(row, cxx, root, image, source, profile)
+        if result.get("matched"):
+            return result
+        attempts.append(result)
+    return {**attempts[-1], "attempts": attempts} if len(attempts) > 1 else attempts[0]
+
+
+def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, profile: str) -> dict:
+    source = source or root / row["source"]
+    result = {"function": row["id"], "compiler_profile": profile}
+    if not source.is_file():
+        return {**result, "status": "unimplemented", "matched": False}
+    try:
+        obj = compiler.compile_source(cxx, source, root / "include", profile)
+        address = int(row["address"], 16)
+        bindings = {key: int(value, 16) for key, value in row.get("bindings", {}).items()}
+        if image is not None:
+            original = image.read(address, row["size"])
+            if hashlib.sha256(original).hexdigest() != row["sha256"]:
+                raise ValueError("reference manifest disagrees with supplied RPX")
+            compared = compare_function(obj, row["symbol"], original, address, bindings)
+        else:
+            compared = compare_function_hash(obj, row["symbol"], row["sha256"], row["size"], address, bindings)
+        return {**result, **compared, "compiler": compiler.identity(cxx, profile),
+                "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+    except (ValueError, OSError, subprocess.TimeoutExpired) as error:
+        return {**result, "status": "rejected", "matched": False, "reason": str(error)}
+
+
+def summary(rows: dict, results: list[dict]) -> dict:
+    matched = [r for r in results if r["matched"]]
+    return {"pilot_functions": len(rows), "implemented_functions": len(results),
+            "matched_functions": len(matched),
+            "matched_bytes": sum(rows[r["function"]]["size"] for r in matched),
+            "pilot_bytes": sum(r["size"] for r in rows.values()),
+            "scope": "pilot only; not whole-game completion", "results": results}
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest="command", required=True)
+    setup = commands.add_parser("setup", help="verify your RPX and configure a local compiler")
+    setup.add_argument("--rpx", type=Path, required=True)
+    setup.add_argument("--compiler")
+    commands.add_parser("doctor", help="check original, compiler and reference manifest")
+    commands.add_parser("list", help="list pilot tasks without requiring the game")
+    packet = commands.add_parser("packet", help="prepare private context from your original")
+    packet.add_argument("function")
+    check = commands.add_parser("check", help="compile and compare reconstructed functions")
+    check.add_argument("function", nargs="?")
+    check.add_argument("--all", action="store_true")
+    check.add_argument("--source", type=Path)
+    check.add_argument("--hash-only", action="store_true", help="use public hashes; no RPX required")
+    check.add_argument("--compiler")
+    progress = commands.add_parser("progress", help="rebuild implementations and report pilot matches")
+    progress.add_argument("--compiler")
+    args = parser.parse_args(argv)
+    try:
+        rows = functions()
+        target = read_json(ROOT / "config/target.json")
+        if args.command == "setup":
+            image = load(args.rpx.expanduser().resolve(), target["rpx_sha256"])
+            for row in rows.values():
+                if hashlib.sha256(image.read(int(row["address"], 16), row["size"])).hexdigest() != row["sha256"]:
+                    raise ValueError(f"reference disagrees with original: {row['id']}")
+            cxx = compiler.locate(args.compiler)
+            identity = compiler.version(cxx)
+            profiles = {p for r in rows.values() for p in compiler.profiles(r)}
+            identities = {profile: compiler.identity(cxx, profile) for profile in sorted(profiles)}
+            write_json(ROOT / ".local/config.json", {"rpx": str(args.rpx.expanduser().resolve()),
+                       "compiler": cxx, "compiler_version": identity})
+            emit({"status": "configured", "target": target["id"], "rpx_sha256": image.sha256,
+                  "compilers": identities, "verified_reference_functions": len(rows)})
+            return 0
+        if args.command == "list":
+            emit({"target": target["id"], "functions": list(rows.values())})
+            return 0
+        if args.command == "doctor":
+            settings = local_config()
+            image = load(Path(settings["rpx"]), target["rpx_sha256"])
+            identity = compiler.version(settings["compiler"])
+            profiles = {p for r in rows.values() for p in compiler.profiles(r)}
+            identities = {profile: compiler.identity(settings["compiler"], profile) for profile in sorted(profiles)}
+            for row in rows.values():
+                if hashlib.sha256(image.read(int(row["address"], 16), row["size"])).hexdigest() != row["sha256"]:
+                    raise ValueError(f"reference disagrees with original: {row['id']}")
+            emit({"status": "ready", "target": target["id"], "compilers": identities,
+                  "reference_functions": len(rows), "gh_available": shutil.which("gh") is not None,
+                  "historical_ghs_version": "unconfirmed"})
+            return 0
+        if args.command == "packet":
+            row = rows.get(args.function)
+            if row is None:
+                raise ValueError("unknown function")
+            settings = local_config()
+            image = load(Path(settings["rpx"]), target["rpx_sha256"])
+            data = image.read(int(row["address"], 16), row["size"])
+            if hashlib.sha256(data).hexdigest() != row["sha256"]:
+                raise ValueError("reference mismatch")
+            path = ROOT / ".local/packets" / args.function
+            path.mkdir(parents=True, exist_ok=True)
+            (path / "original.bin").write_bytes(data)
+            (path / "disassembly.txt").write_text(disassemble(data, int(row["address"], 16), row["symbol"]), encoding="utf-8")
+            write_json(path / "task.json", {**row, "target": target["id"],
+                       "compiler_profiles": {p: compiler.flags(p) for p in compiler.profiles(row)},
+                       "local_only": "Do not publish original.bin, disassembly or compiled objects.",
+                       "source_contract": "Reconstruct readable C++; use the exact exported symbol. Determine types from the original, not an invented stub."})
+            emit({"packet": str(path), "source": row["source"], "symbol": row["symbol"]})
+            return 0
+        hash_only = args.command == "progress" or args.hash_only
+        settings = {} if hash_only else local_config()
+        cxx = compiler.locate(args.compiler or settings.get("compiler"))
+        identity = compiler.version(cxx)
+        image = None if hash_only else load(Path(settings["rpx"]), target["rpx_sha256"])
+        all_requested = args.command == "progress" or args.all
+        if all_requested:
+            if getattr(args, "function", None) or getattr(args, "source", None):
+                raise ValueError("--all cannot be combined with a function or source override")
+            selected = [r for r in rows.values() if (ROOT / r["source"]).is_file()]
+        else:
+            if not args.function or args.function not in rows:
+                raise ValueError("select a function or --all")
+            selected = [rows[args.function]]
+        if not selected:
+            raise ValueError("no reconstructed sources selected")
+        results = [verify(row, cxx, image=image, source=getattr(args, "source", None)) for row in selected]
+        profiles = {p for r in selected for p in compiler.profiles(r)}
+        report = {"target": target["id"], "compilers": {p: compiler.identity(cxx, p) for p in sorted(profiles)},
+                  "reference": "public SHA-256" if hash_only else "local original bytes", **summary(rows, results)}
+        write_json(ROOT / ".local/last-check.json", report)
+        emit(report)
+        return 0 if all(r["matched"] for r in results) else 1
+    except (ValueError, KeyError, OSError, subprocess.TimeoutExpired) as error:
+        emit({"status": "error", "reason": str(error)})
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
