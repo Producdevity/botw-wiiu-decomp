@@ -19,6 +19,7 @@ REPO = "Producdevity/botw-wiiu-decomp"
 ROOT = Path(__file__).resolve().parents[1]
 LEASE_HOURS = 6
 MAX_CLAIMS = 8
+MAX_REMOTE_MANIFEST_BYTES = 100_000_000
 BOT_ID = 41898282
 FUNCTION = re.compile(r"fn_[0-9a-f]{8}\Z")
 RECORD = re.compile(r"<!-- botw-claim-v1 (\{[^\n]*\}) -->")
@@ -48,7 +49,7 @@ def iso(value: dt.datetime) -> str:
 
 
 def parse_functions(value, completed_sources: set[str] | None = None) -> dict[str, dict]:
-    rows = value["functions"] if isinstance(value, dict) else value
+    rows = value.get("functions") if isinstance(value, dict) else value
     if not isinstance(rows, list):
         raise QueueError("Function manifest must contain a list")
     result = {}
@@ -94,26 +95,49 @@ def remote_functions(api: GitHub) -> dict[str, dict]:
     tree_sha = commit.get("commit", {}).get("tree", {}).get("sha", "")
     if not re.fullmatch(r"[0-9a-f]{40}", commit_sha) or not re.fullmatch(r"[0-9a-f]{40}", tree_sha):
         raise QueueError("Invalid default-branch commit or tree")
-    manifest = api.call("GET", api.route(f"contents/config/functions.json?ref={commit_sha}"))
-    if manifest.get("type") != "file" or manifest.get("encoding") != "base64":
-        raise QueueError("Remote manifest must be a base64-encoded file")
-    try:
-        encoded = "".join(manifest["content"].splitlines())
-        value = json.loads(base64.b64decode(encoded, validate=True))
-    except (KeyError, ValueError, TypeError) as error:
-        raise QueueError("Invalid remote function manifest") from error
     tree = api.call("GET", api.route(f"git/trees/{tree_sha}?recursive=1"))
-    if tree.get("truncated") is not False or not isinstance(tree.get("tree"), list):
+    if not isinstance(tree, dict) or tree.get("truncated") is not False or not isinstance(tree.get("tree"), list):
         raise QueueError("Remote source tree is incomplete")
     completed = set()
+    manifest_entry = None
     for entry in tree["tree"]:
-        path = entry.get("path", "")
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            raise QueueError("Invalid remote source tree entry")
+        path = entry["path"]
+        if path == "config/functions.json":
+            if manifest_entry is not None:
+                raise QueueError("Duplicate remote function manifest")
+            manifest_entry = entry
         if path == "reconstructions" or path.startswith("reconstructions/"):
             if entry.get("type") == "tree" and entry.get("mode") == "040000":
                 continue
             if entry.get("type") != "blob" or entry.get("mode") not in ("100644", "100755"):
                 raise QueueError("Remote reconstructions must be regular files")
             completed.add(path)
+    if (manifest_entry is None or manifest_entry.get("type") != "blob"
+            or manifest_entry.get("mode") not in ("100644", "100755")):
+        raise QueueError("Remote manifest must be a regular file")
+    blob_sha = manifest_entry.get("sha")
+    size = manifest_entry.get("size")
+    if (not isinstance(blob_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", blob_sha)
+            or type(size) is not int or not 0 < size <= MAX_REMOTE_MANIFEST_BYTES):
+        raise QueueError("Invalid remote function manifest metadata")
+    # The Contents API omits base64 content for files larger than 1 MB.
+    manifest = api.call("GET", api.route(f"git/blobs/{blob_sha}"))
+    if (not isinstance(manifest, dict) or manifest.get("sha") != blob_sha
+            or manifest.get("encoding") != "base64" or type(manifest.get("size")) is not int
+            or manifest["size"] != size or not isinstance(manifest.get("content"), str)):
+        raise QueueError("Invalid remote function manifest blob")
+    try:
+        encoded = "".join(manifest["content"].splitlines())
+        if len(encoded) != 4 * ((size + 2) // 3):
+            raise QueueError("Invalid remote function manifest length")
+        decoded = base64.b64decode(encoded, validate=True)
+        if len(decoded) != size:
+            raise QueueError("Invalid remote function manifest length")
+        value = json.loads(decoded)
+    except (ValueError, TypeError) as error:
+        raise QueueError("Invalid remote function manifest") from error
     return parse_functions(value, completed)
 
 
