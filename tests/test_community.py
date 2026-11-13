@@ -288,6 +288,20 @@ class QueueTests(unittest.TestCase):
             self.assertEqual(queue.main(["list"]), 1)
         self.assertEqual(run.call_args.kwargs["timeout"], 30)
 
+    def test_github_json_disables_inherited_forced_color(self):
+        environment = {"CLICOLOR_FORCE": "1", "GH_FORCE_TTY": "100%", "CLICOLOR": "1",
+                       "NO_COLOR": "0", "TEST_COMMUNITY_ENV": "preserved"}
+        response = queue.subprocess.CompletedProcess(["gh", "api"], 0, '{"ok": true}', "")
+        with patch.dict(queue.os.environ, environment), patch.object(queue.subprocess, "run", return_value=response) as run:
+            self.assertEqual(queue.GitHub("example/project").call("GET", "user"), {"ok": True})
+            child = run.call_args.kwargs["env"]
+            self.assertNotIn("CLICOLOR_FORCE", child)
+            self.assertNotIn("GH_FORCE_TTY", child)
+            self.assertEqual(child["CLICOLOR"], "0")
+            self.assertEqual(child["NO_COLOR"], "1")
+            self.assertEqual(child["TEST_COMMUNITY_ENV"], "preserved")
+            self.assertEqual(queue.os.environ["CLICOLOR_FORCE"], "1")
+
 
 if __name__ == "__main__":
     unittest.main()

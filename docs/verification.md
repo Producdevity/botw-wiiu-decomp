@@ -26,3 +26,7 @@ The initial 100 tasks were selected across integer, floating-point, control-flow
 Unmatched tasks try the three fixed GHS optimization profiles (`-Ospeed`, `-Ogeneral`, `-Ospace`). Each attempt receives the same exact comparison; a match records the successful profile. No profile may relax comparison or change trusted reference bytes.
 
 `python3 tools/decomp.py progress` rebuilds available implementations and reports pilot counts. It does not calculate a misleading percentage of the whole game.
+
+## Maintaining the verifier
+
+Tooling, reference and workflow changes intentionally fail the ordinary source-acceptance job. Maintainers review those changes separately, dispatch the verification workflow at the reviewed branch, and check its tests and all existing matches before merging. The repository requires PRs and the `verify` check from GitHub Actions for normal contributions; maintainers retain an administrative path for reviewed verifier updates. Third-party review bots do not decide whether reconstructed code matches.
