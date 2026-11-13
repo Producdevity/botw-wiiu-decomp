@@ -4,7 +4,7 @@
 
 Community C++ reconstruction of **Wii U v208**, with deterministic matching against the original PowerPC code. The intended consumer is a native Linux ARM port targeting **H700, 1 GB RAM, GLES 3.2 and no swap**.
 
-This is a new foundation, not a playable decompilation. The initial pilot contains **100 function tasks and 100 verified implementations (1,956 bytes)**, including loops, branches and a bound external call. These counts are not whole-game completion percentages. GHS 5.3.22 reproduces 92 implementations; Clang reproduces eight leaves. The exact historical compiler version remains unconfirmed.
+The initial batch is complete: **100 verified implementations (1,956 bytes)**. The next batch adds **100 available tasks, 68–184 bytes each (12,288 bytes)**, evenly split across integer, floating-point, control-flow, calls and loops. These are selected reference batches, not whole-game completion percentages or a playable decompilation. GHS 5.3.22 reproduces 92 initial implementations; Clang reproduces eight leaves. The exact historical compiler version remains unconfirmed.
 
 ## Contribute with your agent
 
@@ -30,7 +30,7 @@ python3 tools/decomp.py packet FUNCTION
 python3 tools/decomp.py check FUNCTION
 ```
 
-The toolchain command downloads hash-pinned GHS and wibo releases from their upstream distribution into `.local/`; it supports macOS (Rosetta on Apple Silicon) and x86-64 Linux. Use `--compiler /path/to/clang++` during setup if necessary. `packet` creates private bytes, disassembly and task metadata under ignored `.local/`. Submit readable C++ under `reconstructions/`; never submit the packet.
+The toolchain command downloads hash-pinned GHS and wibo releases from their upstream distribution into `.local/`; it supports macOS (Rosetta on Apple Silicon) and x86-64 Linux. Use `--compiler /path/to/clang++` during setup if necessary. `packet` creates private bytes, disassembly, caller/callee context and task metadata under ignored `.local/`. Submit readable C++ under `reconstructions/`; never submit the packet.
 
 Without game files, anyone can independently rebuild the published implementations:
 
@@ -42,6 +42,7 @@ PYTHONPATH=src python3 -m unittest discover -s tests
 Public CI compares against fixed function hashes, addresses and reference bindings. A source PR cannot change those references or the checker and still pass the source acceptance job. All existing implementations are rebuilt when shared headers change. Claims use GitHub Issues with six-hour expiry; no additional server or account is needed.
 
 - [Verification contract and current coverage](docs/verification.md)
+- [Reference batches and selection evidence](docs/reference-batches.md)
 - [Compiler evidence and prior projects](docs/toolchain.md)
 - [Development priorities](docs/roadmap.md)
 
