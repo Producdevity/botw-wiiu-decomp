@@ -12,11 +12,11 @@ Matching uses fixed GHS 5.3.22 profiles and Clang for eight bootstrap leaves. So
 
 ## Contribute with your agent
 
-Give your coding agent this prompt, your own Wii U RPX and a time or token budget:
+Point your coding agent at this repository and ask it to contribute:
 
-> Read https://github.com/Producdevity/botw-wiiu-decomp/blob/master/docs/agent-guide.md and contribute one function. Handle setup, claim a task, reconstruct readable C++, run the independent checks and submit a pull request. Keep my game files private and stay within my budget.
+> Read AGENTS.md, handle setup and submit one verified function as a pull request. Ask me for my Wii U v208 RPX path if needed, and work within the budget I give you.
 
-The agent handles the technical steps. A GitHub account and local command access are required. [Contribution guide](docs/contributing.md).
+The agent handles setup, task reservations, reconstruction and checks. You supply your own RPX and GitHub account. [Agent entry point](AGENTS.md) · [Contribution guide](CONTRIBUTING.md).
 
 ## Local commands
 
@@ -25,11 +25,13 @@ Install Python 3.11+, LLVM with PowerPC support, and GitHub CLI. On macOS: `brew
 ```sh
 git clone https://github.com/Producdevity/botw-wiiu-decomp.git
 cd botw-wiiu-decomp
+python3 tools/preflight.py --rpx /path/to/U-King.rpx
 python3 tools/toolchain.py
 python3 tools/decomp.py setup --rpx /path/to/U-King.rpx
 python3 tools/decomp.py doctor
+python3 tools/community.py summary
 python3 tools/community.py list
-python3 tools/community.py claim
+python3 tools/community.py claim --wait 120
 python3 tools/decomp.py packet FUNCTION
 python3 tools/decomp.py check FUNCTION
 ```
@@ -39,12 +41,12 @@ The toolchain command downloads hash-pinned GHS and wibo releases from their ups
 Without game files, anyone can independently rebuild the published implementations:
 
 ```sh
-python3 tools/decomp.py check --all --hash-only
-python3 tools/contract_audit.py --strict
+python3 tools/decomp.py check --all --hash-only --summary
+python3 tools/contract_audit.py --strict --summary
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-Public CI compares against fixed function hashes, addresses and reference bindings. A source PR cannot change those references or the checker and still pass the source acceptance job. All existing implementations are rebuilt when shared headers change. Claims use GitHub Issues with six-hour expiry; no additional server or account is needed.
+Public CI compares against fixed function hashes, addresses and reference bindings. A source PR cannot change those references or the checker and still pass the source acceptance job. All existing implementations are rebuilt when shared headers change. Claims use GitHub Issues with six-hour expiry. The queue also links shared blockers and open PRs, and prioritises tasks without a pending submission.
 
 - [Verification contract and current coverage](docs/verification.md)
 - [Reference batches and selection evidence](docs/reference-batches.md)
@@ -52,6 +54,7 @@ Public CI compares against fixed function hashes, addresses and reference bindin
 - [Cross-file C++ declaration checks](docs/contract-audit.md)
 - [Compiler evidence and prior projects](docs/toolchain.md)
 - [Unaccepted candidates and register diagnostics](docs/register-diagnostics.md)
+- [Naming evidence and stable function IDs](docs/naming.md)
 - [Development priorities](docs/roadmap.md)
 
 Only original project tooling and reconstructed source belong here. No Nintendo game files, extracted machine code, proprietary SDK, compiler binaries or generated disassembly are distributed. This project is not affiliated with Nintendo.

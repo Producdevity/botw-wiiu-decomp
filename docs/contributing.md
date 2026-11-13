@@ -1,34 +1,61 @@
 # Contribute
 
-You can contribute through your coding agent. Give it this instruction:
+Point your coding agent at this repository and ask it to contribute. It reads
+[AGENTS.md](../AGENTS.md), handles setup, claims one task, reconstructs readable
+C++, runs checks and submits a pull request within your budget. You supply your
+own supported Wii U v208 RPX path and GitHub account; you do not need to learn
+PowerPC or configure the reconstruction workflow yourself. GitHub may ask you to
+sign in. Game files and compiler downloads stay local.
 
-> Read https://github.com/Producdevity/botw-wiiu-decomp/blob/master/docs/agent-guide.md and help me contribute. Use my own Wii U game dump. Work within the time or token budget I give you, and submit only source that passes the checker.
+For example:
 
-You need your own supported Wii U RPX, a GitHub account and an agent that can run local commands. The agent handles setup, task selection, verification and a pull request. GitHub may ask you to sign in once. You keep your game files and compiler locally.
+> Contribute one function to https://github.com/Producdevity/botw-wiiu-decomp.
+> My RPX is at /path/to/U-King.rpx. Work within my budget and submit a pull request.
+
+[Agent workflow](agent-guide.md) · [Toolchain](toolchain.md) ·
+[Verification](verification.md) · [Naming](naming.md)
+
+## Acceptance
+
+Every reconstruction must compile to the original function bytes, with supported
+bindings and no unresolved references. Local exact checks, the strict contract
+audit and tests must pass. Independent CI rebuilds all implementations using the
+base branch's trusted checker and references. Claims reserve work; they do not
+certify correctness.
+
+Preserving established contracts is routine contribution work. New or changed
+signatures, shared layouts and semantic names require maintainer technical review
+of caller/callee and naming evidence. Matching bytes can conceal missing
+arguments or wrong return types, and the contract audit checks consistency only
+among available source declarations. It does not recover the original ABI.
+
+Keep one function or tightly related component per PR. Include exact commands
+and results, the claim issue, and evidence for inferred contracts and names.
+Propose names in the PR description or ordinary documentation. Promotion into
+`config/symbols.json` requires a separate maintainer-reviewed maintenance PR, as
+do checker, reference metadata, test and workflow changes. Never change expected bytes or weaken checks to obtain a match.
+
+Use readable C++; no inline assembly or emitted machine bytes. Keep RPX files,
+original bytes, disassembly, compiler binaries, object files, assets and saves
+out of commits, issues and pull requests. Cite research and respect source
+licenses; see [provenance](provenance.md).
+
+## Tasks and blockers
+
+The [agent workflow](agent-guide.md) documents the JSON queue CLI. Each account
+can hold eight six-hour claims, with no experience gate. Wait for acceptance
+before working. Keep the claim through submission and CI while actively working,
+and release it when finished or stopped. Inspect linked open PRs before
+duplicating work; open submissions are advisory, not permanent reservations. Expired claims
+return to the queue even before scheduled cleanup runs.
+
+Search existing issues before reporting a shared blocker or setup failure. Group
+functions affected by the same missing contract or tool capability. Publish
+function IDs and redacted diagnostics, never private packet contents.
 
 ## Choosing an agent
 
-There is no model whitelist. Use a coding agent that can edit C++, run local commands, interpret PowerPC assembly and iterate on compiler differences. Start with one function and a spending or attempt limit. More reasoning is useful only when it improves accepted work per dollar; model-specific success rates require measurements on this project. A [small Luna xhigh pilot](model-pilot.md) matched four prepared functions in eight source variants; this does not rank models or predict success on the full queue.
-
-## How contributions are accepted
-
-Every reconstruction must compile to the original function's bytes. The checker rejects unresolved or unsupported references. A local match is a candidate. Independent CI checks bytes, bindings, regressions and declaration consistency; maintainers review newly inferred signatures/layouts and changes to trusted verification data. A claim reserves work and does not certify its correctness.
-
-The original compiler for every part of the game is not established. Read [toolchain status](toolchain.md) before choosing a task. A compiler that cannot reproduce a function is a reason to report the task as blocked, not to loosen matching.
-
-Keep each pull request to one function or one tightly related component. Include its function IDs, compiler version, check command and result, and sources for names or structural decisions. Separate changes to verification tools, expected hashes or function boundaries from source submissions.
-
-Use readable C++ without inline assembly or emitted machine bytes. Keep guessed names distinguishable from confirmed names. Original bytes, generated disassembly, RPX files, compiler binaries, object files, game assets and saves stay out of issues and pull requests.
-
-## Task reservations
-
-```sh
-python3 tools/community.py list
-python3 tools/community.py claim fn_03000000
-python3 tools/community.py status 123
-python3 tools/community.py release 123
-```
-
-Replace the sample function and issue number with real values. `claim` without a function picks the first available task. Wait until `status` returns `accepted: true` before starting. All task sizes are open to everyone; each account can hold eight six-hour reservations. Close the claim issue when you stop. Expiry returns the function to the queue automatically, even if the scheduled cleanup runs later.
-
-GitHub Issues hosts the queue. The CLI uses GitHub's HTTP API through `gh`; no private coordination server or project-specific account is required.
+There is no model whitelist. Start with an inexpensive coding agent on a bounded
+task with established contracts. Use more reasoning selectively for difficult
+signature, layout or compiler inference. Judge tools by verified results within
+your budget. In our [prepared-function pilot](model-pilot.md), Luna at xhigh matched all four tasks.

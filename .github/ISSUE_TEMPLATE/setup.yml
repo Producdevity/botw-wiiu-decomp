@@ -1,0 +1,23 @@
+name: Contribution setup problem
+description: Report a toolchain, platform or authentication problem.
+title: "Setup: "
+body:
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: macOS Apple Silicon / Ubuntu x86-64
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Command and redacted diagnostics
+      description: Include the failing command, preflight/doctor findings and tool versions. Remove personal paths, tokens and account details. Do not attach game files, compiler binaries, disassembly or private packets.
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: Steps already tried
+      description: Link a related setup issue if one exists.

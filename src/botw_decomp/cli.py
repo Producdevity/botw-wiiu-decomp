@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import sys
 
-from . import compiler
+from . import compiler, symbols
 from .context import write_context
 from .disassembly import disassemble
 from .matching import compare_function, compare_function_hash
@@ -105,8 +105,10 @@ def main(argv=None) -> int:
     check.add_argument("--source", type=Path)
     check.add_argument("--hash-only", action="store_true", help="use public hashes; no RPX required")
     check.add_argument("--compiler")
+    check.add_argument("--summary", action="store_true", help="print totals and failures; keep the full report in .local/last-check.json")
     progress = commands.add_parser("progress", help="rebuild implementations and report pilot matches")
     progress.add_argument("--compiler")
+    progress.add_argument("--summary", action="store_true", help="print totals and failures; keep the full report in .local/last-check.json")
     args = parser.parse_args(argv)
     try:
         rows = functions()
@@ -145,6 +147,7 @@ def main(argv=None) -> int:
             row = rows.get(args.function)
             if row is None:
                 raise ValueError("unknown function")
+            semantic_name = symbols.load(ROOT).get(args.function)
             settings = local_config()
             image = load(Path(settings["rpx"]), target["rpx_sha256"])
             data = image.read(int(row["address"], 16), row["size"])
@@ -154,7 +157,7 @@ def main(argv=None) -> int:
             path.mkdir(parents=True, exist_ok=True)
             (path / "original.bin").write_bytes(data)
             (path / "disassembly.txt").write_text(disassemble(data, int(row["address"], 16), row["symbol"]), encoding="utf-8")
-            write_json(path / "task.json", {**row, "target": target["id"],
+            write_json(path / "task.json", {**row, "target": target["id"], "semantic_name": semantic_name,
                        "compiler_profiles": {p: compiler.flags(p) for p in compiler.profiles(row)},
                        "local_only": "Do not publish original.bin, disassembly or compiled objects.",
                        "source_contract": "Reconstruct readable C++; use the exact exported symbol. Determine types from the original, not an invented stub."})
@@ -185,7 +188,11 @@ def main(argv=None) -> int:
         report = {"target": target["id"], "compilers": {p: compiler.identity(cxx, p) for p in sorted(profiles)},
                   "reference": "public SHA-256" if hash_only else "local original bytes", **summary(rows, results, batches)}
         write_json(ROOT / ".local/last-check.json", report)
-        emit(report)
+        if args.summary:
+            emit({**{key: value for key, value in report.items() if key not in ("results", "batches")},
+                  "failures": [result for result in results if not result["matched"]]})
+        else:
+            emit(report)
         return 0 if all(r["matched"] for r in results) else 1
     except (ValueError, KeyError, OSError, subprocess.TimeoutExpired) as error:
         emit({"status": "error", "reason": str(error)})

@@ -44,3 +44,5 @@ produce an actionable error. AST-dependent tests skip when libclang is absent.
 | 2 | Parse/type error, unsupported edge, changed snapshot or tool failure. |
 
 The CLI reports findings by default. Acceptance CI runs `--strict` after exact-byte verification, rejecting conflicting declarations, required pointer-contract reviews and incomplete audits. Linux CI installs libclang 18 and runs its AST regression tests explicitly.
+
+Use `--summary` for concise coverage and findings. `--output .local/contracts.json` retains the full report when needed. Both output modes run the same checks and return the same exit status.

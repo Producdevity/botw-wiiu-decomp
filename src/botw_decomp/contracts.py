@@ -806,10 +806,24 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
     }
 
 
+
+def compact_report(report):
+    result = {key: report[key] for key in ("schema_version", "status", "coverage", "error", "source_drift", "unsupported_files") if key in report}
+    result["findings"] = []
+    for item in report.get("edges", []) + report.get("repeated_unknown_declarations", []):
+        if item["status"] in ("conflict", "review", "unsupported"):
+            result["findings"].append({
+                **{key: item[key] for key in ("caller", "callee", "symbol", "status", "reason") if key in item},
+                "details": [finding for comparison in item.get("comparisons", []) for finding in comparison["findings"]],
+            })
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--summary", action="store_true", help="print coverage and findings; --output still saves the full report")
     parser.add_argument(
         "--libclang", help="libclang shared library path or library name"
     )
@@ -849,7 +863,7 @@ def main(argv=None):
                 )
             )
             return 2
-    print(rendered, end="")
+    print(json.dumps(compact_report(result), indent=2, sort_keys=True) if args.summary else rendered, end="\n" if args.summary else "")
     if result["status"] == "incomplete":
         return 2
     return 1 if args.strict and result["status"] == "findings" else 0

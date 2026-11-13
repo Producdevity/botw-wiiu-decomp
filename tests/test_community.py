@@ -34,12 +34,21 @@ class FakeGitHub:
         self.data = {row["number"]: copy.deepcopy(row) for row in issues}
         self.messages = copy.deepcopy(comments or {})
         self.updates = []
+        self.login = "contributor"
+        self.patches = []
+        self.pulls = []
 
     def ensure_labels(self):
         pass
 
     def route(self, path):
         return path
+
+    def open_issues(self):
+        return [copy.deepcopy(row) for row in self.data.values() if row["state"] == "open"]
+
+    def open_pulls(self):
+        return copy.deepcopy(self.pulls)
 
     def issues(self):
         return [copy.deepcopy(row) for row in self.data.values() if row["state"] == "open" and queue.is_request(row)]
@@ -58,6 +67,13 @@ class FakeGitHub:
             self.data[request["number"]]["state"] = "closed"
 
     def call(self, method, path, payload=None):
+        if method == "GET" and path == "user":
+            return {"login": self.login}
+        if method == "PATCH" and path.startswith("issues/"):
+            self.patches.append((path, payload))
+            row = self.data[int(path.split("/")[1])]
+            row.update(payload)
+            return copy.deepcopy(row)
         if method == "GET" and path.startswith("issues/"):
             return copy.deepcopy(self.data[int(path.split("/")[1])])
         raise AssertionError((method, path, payload))
@@ -67,6 +83,8 @@ FUNCTIONS = {"fn_03000000": {"id": "fn_03000000", "size": 128, "status": "unmatc
 
 
 class RemoteGitHub(FakeGitHub):
+    pages = queue.GitHub.pages
+    open_pulls = queue.GitHub.open_pulls
     COMMIT = "a" * 40
     TREE = "b" * 40
     BLOB = "c" * 40
@@ -90,6 +108,8 @@ class RemoteGitHub(FakeGitHub):
     def call(self, method, path, payload=None):
         self.calls.append((method, path, payload))
         if method == "GET":
+            if path.startswith("pulls?state=open&sort=created&direction=asc&per_page=100&page="):
+                return copy.deepcopy(self.pulls)
             if path == "":
                 return {"default_branch": "branch/default"}
             if path == "commits/branch%2Fdefault":
@@ -104,6 +124,183 @@ class RemoteGitHub(FakeGitHub):
 
 
 class QueueTests(unittest.TestCase):
+    def run_main(self, api, args):
+        output, errors = io.StringIO(), io.StringIO()
+        with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output), redirect_stderr(errors):
+            code = queue.main(args)
+        return code, json.loads(output.getvalue()) if output.getvalue() else None, errors.getvalue()
+
+    def test_stale_matched_manifest_without_landed_source_is_available(self):
+        api = RemoteGitHub()
+        api.rows["fn_03000000"]["status"] = "matched"
+        api.set_manifest({"functions": list(api.rows.values())})
+        api.tree["tree"][-1]["size"] = api.blob["size"]
+        self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "config/functions.json"
+            path.parent.mkdir()
+            path.write_text(json.dumps({"functions": list(api.rows.values())}))
+            self.assertEqual(queue.read_functions(path)["fn_03000000"]["status"], "unmatched")
+
+    def test_summary_counts_one_pinned_reference_snapshot_and_advisory_blockers(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        request = issue(1)
+        blocker = {**issue(3), "title": "Missing layout", "html_url": "https://example/3",
+                   "labels": [{"name": "blocker"}], "body": "### Functions\n\nfn_03000000\nfn_03000004\nfn_ffffffff\n\n### Evidence\nlayout"}
+        api = RemoteGitHub(issues=[request, blocker], comments={1: [comment_for(request, issued=now - dt.timedelta(minutes=1), expires=now + dt.timedelta(hours=1))]})
+        api.rows["fn_03000004"] = {"id": "fn_03000004", "size": 32, "status": "unmatched", "source": "reconstructions/fn_03000004.cpp", "category": "loops"}
+        api.rows["fn_03000008"] = {"id": "fn_03000008", "size": 12, "status": "unmatched", "source": "reconstructions/fn_03000008.cpp", "category": "integer"}
+        api.set_manifest({"functions": list(api.rows.values())})
+        api.tree["tree"][-1]["size"] = api.blob["size"]
+        api.tree["tree"].append({"path": "reconstructions/fn_03000008.cpp", "type": "blob", "mode": "100644"})
+        code, result, errors = self.run_main(api, ["summary"])
+        self.assertEqual((code, errors), (0, ""))
+        self.assertEqual(result["snapshot"]["commit"], api.COMMIT)
+        self.assertEqual([result[key] for key in ("reference_functions", "implemented_functions", "available_functions", "claimed_functions", "reported_blocked_functions")], [3, 1, 1, 1, 2])
+        self.assertEqual(result["implemented_bytes"], 12)
+        self.assertNotIn("fn_ffffffff", result["blockers"])
+        self.assertEqual(result["categories"]["loops"]["available_functions"], 1)
+        self.assertEqual([row["id"] for row in queue.task_list(queue.remote_functions(api), {}, queue.reported_blockers([blocker], api.rows))], ["fn_03000004", "fn_03000000"])
+
+    def test_blocker_fields_are_advisory_and_ignore_unrelated_or_closed_issues(self):
+        blocker = {**issue(1), "labels": [{"name": "blocker"}], "body": "### Functions\nfn_03000000\n"}
+        for changed in ({"state": "closed"}, {"labels": []}, {"pull_request": {}}, {"body": "fn_03000000"}, {"body": blocker["body"] * 2}):
+            self.assertEqual(queue.reported_blockers([{**blocker, **changed}], FUNCTIONS), {})
+        rows = queue.task_list(FUNCTIONS, {}, queue.reported_blockers([blocker], FUNCTIONS))
+        self.assertEqual(rows[0]["blocker_issues"][0]["issue"], 1)
+
+    def test_submission_reports_multiple_draft_and_ready_prs_and_ignores_unknown_ids(self):
+        pulls = [{"number": number, "html_url": f"https://example/pull/{number}", "state": "open", "draft": draft,
+                  "body": "## Functions\n\nfn_03000000\nfn_03000000\nfn_ffffffff\n\n## Verification\nfn_03000004\n"}
+                 for number, draft in ((3, True), (1, False))]
+        reports = queue.reported_submissions(pulls, FUNCTIONS)
+        self.assertEqual(list(reports), ["fn_03000000"])
+        self.assertEqual(reports["fn_03000000"], [
+            {"number": 1, "url": "https://example/pull/1", "draft": False},
+            {"number": 3, "url": "https://example/pull/3", "draft": True}])
+        self.assertEqual(queue.reported_submissions([{**pulls[0], "state": "closed"}], FUNCTIONS), {})
+        api = RemoteGitHub()
+        summary = queue.queue_summary(api, queue.remote_functions(api), {}, {}, reports)
+        self.assertEqual(summary["reported_submission_functions"], 1)
+        self.assertEqual(summary["reported_submission_prs"], 2)
+
+    def test_submission_parser_requires_one_explicit_section_and_one_id_per_line(self):
+        bodies = ["fn_03000000", "## Function\nfn_03000000\n", "## Functions\n- fn_03000000\n",
+                  "## Functions\nfn_03000000 with prose\n", "## Functions\nfn_03000000,fn_03000004\n",
+                  "## Functions\nfn_03000000\n## Functions\nfn_03000000\n",
+                  "## Functions\n### Notes\nfn_03000000\n"]
+        for body in bodies:
+            with self.subTest(body=body):
+                self.assertEqual(queue.reported_submissions([{"number": 1, "state": "open", "body": body}], FUNCTIONS), {})
+
+    def test_open_prs_are_advisory_prefer_other_tasks_and_do_not_change_completion_counts(self):
+        api = RemoteGitHub(sources=["reconstructions/fn_03000008.cpp"])
+        api.rows["fn_03000004"] = {"id": "fn_03000004", "size": 256, "status": "unmatched", "source": "reconstructions/fn_03000004.cpp"}
+        api.rows["fn_03000008"] = {"id": "fn_03000008", "size": 16, "status": "unmatched", "source": "reconstructions/fn_03000008.cpp"}
+        api.set_manifest({"functions": list(api.rows.values())})
+        api.tree["tree"][-1]["size"] = api.blob["size"]
+        api.pulls = [{"number": 4, "html_url": "https://example/pull/4", "draft": True, "state": "open",
+                      "body": "## Functions\nfn_03000000\nfn_03000008\n"}]
+        code, result, errors = self.run_main(api, ["summary"])
+        self.assertEqual((code, errors), (0, ""))
+        self.assertEqual([result[key] for key in ("implemented_functions", "implemented_bytes", "available_functions", "reported_submission_functions", "reported_submission_prs")], [1, 16, 2, 2, 1])
+        code, result, _ = self.run_main(api, ["list"])
+        self.assertEqual(code, 0)
+        self.assertEqual([row["id"] for row in result], ["fn_03000004", "fn_03000000"])
+        self.assertEqual(result[1]["submission_prs"][0]["number"], 4)
+        code, _, _ = self.run_main(api, ["claim"])
+        self.assertEqual(code, 0)
+        self.assertEqual(next(payload["title"] for method, route, payload in reversed(api.calls) if method == "POST"), "Claim: fn_03000004")
+        code, _, _ = self.run_main(api, ["claim", "fn_03000000"])
+        self.assertEqual(code, 0)
+        self.assertEqual(next(payload["title"] for method, route, payload in reversed(api.calls) if method == "POST"), "Claim: fn_03000000")
+        pull_calls = [(method, route) for method, route, _ in api.calls if route.startswith("pulls")]
+        self.assertTrue(pull_calls)
+        self.assertTrue(all(method == "GET" and route == "pulls?state=open&sort=created&direction=asc&per_page=100&page=1" for method, route in pull_calls))
+
+    def test_list_filters_size_category_and_deterministic_priority(self):
+        rows = {f"fn_{i:08x}": {"id": f"fn_{i:08x}", "size": size, "category": category, "priority": priority, "status": "unmatched"}
+                for i, size, category, priority in [(4, 32, "loops", 0), (8, 64, "calls", 1), (12, 16, "loops", 0), (16, 64, "loops", 1)]}
+        self.assertEqual([row["id"] for row in queue.task_list(rows, {}, {}, 20, 64, ["loops"])], ["fn_00000010", "fn_00000004"])
+        self.assertEqual([row["id"] for row in queue.task_list(rows, {"fn_00000010": {}}, {}, 20, 64, ["loops", "calls"])], ["fn_00000008", "fn_00000004"])
+
+    def test_invalid_filters_and_waits_fail_before_github(self):
+        for args in (["list", "--min-size", "-1"], ["claim", "--min-size", "100", "--max-size", "10"], ["claim", "--wait", "601"], ["status", "--wait", "1"]):
+            with self.subTest(args=args), patch.object(queue, "GitHub") as github, redirect_stderr(io.StringIO()):
+                self.assertEqual(queue.main(args), 1)
+                github.assert_not_called()
+
+    def test_claim_filter_failure_does_not_create_issue_and_errors_are_json(self):
+        api = RemoteGitHub()
+        code, _, errors = self.run_main(api, ["claim", "fn_03000000", "--max-size", "32"])
+        self.assertEqual(code, 1)
+        self.assertIn("No available task", json.loads(errors)["error"])
+        self.assertFalse(any(method == "POST" for method, _, _ in api.calls))
+
+    def test_wait_returns_accepted_or_pending_at_deadline_without_infinite_polling(self):
+        pending = {"state": "pending", "accepted": False}
+        accepted = {"state": "active", "accepted": True}
+        with patch.object(queue, "request_status", side_effect=[pending, accepted]) as status, patch.object(queue.time, "monotonic", side_effect=[0, 0, 5]), patch.object(queue.time, "sleep") as sleep:
+            self.assertEqual(queue.wait_for_request(None, 1, {}, 10), accepted)
+            self.assertEqual(status.call_count, 2)
+            sleep.assert_called_once_with(5)
+        with patch.object(queue, "request_status", return_value=pending) as status, patch.object(queue.time, "monotonic", side_effect=[0, 10]), patch.object(queue.time, "sleep") as sleep:
+            self.assertEqual(queue.wait_for_request(None, 1, {}, 10), pending)
+            self.assertEqual(status.call_count, 1)
+            sleep.assert_not_called()
+
+    def test_claim_wait_returns_terminal_result_without_stale_pending_next_action(self):
+        api = RemoteGitHub()
+        accepted = {"issue": 2, "state": "active", "accepted": True, "claim": {"function": "fn_03000000"}}
+        with patch.object(queue, "wait_for_request", return_value=accepted) as wait:
+            code, result, errors = self.run_main(api, ["claim", "fn_03000000", "--wait", "10"])
+        self.assertEqual((code, errors), (0, ""))
+        self.assertEqual(result["state"], "active")
+        self.assertNotIn("next", result)
+        self.assertEqual(wait.call_args.args[1::2], (2, 10))
+
+    def test_invalid_repository_commit_metadata_fail_with_queue_errors(self):
+        cases = [("", None), ("", []), ("commits/branch%2Fdefault", None),
+                 ("commits/branch%2Fdefault", {"sha": "a" * 40, "commit": {"tree": None}}),
+                 ("commits/branch%2Fdefault", {"sha": 7, "commit": {"tree": {"sha": "b" * 40}}})]
+        for path, value in cases:
+            with self.subTest(path=path, value=value):
+                api = RemoteGitHub()
+                original = api.call
+                with patch.object(api, "call", side_effect=lambda method, route, payload=None: value if route == path else original(method, route, payload)):
+                    with self.assertRaises(queue.QueueError):
+                        queue.remote_functions(api)
+
+    def test_status_exposes_rejected_expired_and_complete_terminal_states(self):
+        request = issue(1)
+        api = FakeGitHub([request], {1: [comment_for(request, expires=NOW)]})
+        self.assertEqual(queue.request_status(api, 1, FUNCTIONS, NOW)["state"], "expired")
+        self.assertEqual(queue.request_status(api, 1, {"fn_03000000": {"status": "matched"}}, NOW)["state"], "complete")
+        api.messages = {}
+        api.data[1].update(state="closed", labels=[{"name": "claim-rejected"}])
+        result = queue.request_status(api, 1, FUNCTIONS, NOW)
+        self.assertEqual(result["state"], "rejected")
+        self.assertFalse(result["accepted"])
+
+    def test_release_only_current_owners_claim_and_immediately_frees_it(self):
+        for owner, allowed in (("contributor", True), ("other", False)):
+            request = issue(1, owner=owner)
+            api = FakeGitHub([request], {1: [comment_for(request)]})
+            code, result, errors = self.run_main(api, ["release", "1"])
+            self.assertEqual(code, 0 if allowed else 1)
+            self.assertEqual(len(api.patches), int(allowed))
+            if allowed:
+                self.assertEqual(result, {"issue": 1, "state": "closed"})
+                self.assertEqual(queue.active_claims(api, NOW, FUNCTIONS), {})
+            else:
+                self.assertIn("own claim", json.loads(errors)["error"])
+
+    def test_invalid_manifest_filter_fields_fail_closed(self):
+        for fields in ({"size": True}, {"size": "32"}, {"size": 0}, {"category": []}, {"priority": "high"}):
+            with self.subTest(fields=fields), self.assertRaises(queue.QueueError):
+                queue.parse_functions([{**FUNCTIONS["fn_03000000"], **fields}])
+
     def test_user_cannot_forge_authoritative_comment(self):
         request = issue(1)
         fake = comment_for(request, author={"id": 7, "login": "github-actions[bot]"})
