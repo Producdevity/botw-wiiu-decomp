@@ -79,7 +79,7 @@ without a Cafe SDK. Compiler binaries stay outside version control.
 
 [wibo 1.2.0](https://github.com/decompals/wibo/releases/tag/1.2.0) added GHS
 support. Its [macOS build supports Rosetta](https://github.com/decompals/wibo/blob/1.2.0/README.md).
-The bootstrap Mac run is verified; Linux execution still needs its own check.
+Both macOS and Linux builds are verified; the public acceptance workflow rebuilds all submitted implementations on Ubuntu 24.04.
 
 ## Reusable research
 
@@ -129,3 +129,7 @@ this type reproduce paired-single loads/stores in `fn_0345abf8` and
 `fn_0405c160`. An aligned two-pair aggregate reproduces the stack alignment and
 swap in `fn_03e8a59c`; a byte cursor preserves the stream-copy contract in
 `fn_04065eb4`. These use C++ data flow, without inline assembly or emitted bytes.
+
+## Verified rotate/mask intrinsic
+
+GHS `__RLWINM(value, shift, first, last)` emits the native PowerPC rotate-and-mask operation. Its pure `const` declaration is shared in `botw/ghs_intrinsics.h`. Wrapped masks `(0, 29, 27)` and `(0, 31, 29)` clear numeric bits 3 and 1 respectively; `fn_02e8aa38` matches all 132 original bytes with these operations. No assembly or encoded instructions are embedded in the source.
