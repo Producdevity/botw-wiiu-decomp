@@ -1,12 +1,14 @@
 from dataclasses import replace
 import hashlib
+import json
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from botw_decomp import cli
-from botw_decomp.context import PREVIEW_LIMIT, preview_bytes, write_context
+from botw_decomp.context import (CALLER_LIMIT, PREVIEW_LIMIT,
+                                 direct_caller_context, preview_bytes, write_context)
 from botw_decomp.rpx import RpxError, Section, parse
 from tests.test_rpx import START, make_rpx
 
@@ -163,6 +165,151 @@ class ContextTests(unittest.TestCase):
                 patch.object(cli, "emit"):
             self.assertEqual(cli.main(["packet", target["id"]]), 2)
         context.assert_not_called()
+
+
+class DirectCallerTests(unittest.TestCase):
+    @staticmethod
+    def call(address, target, opcode=18, absolute=False, link=True):
+        mask = 0x03FFFFFC if opcode == 18 else 0xFFFC
+        displacement = target if absolute else target - address
+        return ((opcode << 26) | (displacement & mask) | (2 if absolute else 0) |
+                int(link)).to_bytes(4, "big")
+
+    def context(self, image, target, rows=None):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            packet = root / ".local/packets/test"
+            with patch("botw_decomp.context.disassemble", return_value="synthetic\n") as disasm:
+                result = direct_caller_context(root, packet, target, rows or {}, image)
+            outputs = [(packet / item["preview"]).read_text() for item in result["callsites"]]
+            return result, disasm.call_args_list, outputs
+
+    def test_signed_relative_and_conditional_calls_match_exact_target(self):
+        target = START + 128
+        code = bytearray(CODE)
+        offsets = (16, 48, 160, 200)
+        for offset, opcode in zip(offsets, (18, 16, 18, 16)):
+            code[offset:offset + 4] = self.call(START + offset, target, opcode)
+        code[224:228] = self.call(START + 224, target, link=False)
+        code[240:244] = self.call(START + 240, target + 4)
+        code[252:256] = bytes.fromhex("4e800421")  # Indirect bctrl.
+        known = row(START + 156, code[156:168])
+        result, _, _ = self.context(parse(make_rpx(code=bytes(code))), target, {known["id"]: known})
+        self.assertEqual(result["callsite_count"], 4)
+        self.assertFalse(result["truncated"])
+        self.assertEqual([item["address"] for item in result["callsites"]],
+                         [f"0x{START + offset:08x}" for offset in offsets])
+        self.assertEqual(result["callsites"][2]["manifest_callers"][0]["id"], known["id"])
+        self.assertEqual(result["callsites"][0]["manifest_callers"], [])
+
+    def test_absolute_unconditional_and_conditional_calls(self):
+        base, target = 0x1000, 0x1080
+        code = bytearray(CODE)
+        for offset, opcode in ((16, 18), (24, 16)):
+            code[offset:offset + 4] = self.call(base + offset, target, opcode, absolute=True)
+        image = parse(make_rpx(code=bytes(code)))
+        image = replace(image, sections=(replace(image.sections[1], address=base),))
+        result, _, _ = self.context(image, target)
+        self.assertEqual(result["callsite_count"], 2)
+
+    def test_relocated_calls_and_self_get_pc_are_excluded(self):
+        target = START + 128
+        code = bytearray(CODE)
+        for offset in (16, 32, 124):
+            code[offset:offset + 4] = self.call(START + offset, target)
+        image = parse(make_rpx(code=bytes(code), relocations=[(START + 18, 4)]))
+        result, _, _ = self.context(image, target)
+        self.assertEqual(result["callsite_count"], 1)
+        self.assertEqual(result["callsites"][0]["address"], f"0x{START + 32:08x}")
+
+    def test_edge_windows_preserve_original_bytes_and_relocation_annotations(self):
+        target = START + 128
+        code = bytearray(CODE)
+        code[:4] = self.call(START, target)
+        code[-4:] = self.call(START + len(code) - 4, target)
+        raw = bytes(code)
+        image = parse(make_rpx(code=raw, relocations=[(START + 8, 1), (START + 40, 1),
+                                                     (START + len(code) - 8, 4)]))
+        before = image.sections[1].data
+        result, calls, outputs = self.context(image, target)
+        first, last = result["callsites"]
+        self.assertEqual((first["preview_address"], first["preview_size"]), (f"0x{START:08x}", 36))
+        self.assertEqual((last["preview_address"], last["preview_size"]), (f"0x{START + len(code) - 68:08x}", 68))
+        self.assertEqual(calls[0].args[:2], (raw[:36], START))
+        self.assertEqual(calls[1].args[:2], (raw[-68:], START + len(code) - 68))
+        self.assertEqual(first["original_relocations"], [{"address": f"0x{START + 8:08x}", "width": 4}])
+        self.assertEqual(last["original_relocations"], [{"address": f"0x{START + len(code) - 8:08x}", "width": 2}])
+        self.assertIn("UNVERIFIED_CALLER_WINDOW", outputs[0])
+        self.assertIn("no relocation applied or masked", outputs[0])
+        self.assertIn(f"ORIGINAL_RPX_RELOCATION 0x{START + 8:08x} width=4", outputs[0])
+        self.assertEqual(image.sections[1].data, before)
+        self.assertEqual(image.read(target, 8), raw[128:136])
+
+    def test_output_limit_counts_all_calls_and_removes_stale_windows(self):
+        target = START + 256
+        code = bytearray(CODE)
+        for offset in range(0, 80, 4):
+            code[offset:offset + 4] = self.call(START + offset, target)
+        image = parse(make_rpx(code=bytes(code)))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            stale = root / "callers/call_deadbeef.txt"
+            stale.parent.mkdir()
+            stale.write_text("stale")
+            with patch("botw_decomp.context.disassemble", return_value="synthetic\n") as disasm:
+                result = direct_caller_context(root, root, target, {}, image)
+            self.assertEqual(result["callsite_count"], 20)
+            self.assertEqual(len(result["callsites"]), CALLER_LIMIT)
+            self.assertEqual(disasm.call_count, CALLER_LIMIT)
+            self.assertTrue(result["truncated"])
+            self.assertFalse(stale.exists())
+            self.assertEqual(len(list((root / "callers").iterdir())), CALLER_LIMIT)
+            self.assertTrue(all(item["preview_size"] <= 100 for item in result["callsites"]))
+
+    def test_invalid_text_and_scan_budget_fail_closed(self):
+        image = parse(make_rpx(code=CODE))
+        with patch("botw_decomp.context.CALLER_SCAN_LIMIT", 4), self.assertRaisesRegex(RpxError, "scan exceeds"):
+            self.context(image, START)
+        extra = Section(2, ".data", 1, 2, START + 400, 4, b"abcd")
+        with self.assertRaisesRegex(RpxError, "overlaps"):
+            self.context(replace(image, sections=(*image.sections, extra)), START)
+
+    def test_window_annotations_include_only_overlapping_writes_at_edges(self):
+        target = START + 300
+        code = bytearray(CODE)
+        code[200:204] = self.call(START + 200, target)
+        image = parse(make_rpx(code=bytes(code), relocations=[(START + offset, 1) for offset in (132, 136, 232, 236)]))
+        result, calls, _ = self.context(image, target)
+        self.assertEqual(result["callsites"][0]["original_relocations"],
+                         [{"address": f"0x{START + offset:08x}", "width": 4} for offset in (136, 232)])
+        self.assertEqual(calls[0].args[:2], (bytes(code[136:236]), START + 136))
+
+    def test_context_json_preserves_manifest_links_and_raw_call_evidence_on_disassembly_failure(self):
+        target = row(START + 128, CODE[128:136])
+        code = bytearray(CODE)
+        code[:4] = self.call(START, START + 128)
+        caller = row(START, code[:8], {target["id"]: target["address"]})
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch("botw_decomp.context.disassemble", side_effect=ValueError("synthetic failure")):
+                result = write_context(root, root / ".local/packet", target,
+                                       {r["id"]: r for r in (target, caller)}, parse(make_rpx(code=bytes(code))))
+            self.assertEqual(result["callers"][0]["id"], caller["id"])
+            raw = result["direct_callers"]
+            self.assertEqual(raw["callsite_count"], 1)
+            self.assertEqual(raw["callsites"][0]["manifest_callers"][0]["id"], caller["id"])
+            self.assertEqual(raw["callsites"][0]["word"], f"0x{int.from_bytes(code[:4], 'big'):08x}")
+            self.assertIn("preview_skipped", raw["callsites"][0])
+            self.assertNotIn("preview", raw["callsites"][0])
+            self.assertEqual(json.loads((root / ".local/packet/context.json").read_text()), result)
+
+    def test_manifest_requires_containing_entire_call_instruction(self):
+        target = START + 128
+        code = bytearray(CODE)
+        code[16:20] = self.call(START + 16, target)
+        rows = [row(START, code[:16]), row(START + 20, code[20:28])]
+        result, _, _ = self.context(parse(make_rpx(code=bytes(code))), target, {r["id"]: r for r in rows})
+        self.assertEqual(result["callsites"][0]["manifest_callers"], [])
 
 
 class BatchSummaryTests(unittest.TestCase):
