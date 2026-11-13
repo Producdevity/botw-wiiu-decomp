@@ -1820,6 +1820,25 @@
         "fn_04256374",
         "fn_04270428"
       ]
+    },
+    {
+      "id": "short-call-dependencies",
+      "functions": [
+        "fn_02b5bee0",
+        "fn_02d35acc",
+        "fn_02f4c3bc"
+      ]
+    },
+    {
+      "id": "related-call-dependencies",
+      "functions": [
+        "fn_02c1974c",
+        "fn_02c197d4",
+        "fn_02c198d8",
+        "fn_02c19904",
+        "fn_02c1998c",
+        "fn_02c199c0"
+      ]
     }
   ]
 }
