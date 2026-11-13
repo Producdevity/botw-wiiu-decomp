@@ -1,0 +1,12 @@
+name: Disposable same-name check probe
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Intentionally misleading success for the acceptance test
+        run: exit 0
