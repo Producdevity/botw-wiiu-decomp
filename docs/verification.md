@@ -23,7 +23,7 @@ The pilot excludes any original span affected by an RPX relocation. Compiled ref
 
 The initial 100 tasks were selected across integer, floating-point, control-flow, calls and loops. Discovery starts at direct call targets and follows bounded, contiguous control flow, rejecting ambiguous indirect transfers. This is a conservative candidate inventory, not a complete recovered symbol table. Seventeen functions were independently reconstructed and checked against the user's pinned RPX before publication, including loops and an external-call wrapper.
 
-Unmatched tasks try the three fixed GHS optimization profiles (`-Ospeed`, `-Ogeneral`, `-Ospace`). Each attempt receives the same exact comparison; a match records the successful profile. No profile may relax comparison or change trusted reference bytes.
+Unmatched tasks try fixed GHS optimization profiles: speed, general, space, speed with tail recursion and pipeline scheduling disabled, speed without loop unrolling, and speed without constant propagation. Each attempt receives the same exact comparison; a match records the successful profile. No profile may relax comparison or change trusted reference bytes.
 
 `python3 tools/decomp.py progress` rebuilds available implementations and reports pilot counts. It does not calculate a misleading percentage of the whole game.
 

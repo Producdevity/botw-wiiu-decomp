@@ -11,15 +11,21 @@ FLAGS = ["--target=powerpc-unknown-eabi", "-mcpu=750", "-O2", "-ffreestanding",
          "-fno-exceptions", "-fno-rtti", "-fno-unwind-tables", "-fno-asynchronous-unwind-tables",
          "-fno-stack-protector", "-fno-pic", "-fno-pie", "-fno-builtin", "-std=c++17",
          "-nostdinc", "-nostdinc++", "-fno-digraphs", "-fno-trigraphs"]
-GHS_PROFILES = {"ghs-5.3.22-speed": "-Ospeed", "ghs-5.3.22-general": "-Ogeneral",
-                "ghs-5.3.22-space": "-Ospace"}
+GHS_PROFILES = {
+    "ghs-5.3.22-speed": ["-Ospeed"],
+    "ghs-5.3.22-general": ["-Ogeneral"],
+    "ghs-5.3.22-space": ["-Ospace"],
+    "ghs-5.3.22-speed-notailrecursion-nopipeline": ["-Ospeed", "-Onotailrecursion", "-Onopipeline"],
+    "ghs-5.3.22-speed-nounroll": ["-Ospeed", "-Onounroll"],
+    "ghs-5.3.22-speed-noconstprop": ["-Ospeed", "-Onoconstprop"],
+}
 
 
 def flags(profile: str) -> list[str]:
     if profile == "clang-ppc":
         return FLAGS
     if profile in GHS_PROFILES:
-        return [GHS_PROFILES[profile], "-bigendian", "--no_exceptions", "--no_rtti"]
+        return [*GHS_PROFILES[profile], "-bigendian", "--no_exceptions", "--no_rtti"]
     raise ValueError(f"unsupported compiler profile: {profile}")
 
 
@@ -41,7 +47,7 @@ def identity(cxx: str, profile: str) -> str:
         return version(cxx)
     if profile in GHS_PROFILES:
         ghs_command()
-        return "GHS 5.3.22, " + GHS_PROFILES[profile] + ", pinned decomp.me archive, wibo 1.2.0"
+        return "GHS 5.3.22, " + " ".join(GHS_PROFILES[profile]) + ", pinned decomp.me archive, wibo 1.2.0"
     raise ValueError(f"unsupported compiler profile: {profile}")
 
 
