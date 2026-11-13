@@ -123,3 +123,9 @@ the indexed-address argument is required. No assembly or SDK header is included.
 `__memory_changed` is a documented compiler barrier that emits no fence
 instruction. It preserves the two observed counted loops under `-Ogeneral`;
 the original purpose of those loops is not established.
+
+GHS also exposes the native `__vec2x32float__` type. Ordinary assignments of
+this type reproduce paired-single loads/stores in `fn_0345abf8` and
+`fn_0405c160`. An aligned two-pair aggregate reproduces the stack alignment and
+swap in `fn_03e8a59c`; a byte cursor preserves the stream-copy contract in
+`fn_04065eb4`. These use C++ data flow, without inline assembly or emitted bytes.
