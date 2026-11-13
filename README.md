@@ -4,9 +4,11 @@
 
 Community C++ reconstruction of **Wii U v208**, with deterministic matching against the original PowerPC code. The intended consumer is a native Linux ARM port targeting **H700, 1 GB RAM, GLES 3.2 and no swap**.
 
-**Verified code coverage: 4,708 of 36,994,060 bytes in the pinned `.text` section (0.0127%), across 125 functions.**
+**Verified code coverage: 9,236 of 36,994,060 bytes in the pinned `.text` section (0.0250%), across 628 functions.**
 
 The initial batch is complete: **100 verified implementations (1,956 bytes)**. The next batch has **100 tasks, 68–184 bytes each (12,288 bytes): 25 implementations verified and 75 available**, spanning integer, floating-point, control-flow, calls and loops. These are selected reference batches, not whole-game completion percentages or a playable decompilation. GHS 5.3.22 reproduces 92 initial implementations; Clang reproduces eight leaves. The exact historical compiler version remains unconfirmed.
+
+A further **503 repeated functions (4,528 bytes)** reuse existing readable reconstructions whose original machine-code bodies are identical. Most are small accessors and constant-return functions. Each distinct address is independently discovered and checked; the manifest records its source seed. The 75 unresolved tasks remain available.
 
 ## Contribute with your agent
 
