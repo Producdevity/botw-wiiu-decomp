@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from . import compiler
+from .context import write_context
 from .disassembly import disassemble
 from .matching import compare_function, compare_function_hash
 from .project import ROOT, functions, local_config, read_json, write_json
@@ -50,13 +51,42 @@ def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, 
         return {**result, "status": "rejected", "matched": False, "reason": str(error)}
 
 
-def summary(rows: dict, results: list[dict]) -> dict:
+def summary(rows: dict, results: list[dict], batches: dict | None = None) -> dict:
     matched = [r for r in results if r["matched"]]
-    return {"pilot_functions": len(rows), "implemented_functions": len(results),
-            "matched_functions": len(matched),
-            "matched_bytes": sum(rows[r["function"]]["size"] for r in matched),
-            "pilot_bytes": sum(r["size"] for r in rows.values()),
-            "scope": "pilot only; not whole-game completion", "results": results}
+    report = {"pilot_functions": len(rows), "implemented_functions": len(results),
+              "matched_functions": len(matched),
+              "matched_bytes": sum(rows[r["function"]]["size"] for r in matched),
+              "pilot_bytes": sum(r["size"] for r in rows.values()),
+              "scope": "pilot only; not whole-game completion", "results": results}
+    if batches is not None:
+        if (not isinstance(batches, dict) or batches.get("schema_version") != 1 or
+                not isinstance(batches.get("batches"), list)):
+            raise ValueError("unsupported batch catalog schema")
+        batch_ids, assigned = set(), set()
+        report["batches"] = []
+        for batch in batches["batches"]:
+            if not isinstance(batch, dict):
+                raise ValueError("invalid batch entry")
+            key, members = batch.get("id"), batch.get("functions")
+            if (not isinstance(key, str) or not key or key in batch_ids or
+                    not isinstance(members, list) or
+                    any(not isinstance(member, str) or member not in rows for member in members) or
+                    len(set(members)) != len(members) or assigned.intersection(members)):
+                raise ValueError("invalid batch identifier or function membership")
+            batch_ids.add(key)
+            assigned.update(members)
+            selected = [r for r in results if r["function"] in members]
+            accepted = [r for r in selected if r["matched"]]
+            report["batches"].append({
+                "id": key, "functions": len(members),
+                "bytes": sum(rows[member]["size"] for member in members),
+                "checked_functions": len(selected),
+                "checked_bytes": sum(rows[r["function"]]["size"] for r in selected),
+                "matched_functions": len(accepted),
+                "matched_bytes": sum(rows[r["function"]]["size"] for r in accepted),
+                "scope": "checked and matched counts cover this invocation only; not whole-game completion",
+            })
+    return report
 
 
 def main(argv=None) -> int:
@@ -128,7 +158,9 @@ def main(argv=None) -> int:
                        "compiler_profiles": {p: compiler.flags(p) for p in compiler.profiles(row)},
                        "local_only": "Do not publish original.bin, disassembly or compiled objects.",
                        "source_contract": "Reconstruct readable C++; use the exact exported symbol. Determine types from the original, not an invented stub."})
-            emit({"packet": str(path), "source": row["source"], "symbol": row["symbol"]})
+            write_context(ROOT, path, row, rows, image)
+            emit({"packet": str(path), "context": str(path / "context.json"),
+                  "source": row["source"], "symbol": row["symbol"]})
             return 0
         hash_only = args.command == "progress" or args.hash_only
         settings = {} if hash_only else local_config()
@@ -146,10 +178,12 @@ def main(argv=None) -> int:
             selected = [rows[args.function]]
         if not selected:
             raise ValueError("no reconstructed sources selected")
+        batch_path = ROOT / "config/batches.json"
+        batches = read_json(batch_path) if batch_path.is_file() else None
         results = [verify(row, cxx, image=image, source=getattr(args, "source", None)) for row in selected]
         profiles = {p for r in selected for p in compiler.profiles(r)}
         report = {"target": target["id"], "compilers": {p: compiler.identity(cxx, p) for p in sorted(profiles)},
-                  "reference": "public SHA-256" if hash_only else "local original bytes", **summary(rows, results)}
+                  "reference": "public SHA-256" if hash_only else "local original bytes", **summary(rows, results, batches)}
         write_json(ROOT / ".local/last-check.json", report)
         emit(report)
         return 0 if all(r["matched"] for r in results) else 1
