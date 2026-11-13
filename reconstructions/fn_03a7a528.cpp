@@ -1,4 +1,5 @@
-extern "C" char* fn_03a7a528(char* object, unsigned index) {
+extern "C" char* fn_03a7a528(void* context, unsigned index) {
+    char* object = static_cast<char*>(context);
     switch (index) {
     case 0: return object + 88;
     case 1: return object + 108;
