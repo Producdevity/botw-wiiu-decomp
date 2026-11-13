@@ -20619,6 +20619,5087 @@
         "object_sha256": "b7e860840be44ecb6fdb1207072f026f94ca6ce7b61a4345ac0de64e1e1b888b",
         "relocations": 0
       }
+    },
+    {
+      "address": "0x02056158",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02056158",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 244,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "a8b765739f294945a27b2080707bceef42ab4911a0d9cb66ce88ecd865244727",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_02056158.cpp",
+      "source_seed": "fn_02055abc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02056158",
+      "verification": {
+        "object_sha256": "75271f7c1ba504a67f6db596218558cbe607f65c04e636c07e5fe38459930631",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x020659d0",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_020659d0",
+      "inferred_fields": [
+        {
+          "stride": 48,
+          "upper_bound": 4
+        }
+      ],
+      "sha256": "8876f1a5a24dea5ea8b2863435c9fd66b3c4d7158cc3266d23bd6ae39eac0ff4",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_020659d0.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_020659d0",
+      "verification": {
+        "object_sha256": "18c07e2be38cb60235b150c9454d247c008c57f3f76d941ea6c216da396c113d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x020ae0dc",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_020ae0dc",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "a55f96cb2ee63399b3d779ae28bdbb7bd50e9183f8e77e05d4cdd27598d94557",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_020ae0dc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_020ae0dc",
+      "verification": {
+        "object_sha256": "ab31424d8d15b533923f9f07b53f26357fa71f4bfc0e3dea4313a5b27dad827a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x020ae378",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_020ae378",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 12,
+          "type": "float"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 28,
+          "type": "float"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 44,
+          "type": "float"
+        }
+      ],
+      "sha256": "9fe348236351421f2621dc343526e181c0831cb7b8c263a47eaca507f763f6d2",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_020ae378.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_020ae378",
+      "verification": {
+        "object_sha256": "17c183ed419c94d805fcecb271f1de87876fe2ab7bb14ef1439b8346113cfbb8",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02101b3c",
+      "behavior": "optional nested update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02101b3c",
+      "inferred_fields": [
+        {
+          "offset": 80,
+          "type": "State*"
+        },
+        {
+          "nested_offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "db9d30c67db123fa426b3f60e9c3efa68440999be985447a887355f068845ff4",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02101b3c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02101b3c",
+      "verification": {
+        "object_sha256": "b4d82fab6d1d70d8616a5a01ac4c98ca10f537964999c8e4b78ba6429d7637c1",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0218f7fc",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0218f7fc",
+      "inferred_fields": [
+        {
+          "offset": 64,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "float"
+        }
+      ],
+      "sha256": "b1ebe2c9b38e69e0c14ce971c34966371a4e0529016ce5d2021abed88339c866",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_0218f7fc.cpp",
+      "source_seed": "fn_020d6a38",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0218f7fc",
+      "verification": {
+        "object_sha256": "d39d71a4e7e8f49b661d613cb91271587b97aab2f77106398fe4269006c50ac3",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02711d04",
+      "behavior": "read a scalar field with a constant offset",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02711d04",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "ac15972018f8be45e522ef715f5317df1003db2b88da84c973ad30f25b09a22e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_02711d04.cpp",
+      "source_seed": "fn_025ee040",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02711d04",
+      "verification": {
+        "object_sha256": "3c6b43110396b81d48c7061d6f0de13cb2fd3a6d233d12fca2694681f46a9094",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x028d7d8c",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_028d7d8c",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "float"
+        },
+        {
+          "destination_offset": 12,
+          "source_offset": 12,
+          "type": "float"
+        }
+      ],
+      "sha256": "8bdd9b615f600d94aa82f0f259cb3be7b3e931a81ac421d0d2ad0ddd6ae470f0",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 36,
+      "source": "reconstructions/fn_028d7d8c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_028d7d8c",
+      "verification": {
+        "object_sha256": "e7a1da62e06d7472322a874d0300e5081a23665957e01920d00f152081fdcc93",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x029505d0",
+      "behavior": "optional pointer dereference",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_029505d0",
+      "inferred_fields": [
+        {
+          "offset": 948,
+          "type": "void**"
+        }
+      ],
+      "sha256": "d6e960c5776e83c95535fa7fc610b64a60cfd5f744281ce741a33fc7ae345338",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_029505d0.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_029505d0",
+      "verification": {
+        "object_sha256": "e92c6110c6540cef43e14f915674a99d3f81b5181e17729e7e079a0c98842235",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x029fb7fc",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_029fb7fc",
+      "inferred_fields": [
+        {
+          "offset": 40,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "09756b04234cd13aa114a2cee5f490e458eb550bfe28c91a1d34ef90dd797d0f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_029fb7fc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_029fb7fc",
+      "verification": {
+        "object_sha256": "493e5edc1ee349f2c9d50c5303a413bdb30722b1774b0f0faa619fa2c0c99a76",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02a2d920",
+      "behavior": "field parameter equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02a2d920",
+      "inferred_fields": [
+        {
+          "offset": 468,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d04cc3c6066ad9f59366543d285882769180ee88690d0cc707971396e0525089",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02a2d920.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02a2d920",
+      "verification": {
+        "object_sha256": "1d449ebf793221bc9691dc729c6482c0bec2ed9cecf7ae9c0b1d545c3b80a919",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02a32dac",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02a32dac",
+      "inferred_fields": [
+        {
+          "offset": 258,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "9f83e97e81ae73107e0852fe184ce2f8bf980b39e899c6e399b64b3551358af4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02a32dac.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02a32dac",
+      "verification": {
+        "object_sha256": "2e790ce9f12e0bc6c8b222f4f84267dbaa660f3bd4402f39b750df943cd37fa9",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b0717c",
+      "behavior": "initialize word fields",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b0717c",
+      "inferred_fields": [
+        {
+          "offset": 2112,
+          "type": "unsigned int"
+        },
+        {
+          "offset": 2116,
+          "type": "unsigned int"
+        },
+        {
+          "offset": 2120,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d70d227509e1b5d7fde9e9b47fe3b2af224933173094d0c99bd20095cb5e5d4b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b0717c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b0717c",
+      "verification": {
+        "object_sha256": "30f543f7842c655282a081cc4670c01a7bd01e1c910e2aca2aba7e3ec4e890bf",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b1834c",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b1834c",
+      "inferred_fields": [
+        {
+          "destination_offset": 144,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 148,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 152,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "e2d9be799f061926fa33e212a7d9dab6a657ac575751fa9f5634834efcd173bc",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_02b1834c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b1834c",
+      "verification": {
+        "object_sha256": "36508dfc39d54e1dc8cd012f00293eb9d7f14fe4a7f78d26720cc8a306ceba45",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b391c4",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b391c4",
+      "inferred_fields": [
+        {
+          "destination_offset": 16,
+          "source_offset": 0,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 20,
+          "source_offset": 4,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 8,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 28,
+          "source_offset": 12,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 16,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 36,
+          "source_offset": 20,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "fe639d5e148a68cb883e5caa0dd2556aaa2358c2db35ff670dc98863e9b2bf7d",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 52,
+      "source": "reconstructions/fn_02b391c4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b391c4",
+      "verification": {
+        "object_sha256": "9472769c01349136345667f0c0c8a74f6b5790e7bd3060273cab40e6c8438aa0",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74e80",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74e80",
+      "inferred_fields": [
+        {
+          "offset": 24,
+          "type": "unsigned"
+        }
+      ],
+      "sha256": "f82eda4a3b98ba2872c57d33a684de8beb3d41c8e4dcbe03a1e5a719ab449447",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74e80.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74e80",
+      "verification": {
+        "object_sha256": "7d8c6b7908bc8cfd13363c14c32ced16bf3959fbc4b5336b1e74551bfbfec2e8",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74e94",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74e94",
+      "inferred_fields": [
+        {
+          "offset": 24,
+          "type": "unsigned"
+        }
+      ],
+      "sha256": "09513a1ee548219c0115b4111ed0e3822bb59d1b60a913fa0ad8af3ca34aa2d4",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74e94.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74e94",
+      "verification": {
+        "object_sha256": "88222654f4245b4ff2beed02e26d3c8d379ed326c64f9bb3f85b73f6188e488d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74ea8",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74ea8",
+      "inferred_fields": [
+        {
+          "offset": 24,
+          "type": "unsigned"
+        }
+      ],
+      "sha256": "7d9a57ff1e581b2a060bfed92127b82fc154f9c80fc65d5c34e6a599009d4118",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74ea8.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74ea8",
+      "verification": {
+        "object_sha256": "1b21e465bf7a95f7d5d3702fc6806734d0800f56c56cc8550437dd6868a71fcf",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74ebc",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74ebc",
+      "inferred_fields": [
+        {
+          "offset": 24,
+          "type": "unsigned"
+        }
+      ],
+      "sha256": "58d3a302d096270465bad04bfe7eb495d508fc8e151593b85a580a48caad5140",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74ebc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74ebc",
+      "verification": {
+        "object_sha256": "77dff10d46b82dc696d77defbce43560f301014978a3e0fdb55f1935f4763745",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74ee8",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74ee8",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned short"
+        }
+      ],
+      "sha256": "7069700feb816778a729c73b10a7417639ff24b052ca23c480c2a250fac60e90",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74ee8.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74ee8",
+      "verification": {
+        "object_sha256": "74ae24b849e1f0a5fb0822d5c67a94324a797268f4afc0c1637018c155b95405",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74efc",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74efc",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned short"
+        }
+      ],
+      "sha256": "3db94a695c8a434b4a794a76f52e4d2dc012777ac5fd1678d80c81935e5072b2",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74efc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74efc",
+      "verification": {
+        "object_sha256": "00b1f9138304a2acbfb485655be7f01dd765784c43351678bce87000520db0bf",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74f10",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74f10",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned short"
+        }
+      ],
+      "sha256": "b156df4748db0cccefe2970f9cc6f94de1c1af7ca240e3566db9feae5ae2207f",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74f10.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74f10",
+      "verification": {
+        "object_sha256": "c0c6733d63b137d93df3b9ceaeb414f441f4f84fd9fbc944dea94dea8acf3d0d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74f24",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74f24",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned short"
+        }
+      ],
+      "sha256": "2f02db8e838e3fb606d0caf0c38cdd5a37fc126cb96896a0c75479fed10da07b",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74f24.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74f24",
+      "verification": {
+        "object_sha256": "d4a37edc32fa6b549ad99833c9341fd22df3cfc65a3ad9d3c6a073feb7c6d565",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b74f4c",
+      "behavior": "nullable state update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b74f4c",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned short"
+        }
+      ],
+      "sha256": "186dfb73a201b7589837c66e81d44f14f603127bfc613eb3b8dd2d9dfc4a1fff",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02b74f4c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b74f4c",
+      "verification": {
+        "object_sha256": "3a94f0e8f58d04f2092ffdf558f7e4dc11d60addfa5d8bd0973d545cdf73a898",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b900e4",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b900e4",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02b900e4.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b900e4",
+      "verification": {
+        "object_sha256": "bf5d762881f5163ae834e651e5362f653e6b4511daacfe9d1a1de36986d83e4b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b96850",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b96850",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02b96850.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b96850",
+      "verification": {
+        "object_sha256": "11c4fe5fdc525ba119633ace9b3c0a99e9d5928ddeae12c3a2871a2ae83d5572",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02b9e424",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02b9e424",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02b9e424.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02b9e424",
+      "verification": {
+        "object_sha256": "83d4337f2838bd38f2b93087c56f9416fb8067c65d66f4aadeb54425eb10c9f6",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02ba2210",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02ba2210",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02ba2210.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02ba2210",
+      "verification": {
+        "object_sha256": "c53ed321281d60ebe3cbf920912c0ca753c31df034b3935f4146d23441938ced",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bb6744",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bb6744",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bb6744.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bb6744",
+      "verification": {
+        "object_sha256": "99df9824c07c971f2bbcae2067d313845809496bdcfe6d18821efd19c45c2a48",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bbdeb0",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bbdeb0",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bbdeb0.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bbdeb0",
+      "verification": {
+        "object_sha256": "e0380c745d9c541afc5c1943ca8cf8d2d43c5c3ba7337015b5c3f9c51b971bf8",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bcaa6c",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bcaa6c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bcaa6c.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bcaa6c",
+      "verification": {
+        "object_sha256": "824309905647fb796884ca885ebe5f372d6f269da60a76d98442ef00e57fc4f9",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bcad24",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bcad24",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bcad24.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bcad24",
+      "verification": {
+        "object_sha256": "0796e6bfb0d9e5da974f52b20f9a5d246a49a7024af439df8f2a5432b36ae6f7",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bd04bc",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bd04bc",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bd04bc.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bd04bc",
+      "verification": {
+        "object_sha256": "d2d898e0bf142591cd76832b530bd4da62b670f95d6ad4fe76a0af47a02fc7df",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02be5f70",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02be5f70",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02be5f70.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02be5f70",
+      "verification": {
+        "object_sha256": "c7cc8a70168c3f322d32fbf35acf0d814afd2b61f7611a19deb98b5b62621fbf",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bebc24",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bebc24",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bebc24.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bebc24",
+      "verification": {
+        "object_sha256": "9f7f74e750745791ce8b04cc21931b3eb361f77e0324733870df45d3ac64fa08",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02befa7c",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02befa7c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02befa7c.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02befa7c",
+      "verification": {
+        "object_sha256": "da2e4e31cec5c3b05aef9ae4ec47ebec739727f311ece375df7c69408eb10c33",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bf3088",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bf3088",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bf3088.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bf3088",
+      "verification": {
+        "object_sha256": "fe967bfb0df308efc82c8243a34bc5edb21dbe10761b79d35267cff282b379f1",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bf8458",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bf8458",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bf8458.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bf8458",
+      "verification": {
+        "object_sha256": "f13edf1c7accaec49b7ccacaff8e7d80c439d6cf6704678b41d371777ef814ba",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bfdd3c",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bfdd3c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bfdd3c.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bfdd3c",
+      "verification": {
+        "object_sha256": "e8c40bc741e5b28a5fc644e1b180c2947e953503eb3674e239c5e21c46ed42f5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02bfde14",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02bfde14",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02bfde14.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02bfde14",
+      "verification": {
+        "object_sha256": "37ebfef64cf1764f291102366161e8f5a798dabee64d80aab8f95f24061fd4a4",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c000c8",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c000c8",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02c000c8.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c000c8",
+      "verification": {
+        "object_sha256": "683b032db18d68d52885bb7535aa6c727bd09eb4f2691d222fc5ff0549c3ea0a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c00928",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c00928",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02c00928.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c00928",
+      "verification": {
+        "object_sha256": "2291517e97876883ae76c8bc4eb3f7e49bbda9b44a6dd190611c54742a8b4840",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c06488",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c06488",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02c06488.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c06488",
+      "verification": {
+        "object_sha256": "46ef54ddb973c756f9736a8c8c0ebf3d3d4ab19af009758d2d36935366163a59",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c0fb90",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c0fb90",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "bee27a6fc86e58e849d9550b69e1541273a1c963e81c56ce6353125abce3289e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02c0fb90.cpp",
+      "source_seed": "fn_02c0f260",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c0fb90",
+      "verification": {
+        "object_sha256": "9d6adaff25cc185b2e011ebb50a275dcb8fb1da7d2fa2d81d92d8e5d1b65fba5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c10cbc",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c10cbc",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02c10cbc.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c10cbc",
+      "verification": {
+        "object_sha256": "41e2b8cd0403843231aa35c6bb129a8ec78bda7fff3530393c67cf3c8ee09f3b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c10cf0",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c10cf0",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02c10cf0.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c10cf0",
+      "verification": {
+        "object_sha256": "63ff07318c7ea5cb1bb5695d3b90cf5cb5e70b80fdddb6db77423ac4d67474d2",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02c114b8",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02c114b8",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "float"
+        },
+        {
+          "destination_offset": 12,
+          "source_offset": 12,
+          "type": "float"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "float"
+        }
+      ],
+      "sha256": "7914dcd291232e19677b5ad371f7dc107d902d3bdd84b51d5e478e52886bb329",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 44,
+      "source": "reconstructions/fn_02c114b8.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02c114b8",
+      "verification": {
+        "object_sha256": "e36547ece087c6d8431de647e0fbc1a53ad617c258f17c8d248b021651741bc6",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02cc7d60",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02cc7d60",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02cc7d60.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02cc7d60",
+      "verification": {
+        "object_sha256": "b852b83355fc489c5739bed8dcae79c70f661041c594ca6f9643d364cff0b61f",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02d387a0",
+      "behavior": "optional nested update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02d387a0",
+      "inferred_fields": [
+        {
+          "offset": 904,
+          "type": "State*"
+        },
+        {
+          "nested_offset": 84,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "a403905ecf9936d5974d122b1a8c5466c37c145fac51a9f9b48cc17478a66fb4",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02d387a0.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02d387a0",
+      "verification": {
+        "object_sha256": "7f463a44f23f9df888dbf44b78dda87b2d520fb799f69ee2f9ca28bb5a228591",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02d498f4",
+      "behavior": "optional nested update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02d498f4",
+      "inferred_fields": [
+        {
+          "offset": 48,
+          "type": "State*"
+        },
+        {
+          "nested_offset": 4896,
+          "type": "unsigned"
+        }
+      ],
+      "sha256": "be75d9af3515d545b72ffb68d02751acfb561df26e8b81b52e2bfdd880f6e0ee",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02d498f4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02d498f4",
+      "verification": {
+        "object_sha256": "130c2dad6dab77c56dec70d1811a811f94292d5b8b703310258b6ac9a5e6b58f",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e2a224",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e2a224",
+      "inferred_fields": [
+        {
+          "destination_offset": 248,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 252,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "7f1258a29ce599e6109178c3ba4c39fe6427bf6a97124953fbfadfe9b652e7aa",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e2a224.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e2a224",
+      "verification": {
+        "object_sha256": "ab4cd803205f7004ef741e325e9fa18402f0adac0d665bcc2a45a5e078b7d6f5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e2a278",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e2a278",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 212,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 216,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 220,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "9b212e70ec0c2c5c3b90498d090d3ab53725c83da3165928de7ee4f7ca61647b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_02e2a278.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e2a278",
+      "verification": {
+        "object_sha256": "4f5e9ecba89bea09d2d412cf2f29141a88cd64a707baf71b781d81d9579ae559",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e2a294",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e2a294",
+      "inferred_fields": [
+        {
+          "destination_offset": 212,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 216,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 220,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "b0051da35ae802d733479b1dcf08a060301e6027dd09635d2e99d5ee8c1bf7b6",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_02e2a294.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e2a294",
+      "verification": {
+        "object_sha256": "7785c28215e21964aad70278a8919d8390a97812c2aeda9d582a31ed7d55d0d9",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e2a5a4",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e2a5a4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 224,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 228,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 232,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "a3fbb86e7d38ca1bda5d70174fd10cbe4a7c00f8a085f47f1e395155df7f8563",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_02e2a5a4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e2a5a4",
+      "verification": {
+        "object_sha256": "a971f45b2f2b3ef0126c0e5dcfff34096649c21d051f22a7554b52dec4db3d5c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e2c9dc",
+      "behavior": "conditional field update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e2c9dc",
+      "inferred_fields": [
+        {
+          "offset": 40,
+          "type": "int"
+        },
+        {
+          "offset": 40,
+          "type": "int"
+        }
+      ],
+      "sha256": "ea47901f71e83aa84bb3f302afd315493a1ce9d80ea4fc306cc4b4b586a3127f",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e2c9dc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e2c9dc",
+      "verification": {
+        "object_sha256": "b1035d0f905cc901bb1c1006d86dcfd27e9f8d3d755065ff1c31b4bb98fa70c2",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e34cf4",
+      "behavior": "initialize word fields",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e34cf4",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned int"
+        },
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        },
+        {
+          "offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "fced54dca5aa20c9be43d34afffd37dda9611f688de34bc8c66d07c4fbc80d66",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e34cf4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e34cf4",
+      "verification": {
+        "object_sha256": "c1bbeb39887fbd198377e913da98d8817c3b2e819088f236a00f0b846966184e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e5ff88",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e5ff88",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02e5ff88.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e5ff88",
+      "verification": {
+        "object_sha256": "5ec5a32624691b153084512c7822f5e1c8d128942c69abc3d05b0340ae85e863",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e7465c",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e7465c",
+      "inferred_fields": [
+        {
+          "offset": 700,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "1f3624e57a937c1368a35303e98a84fc2570e937b69133f4a7503cbb41bc5d99",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e7465c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e7465c",
+      "verification": {
+        "object_sha256": "12f35b844044410a892fde82573dd3a2457c64363203403a80ac89844d8649d1",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e7b510",
+      "behavior": "signed maximum update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e7b510",
+      "inferred_fields": [
+        {
+          "offset": 696,
+          "type": "int"
+        }
+      ],
+      "sha256": "238dd1de3ec2e2eaade054004b2a417cd5c970a5210db69dab3d9bba3c8883eb",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e7b510.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e7b510",
+      "verification": {
+        "object_sha256": "3b0a7b46d1ab0f24fcd5d8be7ec1b353450ef453b71a8450c27bcd074520f232",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e7b548",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e7b548",
+      "inferred_fields": [
+        {
+          "offset": 700,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "085e006d58cbf3f5a48b4d811d3eb344a4cc9cd54fc857e62141648cb8cad0c3",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e7b548.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e7b548",
+      "verification": {
+        "object_sha256": "3489c0223bbbf2335f1f6c08313aecf760fad0c45baa78c7503d7f8fb7ebc86f",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e7b55c",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e7b55c",
+      "inferred_fields": [
+        {
+          "offset": 700,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "bbffe4b814751c89941d6523b0836ba99e04672f017092861f4a9da07365db9a",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e7b55c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e7b55c",
+      "verification": {
+        "object_sha256": "063f9bd8ebc5841193ab1b3310db5ba97217175b1ab006cef9e26aeb0186a028",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e84080",
+      "behavior": "optional nested update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e84080",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "State*"
+        },
+        {
+          "nested_offset": 72,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "4c91e3936dc3b98378a534872f1229be4064c8ff8d50c617a521d2a4933d9e7f",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e84080.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e84080",
+      "verification": {
+        "object_sha256": "69f00031f6b27310e602f23cd95e07eb8aa15480b4f79488356520eca27ab1f5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e86850",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e86850",
+      "inferred_fields": [
+        {
+          "offset": 64,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4d232e0dd7db4fa1bf505907aee5f8eaf3efce46d6a32daf3197fa506c18565",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_02e86850.cpp",
+      "source_seed": "fn_02b85cf0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e86850",
+      "verification": {
+        "object_sha256": "73f63d248e50fb41b30271f79bea356ffc8fa7b01eaa6cfd8aed3b23cb242140",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e90bbc",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e90bbc",
+      "inferred_fields": [
+        {
+          "destination_offset": 8,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 12,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "ff69ef8f78e69f48dac8f3ced944ccc829cc6ba027e5871378b766fcad5d6cd6",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e90bbc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e90bbc",
+      "verification": {
+        "object_sha256": "9ad224285d092a90538e63b6c5be047256efa6919624613269b87c9870ad2295",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e90bd8",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e90bd8",
+      "inferred_fields": [
+        {
+          "destination_offset": 16,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 20,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "e382f394baa435980292bf17aff95eac62712035bd523e2f7a03145140f6868f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e90bd8.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e90bd8",
+      "verification": {
+        "object_sha256": "1ddbdd7dd74e52023e313e13bc955aa63d6b97d49d7dd9f6af323a5b86f5bbd4",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e90c14",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e90c14",
+      "inferred_fields": [
+        {
+          "destination_offset": 32,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 36,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "1dca2f2eba4b52bb0fbe6fc3ae6745cfd1b2f8e1999ea398fe14d66d7784856b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e90c14.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e90c14",
+      "verification": {
+        "object_sha256": "47ee2a711717cf095589b1e725afbaa51246728ad71622170b9f64d8be0046c9",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e90c50",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e90c50",
+      "inferred_fields": [
+        {
+          "destination_offset": 48,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 52,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "cb70bf6800ef3bd71e8e49f12f47b4b69265c72d9752ac5a9aeb6eb325b75235",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e90c50.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e90c50",
+      "verification": {
+        "object_sha256": "337a5275a9857181c06cf5ce7be86d706228ab454011050d38099cff724ff7f4",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e91018",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e91018",
+      "inferred_fields": [
+        {
+          "destination_offset": 64,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 68,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "2753f3f5663a850396ce4f0f6ad85bc774316f93aad2cdf4ff8650722a5fc07c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e91018.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e91018",
+      "verification": {
+        "object_sha256": "b93a07e3c2d7bdd2697d0367dfc2847b7f6d64e318b173a42d8c5df59eb17f88",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e9102c",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e9102c",
+      "inferred_fields": [
+        {
+          "destination_offset": 72,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 76,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "e079ed322d9464c5a2b7bdba1e6dabc464d16db0160489f831942249a5f96805",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e9102c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e9102c",
+      "verification": {
+        "object_sha256": "2bb45379f1a4a9c595a2861e7d29e523aa2543d1d44f90d9a4fb7b13ed405d6a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e91094",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e91094",
+      "inferred_fields": [
+        {
+          "destination_offset": 128,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 132,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 136,
+          "source_offset": 8,
+          "type": "float"
+        },
+        {
+          "destination_offset": 140,
+          "source_offset": 12,
+          "type": "float"
+        }
+      ],
+      "sha256": "43a2d4f22e4adf54b43d8d1b298c8564b9d1ae8f60a29491c40e6362b397cbd7",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 36,
+      "source": "reconstructions/fn_02e91094.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e91094",
+      "verification": {
+        "object_sha256": "a6ef293fb7713b6b1421a567f9868b065cf4bebc9fb4e3c536323baa7d2da25d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e91100",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e91100",
+      "inferred_fields": [
+        {
+          "destination_offset": 112,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 116,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 120,
+          "source_offset": 8,
+          "type": "float"
+        },
+        {
+          "destination_offset": 124,
+          "source_offset": 12,
+          "type": "float"
+        }
+      ],
+      "sha256": "f2c9e2444dd752499182ecd5358754accd942608b577a45c7846247c9546a82a",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 36,
+      "source": "reconstructions/fn_02e91100.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e91100",
+      "verification": {
+        "object_sha256": "16673da94f6232a9ced64a717c7dbdcbadd15f779b797aa01da53cc45e0a4ae2",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e91124",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e91124",
+      "inferred_fields": [
+        {
+          "destination_offset": 80,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 84,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "ffc2a79431c4be6b0d38514c9907b10c59690e5043a5d4b9880714e412c5a523",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e91124.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e91124",
+      "verification": {
+        "object_sha256": "6c391dc0a666c6874c25c0f4215a6daf0ceb79bd78ec0bc136c068c75d275af4",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e91160",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e91160",
+      "inferred_fields": [
+        {
+          "destination_offset": 88,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 92,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "443fae592f07256bdec5112d6826c803ee854b70ae6a86ae37fd81d59a0c83f5",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e91160.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e91160",
+      "verification": {
+        "object_sha256": "9ad71d025724c03310c9755715d7d63148a35e966894f70ac7042a4ad65dd244",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e92bc8",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e92bc8",
+      "inferred_fields": [
+        {
+          "offset": 52,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "8b42d9ea33dbf28aec123e279a1aa704cbc06f3a7fae480276a6747fe6780be9",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e92bc8.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e92bc8",
+      "verification": {
+        "object_sha256": "ee50805b91233f514810be2caee258606d1ce108427982388fccc1bf9bb758df",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02e9c81c",
+      "behavior": "field parameter equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02e9c81c",
+      "inferred_fields": [
+        {
+          "offset": 1204,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "c19380c824118cf2e8aed4c893773010ea4c81adcc3f37e2273165ec839fd08d",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02e9c81c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02e9c81c",
+      "verification": {
+        "object_sha256": "da2ad20f77be50bd3fde52be8c12c38091b7d482b49f34b54ad7b0a268e7b832",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02ea48dc",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02ea48dc",
+      "inferred_fields": [
+        {
+          "offset": 1600,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "2b3fd28168d0efe57c6070afbb2bb1dd1e8f71b6f8b03c577577b232b0ab6c26",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02ea48dc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02ea48dc",
+      "verification": {
+        "object_sha256": "48a2935539938329268bc0fb27d94f6c13255244b4a86994989fcd2a07041826",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02ea7c0c",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02ea7c0c",
+      "inferred_fields": [
+        {
+          "offset": 212,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "17e6b907da0c8a3ba21e171e625289b26456bc3d22cec2c4072d1f02552a04e3",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02ea7c0c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02ea7c0c",
+      "verification": {
+        "object_sha256": "d2c27cca28728829fd622fda4a8b5d4a1866fe188a1bc80cfd07e6684ec50120",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02ea82fc",
+      "behavior": "field parameter equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02ea82fc",
+      "inferred_fields": [
+        {
+          "offset": 12736,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "de5e3e37257297ce3e3c6c63a88fe771a939e0f1b9c2ac4ce97c6551447fc586",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02ea82fc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02ea82fc",
+      "verification": {
+        "object_sha256": "6c778322c75925e377ba2220815ee20379ad4a1f49f205268cc8d3768813996c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02eaa180",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02eaa180",
+      "inferred_fields": [
+        {
+          "destination_offset": 12656,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 12660,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "07c43b7edc629abb0126e53fa9df2d2b60c74ec788d5dfae703eface679085f8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02eaa180.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02eaa180",
+      "verification": {
+        "object_sha256": "a9b22be6f37d0774acb93175449d86aabbbd2bbb02b1bfe40ee2e299f322ccd0",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02eaa5a4",
+      "behavior": "field parameter equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02eaa5a4",
+      "inferred_fields": [
+        {
+          "offset": 12740,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "f92acf77b2fc3fdf85c24352d53f80ddd042a136705e3aa44317390e5b3febad",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02eaa5a4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02eaa5a4",
+      "verification": {
+        "object_sha256": "8c2fd1ba951e0f60a7e753eb0a24116b3cf976ccac947a714f2c0bb9d0822227",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02eab1d4",
+      "behavior": "field parameter equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02eab1d4",
+      "inferred_fields": [
+        {
+          "offset": 96,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "1464f07947fc5921c3c512a175006f46f469124d49c5c0d3997f9d345445610b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02eab1d4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02eab1d4",
+      "verification": {
+        "object_sha256": "c0a97a84db63f2ff613acfe9ae0b2958a208ca4d6353ae14b3832de5cece7d2e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02f0cb68",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02f0cb68",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "347b590d4d13be1b5fa3a87f8f014f3df415eaf4098f37d3d90a794ae792fb34",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02f0cb68.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02f0cb68",
+      "verification": {
+        "object_sha256": "1926742f39c3533ea0860f7f55a15a96dd88ad2cb50677620c51f613bfa03e23",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02f0cb7c",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02f0cb7c",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "3cab9db11c37b0dfa6e809bcac364ec5a97d795ff70734edfcac535a22a5456b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02f0cb7c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02f0cb7c",
+      "verification": {
+        "object_sha256": "4ddabe18ec0cdbd51fe8c561496584c76bf6727b802855e666098c8a592c3d0c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02f50abc",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02f50abc",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "f09151a144a5e82f6d03ffa6c4ec05c05d8e01701d36cf9a3cfb7a238c8f4850",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02f50abc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02f50abc",
+      "verification": {
+        "object_sha256": "1684673a187139af7063c3b55386316224a81a4843e15762ab1703ac7b264817",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02f50ad4",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02f50ad4",
+      "inferred_fields": [
+        {
+          "destination_offset": 8,
+          "source_offset": 0,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 12,
+          "source_offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "8dffbd211959c869351a49b8c38b54a31721dd28fbe2787c18e07f6ccd3bbc28",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02f50ad4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02f50ad4",
+      "verification": {
+        "object_sha256": "97798f6ba95da9fee7f7173b1e6bac40dc3784ba5cc8abdb3ae91deae9c671e7",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02fbd394",
+      "behavior": "optional nested update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02fbd394",
+      "inferred_fields": [
+        {
+          "offset": 7052,
+          "type": "State*"
+        },
+        {
+          "nested_offset": 180,
+          "type": "unsigned"
+        }
+      ],
+      "sha256": "1d736cf1b0ae10c63f9b8dce60af5fa46e2715cae1734a626e962e0083d62ecd",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02fbd394.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02fbd394",
+      "verification": {
+        "object_sha256": "757f44dfc87cfa10e7e29ae6564de8cb3b3ddb28c89c1e4c3900a96c7ab9c03b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x02fecd28",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_02fecd28",
+      "inferred_fields": [
+        {
+          "offset": 7912,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "15f857d86be23ae6761d75b2df815a59cce813406444fe68303c31dd453e0c2a",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_02fecd28.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_02fecd28",
+      "verification": {
+        "object_sha256": "9899fd047c474724a9b49dccb6dcb1b5ee09441f1241215742efd1e59a32599c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0305b4c4",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0305b4c4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 4,
+          "source_offset": 4,
+          "type": "float"
+        }
+      ],
+      "sha256": "f52384a1642285237ff2e7e240c5181056288f6b0b18313e3c7ea7b1e67936ba",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_0305b4c4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0305b4c4",
+      "verification": {
+        "object_sha256": "adb3e6fa69d6e54d31ffa78c427de5084dde6ff9144060e8e564df8bd6613c10",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03065bb0",
+      "behavior": "test a scalar field for zero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03065bb0",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "562831704ea9a7370d68aa6c0569084d01bf3710a8a572f52c507ff9e8d607f5",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03065bb0.cpp",
+      "source_seed": "fn_02f0cb58",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03065bb0",
+      "verification": {
+        "object_sha256": "98f9675d498a4cbb22ae1525f4ac82d128aa403b886c93ed526adc950344d5f2",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0306c60c",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0306c60c",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "c7aacda5c7fd1de24805f07e719d42ffd589277abbcf059f71fd6ad136fc2c54",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_0306c60c.cpp",
+      "source_seed": "fn_02e399dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0306c60c",
+      "verification": {
+        "object_sha256": "55930e1ce2c414f4ae8edf6419250548551d125565b827f461176d198f6af0db",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x030beb90",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_030beb90",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "c7aacda5c7fd1de24805f07e719d42ffd589277abbcf059f71fd6ad136fc2c54",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_030beb90.cpp",
+      "source_seed": "fn_02e399dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_030beb90",
+      "verification": {
+        "object_sha256": "44927857618bf36f8509f54b05a4b0131d2ec2850db1c215d3f417a60d6f0b2a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x030fea10",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_030fea10",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "0933d8ab5fc799d525fc5afff24a406724220ed8a6b9fc8d7dde3f7a1e685262",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_030fea10.cpp",
+      "source_seed": "fn_02c0f2d0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_030fea10",
+      "verification": {
+        "object_sha256": "5b22b04f0c2128658f8e59eec2878e53f3303f7992821bb76e955f1903766aec",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x030ff3bc",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_030ff3bc",
+      "inferred_fields": [
+        {
+          "stride": 332,
+          "upper_bound": 512
+        }
+      ],
+      "sha256": "c8772974c661b4cc570e8cd339b95695af00ffa49e7958d789321e40a7d434cc",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_030ff3bc.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_030ff3bc",
+      "verification": {
+        "object_sha256": "501aa3f0f05797cd3ad7807c2d12b7130a89e79331c67e460ce3d5b13a48b0d3",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x030ff3d0",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_030ff3d0",
+      "inferred_fields": [
+        {
+          "stride": 92,
+          "upper_bound": 16
+        }
+      ],
+      "sha256": "b1bc380a11626e0b4679d84c41a3d53544306dc74ad0bb9d300c697c53e917e4",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_030ff3d0.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_030ff3d0",
+      "verification": {
+        "object_sha256": "919474abea69eb9cce10568a81619ad02c542fed6ef0c5163d238159d92416f1",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x030ff468",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_030ff468",
+      "inferred_fields": [
+        {
+          "stride": 12,
+          "upper_bound": 6
+        }
+      ],
+      "sha256": "0f7fc17e39e201aa26c785a01be9c2cab319ae1214cbd763e6b7846b906feeac",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_030ff468.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_030ff468",
+      "verification": {
+        "object_sha256": "686369183ea070fe7a931f57e0161582363dfa279647c715a5abe2bfce586d6d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x030ff47c",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_030ff47c",
+      "inferred_fields": [
+        {
+          "stride": 292,
+          "upper_bound": 6000
+        }
+      ],
+      "sha256": "ffd219f997b5fd19cbc9f6718345fcba84facf071fb3b4ea7c66c76b5292a10c",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_030ff47c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_030ff47c",
+      "verification": {
+        "object_sha256": "6388e6595b44992ff7b9e2cc6d0f30e2b0cdde785e29da6c156fe7f0326ad554",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03138188",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03138188",
+      "inferred_fields": [
+        {
+          "destination_offset": 56,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 60,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 64,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "dfa111c63824a325afcab8b0e4effd70078abd02d21d0337caa2d263b1180d4e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_03138188.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03138188",
+      "verification": {
+        "object_sha256": "6c50c00f2ef4964bd5df09bdb55ec2095f712a7957b0791edcddd50bc0d5a65a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0313ccb4",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0313ccb4",
+      "inferred_fields": [
+        {
+          "stride": 12,
+          "upper_bound": 2
+        }
+      ],
+      "sha256": "afb3a5f2bcf4b7a5b542983c168ccf7221352f800fa91eedaab67a17ba23e519",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_0313ccb4.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0313ccb4",
+      "verification": {
+        "object_sha256": "3e61f80e26ff044ad83f4d001d8584cc2bb60a511465639b9fefb4ba7f155989",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0313e670",
+      "behavior": "conditional field update",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0313e670",
+      "inferred_fields": [
+        {
+          "offset": 48,
+          "type": "int"
+        },
+        {
+          "offset": 48,
+          "type": "int"
+        }
+      ],
+      "sha256": "9c8f55d14718b0b0bc89a8249f29c098fd27facd5f7cac5f360a5a3d04a4be51",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_0313e670.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0313e670",
+      "verification": {
+        "object_sha256": "68287aaea22909d99e375f7928f918cb45ac7f8cf7bcfa1ef16a666a51ac110d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x031707a0",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_031707a0",
+      "inferred_fields": [
+        {
+          "offset": 32,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "41fb0d8fab9625b1f4f98127702b15fe4a5aa3ea3a851834ea60a2b585985500",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_031707a0.cpp",
+      "source_seed": "fn_02a17230",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_031707a0",
+      "verification": {
+        "object_sha256": "2f37ef2fb3484b4bc8d22ef61c381c196d5571ec44c48ffa6f1ec2a902d3970e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x031729c8",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_031729c8",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_031729c8.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_031729c8",
+      "verification": {
+        "object_sha256": "2bcec5f1309e21a6de9f720915596667234bd2984819a0220a94ad8e4f6ada7b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03188bd0",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03188bd0",
+      "inferred_fields": [
+        {
+          "destination_offset": 16,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 20,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 8,
+          "type": "float"
+        },
+        {
+          "destination_offset": 188,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 192,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 196,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "30c1627e0a9600982d2f9577f1323b304b9644e1ce958dc5382c5c304e468587",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 52,
+      "source": "reconstructions/fn_03188bd0.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03188bd0",
+      "verification": {
+        "object_sha256": "6b4eaf3155660b5650fe7a3e76cf3b02450378f1cd4cf8a935155a163947954c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x031fa280",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_031fa280",
+      "inferred_fields": [
+        {
+          "offset": 992,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "7527ac9ab5864c431be64d2f98215145c5f0da176c9ee10d10ec9935b0b5ed50",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_031fa280.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_031fa280",
+      "verification": {
+        "object_sha256": "8a4adeaf5931a45a055fbe0548678aeb2e2fa0b53c24e485630972ecf46f2381",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03283de8",
+      "behavior": "field immediate equality",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03283de8",
+      "inferred_fields": [
+        {
+          "offset": 1385,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "9bf1b63e02b209e4fb1bea3ffe0661c4231b846ee6f512d54f99509541905dd8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_03283de8.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03283de8",
+      "verification": {
+        "object_sha256": "e5c2b7b315486d1aa72193e9d44de20c8fc8e2a6f8094c9300deb3669d84e4a3",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03295144",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03295144",
+      "inferred_fields": [
+        {
+          "destination_offset": 16,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 20,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "30dcdfd3bf5a087252220fa4936eaf3045fe233aec38f3ec559ac2ce4e5675ae",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 20,
+      "source": "reconstructions/fn_03295144.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03295144",
+      "verification": {
+        "object_sha256": "3dacb3360e4e36416dcccaa0f0283fd0f64721074c9ea231082bac86987aeb68",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03300458",
+      "behavior": "bounded record selection",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "control-flow",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03300458",
+      "inferred_fields": [
+        {
+          "stride": 220,
+          "upper_bound": 6
+        }
+      ],
+      "sha256": "b1c5a336e24b63322a445b573e77755bff4238879b483aacb0f477da8709f496",
+      "signature_confidence": "inferred; original names and types unknown",
+      "size": 20,
+      "source": "reconstructions/fn_03300458.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03300458",
+      "verification": {
+        "object_sha256": "f6c004971126d102b0f2d628020aa2be9eef9ec4633f87a601e618aa35fce74e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033def50",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033def50",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033def50.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033def50",
+      "verification": {
+        "object_sha256": "e537084a44b0a54492b433e1d90a8694a750e17fa1dbaf89d7a7aac61a0fa89e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033def6c",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033def6c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033def6c.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033def6c",
+      "verification": {
+        "object_sha256": "cdc32ca5557362e40d2f2b91d8688547d73bc2fbaad4b84be3482727cffa9af7",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033def7c",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033def7c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_033def7c.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033def7c",
+      "verification": {
+        "object_sha256": "390b9aba9cc812d41508f6fb3e93796f12e08980afc92dfe7f33129655accba1",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033def88",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033def88",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033def88.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033def88",
+      "verification": {
+        "object_sha256": "c2f01b7e90d36b3fa364bad30bbbea573bf036293394a74c937bb0c83e3f563c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033def98",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033def98",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_033def98.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033def98",
+      "verification": {
+        "object_sha256": "007fcfa9d397df3e8cc787b059df7e49f21214a8a47d7328146fd770faae00db",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033defa4",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033defa4",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033defa4.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033defa4",
+      "verification": {
+        "object_sha256": "1214dd742a2fbc5d73c3ea38424b2c1cef0f960ae6e797559f0110241abdfab5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033defb4",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033defb4",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_033defb4.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033defb4",
+      "verification": {
+        "object_sha256": "bde2d82321bdf7a3f352a2fc9e19fdb837dd98d79eb8957e83d8d7f27f56171d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033defc0",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033defc0",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033defc0.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033defc0",
+      "verification": {
+        "object_sha256": "3c1e455e70fe150c31fdead8ced955c07783d543d46323f19983ea22d5d76c54",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033defd0",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033defd0",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_033defd0.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033defd0",
+      "verification": {
+        "object_sha256": "19455eb147a402daf1fd50be044cc9575e926ba96db7232fe08ac99bfad838a5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033defdc",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033defdc",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033defdc.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033defdc",
+      "verification": {
+        "object_sha256": "415fc330620b9ecc4cb7b9ef14d151825376c3bbba9ee6bfe18ef0babbf3df44",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x033f8c64",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_033f8c64",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "bee27a6fc86e58e849d9550b69e1541273a1c963e81c56ce6353125abce3289e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_033f8c64.cpp",
+      "source_seed": "fn_02c0f260",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_033f8c64",
+      "verification": {
+        "object_sha256": "55127d52aee4c8363ac7a5e6db23504419997de495e5abdfbeb9cdf23c0bada6",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0342fbf0",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0342fbf0",
+      "inferred_fields": [
+        {
+          "destination_offset": 2052,
+          "source_offset": 40,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 2068,
+          "source_offset": 56,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 2084,
+          "source_offset": 72,
+          "type": "unsigned int"
+        },
+        {
+          "destination_offset": 2100,
+          "source_offset": 88,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "81242aa77006dce920c27a8f4fdd50111404ec8336e65bde77c3c6a05f8d53ac",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 36,
+      "source": "reconstructions/fn_0342fbf0.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0342fbf0",
+      "verification": {
+        "object_sha256": "a6819cce47fcd5929189e1f361d1500cc1faf13f1354fa9f3a5f684222583d3c",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0344a29c",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0344a29c",
+      "inferred_fields": [
+        {
+          "destination_offset": 52,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 56,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 60,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "a358dc16c83d0aeafe31ca16e3c9ecf97bb6bdc3051a827bf3fdf45b84672bcb",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_0344a29c.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0344a29c",
+      "verification": {
+        "object_sha256": "2d9877641d06be98d377631312def1e4c73a59ee772554adca5de0b391515e50",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0344ba78",
+      "behavior": "ordered scalar copy",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0344ba78",
+      "inferred_fields": [
+        {
+          "destination_offset": 124,
+          "source_offset": 0,
+          "type": "float"
+        },
+        {
+          "destination_offset": 140,
+          "source_offset": 4,
+          "type": "float"
+        },
+        {
+          "destination_offset": 156,
+          "source_offset": 8,
+          "type": "float"
+        }
+      ],
+      "sha256": "cde07858214926f79a3a07a262f2755f91d709fd77113f3ad0e8590f64a8f09b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 28,
+      "source": "reconstructions/fn_0344ba78.cpp",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0344ba78",
+      "verification": {
+        "object_sha256": "c0e487009dd22335572dbd7700dddf6c8954ed205d3dd0bc02d770e3c802b0fe",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0344e75c",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0344e75c",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 100,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "5b5d47cfc9e3e2b77b52a8127631600314180a661548a832d6ba7676ba2429d5",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_0344e75c.cpp",
+      "source_seed": "fn_0344e750",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0344e75c",
+      "verification": {
+        "object_sha256": "551b637dbfe72506bc50348fc78a8bc0a804fd2c118eded77ff0e3e6ab97a156",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03491164",
+      "behavior": "read a scalar field with a constant offset",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03491164",
+      "inferred_fields": [
+        {
+          "offset": 140,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4c97da81baba5642fe864eb499f17f65e2f50165f943313ffb868b1df29c915",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03491164.cpp",
+      "source_seed": "fn_03490e00",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03491164",
+      "verification": {
+        "object_sha256": "dd0818c620dbee717829583bbe3648975da4899dbc79458f95f67d00377ba03a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03491178",
+      "behavior": "read a scalar field with a constant offset",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03491178",
+      "inferred_fields": [
+        {
+          "offset": 140,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "b7e45d789bcc0500b19bcace45aa04f5fe8efc9c8be6e02d88eab5e223b1839a",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03491178.cpp",
+      "source_seed": "fn_03490e80",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03491178",
+      "verification": {
+        "object_sha256": "f3009099d25a3ae5356e19b9894db4bfb40c25f28f32feb80b09acc15039c94e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03491b50",
+      "behavior": "read a scalar field with a constant offset",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03491b50",
+      "inferred_fields": [
+        {
+          "offset": 140,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "ee8abb9aa5ad34083c35954ad6385707ecdc646461739d2c0f7234d56aaf4a90",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03491b50.cpp",
+      "source_seed": "fn_034914fc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03491b50",
+      "verification": {
+        "object_sha256": "3004dc9163a2cdffd7dbadaa1306add93d9d27da1d7087fac177d705f2bc0376",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03491e68",
+      "behavior": "read a scalar field with a constant offset",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03491e68",
+      "inferred_fields": [
+        {
+          "offset": 140,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4c97da81baba5642fe864eb499f17f65e2f50165f943313ffb868b1df29c915",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03491e68.cpp",
+      "source_seed": "fn_03490e00",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03491e68",
+      "verification": {
+        "object_sha256": "51db4f19f1d7dc05f1a0d63a7f690982128e0e72088d94adda5afe8d6442b9fc",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x034eee74",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_034eee74",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "29f861d54ee0bb327a3b4af16e7a01e0e36aadc0e4a17d10aa0dfbee24f8c12c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_034eee74.cpp",
+      "source_seed": "fn_0324d1a0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_034eee74",
+      "verification": {
+        "object_sha256": "b355b8e1096b937dd17c445bd9bb16759ec4516dba451e5bbbacede1e05c44cb",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x034f2a94",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_034f2a94",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "29f861d54ee0bb327a3b4af16e7a01e0e36aadc0e4a17d10aa0dfbee24f8c12c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_034f2a94.cpp",
+      "source_seed": "fn_0324d1a0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_034f2a94",
+      "verification": {
+        "object_sha256": "386185b73740e7f442ef6c37ca38d6a73857718c13cf037daa5cda36c0aad02f",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x034f3144",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_034f3144",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "69c9d043910f178f021c2b0e00ff85b3c57a30dfd8b9765f63debb3e315a6d61",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_034f3144.cpp",
+      "source_seed": "fn_0324d1d0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_034f3144",
+      "verification": {
+        "object_sha256": "726611350f1ea1d30fff31751a3c3d8490275fe22fde9c04fab108d394909d7d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x034f546c",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_034f546c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "9a4ed59ac9172c23b461fb53dc65e8a74c5938913ce8de0769e15a4e5a47907f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_034f546c.cpp",
+      "source_seed": "fn_0324d200",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_034f546c",
+      "verification": {
+        "object_sha256": "4ddd5ce5211160f11964453e456de895b4912fa25b2187da16d5e67f1accc2e1",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x034fb8f8",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_034fb8f8",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "9a4ed59ac9172c23b461fb53dc65e8a74c5938913ce8de0769e15a4e5a47907f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_034fb8f8.cpp",
+      "source_seed": "fn_0324d200",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_034fb8f8",
+      "verification": {
+        "object_sha256": "3660ce0924b3a47638b7f704de4da121f2e672de71ed3b40aeeb71bfc4b16f10",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x034fbaa8",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_034fbaa8",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "b63c1e07c3a8b0ac3e6ae0938f43551322c8f4008d2fa41860c5d77e2a63aa29",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_034fbaa8.cpp",
+      "source_seed": "fn_034f1c60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_034fbaa8",
+      "verification": {
+        "object_sha256": "c25b4225351db8744572c99a1e09fe13ba652daa9c2098d4fe388975ebfa171b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x035bc718",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_035bc718",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "bee27a6fc86e58e849d9550b69e1541273a1c963e81c56ce6353125abce3289e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_035bc718.cpp",
+      "source_seed": "fn_02c0f260",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_035bc718",
+      "verification": {
+        "object_sha256": "62ec193be1548e3f8e4811840828c3eeb27bad399ceb55230d36cb1cbaca1453",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x035e0630",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_035e0630",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_035e0630.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_035e0630",
+      "verification": {
+        "object_sha256": "d38120ee5fab788e4abd6845f8bc4c1af6a1df0333c093d4ca9cc824884d83ee",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x036a7048",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_036a7048",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "bee27a6fc86e58e849d9550b69e1541273a1c963e81c56ce6353125abce3289e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_036a7048.cpp",
+      "source_seed": "fn_02c0f260",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_036a7048",
+      "verification": {
+        "object_sha256": "44ef8b8e4b9a2b37743e67bfb621c5a8f9d807e27c28edb713c4f9b951a0461f",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x036f3c10",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_036f3c10",
+      "inferred_fields": [
+        {
+          "offset": 696,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 176,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d8ca4c539adb5a0227e7a6b8c3c41e5f5769ddc76c79d7d0eb09c072fe4a5312",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_036f3c10.cpp",
+      "source_seed": "fn_036f3c04",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_036f3c10",
+      "verification": {
+        "object_sha256": "6a0ccfd631f8cb44c64bb92bdc89cca89ed81d4ffe85f60f2c0ce066b05b2618",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x036f3c1c",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_036f3c1c",
+      "inferred_fields": [
+        {
+          "offset": 696,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 176,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d8ca4c539adb5a0227e7a6b8c3c41e5f5769ddc76c79d7d0eb09c072fe4a5312",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_036f3c1c.cpp",
+      "source_seed": "fn_036f3c04",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_036f3c1c",
+      "verification": {
+        "object_sha256": "68c6afbd0ae67401ea63154527b8ce54181fc249cb8d3a3ad5f997536d7ed959",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x036f3c34",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_036f3c34",
+      "inferred_fields": [
+        {
+          "offset": 696,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 180,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "35e69d7ca3fed26ac4b481227603131249fdab7616f5ffd94ff97217646c5b57",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_036f3c34.cpp",
+      "source_seed": "fn_036f3c28",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_036f3c34",
+      "verification": {
+        "object_sha256": "26814be3ef31052134db03fe92180ab7168e39cf570faf87d254ab5d7d482ee9",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0377a21c",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0377a21c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "b6d88ac7f96ab21cbac7260f12efab5bfd8e8dc6673b8d47e27740610f3056a8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_0377a21c.cpp",
+      "source_seed": "fn_034eb9dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0377a21c",
+      "verification": {
+        "object_sha256": "ef54e033c12d5ec1d1570bbe7e797a6f2409916cdb64005ec7f6009fb7be2cb6",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0377a460",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0377a460",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "b6d88ac7f96ab21cbac7260f12efab5bfd8e8dc6673b8d47e27740610f3056a8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_0377a460.cpp",
+      "source_seed": "fn_034eb9dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0377a460",
+      "verification": {
+        "object_sha256": "f409158e652941344060ce73d9dfffa052c0d5e7966cff358ad657e1d58fa313",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x037dddcc",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_037dddcc",
+      "inferred_fields": [
+        {
+          "offset": 12,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "eff686263272715455a4afed6d622b939395844dc864c2523267d24dad1b0d02",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_037dddcc.cpp",
+      "source_seed": "fn_036295e4",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_037dddcc",
+      "verification": {
+        "object_sha256": "d2c929a52ea702e921dccb660d166bca7c604d7245879130eddc603a80be1f2d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x037de398",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_037de398",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "b63c1e07c3a8b0ac3e6ae0938f43551322c8f4008d2fa41860c5d77e2a63aa29",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_037de398.cpp",
+      "source_seed": "fn_034f1c60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_037de398",
+      "verification": {
+        "object_sha256": "15d96a79ee18f54e46266d7e4e91fa8c40c0bb43a903d0889d2b87142756564f",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x037e5f50",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_037e5f50",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "69c9d043910f178f021c2b0e00ff85b3c57a30dfd8b9765f63debb3e315a6d61",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_037e5f50.cpp",
+      "source_seed": "fn_0324d1d0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_037e5f50",
+      "verification": {
+        "object_sha256": "d02be28ec776b0521271eda915d7ed986b12b35f5b1fdb871cefa82a150ee838",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x037e655c",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_037e655c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "9bfcb17846483a8316105f911851b6ba0b50bbb273c12ffb38dcd88757349fe8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_037e655c.cpp",
+      "source_seed": "fn_0324d230",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_037e655c",
+      "verification": {
+        "object_sha256": "4a074fdcabb736579cee3db0caaac2621cb4fd4fb054c05cead8700b780b96f6",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x038e4ff0",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_038e4ff0",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "c59f462ee15727ab63027f4ddbf8a53eb632cc7667f041bc5a02f697aea9640f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_038e4ff0.cpp",
+      "source_seed": "fn_02e351fc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_038e4ff0",
+      "verification": {
+        "object_sha256": "568deb66b0c98bd7dad0b1be1a8dcea1bbc9de1800b05373e38eca409b585c60",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x038e872c",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_038e872c",
+      "inferred_fields": [
+        {
+          "offset": 20,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "c7aacda5c7fd1de24805f07e719d42ffd589277abbcf059f71fd6ad136fc2c54",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_038e872c.cpp",
+      "source_seed": "fn_02e399dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_038e872c",
+      "verification": {
+        "object_sha256": "05fc5888103ad95cfb48f6e985b4ac9d4eab7d1c2d3046ad78fd0303d9d51b00",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0396bf60",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0396bf60",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "b6d88ac7f96ab21cbac7260f12efab5bfd8e8dc6673b8d47e27740610f3056a8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_0396bf60.cpp",
+      "source_seed": "fn_034eb9dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0396bf60",
+      "verification": {
+        "object_sha256": "a99149301a6b107470901c497a19c2d7f8cdaae7ce3958fb2a6c6cbaf25b8701",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0396d140",
+      "behavior": "read a scalar field with a constant offset",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0396d140",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "7c1c02e043a7c67751f6f01aa7f1582dfeedbda45c9c01208bd798ecb627dcca",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_0396d140.cpp",
+      "source_seed": "fn_0396cfa8",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0396d140",
+      "verification": {
+        "object_sha256": "3689116bad32c7e0b818561759b77288ae9d83f6af8c92f1c821f726bdc2a3aa",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x039ad644",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_039ad644",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_039ad644.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_039ad644",
+      "verification": {
+        "object_sha256": "cbfd55f3ddcfb733da4eee4106b17906cc817ba8b287d66a617c2ad431429e76",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x039ad654",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_039ad654",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_039ad654.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_039ad654",
+      "verification": {
+        "object_sha256": "fb62aa1fe96bea7fab8bf768c52f24fc7a0251181febd2185dda12dd13f1b10b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x039c8af4",
+      "behavior": "update a scalar field by a constant",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_039c8af4",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d4646e3193962428fd4691298eeb4d0900765550930eb9454170aa8a80361d0c",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_039c8af4.cpp",
+      "source_seed": "fn_033def40",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_039c8af4",
+      "verification": {
+        "object_sha256": "07b3c72803450b76e3780fe73f4ff5072693ad9fcc7a9199226933e537e84773",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x039c8b04",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_039c8b04",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_039c8b04.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_039c8b04",
+      "verification": {
+        "object_sha256": "186336c0e1926a9e343050cf89f827951f3a998e82a7d1520f10090467fe7666",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x039c8b10",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_039c8b10",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "dbc8aea2fe22c7e5991840a1fcbb2ac651e45d72b70ac6190fd82b8a96403290",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_039c8b10.cpp",
+      "source_seed": "fn_033def60",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_039c8b10",
+      "verification": {
+        "object_sha256": "0a38e751e64cebbe048c8edc2ae4103b5bec0456570ab405986274e42a3ae8f3",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03b9140c",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03b9140c",
+      "inferred_fields": [
+        {
+          "offset": 24,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 12,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "d56cb32b37b0127e4c9102d7d0dba2d34168763792ba37151b26e59b06a749da",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03b9140c.cpp",
+      "source_seed": "fn_03b884e8",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03b9140c",
+      "verification": {
+        "object_sha256": "689055f856a1e190b71bb37289e608b47de7e6dceedfb552d4b9fa1b47ec29db",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03bf6b34",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03bf6b34",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "135196ea9add54cc00e384389733fe608b97db40f8d0ee204539e6a1bd14dd94",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03bf6b34.cpp",
+      "source_seed": "fn_0314dbe4",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03bf6b34",
+      "verification": {
+        "object_sha256": "aeb60126bdc631b80903d6aaab4dab63a156a6aa535345dd9f8aef018285a981",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03bf6b40",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03bf6b40",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "3e24b646c18dea93e97640574fa55decfeaab7f849ecdb9c8cb27ea0830be20b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03bf6b40.cpp",
+      "source_seed": "fn_0314dbf0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03bf6b40",
+      "verification": {
+        "object_sha256": "0bad7595b9270ed7b3786503c313b2cb9ef3a6f857b10019ba86640624427487",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03bf6b4c",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03bf6b4c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "3e24b646c18dea93e97640574fa55decfeaab7f849ecdb9c8cb27ea0830be20b",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03bf6b4c.cpp",
+      "source_seed": "fn_0314dbf0",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03bf6b4c",
+      "verification": {
+        "object_sha256": "c3b7ca318ae62c5d132bf378577023f062605feb0bf5a1aa519b2bd75ea22a27",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03bf6b58",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03bf6b58",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "2c3483b3e78d17aedeee19f1f021f90e7f683d77bd1289f752033f456c90a574",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03bf6b58.cpp",
+      "source_seed": "fn_0314ee94",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03bf6b58",
+      "verification": {
+        "object_sha256": "7dbc759188d180c93735260129a55896e9f9cd968740b570cb319c23765ac85b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03c124c0",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03c124c0",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "b6d88ac7f96ab21cbac7260f12efab5bfd8e8dc6673b8d47e27740610f3056a8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03c124c0.cpp",
+      "source_seed": "fn_034eb9dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03c124c0",
+      "verification": {
+        "object_sha256": "1d696514eb18319d71413b1ade7ea2f044b293a87fbd12a3f7a5fac28ba00c2e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03c3515c",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03c3515c",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "c59f462ee15727ab63027f4ddbf8a53eb632cc7667f041bc5a02f697aea9640f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03c3515c.cpp",
+      "source_seed": "fn_02e351fc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03c3515c",
+      "verification": {
+        "object_sha256": "25b762a8a8d6f11d0059cbe8608c1d9b5e08f12e4c6fa6e638e11a7786774de5",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03c9f39c",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03c9f39c",
+      "inferred_fields": [
+        {
+          "offset": 74,
+          "type": "unsigned short"
+        }
+      ],
+      "sha256": "f29e0bda7fd66a54f30ceeaf3c59435d5b3f8d78907532f6eb156b44ca74ab1f",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03c9f39c.cpp",
+      "source_seed": "fn_03c9f390",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03c9f39c",
+      "verification": {
+        "object_sha256": "9735b698bea66aa1977b3b5eab349f406bb4e73d1629e2e40482fcdc6c8f0a5b",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03eafc8c",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03eafc8c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03eafc8c.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03eafc8c",
+      "verification": {
+        "object_sha256": "2289e7be809e85a25f492c107b256a96f800393fda1d9ef6754caf495246b28e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03eb438c",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03eb438c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03eb438c.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03eb438c",
+      "verification": {
+        "object_sha256": "590a1b01e8dc1a815055dc45dee036b645eb66a6e185022d438ac939a0630b23",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03ece830",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03ece830",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "cded78860c19b116ddea5d5ec328d1f45fbd443895d021f03ee657280ac1600e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03ece830.cpp",
+      "source_seed": "fn_03e96748",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03ece830",
+      "verification": {
+        "object_sha256": "ddda66442efd807996157012cd54c61c19e27524bc02b0b294fe08478087425e",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03eeed58",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03eeed58",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03eeed58.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03eeed58",
+      "verification": {
+        "object_sha256": "5e252527e73434cfdd8a5ac81e36f9ace596b55894599cd135ba9c184668a83d",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03f50510",
+      "behavior": "extract bits from a scalar field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03f50510",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "cded78860c19b116ddea5d5ec328d1f45fbd443895d021f03ee657280ac1600e",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03f50510.cpp",
+      "source_seed": "fn_03e96748",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03f50510",
+      "verification": {
+        "object_sha256": "25615e2c2908a0bb41b371653ee09ef0bc6d7d3c65f0bc0b1fd252eac6e39fcb",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03f5f420",
+      "behavior": "test a scalar field for zero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03f5f420",
+      "inferred_fields": [
+        {
+          "offset": 4,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "562831704ea9a7370d68aa6c0569084d01bf3710a8a572f52c507ff9e8d607f5",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_03f5f420.cpp",
+      "source_seed": "fn_02f0cb58",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03f5f420",
+      "verification": {
+        "object_sha256": "3e3db27d1bd8d28bba881927fcd7ea136c449f72b40bad34887a1b196a5833e9",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x03fbc3fc",
+      "behavior": "read a scalar through an object pointer field",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_03fbc3fc",
+      "inferred_fields": [
+        {
+          "offset": 8,
+          "type": "InferredInner*"
+        },
+        {
+          "inner_offset": 32,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "94c98d508645fa90de256d140749bcb27af884c8f06dd03bbbdceec3f2a0abd2",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 12,
+      "source": "reconstructions/fn_03fbc3fc.cpp",
+      "source_seed": "fn_037e61fc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_03fbc3fc",
+      "verification": {
+        "object_sha256": "a87bebf3b4c1071768adf2e445b3b3e2a9460c4439a5429bd3d9f2990163fc82",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x04255f4c",
+      "behavior": "update field bits using an argument",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_04255f4c",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned char"
+        }
+      ],
+      "sha256": "343799cf229ffe8baf2910308c01e87e5266edea07162fd5c05e9244a724bfb4",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_04255f4c.cpp",
+      "source_seed": "fn_026b2758",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_04255f4c",
+      "verification": {
+        "object_sha256": "feac67c4270ae29b8488596de5c5dd974d5f13164a42a199b97c7346ef9b0d1a",
+        "relocations": 0
+      }
+    },
+    {
+      "address": "0x0429a0e0",
+      "behavior": "test a scalar field for nonzero",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-speed",
+      "compiler_version": "GHS 5.3.22, -Ospeed, pinned decomp.me archive, wibo 1.2.0",
+      "id": "fn_0429a0e0",
+      "inferred_fields": [
+        {
+          "offset": 0,
+          "type": "unsigned int"
+        }
+      ],
+      "sha256": "b6d88ac7f96ab21cbac7260f12efab5bfd8e8dc6673b8d47e27740610f3056a8",
+      "signature_confidence": "inferred; original types, names and portable layout unknown",
+      "size": 16,
+      "source": "reconstructions/fn_0429a0e0.cpp",
+      "source_seed": "fn_034eb9dc",
+      "status": "unmatched",
+      "subsystem": "unclassified",
+      "symbol": "fn_0429a0e0",
+      "verification": {
+        "object_sha256": "796e8f72d1b30133a06f4f85d599270b40ee117d1069efce36219aa06f7a6555",
+        "relocations": 0
+      }
     }
   ]
 }
