@@ -4,7 +4,7 @@
 
 Community C++ reconstruction of **Wii U v208**, with deterministic matching against the original PowerPC code. The intended consumer is a native Linux ARM port targeting **H700, 1 GB RAM, GLES 3.2 and no swap**.
 
-This is a new foundation, not a playable decompilation. The initial pilot contains **100 function tasks and 17 verified implementations (304 bytes)**, including loops, branches and a bound external call. These counts are not whole-game completion percentages. GHS 5.3.22 reproduces nine implementations; Clang reproduces eight leaves. The exact historical compiler version remains unconfirmed.
+This is a new foundation, not a playable decompilation. The initial pilot contains **100 function tasks and 70 verified implementations (1,048 bytes)**, including loops, branches and a bound external call. These counts are not whole-game completion percentages. GHS 5.3.22 reproduces 62 implementations; Clang reproduces eight leaves. The exact historical compiler version remains unconfirmed.
 
 ## Contribute with your agent
 
