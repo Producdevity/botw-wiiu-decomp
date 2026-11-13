@@ -40,6 +40,7 @@ Without game files, anyone can independently rebuild the published implementatio
 
 ```sh
 python3 tools/decomp.py check --all --hash-only
+python3 tools/contract_audit.py --strict
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
@@ -47,6 +48,7 @@ Public CI compares against fixed function hashes, addresses and reference bindin
 
 - [Verification contract and current coverage](docs/verification.md)
 - [Reference batches and selection evidence](docs/reference-batches.md)
+- [Cross-file C++ declaration checks](docs/contract-audit.md)
 - [Compiler evidence and prior projects](docs/toolchain.md)
 - [Unaccepted candidates and register diagnostics](docs/register-diagnostics.md)
 - [Development priorities](docs/roadmap.md)

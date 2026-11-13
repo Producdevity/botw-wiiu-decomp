@@ -4,7 +4,7 @@ This project reconstructs Breath of the Wild for Wii U from a contributor's own 
 
 ## Set up
 
-1. Read the repository README, [toolchain status](toolchain.md), [contribution rules](contributing.md) and current function manifest.
+1. Read the repository README, [toolchain status](toolchain.md) and [contribution rules](contributing.md). Use the task list and selected function packet below; avoid loading the entire function manifest into context.
 2. Use a fresh checkout or preserve the contributor's existing changes. Authenticate `gh` with the contributor's GitHub account. Fork `Producdevity/botw-wiiu-decomp` if that account cannot push to it. Create a responsibility-based branch in the fork.
 3. Locate the contributor-supplied RPX. Do not download or upload game files. Run:
 
@@ -26,7 +26,7 @@ This project reconstructs Breath of the Wild for Wii U from a contributor's own 
    Both preview types keep bytes unchanged and annotate original relocations without applying or masking them. They are investigation context, not acceptance proof. Keep all packets private.
 3. Check `candidates/FUNCTION.cpp` for an existing unaccepted starting point. [Register diagnostics](register-diagnostics.md) can distinguish some allocation differences, but never replace the exact-byte check. Reconstruct the function as readable C++. Follow the manifest's source and symbol conventions. Do not change the expected hash, address, size or checker to make a submission pass.
 4. Run `python3 tools/decomp.py check FUNCTION`. Fix mismatches within the user's budget. A compilation error, unsupported relocation or unresolved symbol is a failed check, not a partial match.
-5. Before submission, run `python3 tools/decomp.py check --all` and the repository tests. Inspect the staged diff for generated or proprietary files.
+5. Before submission, run `python3 tools/decomp.py check --all`, `python3 tools/contract_audit.py --strict` and the repository tests. Reconcile any declaration conflicts across affected callers and definitions, then repeat the checks. Inspect the staged diff for generated or proprietary files.
 6. Commit with the contributor's configured Git author. Push to their fork and open a focused PR against `master`. Provide function IDs, compiler version, check results and naming evidence. Link the claim issue; do not mark source accepted yourself.
 7. Release the claim when finished or stopped. If blocked, preserve useful source in a draft PR and describe the missing type, toolchain behaviour or reference mapping without publishing disassembly.
 
