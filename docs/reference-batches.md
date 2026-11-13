@@ -6,6 +6,8 @@
 | --- | ---: | ---: | --- |
 | bootstrap | 100 | 1,956 | Completed before expansion |
 | larger-functions | 100 | 12,288 | Unmatched |
+| repeated-functions | 503 | 4,528 | All verified |
+| scalar-fields | 262 | 3,516 | All verified |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -14,3 +16,7 @@ Before publication, all 200 spans were checked against the pinned Wii U USA v208
 Selection conservatively excludes apparent r2/r13 small-data dependencies. This filter does not establish that every selected function can already be reconstructed by the supported compiler profiles. Unsupported constants, dependencies or compiler behavior remain failed tasks until the verifier supports them with tests.
 
 Original bytes and disassembly stay local. A maintainer reviews reference changes separately; ordinary source submissions cannot change these references or the verifier. Caller/callee previews help recover contracts but never change the bytes accepted by matching.
+
+The repeated-functions batch contains independently discovered addresses with machine-code bodies identical to earlier accepted functions. Each source is reproduced from its recorded `source_seed`, with only the function identifier changed, then compiled and checked independently.
+
+The scalar-fields batch contains 262 new, unique 12–16-byte bodies reconstructed as typed C++ field reads, updates and bit operations. All were rediscovered from the pinned RPX, checked for overlap and original relocations, and rebuilt against original bytes before publication. Fifteen nonmatching proposals were excluded. Structure names, signatures and field layouts remain inferred for the Wii U ABI. Existing references and the 75 unresolved larger tasks were preserved.
