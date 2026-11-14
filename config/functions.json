@@ -15257,6 +15257,18 @@
       "verification": {
         "object_sha256": "e08137ba806ebb56fdde64bf7c55605fa3f1a7049a9fa16d5592fe6e7ef4a641",
         "relocations": 0
+      },
+      "source_contract": {
+        "return_type": "unsigned int",
+        "parameter_types": [
+          "const void *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "exported_contract": "unsigned int (const void *)",
+        "callee_evidence": "Reads the unsigned word at offset zero and returns bit one normalized to zero or one. Opaque external pointer retains the internal inferred word view.",
+        "caller_evidence": "The original fn_02470538 caller passes its nonnull nested pointer to the helper and tests the numeric result for zero."
       }
     },
     {
@@ -30263,7 +30275,19 @@
       "bindings": {
         "fn_0314dbf0": "0x0314dbf0"
       },
-      "compiler_profile": "ghs-5.3.22-auto"
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "unsigned char",
+        "parameter_types": [
+          "const void *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "exported_contract": "unsigned char (const void *)",
+        "callee_evidence": "Loads the nested pointer at object offset 44; null yields zero, otherwise invokes fn_0314dbf0 and normalizes the result to a byte. No other incoming argument is consumed or forwarded.",
+        "caller_evidence": "Two decoded direct callers supply the object in r3 and test the returned r3 for zero. Historical bool versus byte declarations remain unresolved."
+      }
     },
     {
       "id": "fn_0247b6dc",

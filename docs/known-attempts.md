@@ -30,6 +30,7 @@ the record when its blocker is resolved.
 | `fn_022ffa68` | Aggregate, scalar and member forms of three word copies plus a byte flag update. | Scalar forms preserve overlapping-copy order and reach 44 bytes, but differ in allocation. Aggregate assignment is not a substitute for that order. |
 | `fn_02579a1c` | Accessor and address-word forms of nested flag/byte updates and an outer halfword update. | The typed-pointer form incorrectly removes a required pointer reload. The address-word hypothesis restores it but still differs; the alias/layout contract remains open. |
 | `fn_02802f5c` | Direct value, aggregate, member and copied-value operator forms of a word comparison. | They remove the original stack store/load. Neither a by-value aggregate nor an explicit copy establishes the original source contract. |
+| `fn_02470538` | Three null-guarded predicate forms across all six fixed profiles; the closest emits 72 bytes. The helper now has a shared opaque pointer interface. | Final byte normalization and LR-load scheduling differ. More boolean spelling changes need new compiler or source evidence. A readable candidate is available. |
 | `fn_02a2d984` | Three nonvolatile float-pair copies, including an archived starting source. | All emit 28 bytes instead of 32 by removing an observed float reread. Recover the alias/layout evidence before changing storage qualifiers. |
 
 ## Fresh control-flow cases

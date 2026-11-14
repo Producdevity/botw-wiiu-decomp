@@ -1,9 +1,12 @@
+#include "botw/field_accessors.h"
+
 namespace {
-struct InferredObject {
+struct ObjectView {
     unsigned int value;
 };
 }
 
-extern "C" unsigned int fn_0314dbf0(const InferredObject* object) {
-    return ((static_cast<unsigned int>(object->value) >> 1) & 0x1u);
+extern "C" unsigned int fn_0314dbf0(const void* context) {
+    const ObjectView* object = static_cast<const ObjectView*>(context);
+    return (object->value >> 1) & 1u;
 }
