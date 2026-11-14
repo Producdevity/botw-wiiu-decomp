@@ -30,3 +30,18 @@ is suppressed. This is a bounded overlay, not a complete Espresso disassembler.
 Only mnemonic/operand text changes; original instruction bytes, addresses,
 reference hashes, and exact-match acceptance remain unchanged. Tests use synthetic
 encodings. Private RPX disassembly remains under ignored `.local/`.
+
+Private ordinary PowerPC rows also carry independently written condition and
+shift-operand annotations. Pure CR branches identify the field, bit and required
+state; supported word shifts distinguish register counts from immediate counts.
+LLVM's mnemonic, operands, target, address and raw bytes remain intact. Original
+row bytes are checked before comments are appended. Other branch-option forms
+and unsupported encodings retain LLVM's output.
+
+Encoding facts were checked against the [NXP MPC750 manual, table 2-26 and
+instruction listings](https://www.nxp.com/docs/en/reference-manual/MPC750UM.pdf#page=120),
+Cemu's [field definitions](https://github.com/cemu-project/Cemu/blob/main/src/Cafe/HW/Espresso/Interpreter/PPCInterpreterInternal.h),
+[branch implementation](https://github.com/cemu-project/Cemu/blob/main/src/Cafe/HW/Espresso/Interpreter/PPCInterpreterOPC.cpp)
+and [unordered comparison behavior](https://github.com/cemu-project/Cemu/blob/main/src/Cafe/HW/Espresso/Interpreter/PPCInterpreterFPU.cpp).
+No implementation was copied. Tests use synthetic encodings. Matching, reference
+hashes and inventory selection are unchanged.

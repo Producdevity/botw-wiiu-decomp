@@ -34,6 +34,9 @@ without requiring them to know decompilation or PowerPC.
 
 ## Claim and investigate
 
+Check the selected ID in [known attempts](known-attempts.md) before repeating a
+failed approach. Use a new evidence-backed hypothesis or choose another task.
+
 ```sh
 python3 tools/community.py summary
 python3 tools/community.py list
@@ -60,6 +63,10 @@ forward every observed argument and propagated return. Track stack objects passe
 by address, including descriptor or table fields; those fields are not additional
 register arguments.
 
+For indexed records, derive the complete stride, including trailing storage,
+and assert `sizeof` against that stride before trying compiler profiles. Trace
+each branch condition and distinguish register operands from immediate values.
+
 Use established shared declarations under `include/botw/`. Keep unknown layouts
 behind opaque pointer boundaries with internal layout casts. Do not export
 translation-unit-local record types. Recheck callers and callees after a shared
@@ -74,7 +81,10 @@ Packet previews marked `UNVERIFIED_BOUNDARY` are at most 256 bytes and may cross
 function boundaries. `UNVERIFIED_CALLER_WINDOW` is callsite context, not a function
 boundary. Direct caller previews are capped at eight; indirect and relocated
 calls are excluded. Relocation annotations preserve original bytes. These are
-private investigation aids, not acceptance proof.
+private investigation aids, not acceptance proof. Supported branches name the CR bit
+and its required state; shift notes distinguish register counts from immediates.
+Regenerate an old packet with `python3 tools/decomp.py packet FUNCTION` to get
+these annotations.
 
 ## Reconstruct and verify
 

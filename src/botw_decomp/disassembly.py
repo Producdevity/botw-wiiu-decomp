@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 
 from .espresso import decode
+from .ppc_annotations import annotation
 
 
 def locate() -> str:
@@ -78,9 +79,12 @@ def disassemble(code: bytes, address: int, symbol: str) -> str:
 def _overlay(output: str, code: bytes, address: int) -> str:
     overrides = {}
     for offset in range(0, len(code), 4):
-        instruction = decode(int.from_bytes(code[offset:offset + 4], "big"))
-        if instruction is not None:
-            overrides[address + offset] = (code[offset:offset + 4], instruction.text)
+        original = code[offset:offset + 4]
+        word = int.from_bytes(original, "big")
+        instruction = decode(word)
+        note = None if instruction is not None else annotation(word)
+        if instruction is not None or note is not None:
+            overrides[address + offset] = (original, instruction.text if instruction else None, note)
     if not overrides:
         return output
     row = re.compile(r"^(\s*([0-9a-fA-F]+):[ \t]+)((?:[0-9a-fA-F]{2}[ \t]+){4})([^\r\n]*)(\r?\n)?$")
@@ -90,12 +94,13 @@ def _overlay(output: str, code: bytes, address: int) -> str:
         match = row.fullmatch(line)
         site = int(match[2], 16) if match else None
         if site in overrides:
-            original, text = overrides[site]
+            original, text, note = overrides[site]
             if site in seen or bytes.fromhex(match[3]) != original:
-                raise ValueError("llvm-objdump Espresso row disagrees with original bytes")
+                raise ValueError("llvm-objdump overlay row disagrees with original bytes")
             seen.add(site)
-            line = match[1] + match[3] + text + (match[5] or "")
+            body = text if text is not None else match[4] + "; " + note
+            line = match[1] + match[3] + body + (match[5] or "")
         lines.append(line)
     if seen != overrides.keys():
-        raise ValueError("llvm-objdump omitted an Espresso instruction row")
+        raise ValueError("llvm-objdump omitted an overlay instruction row")
     return "".join(lines)
