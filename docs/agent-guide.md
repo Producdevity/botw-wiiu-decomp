@@ -106,6 +106,10 @@ PYTHONPATH=src python3 -m unittest discover -s tests
 
 The full compilation report is retained in `.local/last-check.json`; `--summary` keeps terminal output concise.
 
+To compare local edits with published interfaces, pass `--reference-root` to the
+contract audit with a clean default-branch checkout. CI supplies that trusted
+checkout automatically.
+
 A compile error, unsupported relocation or unresolved symbol is a failed check.
 Never modify expected hashes, boundaries, bindings or verification tools to make
 a source submission pass. Resolve declaration conflicts, then repeat affected

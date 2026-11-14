@@ -4,12 +4,13 @@
 C-linkage contract differences without requiring an RPX. It does not compile
 reconstructions for acceptance or change the exact-byte verification gate.
 
-The audit parses every implemented caller with manifest bindings, its
-implemented callees, and implemented functions with a structured `source_contract`.
+The audit parses every trusted published function, implemented callers with
+manifest bindings, their implemented callees, and implemented functions with a
+structured `source_contract`.
 It compares caller declarations with published definitions,
 and repeated declarations for callees without definitions. Each report records
 coverage, source/header/manifest hashes, Git state, parser identity, unsupported
-files and snapshot changes. Indirect calls and functions outside that scope are
+files and snapshot changes. Indirect calls and new functions outside that scope are
 not checked. A missing callee definition remains explicitly unvalidated.
 
 Function-reference rows may opt into a reviewed, chosen source interface:
@@ -41,8 +42,11 @@ Typedef aliases and top-level parameter qualifiers normalize as usual. Every
 pinned mismatch, including object-pointer differences, is a conflict. Unsupported
 analysis or a missing unique definition makes the audit incomplete. Unimplemented
 unmatched references do not require source files; CI's existing missing-source
-policy remains authoritative. Rows without `source_contract` retain their existing
-scope and behavior.
+policy remains authoritative. For existing trusted definitions without `source_contract`, the trusted
+source definition and trusted headers supply the expected AST interface. The
+candidate must keep the same unique definition at the trusted manifest path.
+Explicit trusted metadata takes priority over this fallback. New tasks without a
+trusted definition retain the existing evidence and review requirements.
 
 This pins a maintainer-reviewed source interface. It does not recover the
 historical game's prototype, prove an opaque record's layout, or prove that
@@ -52,18 +56,23 @@ omitted historical arguments never existed. The prose in
 For separate trusted/candidate checkouts, use
 `--root /path/to/candidate --reference-root /path/to/trusted`. All reference rows,
 source paths, binding edges, selection, and expected contracts then come from the
-trusted manifest, captured and hashed before analysis. Source/header content still
-comes from the candidate. CI passes both roots explicitly and uses its base
+trusted manifest, captured and hashed before analysis. Candidate definitions use candidate headers; fallback expected definitions
+use trusted sources and headers. Both input sets are hashed and checked for
+snapshot and source/header inventory drift. CI passes both roots explicitly and uses its base
 checkout's verifier; ordinary source PRs cannot edit `config/functions.json` under
 the existing maintainer-only file policy. Coherent candidate header/definition
 changes cannot rewrite a trusted contract. Without `--reference-root`, the local
-audit reads metadata from `--root` as before.
+audit uses `--root` for both sides. Such a self-comparison does not detect edits
+to its own fallback baseline; use a separate trusted checkout for preservation.
 
 Return/parameter types, arity, variadicness, calling convention, exception
 specifications and address spaces come from libclang's C++ AST. Typedef aliases and top-level parameter qualifiers normalize
 to the same contract. Object-pointer differences require C++ contract review;
 equal pointer widths do not make them consistent. Anonymous/internal record
-identities remain specific to their translation unit. A report cannot determine
+identities remain specific to their translation unit. Only same-ID trusted/candidate
+baseline comparisons normalize the corresponding translation-unit root paths;
+cross-TU comparisons keep their original distinct identities. Unexpected internal
+scopes other than the corresponding resolved main-TU path fail closed. A report cannot determine
 which inferred contract matches the original game. Record identity does not prove
 ODR or layout equivalence; forward declarations and completed external records
 can share a contract identity.
