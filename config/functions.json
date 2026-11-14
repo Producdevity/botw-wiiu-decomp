@@ -37898,6 +37898,246 @@
         "parameter_types": [],
         "variadic": false
       }
+    },
+    {
+      "address": "0x020175c4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10462c20": "0x10462c20"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10462c20",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10462c20",
+          "type": 4
+        }
+      ],
+      "id": "fn_020175c4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "ec5e4837a956e3ba7620d542d242d40b719a153540179d96b4cf3d905d003e2f",
+      "size": 12,
+      "source": "reconstructions/fn_020175c4.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_020175c4",
+      "signature_confidence": "Chosen minimal interface supported by body and reviewed caller uses; historical unused arguments and exact source declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
+        "caller_evidence": "Seventeen decoded direct calls; reviewed callers compare the zero-extended result with zero."
+      }
+    },
+    {
+      "address": "0x02a2bb80",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463794": "0x10463794"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463794",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463794",
+          "type": 4
+        }
+      ],
+      "id": "fn_02a2bb80",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "46955232d7ab3d812fb4635e194ae1e8a32e1ee8131a54790d940298f5614077",
+      "size": 12,
+      "source": "reconstructions/fn_02a2bb80.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02a2bb80",
+      "signature_confidence": "Chosen minimal interface supported by body and reviewed caller uses; historical unused arguments and exact source declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
+        "caller_evidence": "The sole decoded direct caller compares the zero-extended result with zero."
+      }
+    },
+    {
+      "address": "0x02c34d30",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463e84": "0x10463e84"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463e84",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463e84",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c34d30",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "0919a38674d1f44dd1bcfb98f7478945474d74c7d7ae84717f819318a6c60140",
+      "size": 12,
+      "source": "reconstructions/fn_02c34d30.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c34d30",
+      "signature_confidence": "Chosen minimal interface supported by body and reviewed caller uses; historical unused arguments and exact source declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
+        "caller_evidence": "The sole decoded direct caller tests the result for zero."
+      }
+    },
+    {
+      "address": "0x02c51318",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463ec8": "0x10463ec8"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463ec8",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463ec8",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c51318",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "39fcb9b92b47988b340a895b79c92f210fe64b58ec4a931b34d86b77c792e3c6",
+      "size": 12,
+      "source": "reconstructions/fn_02c51318.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c51318",
+      "signature_confidence": "Chosen minimal interface supported by body and reviewed caller uses; historical unused arguments and exact source declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
+        "caller_evidence": "Five decoded direct calls; reviewed uses test the result for zero or combine it with another flag. A historical 0/1 invariant is not established."
+      }
+    },
+    {
+      "address": "0x02a13ed4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463700": "0x10463700"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463700",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463700",
+          "type": 4
+        }
+      ],
+      "id": "fn_02a13ed4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "0b131a2459a9bf9bee508dfddb926471f43e6365506840cc8da594c73466c4bb",
+      "size": 12,
+      "source": "reconstructions/fn_02a13ed4.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02a13ed4",
+      "signature_confidence": "Chosen minimal interface supported by body and reviewed caller uses; historical unused arguments and exact source declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "int (void)",
+        "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
+        "caller_evidence": "The sole decoded direct caller converts the returned word using xoris and the 0x4330 biased-double sequence, consistent with signed integer use."
+      }
+    },
+    {
+      "address": "0x02da9ff8",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463f78": "0x10463f78"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463f78",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463f78",
+          "type": 4
+        }
+      ],
+      "id": "fn_02da9ff8",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "1cc90a36bc1e5a4e30f4b0860a1462695c29140d7cc9de5153196a69185d0c3b",
+      "size": 12,
+      "source": "reconstructions/fn_02da9ff8.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "void *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02da9ff8",
+      "signature_confidence": "Chosen minimal interface supported by body and reviewed caller uses; historical unused arguments and exact source declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "void * (void)",
+        "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
+        "caller_evidence": "Eight decoded direct calls; reviewed callers null-check the returned value and directly load through it, supporting an opaque pointer return."
+      }
     }
   ]
 }

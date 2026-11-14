@@ -1892,6 +1892,17 @@
         "fn_03924ee4",
         "fn_0398a8ec"
       ]
+    },
+    {
+      "id": "global-scalar-loads",
+      "functions": [
+        "fn_020175c4",
+        "fn_02a2bb80",
+        "fn_02c34d30",
+        "fn_02c51318",
+        "fn_02a13ed4",
+        "fn_02da9ff8"
+      ]
     }
   ]
 }
