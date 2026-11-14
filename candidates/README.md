@@ -14,6 +14,7 @@ changing a candidate. Run the ordinary checker after copying it to the matching
 | [fn_0261e54c.cpp](fn_0261e54c.cpp) | Add the word through offset 32 to the low-word product of the word through offset 36 and the word at 48. | All three tried forms reach 32 bytes but differ. The caller compares the result as signed; the candidate preserves unsigned wrapping. |
 | [fn_02998424.cpp](fn_02998424.cpp) | True for the nested flag, nonzero byte, or state 12/6. | Corrected 64-byte forms differ in allocation. |
 | [fn_03cafe80.cpp](fn_03cafe80.cpp) | Three bounded counters with wrap at their configured limits. | Correct-size output and matching diagnostic traces in four profiles still differ in exact bytes. |
+| [fn_02470538.cpp](fn_02470538.cpp) | Null-check the nested pointer at offset 44, then test its word-bit helper. | The closest 72-byte forms reverse the original order of the final return normalization and LR load. |
 | [fn_03cbeae8.cpp](fn_03cbeae8.cpp) | Reset six words to all ones and two words to zero. | Typed, byte-offset and member forms remain unmatched. A bounded source-permutation run also failed. |
 
 The new starting points were compiled against all six fixed GHS profiles and
