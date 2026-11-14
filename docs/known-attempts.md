@@ -28,9 +28,6 @@ The inferred class identities and historical signatures remain open.
 - `fn_02013bd0`: false when the shifted upper mask is present; otherwise test the
   lower bit using the same **register-supplied** index. Supplied callers use
   indices zero through three. The current corrected source is shorter.
-- `fn_02017840`: the indexed record stride is **28 bytes**, including trailing
-  storage. An out-of-range index uses the base record. The corrected size-asserted
-  view still differs in allocation.
 - `fn_024694e4`: clamp the signed pointee reached through object offset **100**
   below zero, then multiply with pointees reached through offsets 24 and 80.
   Corrected sources reach the original size but differ.
@@ -41,3 +38,7 @@ The inferred class identities and historical signatures remain open.
 Private packets, original bytes, disassembly and compiler output stay local.
 Shared blocker issues can group functions needing the same evidence; search for
 an existing issue before opening another.
+
+`fn_02017840` now matches with the asserted 28-byte stride and an inline entry
+accessor. The internal view method reproduces the original allocation while
+preserving the base-entry fallback. See the [reconstruction](../reconstructions/fn_02017840.cpp) for the accepted form.
