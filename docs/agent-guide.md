@@ -107,7 +107,10 @@ would exceed the user's budget.
 
 Commit verified work with the configured Git author, push to the contributor's
 fork and open a focused PR against `master`. Use the PR template: record function
-IDs, claim, exact commands/results, and contract/naming evidence. Check the PR's
+IDs, claim, exact commands/results, and contract/naming evidence. List all models
+and roles used, including implementation and review, with their actual reasoning
+or effort settings. Write "not exposed" when unavailable; do not guess. Identify
+human-only work. Check the PR's
 CI and fix failures within the remaining budget. Report the PR URL and any
 unfinished checks; do not declare acceptance yourself.
 

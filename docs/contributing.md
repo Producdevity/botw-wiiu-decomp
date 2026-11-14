@@ -29,8 +29,13 @@ of caller/callee and naming evidence. Matching bytes can conceal missing
 arguments or wrong return types, and the contract audit checks consistency only
 among available source declarations. It does not recover the original ABI.
 
-Keep one function or tightly related component per PR. Include exact commands
+Contributions use [GPL-3.0-only](../LICENSE). Submitting a contribution makes it
+available under those terms. Keep one function or tightly related component per
+PR. Include exact commands
 and results, the claim issue, and evidence for inferred contracts and names.
+List the models and roles used for implementation and review, with actual
+reasoning/effort settings. Use "not exposed" when unavailable; identify human-only
+work.
 Propose names in the PR description or ordinary documentation. Promotion into
 `config/symbols.json` requires a separate maintainer-reviewed maintenance PR, as
 do checker, reference metadata, test and workflow changes. Never change expected bytes or weaken checks to obtain a match.
