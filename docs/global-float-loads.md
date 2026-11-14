@@ -15,10 +15,10 @@ counted only after implementation verification.
 | [fn_031709cc](../reconstructions/fn_031709cc.cpp) | `data_1028ab44` |
 | [fn_031a7108](../reconstructions/fn_031a7108.cpp) | `data_1046d29c` |
 | [fn_0359038c](../reconstructions/fn_0359038c.cpp) | `data_102e66d4` |
-| `fn_036fb83c` | `data_1030a108` |
-| `fn_03900f64` | `data_10336ea4` |
-| `fn_03924ee4` | `data_10339458` |
-| `fn_0398a8ec` | `data_1034a35c` |
+| [fn_036fb83c](../reconstructions/fn_036fb83c.cpp) | `data_1030a108` |
+| [fn_03900f64](../reconstructions/fn_03900f64.cpp) | `data_10336ea4` |
+| [fn_03924ee4](../reconstructions/fn_03924ee4.cpp) | `data_10339458` |
+| [fn_0398a8ec](../reconstructions/fn_0398a8ec.cpp) | `data_1034a35c` |
 
 Each source uses an external float declaration and a runtime read. Data stays in
 the user's original; there are no copied initial values or allocated replacement
