@@ -37373,6 +37373,25 @@
         "fn_02d8f970"
       ],
       "signature_confidence": "inferred from original caller/callee register flow; historical C++ types unknown"
+    },
+    {
+      "address": "0x030c49e0",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "id": "fn_030c49e0",
+      "sha256": "d30b07dc149fcc8cf5eaf9da5143500931e9d6e546014e9de69bb25ff0d0878d",
+      "size": 36,
+      "source": "reconstructions/fn_030c49e0.cpp",
+      "status": "unmatched",
+      "symbol": "fn_030c49e0",
+      "signature_confidence": "five pointer arguments and word layout inferred from original caller/callee flow; original class and high-level return type unknown",
+      "contract_evidence": {
+        "exported_contract": "const unsigned* (const unsigned* state, unsigned* first, unsigned* second, unsigned* third, unsigned* fourth)",
+        "callee_evidence": "Interleaves four source-word reads at offsets 0, 4, 8 and 12 with writes through the four output pointers, then returns with the incoming state pointer still in r3.",
+        "caller_evidence": "The sole observed direct caller passes the same stack state to the generator and initializer, and supplies four output pointers at consecutive word addresses. It discards this helper result. Explicit pointer forwarding preserves the observed r3 value without claiming the historical return declaration."
+      }
     }
   ]
 }
