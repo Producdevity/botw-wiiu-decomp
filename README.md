@@ -4,9 +4,9 @@
 
 Community C++ reconstruction of **Wii U v208**, with deterministic matching against the original PowerPC code. The intended consumer is a native Linux ARM port targeting **H700, 1 GB RAM, GLES 3.2 and no swap**.
 
-**Verified code coverage: 22,872 of 36,994,060 bytes in the pinned `.text` section (0.0618%), across 1,267 functions.**
+**Verified code coverage: 22,968 of 36,994,060 bytes in the pinned `.text` section (0.0621%), across 1,275 functions.**
 
-**552 tasks are available** across integer, floating-point, control-flow, loops and calls. [Reference batches and selection evidence](docs/reference-batches.md) · [Named random-state component](docs/random-state.md).
+**544 tasks are available** across integer, floating-point, control-flow, loops and calls. [Reference batches and selection evidence](docs/reference-batches.md) · [Named random-state component](docs/random-state.md).
 
 Matching uses fixed GHS 5.3.22 profiles and Clang for eight bootstrap leaves. Source contracts are inferred from caller/callee evidence; the exact historical compiler version remains unconfirmed. [Verification contract](docs/verification.md).
 
