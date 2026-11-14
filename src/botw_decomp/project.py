@@ -8,6 +8,32 @@ from .data_relocations import DATA_PROFILE, contract
 ROOT = Path(__file__).resolve().parents[2]
 FUNCTION_ID = re.compile(r"fn_[0-9a-f]{8}\Z")
 HASH = re.compile(r"[0-9a-f]{64}\Z")
+SOURCE_PRIMITIVES = (
+    "void", "bool", "char", "signed char", "unsigned char", "short",
+    "unsigned short", "int", "unsigned int", "long", "unsigned long",
+    "long long", "unsigned long long", "float", "double", "long double",
+)
+SOURCE_TYPE = re.compile(
+    r"(?:(?:const |volatile |const volatile )?(?:"
+    + "|".join(re.escape(name) for name in SOURCE_PRIMITIVES)
+    + r"|struct [A-Za-z_][A-Za-z0-9_]*) \*|"
+    + "|".join(re.escape(name) for name in SOURCE_PRIMITIVES)
+    + r")\Z"
+)
+
+
+def validate_source_contract(value):
+    if (not isinstance(value, dict)
+            or set(value) != {"return_type", "parameter_types", "variadic"}
+            or type(value["variadic"]) is not bool
+            or not isinstance(value["parameter_types"], list)
+            or len(value["parameter_types"]) > 32):
+        raise ValueError("invalid source_contract schema")
+    for position, spelling in enumerate([value["return_type"], *value["parameter_types"]]):
+        if (not isinstance(spelling, str) or len(spelling) > 128
+                or not SOURCE_TYPE.fullmatch(spelling)
+                or (position and spelling == "void")):
+            raise ValueError("invalid or unsupported source_contract type")
 
 
 def read_json(path: Path):
@@ -33,6 +59,8 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
             raise ValueError(f"invalid source/symbol convention: {key}")
         if row["status"] not in ("matched", "unmatched"):
             raise ValueError(f"invalid status: {key}")
+        if "source_contract" in row:
+            validate_source_contract(row["source_contract"])
         if row.get("compiler_profile", "clang-ppc") not in (
                 "clang-ppc", "ghs-5.3.22-speed", "ghs-5.3.22-general",
                 "ghs-5.3.22-space", "ghs-5.3.22-auto",

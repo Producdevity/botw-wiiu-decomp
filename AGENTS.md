@@ -11,6 +11,8 @@ existing work and use the contributor's configured Git author and GitHub account
   packets, disassembly, compiler binaries and build output private.
 - Write readable C++, preserve established caller/callee contracts, and run exact
   checks, the strict contract audit and tests before submission.
+- Follow `source_contract` when present. Interface changes belong in a reviewed
+  maintenance PR, even when the compiled bytes stay identical.
 - New signatures, layouts and semantic names need evidence. Matching bytes alone
   do not recover them. Follow [naming](docs/naming.md) and
   [verification](docs/verification.md).
