@@ -47,7 +47,7 @@ class DisassemblyTests(unittest.TestCase):
         code = bytes.fromhex("e0230008")
         row = " 2001000: e0 23 00 08  unknown\n"
         for output in ("header\n", row.replace("e0 23", "e0 24"), row + row):
-            with self.subTest(output=output), self.assertRaisesRegex(ValueError, "Espresso"):
+            with self.subTest(output=output), self.assertRaisesRegex(ValueError, "overlay"):
                 _overlay(output, code, 0x2001000)
 
     def test_real_llvm_espresso_overlay(self):
@@ -62,6 +62,63 @@ class DisassemblyTests(unittest.TestCase):
         self.assertIn("<unsupported Espresso opcode 4>", result)
         self.assertNotIn("vor", result)
         self.assertRegex(result, r"200100c:\s+4e 80 00 20\s+blr")
+
+    def test_annotation_preserves_llvm_columns_operands_targets_and_newlines(self):
+        words = [(16 << 26) | (4 << 21) | (2 << 16) | 8,
+                 (31 << 26) | (9 << 21) | (3 << 16) | (4 << 11) | (24 << 1),
+                 (19 << 26) | (12 << 21) | (30 << 16) | (16 << 1),
+                 (31 << 26) | (8 << 21) | (5 << 16) | (7 << 11) | (824 << 1) | 1]
+        bodies = ["bf\t2, 0x4008 <target>", "slw 3, 9, 4  ", "bclr 12, 30", "srawi. 5, 8, 7"]
+        notes = ["branch if cr0.eq is clear", "shift destination r3, value r9, count register r4",
+                 "branch if cr7.eq is set", "shift destination r5, value r8, count immediate 7"]
+        code = b"".join(word.to_bytes(4, "big") for word in words)
+        lines = [f"\t{0x4000 + i * 4:x}:\t" + word.to_bytes(4, "big").hex(" ") + "\t" + body
+                 for i, (word, body) in enumerate(zip(words, bodies))]
+        for newline in ("\n", "\r\n", ""):
+            output = "heading\n" + "\n".join(lines[:-1]) + "\n" + lines[-1] + newline
+            expected = "heading\n" + "\n".join(line + "; " + note for line, note in zip(lines[:-1], notes[:-1]))
+            expected += "\n" + lines[-1] + "; " + notes[-1] + newline
+            self.assertEqual(_overlay(output, code, 0x4000), expected)
+
+    def test_annotations_fail_closed_on_missing_mismatched_duplicate_or_wrong_address_rows(self):
+        for word in ((16 << 26) | (4 << 21) | (2 << 16) | 8,
+                     (31 << 26) | (9 << 21) | (3 << 16) | (4 << 11) | (24 << 1)):
+            raw = word.to_bytes(4, "big")
+            row = " 4000: " + raw.hex(" ") + "  LLVM text\n"
+            wrong_bytes = bytes([raw[0] ^ 1]) + raw[1:]
+            for output in ("heading\n", row.replace(raw.hex(" "), wrong_bytes.hex(" ")),
+                           row + row, row.replace("4000:", "4004:")):
+                with self.subTest(word=word, output=output), self.assertRaisesRegex(ValueError, "overlay"):
+                    _overlay(output, raw, 0x4000)
+
+    def test_overlay_leaves_unsupported_normal_words_unchanged(self):
+        words = [(16 << 26) | (5 << 21) | 8,
+                 (19 << 26) | (4 << 21) | (16 << 1) | 1,
+                 (19 << 26) | (20 << 21) | (16 << 1),
+                 (31 << 26) | (9 << 21) | (3 << 16) | (4 << 11) | (25 << 1)]
+        code = b"".join(word.to_bytes(4, "big") for word in words)
+        output = "".join(f" {0x4000 + i * 4:x}: " + word.to_bytes(4, "big").hex(" ") + "  LLVM text\n"
+                         for i, word in enumerate(words))
+        self.assertEqual(_overlay(output, code, 0x4000), output)
+
+    def test_real_llvm_annotations_and_espresso_override_together(self):
+        try:
+            locate()
+        except ValueError as exc:
+            self.skipTest(str(exc))
+        words = [(56 << 26) | (1 << 21) | (3 << 16) | 8,
+                 (16 << 26) | (4 << 21) | (2 << 16) | 8,
+                 (19 << 26) | (12 << 21) | (1 << 16) | (16 << 1),
+                 (31 << 26) | (9 << 21) | (3 << 16) | (4 << 11) | (24 << 1),
+                 (31 << 26) | (8 << 21) | (5 << 16) | (7 << 11) | (824 << 1) | 1,
+                 (19 << 26) | (20 << 21) | (16 << 1)]
+        result = disassemble(b"".join(word.to_bytes(4, "big") for word in words), 0x4000, "example")
+        self.assertIn("psq_l f1, 8(r3), 0, 0", result)
+        self.assertRegex(result, r"4004:.*(?:bf|bne).*; branch if cr0.eq is clear")
+        self.assertRegex(result, r"4008:.*; branch if cr0.gt is set")
+        self.assertRegex(result, r"400c:.*slw.*; shift destination r3, value r9, count register r4")
+        self.assertRegex(result, r"4010:.*srawi\..*; shift destination r5, value r8, count immediate 7")
+        self.assertRegex(result, r"4014:.*blr[^;\n]*\n")
 
     def test_reports_missing_llvm(self):
         with patch("botw_decomp.disassembly.shutil.which", return_value=None), \

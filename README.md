@@ -55,6 +55,7 @@ Public CI compares against fixed function hashes, addresses and reference bindin
 - [Cross-file C++ declaration checks](docs/contract-audit.md)
 - [Compiler evidence and prior projects](docs/toolchain.md)
 - [Unaccepted candidates and register diagnostics](docs/register-diagnostics.md)
+- [Known unmatched attempts and missing evidence](docs/known-attempts.md)
 - [Naming evidence and stable function IDs](docs/naming.md)
 - [Development priorities](docs/roadmap.md)
 
