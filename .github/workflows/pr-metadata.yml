@@ -1,0 +1,23 @@
+name: Check PR model metadata
+
+on:
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-metadata:
+    if: github.event.pull_request.state == 'open'
+    name: pr-metadata
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Check out trusted validator
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Validate PR description
+        run: python3 tools/pr_metadata.py "$GITHUB_EVENT_PATH"
