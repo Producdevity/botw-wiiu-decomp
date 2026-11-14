@@ -63,3 +63,8 @@ The six [global scalar loads](global-scalar-loads.md) were independently
 reconstructed and checked against original spans and address fields. Caller
 review distinguished signed-word and pointer uses before interface selection.
 No backing data values or external implementation were imported.
+
+The sixteen [global byte getters](global-byte-loads.md) were independently
+reconstructed from bounded original instruction behavior. Complete spans and
+all original address fields agree between separate RPX readers; source and
+caller contracts received independent review. No backing data was imported.
