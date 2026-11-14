@@ -19,6 +19,7 @@
 | short-call-dependencies | 3 | 20 | All verified |
 | related-call-dependencies | 6 | 312 | All verified |
 | data-call-dependencies | 12 | 1,096 | Unmatched |
+| lookup-table-dependency | 1 | 20 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -55,3 +56,10 @@ provenance agree. Function call bindings are independently decoded. Existing
 references and completed source remain unchanged. These tasks include global
 state reads, floating-point helpers and indexed accessors. Published callers
 provide contract evidence for source reconstruction.
+
+The lookup-table-dependency reference supplies the indexed pointer-table helper
+called by `fn_02b5bcc8`. Its 20-byte body has a verified linked entry, a terminal
+return, no interior branch targets or overlapping references, and two validated
+absolute data fields. The caller now lists the helper in `compile_with`; its
+remaining instruction differences are unresolved. Existing reference bytes and
+bindings are unchanged.

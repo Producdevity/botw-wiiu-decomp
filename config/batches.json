@@ -1856,6 +1856,12 @@
         "fn_02e74378",
         "fn_04210514"
       ]
+    },
+    {
+      "id": "lookup-table-dependency",
+      "functions": [
+        "fn_02b5bb20"
+      ]
     }
   ]
 }

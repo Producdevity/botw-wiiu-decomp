@@ -36970,6 +36970,9 @@
       "priority": 1,
       "published_callers": [
         "fn_02b5bee0"
+      ],
+      "compile_with": [
+        "fn_02b5bb20"
       ]
     },
     {
@@ -37269,6 +37272,45 @@
       "published_callers": [
         "fn_02e55464"
       ]
+    },
+    {
+      "id": "fn_02b5bb20",
+      "address": "0x02b5bb20",
+      "size": 20,
+      "sha256": "db916c70476442d8aa5980d9194d7f8c42b65364d86d57517afacbd1b131c4fb",
+      "status": "unmatched",
+      "source": "reconstructions/fn_02b5bb20.cpp",
+      "symbol": "fn_02b5bb20",
+      "original_profile": "cafe-data-address-v1",
+      "data_bindings": {
+        "data_10463d08": "0x10463d08"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "type": 6,
+          "symbol": "data_10463d08"
+        },
+        {
+          "offset": 10,
+          "type": 4,
+          "symbol": "data_10463d08"
+        }
+      ],
+      "compiler_profile": "ghs-5.3.22-auto",
+      "category": "integer",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "bindings": {},
+      "priority": 1,
+      "referenced_by": [
+        "fn_02b5bcc8"
+      ],
+      "signature_confidence": "inferred from original caller/callee register flow; historical C++ types unknown",
+      "contract_evidence": {
+        "exported_contract": "void* (int index)",
+        "callee_evidence": "Loads a pointer from the external table using the incoming index; no other incoming argument registers are read.",
+        "caller_evidence": "The referenced lookup wrapper forwards its saved index and uses the result as the value field of a two-word lookup key."
+      }
     }
   ]
 }
