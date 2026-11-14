@@ -38162,6 +38162,646 @@
         "callee_evidence": "Loads one global byte or word into r3 through two canonical original data-address fields, then returns; no incoming argument value is consumed.",
         "caller_evidence": "Eight decoded direct calls; reviewed callers null-check the returned value and directly load through it, supporting an opaque pointer return."
       }
+    },
+    {
+      "address": "0x02a2bba4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463795": "0x10463795"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463795",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463795",
+          "type": 4
+        }
+      ],
+      "id": "fn_02a2bba4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "4990ff8414f39ee37a7994af3c108ab30436ce20a3e480ebda14784f79f29d6d",
+      "size": 12,
+      "source": "reconstructions/fn_02a2bba4.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02a2bba4",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02c33370",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463e6e": "0x10463e6e"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463e6e",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463e6e",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c33370",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "e70950cde5cb0e12936ca060e2fb8fc949b8b8bf1e05cf6ae481006d3bb9a436",
+      "size": 12,
+      "source": "reconstructions/fn_02c33370.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c33370",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02c3337c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463e79": "0x10463e79"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463e79",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463e79",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c3337c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "728053312f0bf2c9a4a09b5f12aa19b5a2017505577c27dd4d4a031a62df5c3a",
+      "size": 12,
+      "source": "reconstructions/fn_02c3337c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c3337c",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02c34d3c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463e85": "0x10463e85"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463e85",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463e85",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c34d3c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "419a557f38f065c2888822d0624b6c9a28fffa20fd6a62a1da811f420c842db4",
+      "size": 12,
+      "source": "reconstructions/fn_02c34d3c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c34d3c",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02c34d48",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463e86": "0x10463e86"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463e86",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463e86",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c34d48",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "41330cf6054335afc76b8567c956dbc54b629c3b85eabf44e35001456e16e130",
+      "size": 12,
+      "source": "reconstructions/fn_02c34d48.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c34d48",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02c40050",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10463ea5": "0x10463ea5"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10463ea5",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10463ea5",
+          "type": 4
+        }
+      ],
+      "id": "fn_02c40050",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "77c9a10af54d1d1596402b9c9b07b865847263a3063634703e07378d9894f747",
+      "size": 12,
+      "source": "reconstructions/fn_02c40050.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02c40050",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e54e50",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467de2": "0x10467de2"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467de2",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467de2",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e54e50",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "ac6d86981dd1d401c03726c4d3f3d46e4d31195e03a15a3864a352abeae73139",
+      "size": 12,
+      "source": "reconstructions/fn_02e54e50.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e54e50",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows discard the result; discarded values do not establish a void return."
+      }
+    },
+    {
+      "address": "0x02e54e5c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467de5": "0x10467de5"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467de5",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467de5",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e54e5c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "9b386ac2a4983b541734cfecec96ff6c5d79ad474a09b401ec66e00656d64887",
+      "size": 12,
+      "source": "reconstructions/fn_02e54e5c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e54e5c",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e54f64",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467de6": "0x10467de6"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467de6",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467de6",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e54f64",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "a68492dbe021bb6633d10aa963f040ecb142aeec1b174fb1ca59b536df79aa75",
+      "size": 12,
+      "source": "reconstructions/fn_02e54f64.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e54f64",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e54fac",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467de7": "0x10467de7"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467de7",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467de7",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e54fac",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "148430cc836580ad3ed0f269939cc20ecc7ff3176f45cc38b58876ed51ae3ec8",
+      "size": 12,
+      "source": "reconstructions/fn_02e54fac.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e54fac",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e55054",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467de8": "0x10467de8"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467de8",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467de8",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e55054",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "d396810129a5b325dc21e06751092c88d90d028632cb26bdf922a62e0ae81d3b",
+      "size": 12,
+      "source": "reconstructions/fn_02e55054.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e55054",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e55060",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467de9": "0x10467de9"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467de9",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467de9",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e55060",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "e3367a0e99aae07497e0379510c9f2809d5dbcde93abeaaa3f454c6afbab9cac",
+      "size": 12,
+      "source": "reconstructions/fn_02e55060.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e55060",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e5506c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467dea": "0x10467dea"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467dea",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467dea",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e5506c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "8f7922c2ced557ac506629ba5ad20987ef067403a280f4ffef2c12d7bf0f7fef",
+      "size": 12,
+      "source": "reconstructions/fn_02e5506c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e5506c",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e55078",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467dec": "0x10467dec"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467dec",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467dec",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e55078",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "e9645af37266313a8b276e8c5a5ce3aa5f3f0ba410b46da3b8850bfd8ad2a5de",
+      "size": 12,
+      "source": "reconstructions/fn_02e55078.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e55078",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
+    },
+    {
+      "address": "0x02e55084",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467ded": "0x10467ded"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467ded",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467ded",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e55084",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "589d2eae2f58d02b91bdf2a3e66b69dc4457189745bf65fcb74612545619500b",
+      "size": 12,
+      "source": "reconstructions/fn_02e55084.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e55084",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows discard the result; discarded values do not establish a void return."
+      }
+    },
+    {
+      "address": "0x02e55090",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467dee": "0x10467dee"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467dee",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467dee",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e55090",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "8e8071f2994071874e03b42363b4378aaa07564629e72eff2b81e77d2d6a66ff",
+      "size": 12,
+      "source": "reconstructions/fn_02e55090.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned char",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e55090",
+      "signature_confidence": "Chosen bit-preserving byte return and minimal no-input interface; unused historical parameters and original bool-versus-byte declarations unresolved",
+      "contract_evidence": {
+        "exported_contract": "unsigned char (void)",
+        "callee_evidence": "LIS r12 with no base input, LBZ r3 through the canonical full data address, then return; no incoming argument value is consumed.",
+        "caller_evidence": "Inspected direct caller windows compare the returned r3 value with zero."
+      }
     }
   ]
 }
