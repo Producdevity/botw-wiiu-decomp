@@ -1862,6 +1862,13 @@
       "functions": [
         "fn_02b5bb20"
       ]
+    },
+    {
+      "id": "float-comparison-dependencies",
+      "functions": [
+        "fn_02d49dc0",
+        "fn_02d49e9c"
+      ]
     }
   ]
 }

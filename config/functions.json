@@ -37311,6 +37311,68 @@
         "callee_evidence": "Loads a pointer from the external table using the incoming index; no other incoming argument registers are read.",
         "caller_evidence": "The referenced lookup wrapper forwards its saved index and uses the result as the value field of a two-word lookup key."
       }
+    },
+    {
+      "address": "0x02d49dc0",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "contract_evidence": {
+        "exported_contract": "float (void* context)",
+        "callee_evidence": "Reads the float at context +104 and returns it in f1.",
+        "caller_evidence": "The referenced comparison passes a stored object pointer in r3 and consumes the result in a floating-point comparison. Other indexed direct callers use the same argument and float-result flow."
+      },
+      "id": "fn_02d49dc0",
+      "priority": 1,
+      "sha256": "63751bf40a491ae59219a8ae7b4c5e0cb073355bcce14e28c5dbf06fe24bec44",
+      "size": 8,
+      "source": "reconstructions/fn_02d49dc0.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02d49dc0",
+      "referenced_by": [
+        "fn_02d8f970"
+      ],
+      "signature_confidence": "inferred from original caller/callee register flow; historical C++ types unknown"
+    },
+    {
+      "address": "0x02d49e9c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "contract_evidence": {
+        "exported_contract": "float (void* context)",
+        "callee_evidence": "Reads the pointer at context +48; returns its float at +4900 when present or the external fallback float otherwise.",
+        "caller_evidence": "The referenced comparison passes a stored object pointer in r3 and consumes the result in a floating-point comparison. Other indexed direct callers use the same argument and float-result flow."
+      },
+      "data_bindings": {
+        "data_101e4818": "0x101e4818"
+      },
+      "data_relocations": [
+        {
+          "offset": 22,
+          "symbol": "data_101e4818",
+          "type": 6
+        },
+        {
+          "offset": 26,
+          "symbol": "data_101e4818",
+          "type": 4
+        }
+      ],
+      "id": "fn_02d49e9c",
+      "original_profile": "cafe-data-address-v1",
+      "priority": 1,
+      "sha256": "9d1f7ed1cafe947a0c401429248a7ccd364406192156b5ef137eb4dcb171ad56",
+      "size": 32,
+      "source": "reconstructions/fn_02d49e9c.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02d49e9c",
+      "referenced_by": [
+        "fn_02d8f970"
+      ],
+      "signature_confidence": "inferred from original caller/callee register flow; historical C++ types unknown"
     }
   ]
 }
