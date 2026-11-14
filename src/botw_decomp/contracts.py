@@ -1,4 +1,4 @@
-"""Audit cross-TU and pinned source contracts using libclang's typed C++ AST."""
+"""Audit cross-TU, pinned and trusted-definition source contracts with libclang."""
 
 import argparse
 import ctypes as C
@@ -556,6 +556,23 @@ def compare_contracts(declaration, definition):
     return findings
 
 
+def baseline_contract(contract, source, unit_path):
+    """Normalize only the corresponding main TU's internal type scope across roots."""
+    if isinstance(contract, list):
+        return [baseline_contract(value, source, unit_path) for value in contract]
+    if not isinstance(contract, dict):
+        return contract
+    normalized = {}
+    for key, value in contract.items():
+        if key == "identity_scope" and value != "external":
+            if value != str(Path(unit_path).resolve()):
+                raise ValueError("unexpected internal type identity scope: " + str(value))
+            normalized[key] = "<published>/" + source
+        else:
+            normalized[key] = baseline_contract(value, source, unit_path)
+    return normalized
+
+
 def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None):
     root = Path(root).resolve()
     reference_root = Path(reference_root).resolve() if reference_root is not None else root
@@ -597,30 +614,44 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
     )
     edges = [(caller, callee) for caller, callee in all_edges if callee in defined]
     unknown = sorted({callee for caller, callee in all_edges if callee not in defined})
-    pinned = {key for key in defined if "source_contract" in rows[key]}
-    selected = sorted(callers | {callee for caller, callee in edges} | pinned)
-    include = root / "include"
-    if include.is_symlink():
-        raise ValueError("header directory symlinks are not accepted")
-    headers = []
-    for header in sorted(include.rglob("*")):
-        if header.is_symlink():
-            raise ValueError("header symlinks are not accepted: " + str(header))
-        if header.is_file():
-            headers.append(header)
-    watched = [manifest] + [root / rows[key]["source"] for key in selected] + headers
+    trusted_defined = {key for key, row in rows.items()
+                       if (reference_root / row["source"]).is_file()}
+    pinned = {key for key in defined | trusted_defined if "source_contract" in rows[key]}
+    baselined = trusted_defined - pinned
+    selected = sorted(callers | {callee for caller, callee in edges} | pinned | baselined)
+    def headers_at(base):
+        include = base / "include"
+        if include.is_symlink():
+            raise ValueError("header directory symlinks are not accepted")
+        if (base / "reconstructions").is_symlink():
+            raise ValueError("source directory symlinks are not accepted")
+        headers = []
+        for header in sorted(include.rglob("*")):
+            if header.is_symlink():
+                raise ValueError("header symlinks are not accepted: " + str(header))
+            if header.is_file():
+                headers.append(header)
+        return headers
+
+    headers = headers_at(root)
+    trusted_headers = headers_at(reference_root)
     manifest_key = "config/functions.json" if reference_root == root else "<reference>/config/functions.json"
+    watched = {manifest_key: manifest}
     snapshot = {manifest_key: hashlib.sha256(manifest_bytes).hexdigest()}
-    for path in watched[1:]:
-        if path.is_symlink() or not path.is_file() or path.stat().st_size > 256 * 1024:
-            raise ValueError(
-                "source/header must be a regular file below 256 KiB: " + str(path)
-            )
-        snapshot[str(path.relative_to(root))] = hashlib.sha256(
-            path.read_bytes()
-        ).hexdigest()
-    for path in watched[1:]:
-        check_source(path)
+    inputs = [(root, "", [root / rows[key]["source"] for key in selected] + headers)]
+    if reference_root != root:
+        inputs.append((reference_root, "<reference>/",
+                       [reference_root / rows[key]["source"] for key in baselined] + trusted_headers))
+    for base, prefix, paths in inputs:
+        for path in paths:
+            if path.is_symlink() or not path.is_file() or path.stat().st_size > 256 * 1024:
+                raise ValueError("source/header must be a regular file below 256 KiB: " + str(path))
+            key = prefix + str(path.relative_to(base))
+            watched[key] = path
+            snapshot[key] = hashlib.sha256(path.read_bytes()).hexdigest()
+    for key, path in watched.items():
+        if key != manifest_key:
+            check_source(path)
 
     with ClangParser(libclang, compiler, root) as clang:
         clang_version = clang.text(clang.lib.clang_getClangVersion())
@@ -628,6 +659,11 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
         units = {
             key: clang.parse(root / rows[key]["source"], root / "include")
             for key in selected
+        }
+        trusted_units = {
+            key: units[key] if reference_root == root else clang.parse(
+                reference_root / rows[key]["source"], reference_root / "include")
+            for key in sorted(baselined)
         }
         source_contracts = []
         for key in sorted(pinned):
@@ -653,6 +689,42 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
                                             "findings": findings})
                 item["status"] = "conflict" if findings else "matches_source_contract"
             source_contracts.append(item)
+        trusted_definition_contracts = []
+        for key in sorted(baselined):
+            item = {"symbol": key, "status": "unsupported", "comparisons": []}
+            definitions = {}
+            contracts = {}
+            for role, base, unit in (("trusted", reference_root, trusted_units[key]),
+                                     ("candidate", root, units[key])):
+                found = [d for d in unit["declarations"]
+                         if d["symbol"] == key and d["definition"]
+                         and Path(d["location"]["file"]).resolve()
+                         == (base / rows[key]["source"]).resolve()]
+                if unit["errors"]:
+                    item["reason"] = role + " translation unit parse/type error"
+                    break
+                if len(found) != 1:
+                    item["reason"] = role + " missing unique published definition"
+                    break
+                try:
+                    contracts[role] = baseline_contract(
+                        found[0]["contract"], rows[key]["source"], base / rows[key]["source"])
+                except ValueError as error:
+                    item["reason"] = role + " " + str(error)
+                    break
+                definitions[role] = found[0]
+            else:
+                expected = contracts["trusted"]
+                actual = contracts["candidate"]
+                findings = compare_contracts(expected, actual)
+                for finding in findings:
+                    finding["severity"] = "conflict"
+                item["comparisons"].append({"expected": expected,
+                                            "trusted_definition": definitions["trusted"],
+                                            "definition": definitions["candidate"],
+                                            "findings": findings})
+                item["status"] = "conflict" if findings else "matches_trusted_definition"
+            trusted_definition_contracts.append(item)
     checked = []
     for caller, callee in all_edges:
         item = {
@@ -785,13 +857,19 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
             }
         )
     drift = [
-        manifest_key if p == manifest else str(p.relative_to(root))
-        for p in watched
-        if p.is_symlink()
-        or not p.is_file()
-        or hashlib.sha256(p.read_bytes()).hexdigest()
-        != snapshot[manifest_key if p == manifest else str(p.relative_to(root))]
+        key for key, path in watched.items()
+        if path.is_symlink() or not path.is_file()
+        or hashlib.sha256(path.read_bytes()).hexdigest() != snapshot[key]
     ]
+    for base, prefix, before_headers, before_sources in (
+        (root, "", headers, defined),
+        (reference_root, "<reference>/", trusted_headers, trusted_defined),
+    ):
+        after_sources = {key for key, row in rows.items() if (base / row["source"]).is_file()}
+        if after_sources != before_sources:
+            drift.append(prefix + "<source inventory changed during audit>")
+        if headers_at(base) != before_headers:
+            drift.append(prefix + "<header inventory changed during audit>")
     vcs_after = git_state()
     if vcs_before != vcs_after:
         drift.append("<git state changed during audit>")
@@ -800,11 +878,18 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
         for key in selected
         if units[key]["errors"]
     ]
+    errors += [
+        {"function": key, "source": "<reference>/" + rows[key]["source"],
+         "errors": trusted_units[key]["errors"]}
+        for key in sorted(baselined) if trusted_units[key]["errors"]
+        and reference_root != root
+    ]
+    audited_contracts = checked + source_contracts + trusted_definition_contracts
     incomplete = bool(
-        drift or errors or any(e["status"] == "unsupported" for e in checked + source_contracts)
+        drift or errors or any(e["status"] == "unsupported" for e in audited_contracts)
     )
     findings_present = any(
-        e["status"] in ("conflict", "review") for e in checked + repeated + source_contracts
+        e["status"] in ("conflict", "review") for e in audited_contracts + repeated
     )
     return {
         "schema_version": 1,
@@ -829,11 +914,13 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
             "references": len(rows),
             "published_sources": len(defined),
             "published_sources_with_source_contract": len(pinned),
+            "trusted_definition_contracts": len(baselined),
+            "trusted_parsed_translation_units": sum(not unit["errors"] for unit in trusted_units.values()),
             "callers_with_bindings": len(callers),
             "binding_edges": len(all_edges),
             "binding_edges_with_published_definitions": len(edges),
             "selected_translation_units": len(selected),
-            "parsed_translation_units": len(selected) - len(errors),
+            "parsed_translation_units": sum(not unit["errors"] for unit in units.values()),
             "unchecked_binding_targets": unknown,
             "repeated_unknown_callee_groups": len(repeated),
         },
@@ -843,6 +930,8 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
         "units": units,
         "edges": checked,
         "source_contracts": source_contracts,
+        "trusted_definition_contracts": trusted_definition_contracts,
+        "trusted_units": trusted_units,
         "repeated_unknown_declarations": repeated,
         "status": "incomplete"
         if incomplete
@@ -856,7 +945,7 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
 def compact_report(report):
     result = {key: report[key] for key in ("schema_version", "status", "coverage", "error", "source_drift", "unsupported_files") if key in report}
     result["findings"] = []
-    for item in report.get("edges", []) + report.get("repeated_unknown_declarations", []) + report.get("source_contracts", []):
+    for item in report.get("edges", []) + report.get("repeated_unknown_declarations", []) + report.get("source_contracts", []) + report.get("trusted_definition_contracts", []):
         if item["status"] in ("conflict", "review", "unsupported"):
             result["findings"].append({
                 **{key: item[key] for key in ("caller", "callee", "symbol", "status", "reason") if key in item},
@@ -869,7 +958,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--reference-root", type=Path,
-                        help="read expected metadata from this trusted checkout; source/header inputs still come from --root")
+                        help="read expected metadata and fallback published definitions/headers from this trusted checkout")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--summary", action="store_true", help="print coverage and findings; --output still saves the full report")
     parser.add_argument(
