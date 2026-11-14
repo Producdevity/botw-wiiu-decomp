@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -20,7 +19,8 @@ if __name__ == "__main__" and sys.version_info < (3, 11):
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from botw_decomp import compiler, contracts, disassembly
+from botw_decomp import compiler, contracts, disassembly, wua
+from botw_decomp.game_input import resolve_game
 
 
 def probe(command: list[str]) -> subprocess.CompletedProcess:
@@ -126,30 +126,26 @@ def assess(root: Path, rpx: Path | None = None, requested_compiler: str | None =
     record("ghs", installed and supported, "GHS compiler and executable wibo present; compilation is checked separately" if installed and supported else "Unsupported development host" if not supported else "GHS compiler or runner missing",
            action, command=["python3", "tools/toolchain.py"] if supported and not directory.exists() else None)
 
-    path = rpx or settings.get("rpx")
+    supplied = rpx or settings.get("rpx")
+    game = None
     rpx_ready = False
-    if not path:
-        record("rpx", False, "No RPX path supplied or configured", "Provide the path to your own Wii U v208 U-King.rpx", "user")
+    if not supplied:
+        record("rpx", False, "No game dump supplied or configured", "Provide the path to your own USA v208 dump folder or .wua archive", "user")
     else:
-        path = Path(path).expanduser().resolve()
         try:
-            if not path.is_file():
-                raise ValueError("RPX path is not a regular file")
-            target = json.loads((root / "config/target.json").read_text())
-            digest = hashlib.sha256()
-            with path.open("rb") as source:
-                for chunk in iter(lambda: source.read(1024 * 1024), b""):
-                    digest.update(chunk)
-            if digest.hexdigest() != target["rpx_sha256"]:
-                raise ValueError("RPX SHA-256 does not match the supported Wii U v208 original")
+            game = resolve_game(Path(supplied), root)
             rpx_ready = True
-            record("rpx", True, "Supported RPX SHA-256 verified locally")
+            record("rpx", True, "Supported executable SHA-256 verified locally from " + game.format)
+        except wua.ReaderUnavailable as error:
+            record("wua_reader", False, str(error), "Install the local WUA reader, then rerun preflight", command=["python3", "tools/game_input.py", "install-reader"])
         except (OSError, ValueError, KeyError) as error:
-            record("rpx", False, str(error), "Provide a readable path to your supported original RPX", "user")
-    configured = (rpx_ready and cxx is not None and settings.get("rpx") == str(path)
+            record("rpx", False, str(error), "Supply your own USA v208 game and update dump; the agent handles file selection", "user")
+    configured = (rpx_ready and cxx is not None and game.rpx.is_file()
+                  and settings.get("rpx") == str(game.rpx)
                   and settings.get("compiler") == cxx and config_error is None)
-    setup = ["python3", "tools/decomp.py", "setup", "--rpx", str(path), "--compiler", cxx] if rpx_ready and cxx else None
-    record("configuration", configured, config_error or ("Local RPX and compiler configured" if configured else "Local setup is incomplete or differs from the supplied paths"),
+    setup = (["python3", "tools/decomp.py", "setup", "--rpx" if game.format == "rpx" else "--game",
+              str(game.source), "--compiler", cxx] if rpx_ready and cxx else None)
+    record("configuration", configured, config_error or ("Local executable and compiler configured" if configured else "Local setup is incomplete or differs from the supplied paths"),
            "After tool prerequisites pass, run setup then python3 tools/decomp.py doctor", command=setup)
     return {"status": "ready" if not actions else "action_required", "checks": checks, "actions": actions,
             "scope": "Read-only readiness assessment; doctor and exact-byte checks remain required"}
@@ -157,7 +153,8 @@ def assess(root: Path, rpx: Path | None = None, requested_compiler: str | None =
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--rpx", type=Path, help="Your own supported Wii U v208 RPX; falls back to local setup")
+    parser.add_argument("--game", "--rpx", dest="rpx", metavar="PATH", type=Path,
+                        help="Your own USA v208 dump folder, .wua archive or executable; falls back to local setup")
     parser.add_argument("--compiler", help="Clang++ path; falls back to local setup and PATH")
     args = parser.parse_args(argv)
     result = assess(ROOT, args.rpx, args.compiler)
