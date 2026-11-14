@@ -25,6 +25,7 @@
 | global-float-loads | 12 | 144 | Unmatched |
 | global-scalar-loads | 6 | 72 | Unmatched |
 | global-byte-loads | 16 | 192 | Unmatched |
+| global-byte-remainder | 18 | 216 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -105,3 +106,10 @@ span has a direct-call entry, complete terminal control flow, no external
 interior branch and no overlap. Caller review found zero tests and discarded
 results, consistent with the chosen byte interfaces. See
 [source contracts](global-byte-loads.md). All prior references remain unchanged.
+
+The global-byte-remainder batch adds eighteen further three-instruction byte
+getters. Independent RPX readers agree on all complete spans and 36 unchanged
+HA/LO fields. Every span has a direct-call entry, terminal return, no overlap and
+no external entry into its interior. Caller uses support the chosen byte interfaces;
+[source contracts](global-byte-remainder.md) record the evidence and compiler
+profiles. Existing references remain unchanged.
