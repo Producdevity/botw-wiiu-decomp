@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "botw-wiiu-decomp"
 version = "0.1.0"
 description = "Reconstruction and exact matching tools for Breath of the Wild Wii U v208"
 requires-python = ">=3.11"
-license = "MIT"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
 
 [project.scripts]
 botw-decomp = "botw_decomp.cli:main"

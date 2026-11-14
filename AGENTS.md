@@ -14,6 +14,9 @@ existing work and use the contributor's configured Git author and GitHub account
 - New signatures, layouts and semantic names need evidence. Matching bytes alone
   do not recover them. Follow [naming](docs/naming.md) and
   [verification](docs/verification.md).
+- Contributions use GPL-3.0-only. Each PR must list the models, roles and actual
+  reasoning/effort settings used for implementation and review. Write "not exposed"
+  for unavailable settings; identify human-only work.
 - Keep checker/reference/workflow and symbol-catalog changes in a separate maintenance PR. Never
   weaken a check or change expected bytes to accept a reconstruction.
 

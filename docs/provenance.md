@@ -4,7 +4,9 @@ The 17 initial C++ implementations were written from instruction behavior observ
 
 The Python tooling and synthetic test fixtures were written for this project. No source was copied from the Switch decompilation, BotW-Native or Nintendo SDKs. Public project references used during investigation are linked in [toolchain.md](toolchain.md).
 
-The MIT license covers the source distributed in this repository. It grants no rights to Nintendo game data or third-party compilers. Contributors supply their own original files locally.
+Copyright © 2026 Producdevity and contributors. Project source is licensed under
+GNU GPL version 3 only ([GPL-3.0-only](../LICENSE)). This grant covers project
+source; contributors supply their own game data and third-party compilers locally.
 
 `fn_02e74434` uses an inferred eight-byte `FloatPair` return and forwards three
 arguments. The callee and neighboring code consume those argument registers and

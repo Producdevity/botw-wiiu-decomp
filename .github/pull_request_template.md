@@ -2,6 +2,15 @@
 
 <!-- One fn_XXXXXXXX ID per line. Leave empty for maintenance without affected functions. -->
 
+## Models
+
+| Role | Model | Reasoning / effort |
+| --- | --- | --- |
+| Implementation | | |
+| Review | | |
+
+<!-- Add rows for other contributing models. Use actual settings; write "not exposed" when unavailable. Human-only work can say "human". -->
+
 ## Change
 
 PR kind: reconstruction / shared contract / maintenance
