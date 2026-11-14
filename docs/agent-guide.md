@@ -123,7 +123,12 @@ fork and open a focused PR against `master`. Use the PR template: record functio
 IDs, claim, exact commands/results, and contract/naming evidence. List all models
 and roles used, including implementation and review, with their actual reasoning
 or effort settings. Write "not exposed" when unavailable; do not guess. Identify
-human-only work. Check the PR's
+human-only work.
+
+The `pr-metadata` check requires complete role, model and effort cells in the
+visible PR table. Editing the description reruns this check.
+
+Check the PR's
 CI and fix failures within the remaining budget. Report the PR URL and any
 unfinished checks; do not declare acceptance yourself.
 
