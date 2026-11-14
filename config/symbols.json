@@ -1,4 +1,39 @@
 {
   "schema_version": 1,
-  "functions": []
+  "functions": [
+    {
+      "function": "fn_030c48dc",
+      "name": "seedXorshift128",
+      "kind": "descriptive",
+      "status": "reviewed",
+      "evidence": [
+        "reconstructions/fn_030c48dc.cpp initializes four unsigned words with the 1812433253 recurrence and addends one through four.",
+        "https://github.com/open-ead/sead/blob/f4178a21e21235830357dc27c26a2c29956972ed/modules/src/random/seadRandom.cpp"
+      ],
+      "rationale": "Describes initialization of the state consumed by the recovered xorshift128 transition. The label does not assert an original Nintendo class or method identity."
+    },
+    {
+      "function": "fn_030c499c",
+      "name": "nextXorshift128",
+      "kind": "descriptive",
+      "status": "reviewed",
+      "evidence": [
+        "Independent original/caller review establishes a four-word transition with logical shifts 11, 19 and 8, returning the new fourth word.",
+        "https://github.com/open-ead/sead/blob/f4178a21e21235830357dc27c26a2c29956972ed/modules/src/random/seadRandom.cpp"
+      ],
+      "rationale": "The complete unsigned state transition matches xorshift128 and the pinned reference span. This is a behavioral alias, not a recovered historical C++ symbol."
+    },
+    {
+      "function": "fn_030c49e0",
+      "name": "copyXorshift128State",
+      "kind": "descriptive",
+      "status": "reviewed",
+      "evidence": [
+        "The reference copies four state words in order through four destination pointers. Its sole observed direct caller invokes it between the recovered generator and seed routines.",
+        "docs/random-state.md",
+        "https://github.com/open-ead/sead/blob/f4178a21e21235830357dc27c26a2c29956972ed/modules/src/random/seadRandom.cpp"
+      ],
+      "rationale": "Describes the observed use of this four-word copy in the same random-state component. The original high-level return type remains unknown; the source interface preserves the unchanged incoming pointer."
+    }
+  ]
 }

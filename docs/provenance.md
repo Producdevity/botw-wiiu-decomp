@@ -45,3 +45,11 @@ Cemu's [field definitions](https://github.com/cemu-project/Cemu/blob/main/src/Ca
 and [unordered comparison behavior](https://github.com/cemu-project/Cemu/blob/main/src/Cafe/HW/Espresso/Interpreter/PPCInterpreterFPU.cpp).
 No implementation was copied. Tests use synthetic encodings. Matching, reference
 hashes and inventory selection are unchanged.
+
+The random-state generator and four-output copy were independently reconstructed
+from original instruction behavior. The seed recurrence and xorshift transition
+were then corroborated against the public
+[SEAD reconstruction at the BotW submodule pin](https://github.com/open-ead/sead/blob/f4178a21e21235830357dc27c26a2c29956972ed/modules/src/random/seadRandom.cpp).
+No external implementation was imported. The
+[random-state aliases](random-state.md) are descriptive, not claimed original
+Nintendo symbols.

@@ -21,6 +21,7 @@
 | data-call-dependencies | 12 | 1,096 | Unmatched |
 | lookup-table-dependency | 1 | 20 | Unmatched |
 | float-comparison-dependencies | 2 | 40 | Unmatched |
+| random-state-context | 1 | 36 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -72,3 +73,11 @@ entries, complete bounded control flow and no external interior branch targets
 or overlaps. The latter has two validated original-data fields. An independent
 RPX reader agrees on both spans and resolved data fields. Existing references
 remain unchanged.
+
+The random-state-context batch adds one four-output state copy beside the
+recovered seed and generator routines. One independently decoded direct caller
+supplies all five pointer arguments. The complete nine-instruction span has a
+terminal return, no external interior branch targets, no original relocations
+and no overlap with existing references. An independent RPX reader agrees on the
+whole text and selected span. Existing references remain unchanged. See the
+[random-state evidence](random-state.md).
