@@ -58,3 +58,8 @@ The twelve [global float loads](global-float-loads.md) were reconstructed from a
 bounded original instruction pattern. Their references and original address
 fields were checked against a separate RPX reader; caller uses and inferred
 interfaces received independent review. No backing data values were imported.
+
+The six [global scalar loads](global-scalar-loads.md) were independently
+reconstructed and checked against original spans and address fields. Caller
+review distinguished signed-word and pointer uses before interface selection.
+No backing data values or external implementation were imported.
