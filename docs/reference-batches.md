@@ -20,6 +20,7 @@
 | related-call-dependencies | 6 | 312 | All verified |
 | data-call-dependencies | 12 | 1,096 | Unmatched |
 | lookup-table-dependency | 1 | 20 | Unmatched |
+| float-comparison-dependencies | 2 | 40 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -63,3 +64,11 @@ return, no interior branch targets or overlapping references, and two validated
 absolute data fields. The caller now lists the helper in `compile_with`; its
 remaining instruction differences are unresolved. Existing reference bytes and
 bindings are unchanged.
+
+The float-comparison-dependencies batch adds two helpers used by the unresolved
+`fn_02d8f970`: a float field read and a nullable pointer-based float read. Their
+8-byte and 32-byte boundaries have 11 and 16 independently decoded direct-call
+entries, complete bounded control flow and no external interior branch targets
+or overlaps. The latter has two validated original-data fields. An independent
+RPX reader agrees on both spans and resolved data fields. Existing references
+remain unchanged.
