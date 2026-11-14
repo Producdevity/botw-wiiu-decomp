@@ -68,3 +68,9 @@ The sixteen [global byte getters](global-byte-loads.md) were independently
 reconstructed from bounded original instruction behavior. Complete spans and
 all original address fields agree between separate RPX readers; source and
 caller contracts received independent review. No backing data was imported.
+
+The eighteen [additional global byte getters](global-byte-remainder.md) were
+rediscovered from the pinned private RPX. Independent readers agree on their
+complete spans and all original data-field destinations. Reviewed references
+preserve the original hashes and select existing immutable compiler profiles;
+source implementation coverage is verified separately.
