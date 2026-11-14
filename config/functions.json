@@ -39414,6 +39414,482 @@
       },
       "status": "unmatched",
       "symbol": "fn_03c2dabc"
+    },
+    {
+      "address": "0x02e54e74",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467cd4": "0x10467cd4"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467cd4",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467cd4",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e54e74",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "d92c58f1b9dba473639e29552523060bd023339897a489befc3c60044db2142f",
+      "size": 12,
+      "source": "reconstructions/fn_02e54e74.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e54e74"
+    },
+    {
+      "address": "0x02e55024",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467d5c": "0x10467d5c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467d5c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467d5c",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e55024",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "82670fe0f732b970c5b3ba62b0404626c603d2090250dd66feab8ee0061f3ad5",
+      "size": 12,
+      "source": "reconstructions/fn_02e55024.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02e55024"
+    },
+    {
+      "address": "0x02f894f0",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1053fa2c": "0x1053fa2c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1053fa2c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1053fa2c",
+          "type": 4
+        }
+      ],
+      "id": "fn_02f894f0",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "fa793efe9c1189981c8d79fda1818db00fb2cc906125258e140345c272ef0a64",
+      "size": 12,
+      "source": "reconstructions/fn_02f894f0.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_02f894f0"
+    },
+    {
+      "address": "0x030a51cc",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046c9f0": "0x1046c9f0"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046c9f0",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046c9f0",
+          "type": 4
+        }
+      ],
+      "id": "fn_030a51cc",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "7a475b7eecdcd10a3a6be55b3e015564ecb7f9af0cdf8899877b63db7ac488ec",
+      "size": 12,
+      "source": "reconstructions/fn_030a51cc.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_030a51cc *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_030a51cc"
+    },
+    {
+      "address": "0x031a71a4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046d2c8": "0x1046d2c8"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046d2c8",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046d2c8",
+          "type": 4
+        }
+      ],
+      "id": "fn_031a71a4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "fd22395ef0f9257595a7efcf609a7725ec607c1b766b369b8996956cd17c507f",
+      "size": 12,
+      "source": "reconstructions/fn_031a71a4.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_031a71a4"
+    },
+    {
+      "address": "0x03378a44",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046ddfc": "0x1046ddfc"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046ddfc",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046ddfc",
+          "type": 4
+        }
+      ],
+      "id": "fn_03378a44",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "c5734751f867d5691e4bf443c47667817ac9fec359063422315979daffa2b6ae",
+      "size": 12,
+      "source": "reconstructions/fn_03378a44.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_03378a44"
+    },
+    {
+      "address": "0x0341aac0",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046f57c": "0x1046f57c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046f57c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046f57c",
+          "type": 4
+        }
+      ],
+      "id": "fn_0341aac0",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "678a2fe82165712c3f4c807206ea5a4cb65b4d317c20991d80d6b766980dd708",
+      "size": 12,
+      "source": "reconstructions/fn_0341aac0.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "unsigned int",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_0341aac0"
+    },
+    {
+      "address": "0x0341d94c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046f578": "0x1046f578"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046f578",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046f578",
+          "type": 4
+        }
+      ],
+      "id": "fn_0341d94c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "5da3684b630ebee2ed3f480cd120733625e876e1ff5f14f17204690a0db28cfa",
+      "size": 12,
+      "source": "reconstructions/fn_0341d94c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_0341d94c *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_0341d94c"
+    },
+    {
+      "address": "0x0341d98c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046f580": "0x1046f580"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046f580",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046f580",
+          "type": 4
+        }
+      ],
+      "id": "fn_0341d98c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "09d5b538f1ce42709265ee6aa6cc1df4c1b8657c621300abebd629f2cae57f68",
+      "size": 12,
+      "source": "reconstructions/fn_0341d98c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_0341d98c *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_0341d98c"
+    },
+    {
+      "address": "0x037d97e4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1047c35c": "0x1047c35c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1047c35c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1047c35c",
+          "type": 4
+        }
+      ],
+      "id": "fn_037d97e4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "c9abd535b03e5863ea22060b54689ae478dcb076634c4cf744f39ae7b28c6dd2",
+      "size": 12,
+      "source": "reconstructions/fn_037d97e4.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_037d97e4 *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_037d97e4"
+    },
+    {
+      "address": "0x037e5b2c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1047c3b8": "0x1047c3b8"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1047c3b8",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1047c3b8",
+          "type": 4
+        }
+      ],
+      "id": "fn_037e5b2c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "610047cee0c843db00cb19c32ea73c03418aeef70e8c525c0e9448f5047390d8",
+      "size": 12,
+      "source": "reconstructions/fn_037e5b2c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_037e5b2c *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_037e5b2c"
+    },
+    {
+      "address": "0x03bb1598",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1047f05c": "0x1047f05c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1047f05c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1047f05c",
+          "type": 4
+        }
+      ],
+      "id": "fn_03bb1598",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "082f9620a63c6f3c542775552eb82991896d776fe78ec64b37ae9c98d6414f5a",
+      "size": 12,
+      "source": "reconstructions/fn_03bb1598.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_03bb1598 *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_03bb1598"
+    },
+    {
+      "address": "0x03f923ac",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_105bb490": "0x105bb490"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_105bb490",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_105bb490",
+          "type": 4
+        }
+      ],
+      "id": "fn_03f923ac",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "8ec5ca51afb3db652b6723b110c22a0bc6a906d0f2f5c65efff9d9fe7295a4ff",
+      "size": 12,
+      "source": "reconstructions/fn_03f923ac.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_03f923ac *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_03f923ac"
+    },
+    {
+      "address": "0x04194a9c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "integer",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10480394": "0x10480394"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10480394",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10480394",
+          "type": 4
+        }
+      ],
+      "id": "fn_04194a9c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "df0a0299f15da49caad1a8def1c2bd2df8944b0b011b4136d979ce989f657617",
+      "size": 12,
+      "source": "reconstructions/fn_04194a9c.cpp",
+      "source_contract": {
+        "parameter_types": [],
+        "return_type": "struct Opaque_04194a9c *",
+        "variadic": false
+      },
+      "status": "unmatched",
+      "symbol": "fn_04194a9c"
     }
   ]
 }

@@ -74,3 +74,9 @@ rediscovered from the pinned private RPX. Independent readers agree on their
 complete spans and all original data-field destinations. Reviewed references
 preserve the original hashes and select existing immutable compiler profiles;
 source implementation coverage is verified separately.
+
+The fourteen [global word getters](global-word-loads.md) were independently
+reconstructed from complete original spans. Caller data flow supports numeric
+and pointer interfaces; source AST checks preserve their reviewed types.
+Independent readers agree on the spans and all original address-field targets.
+No backing data or compiler-generated objects are included.

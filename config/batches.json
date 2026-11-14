@@ -1947,6 +1947,25 @@
         "fn_03713e70",
         "fn_03c2dabc"
       ]
+    },
+    {
+      "id": "global-word-loads",
+      "functions": [
+        "fn_02e54e74",
+        "fn_02e55024",
+        "fn_02f894f0",
+        "fn_030a51cc",
+        "fn_031a71a4",
+        "fn_03378a44",
+        "fn_0341aac0",
+        "fn_0341d94c",
+        "fn_0341d98c",
+        "fn_037d97e4",
+        "fn_037e5b2c",
+        "fn_03bb1598",
+        "fn_03f923ac",
+        "fn_04194a9c"
+      ]
     }
   ]
 }
