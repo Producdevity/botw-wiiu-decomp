@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from . import compiler, symbols
+from .game_input import resolve_game
 from .context import write_context
 from .disassembly import disassemble
 from .matching import compare_function, compare_function_hash, compare_function_set
@@ -107,8 +108,9 @@ def summary(rows: dict, results: list[dict], batches: dict | None = None) -> dic
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    setup = commands.add_parser("setup", help="verify your RPX and configure a local compiler")
-    setup.add_argument("--rpx", type=Path, required=True)
+    setup = commands.add_parser("setup", help="select your dump executable and configure a local compiler")
+    setup.add_argument("--game", "--rpx", dest="rpx", metavar="PATH", type=Path, required=True,
+                       help="Your own dump folder, .wua archive or U-King.rpx")
     setup.add_argument("--compiler")
     commands.add_parser("doctor", help="check original, compiler and reference manifest")
     commands.add_parser("list", help="list pilot tasks without requiring the game")
@@ -129,7 +131,8 @@ def main(argv=None) -> int:
         rows = functions()
         target = read_json(ROOT / "config/target.json")
         if args.command == "setup":
-            image = load(args.rpx.expanduser().resolve(), target["rpx_sha256"])
+            game = resolve_game(args.rpx, ROOT, prepare=True, compiler=args.compiler)
+            image = load(game.rpx, target["rpx_sha256"])
             for row in rows.values():
                 if hashlib.sha256(reference_bytes(image, row)).hexdigest() != row["sha256"]:
                     raise ValueError(f"reference disagrees with original: {row['id']}")
@@ -137,9 +140,9 @@ def main(argv=None) -> int:
             identity = compiler.version(cxx)
             profiles = {p for r in rows.values() for p in compiler.profiles(r)}
             identities = {profile: compiler.identity(cxx, profile) for profile in sorted(profiles)}
-            write_json(ROOT / ".local/config.json", {"rpx": str(args.rpx.expanduser().resolve()),
+            write_json(ROOT / ".local/config.json", {"rpx": str(game.rpx), "game": str(game.source),
                        "compiler": cxx, "compiler_version": identity})
-            emit({"status": "configured", "target": target["id"], "rpx_sha256": image.sha256,
+            emit({"status": "configured", "target": target["id"], "rpx_sha256": image.sha256, "input": game.describe(),
                   "compilers": identities, "verified_reference_functions": len(rows)})
             return 0
         if args.command == "list":

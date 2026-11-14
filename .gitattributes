@@ -1,0 +1,2 @@
+third_party/zarchive/** -text -whitespace
+tests/fixtures/wua/*.wua binary

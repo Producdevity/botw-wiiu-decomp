@@ -3,31 +3,47 @@
 Follow the user's actual scope, permissions and budget. A usual request to
 contribute covers one focused reconstruction and its pull request. With no
 explicit budget, make one function attempt. The contributor supplies a
-GitHub account and their own Wii U v208 RPX. Handle setup and technical work
-without requiring them to know decompilation or PowerPC.
+GitHub account and their own game dump folder, `.wua` archive, or raw RPX.
+Handle setup and technical work without requiring them to know decompilation,
+PowerPC, or how to extract the executable.
 
 ## Prepare
 
 1. Read [contribution policy](contributing.md), [toolchain](toolchain.md),
    [verification](verification.md) and [naming](naming.md). Preserve any existing
    changes; use a separate checkout when necessary.
-2. Use only a game path the user has volunteered. If none is available, ask once
-   for the path to their `U-King.rpx`. Do not search their disks for game files.
-3. Run the readiness check and follow its reported actions:
+2. Use only a game path the user has volunteered. If none is available, ask
+   once for their dump folder or `.wua` path (or accept a raw RPX path). Do not
+   search their disks for game files.
+3. Run read-only preflight and follow its actions, then set up from the same path:
 
    ```sh
-   python3 tools/preflight.py --rpx /path/to/U-King.rpx
+   python3 tools/preflight.py --game /path/to/your/dump-or-game.wua
    python3 tools/toolchain.py
-   python3 tools/decomp.py setup --rpx /path/to/U-King.rpx
+   python3 tools/decomp.py setup --game /path/to/your/dump-or-game.wua
    python3 tools/decomp.py doctor
-   python3 tools/preflight.py --rpx /path/to/U-King.rpx
+   python3 tools/preflight.py --game /path/to/your/dump-or-game.wua
    ```
 
-   Preflight reads local readiness and GitHub authentication; it does not install
-   tools. `toolchain.py` downloads hash-pinned GHS and wibo into ignored `.local/`.
-   Follow platform prerequisites in the toolchain guide. Supply
-   `--compiler /path/to/clang++` to setup when needed. A missing tool is a setup
-   problem to resolve or report, not a reason to skip verification.
+   Preflight checks local readiness and GitHub authentication; it never installs
+   tools or extracts game data. If WUA support is missing, it reports
+   `python3 tools/game_input.py install-reader`; run that action and repeat
+   preflight. Setup installs the helper automatically when needed. It reads only
+   the volunteered path, selects the supported USA v208 `U-King.rpx` from a WUA,
+   extracted folder, base/update folders, or raw RPX, and verifies its exact
+   SHA-256. A WUA contains base, update, and possibly DLC content; setup extracts
+   only the ~22 MiB executable to ignored `.local/game-input/`, not the full game.
+   DLC is unnecessary. Raw RPX and extracted folders need no WUA helper. The
+   legacy `--rpx` option remains an alias and accepts raw RPX files too. Encrypted
+   WUD/WUX/NUS or `.app` inputs are not automatically decrypted.
+
+   WUA support requires a C++20 host compiler and zstd development files:
+   `brew install zstd` on macOS, or
+   `sudo apt install libzstd-dev` on Ubuntu. Follow remaining platform
+   prerequisites in the toolchain guide. `toolchain.py` downloads hash-pinned GHS
+   and wibo into ignored `.local/`. Supply `--compiler /path/to/clang++` when
+   needed. A missing tool is a setup problem to resolve or report, not a reason
+   to skip verification.
 4. Authenticate `gh` as the contributor. Fork `Producdevity/botw-wiiu-decomp` if
    needed, configure remotes, and create a descriptive branch in their fork.
    Use their configured Git author. Do not invent an author or add AI attribution.

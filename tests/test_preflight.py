@@ -183,6 +183,35 @@ class PreflightTests(unittest.TestCase):
                 self.assertEqual(result["status"], "action_required")
                 self.assertTrue(any(row["id"] == "configuration" for row in result["actions"]))
 
+    def test_wua_missing_reader_is_an_agent_action_without_extraction(self):
+        with tempfile.TemporaryDirectory() as temporary, self.ready_environment():
+            root, _ = self.root(temporary, configured=False)
+            archive = root / "game.wua"
+            archive.write_bytes(b"archive stand-in")
+            before_files = set(root.rglob("*"))
+            with patch.object(preflight.wua, "reader_ready", return_value=False), patch.object(preflight.wua, "install_reader") as install:
+                result = preflight.assess(root, archive)
+                install.assert_not_called()
+            action = next(row for row in result["actions"] if row["id"] == "wua_reader")
+            self.assertEqual(action["actor"], "agent")
+            self.assertEqual(action["command"], ["python3", "tools/game_input.py", "install-reader"])
+            self.assertEqual(set(root.rglob("*")), before_files)
+
+    def test_wua_valid_archive_but_missing_cached_rpx_requires_setup(self):
+        with tempfile.TemporaryDirectory() as temporary, self.ready_environment():
+            root, _ = self.root(temporary)
+            archive = root / "game.wua"
+            archive.write_bytes(b"archive stand-in")
+            digest = hashlib.sha256(b"original").hexdigest()
+            cached = root / ".local/game-input" / digest / "U-King.rpx"
+            (root / ".local/config.json").write_text(json.dumps({"rpx": str(cached), "compiler": "/llvm/clang++"}))
+            with patch.object(preflight.wua, "reader_ready", return_value=True), patch.object(preflight.wua, "candidates", return_value=[{"path": "0005000e101c9400_v208/code/U-King.rpx", "size": 8}]), patch.object(preflight.wua, "read_rpx", return_value=b"original"):
+                result = preflight.assess(root, archive)
+            self.assertEqual(result["status"], "action_required")
+            configuration = next(row for row in result["actions"] if row["id"] == "configuration")
+            self.assertEqual(configuration["command"], ["python3", "tools/decomp.py", "setup", "--game", str(archive), "--compiler", "/llvm/clang++"])
+            self.assertFalse(cached.exists())
+
     def test_timeout_is_an_action_and_command_exit_code_follows_readiness(self):
         with tempfile.TemporaryDirectory() as directory, self.ready_environment():
             root, rpx = self.root(directory)

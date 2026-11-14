@@ -5,8 +5,10 @@ permissions and budget. A usual contribution request covers one focused function
 and its pull request; do not infer broader permission from this guide. Preserve
 existing work and use the contributor's configured Git author and GitHub account.
 
-- Run `python3 tools/preflight.py` and follow its setup actions. Use only the game
-  path the user volunteers; ask once if the required RPX path is missing.
+- Ask for the user's own game dump folder, `.wua` archive, or raw RPX path; do
+  not search their disks. Run `python3 tools/preflight.py --game PATH`. Preflight
+  is read-only and reports `python3 tools/game_input.py install-reader` if WUA
+  support is missing. Setup can install that helper automatically.
 - Claim a task and wait for acceptance before reconstructing it. Keep RPX files,
   packets, disassembly, compiler binaries and build output private.
 - Write readable C++, preserve established caller/callee contracts, and run exact

@@ -3,14 +3,15 @@
 Point your coding agent at this repository and ask it to contribute. It reads
 [AGENTS.md](../AGENTS.md), handles setup, claims one task, reconstructs readable
 C++, runs checks and submits a pull request within your budget. You supply your
-own supported Wii U v208 RPX path and GitHub account; you do not need to learn
-PowerPC or configure the reconstruction workflow yourself. GitHub may ask you to
-sign in. Game files and compiler downloads stay local.
+own game dump folder, `.wua` archive, or raw `U-King.rpx` path and GitHub
+account; you do not need to extract the executable or configure the workflow
+yourself. GitHub may ask you to sign in. Game files and compiler downloads stay
+local.
 
 For example:
 
 > Contribute one function to https://github.com/Producdevity/botw-wiiu-decomp.
-> My RPX is at /path/to/U-King.rpx. Work within my budget and submit a pull request.
+> Ask for my game dump path. Work within my budget and submit a pull request.
 
 [Agent workflow](agent-guide.md) · [Toolchain](toolchain.md) ·
 [Verification](verification.md) · [Naming](naming.md)

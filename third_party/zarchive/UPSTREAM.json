@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/Exzap/ZArchive",
+  "commit": "965b66c8d67b6b7e30fd63b3b75aa91a99ff303b",
+  "license": "MIT-0",
+  "files_sha256": {
+    "LICENSE": "efe6b7a9113e0dbe3a8922026fc72ae3ee835c163d182967a015783f7d72e562",
+    "include/zarchive/zarchivecommon.h": "45238b87fd095b6950023f5035215e105e928e09550bb71b8834f448cc79b58b",
+    "include/zarchive/zarchivereader.h": "491aa8360ac6fe80241cc6458944d98447fc4c94036489eb1adee368069b97e9",
+    "src/sha_256.c": "e7114c10dfcb599fd1eb5f425e073d29b92b004e12697306856e44864b9dfc1d",
+    "src/sha_256.h": "f6718a1292866350d13c62f98c70cdf93b3d21e265a24abc8abec3e7e004ef82",
+    "src/zarchivereader.cpp": "acdef8166ae129db723378e3b75d4cc2de5269e0dced9428c39c327b24054016"
+  }
+}
