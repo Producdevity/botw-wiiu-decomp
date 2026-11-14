@@ -51,6 +51,7 @@ Public CI compares against fixed function hashes, addresses and reference bindin
 - [Verification contract and current coverage](docs/verification.md)
 - [Reference batches and selection evidence](docs/reference-batches.md)
 - [Opt-in function discovery](docs/inventory.md)
+- [Supporting-function compilation](docs/supporting-compilation.md)
 - [Cross-file C++ declaration checks](docs/contract-audit.md)
 - [Compiler evidence and prior projects](docs/toolchain.md)
 - [Unaccepted candidates and register diagnostics](docs/register-diagnostics.md)

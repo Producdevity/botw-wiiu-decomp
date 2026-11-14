@@ -125,3 +125,31 @@ def compile_source(compiler: str, source: Path, include: Path, profile: str = "c
         if not obj.is_file() or obj.stat().st_size > 4 * 1024 * 1024:
             raise ValueError("missing or oversized compiler output")
         return obj.read_bytes()
+
+
+def compile_sources(compiler: str, sources: list[Path], include: Path,
+                    profile: str = "clang-ppc") -> bytes:
+    """Compile a bounded set of source files as one temporary translation unit."""
+    if not sources:
+        raise ValueError("at least one source is required")
+    if len(sources) > 8:
+        raise ValueError("at most 8 sources may be compiled together")
+    if len(sources) == 1:
+        return compile_source(compiler, sources[0], include, profile)
+
+    resolved = [source.resolve() for source in sources]
+    if len(set(resolved)) != len(resolved):
+        raise ValueError("duplicate source paths are not accepted")
+
+    total_size = 0
+    for source in sources:
+        check_source(source)
+        total_size += source.stat().st_size
+    if total_size > 256 * 1024:
+        raise ValueError("combined source must be below 256 KiB")
+
+    contents = [source.read_text(encoding="utf-8") for source in sources]
+    with tempfile.TemporaryDirectory(prefix="botw-match-sources-") as temporary:
+        combined = Path(temporary) / "unit.cpp"
+        combined.write_text("\n\n".join(contents), encoding="utf-8")
+        return compile_source(compiler, combined, include, profile)

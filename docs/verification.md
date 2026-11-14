@@ -16,6 +16,7 @@ An exact byte match proves that the checked machine-code span is identical under
 - Object relocations: `ADDR32`, `ADDR16_LO`, `ADDR16_HI`, `ADDR16_HA`, `REL24`, `REL14`, `REL32`, with range/opcode checks.
 - Local references contained within the checked function; external function and data references only through separate manifest bindings.
 - Opt-in [`cafe-data-address-v1`](data-relocations.md) for original absolute data relocations whose fields already equal their link-address values. Original and compiled relocation provenance must agree field by field.
+- Opt-in [supporting-function compilation](supporting-compilation.md), verifying every emitted body against a closed trusted reference set.
 - Rebuild of all implemented functions when any shared header changes.
 - Private extraction and disassembly from the contributor's own dump.
 

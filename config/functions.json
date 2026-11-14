@@ -26895,7 +26895,10 @@
       "verification": {
         "object_sha256": "b7622531f31aa38df552f09f19ae24da19588d2a2d82cd7faaa2812dc45e8807",
         "relocations": 1
-      }
+      },
+      "compile_with": [
+        "fn_02f53050"
+      ]
     },
     {
       "id": "fn_03095b48",

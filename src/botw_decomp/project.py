@@ -65,7 +65,29 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
     ranges.sort()
     if any(a[1] > b[0] for a, b in zip(ranges, ranges[1:])):
         raise ValueError("overlapping function ranges")
+    for row in result.values():
+        compilation_members(row, result)
     return result
+
+
+def compilation_members(row: dict, rows: dict[str, dict]) -> list[dict]:
+    selected, pending = {}, [row]
+    while pending:
+        member = pending.pop()
+        key = member["id"]
+        if key in selected:
+            continue
+        selected[key] = member
+        if len(selected) > 8:
+            raise ValueError("supporting compilation exceeds eight functions")
+        dependencies = member.get("compile_with", [])
+        if (not isinstance(dependencies, list) or
+                any(not isinstance(name, str) or not FUNCTION_ID.fullmatch(name) or
+                    name == key or name not in rows for name in dependencies) or
+                len(set(dependencies)) != len(dependencies)):
+            raise ValueError(f"invalid supporting compilation references: {key}")
+        pending.extend(rows[name] for name in dependencies)
+    return [selected[key] for key in sorted(selected)]
 
 
 def local_config(root: Path = ROOT) -> dict:

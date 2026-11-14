@@ -23,6 +23,8 @@ def main(argv=None):
         if args.function not in rows:
             raise ValueError("unknown function")
         row = rows[args.function]
+        if row.get("compile_with"):
+            raise ValueError("register diagnostics do not support compilation sets; use decomp.py check")
         settings = project.local_config()
         target = project.read_json(project.ROOT / "config/target.json")
         image = load(Path(settings["rpx"]), target["rpx_sha256"])
