@@ -25,3 +25,6 @@ gamefiles/
 *.tar*
 ._*
 .DS_Store
+
+# Generated text-only test archive, not a game dump.
+!tests/fixtures/wua/synthetic.wua

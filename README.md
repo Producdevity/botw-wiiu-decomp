@@ -14,20 +14,31 @@ Matching uses fixed GHS 5.3.22 profiles and Clang for simple leaves. Source cont
 
 Point your coding agent at this repository and ask it to contribute:
 
-> Read AGENTS.md, handle setup and submit one verified function as a pull request. Ask me for my Wii U v208 RPX path if needed, and work within the budget I give you.
+> Read AGENTS.md and contribute one verified function within my budget. Ask for my game dump path if needed; handle setup and submit a pull request.
 
-The agent handles setup, task reservations, reconstruction and checks. You supply your own RPX and GitHub account. [Agent entry point](AGENTS.md) · [Contribution guide](CONTRIBUTING.md).
+The agent handles setup, task reservations, reconstruction and checks. You supply your own game dump path and GitHub account. [Agent entry point](AGENTS.md) · [Contribution guide](CONTRIBUTING.md).
+
+## Your game dump
+
+`U-King.rpx` is the game's PowerPC executable inside its `code/` folder. This
+project requires the USA game updated to v208. Give setup your own game dump
+folder or `.wua` archive; it selects and hash-checks the executable for you. No
+manual conversion or RPX path search is needed. Decrypted Dumpling base and
+update folders are accepted; a `.wua` can bundle base, update, and DLC. DLC is
+not required. Follow the [Wii U Hacks Guide](https://wiiu.hacks.guide/) and
+[Dumpling game and update dumping guide](https://wiki.hacks.guide/wiki/Wii_U:Dump_Games)
+to make your own dump.
 
 ## Local commands
 
-Install Python 3.11+, LLVM with PowerPC support, and GitHub CLI. On macOS: `brew install python llvm gh`. On Ubuntu 24.04: `sudo apt install python3 clang-18 llvm-18 libclang1-18 gh`.
+Install Python 3.11+, LLVM with PowerPC support, GitHub CLI, and a C++20 host compiler. WUA input also needs zstd development files: on macOS `brew install python llvm gh zstd`; on Ubuntu 24.04 `sudo apt install python3 clang-18 llvm-18 libclang1-18 gh libzstd-dev`. LLVM must be available on `PATH`. On macOS, zstd development headers and library are needed for WUA input.
 
 ```sh
 git clone https://github.com/Producdevity/botw-wiiu-decomp.git
 cd botw-wiiu-decomp
-python3 tools/preflight.py --rpx /path/to/U-King.rpx
+python3 tools/preflight.py --game /path/to/your/dump-or-game.wua
 python3 tools/toolchain.py
-python3 tools/decomp.py setup --rpx /path/to/U-King.rpx
+python3 tools/decomp.py setup --game /path/to/your/dump-or-game.wua
 python3 tools/decomp.py doctor
 python3 tools/community.py summary
 python3 tools/community.py list
@@ -35,6 +46,8 @@ python3 tools/community.py claim --wait 120
 python3 tools/decomp.py packet FUNCTION
 python3 tools/decomp.py check FUNCTION
 ```
+
+Preflight reports setup actions without modifying files. Setup builds the WUA reader when needed and configures the hash-verified executable; `--rpx` remains an alias. [Detailed agent setup](docs/agent-guide.md).
 
 The toolchain command downloads hash-pinned GHS and wibo releases from their upstream distribution into `.local/`; it supports macOS (Rosetta on Apple Silicon) and x86-64 Linux. Use `--compiler /path/to/clang++` during setup if necessary. `packet` creates private bytes, disassembly, caller/callee context and task metadata under ignored `.local/`. Submit readable C++ under `reconstructions/`; never submit the packet.
 
