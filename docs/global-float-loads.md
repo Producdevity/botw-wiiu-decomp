@@ -7,14 +7,14 @@ counted only after implementation verification.
 
 | Function | Imported data symbol |
 | --- | --- |
-| `fn_02a2bbb0` | `data_10187f5c` |
-| `fn_02e2ac6c` | `data_10212ce8` |
-| `fn_02e54e38` | `data_10467cc8` |
-| `fn_02e5f0a4` | `data_102164c0` |
-| `fn_02ead664` | `data_1052bd64` |
-| `fn_031709cc` | `data_1028ab44` |
-| `fn_031a7108` | `data_1046d29c` |
-| `fn_0359038c` | `data_102e66d4` |
+| [fn_02a2bbb0](../reconstructions/fn_02a2bbb0.cpp) | `data_10187f5c` |
+| [fn_02e2ac6c](../reconstructions/fn_02e2ac6c.cpp) | `data_10212ce8` |
+| [fn_02e54e38](../reconstructions/fn_02e54e38.cpp) | `data_10467cc8` |
+| [fn_02e5f0a4](../reconstructions/fn_02e5f0a4.cpp) | `data_102164c0` |
+| [fn_02ead664](../reconstructions/fn_02ead664.cpp) | `data_1052bd64` |
+| [fn_031709cc](../reconstructions/fn_031709cc.cpp) | `data_1028ab44` |
+| [fn_031a7108](../reconstructions/fn_031a7108.cpp) | `data_1046d29c` |
+| [fn_0359038c](../reconstructions/fn_0359038c.cpp) | `data_102e66d4` |
 | `fn_036fb83c` | `data_1030a108` |
 | `fn_03900f64` | `data_10336ea4` |
 | `fn_03924ee4` | `data_10339458` |
