@@ -56,12 +56,17 @@ flow and uses at call sites before choosing parameters or return types. Trace
 r3–r10, floating-point argument registers, hidden aggregate-return pointers and
 how callers consume results. A callee that leaves r3 unused does not establish a
 `void` signature; an omitted argument can still produce matching bytes. Explicitly
-forward every observed argument and propagated return.
+forward every observed argument and propagated return. Track stack objects passed
+by address, including descriptor or table fields; those fields are not additional
+register arguments.
 
 Use established shared declarations under `include/botw/`. Keep unknown layouts
 behind opaque pointer boundaries with internal layout casts. Do not export
 translation-unit-local record types. Recheck callers and callees after a shared
-contract change. The [static contract audit](contract-audit.md) compares known
+contract change. References with `compile_with` load the listed supporting source
+files automatically. Each emitted helper must match its own trusted reference;
+keep supporting implementations intact unless the task requires a reviewed change.
+See [supporting compilation](supporting-compilation.md). The [static contract audit](contract-audit.md) compares known
 source declarations; it cannot recover the original signature or validate an
 inferred layout.
 

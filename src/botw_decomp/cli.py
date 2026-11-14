@@ -10,8 +10,8 @@ import sys
 from . import compiler, symbols
 from .context import write_context
 from .disassembly import disassemble
-from .matching import compare_function, compare_function_hash
-from .project import ROOT, functions, local_config, read_json, write_json
+from .matching import compare_function, compare_function_hash, compare_function_set
+from .project import ROOT, compilation_members, functions, local_config, read_json, write_json
 from .rpx import load, reference_bytes
 
 
@@ -19,22 +19,36 @@ def emit(value):
     print(json.dumps(value, indent=2, sort_keys=True))
 
 
-def verify(row: dict, cxx: str, root: Path = ROOT, image=None, source: Path | None = None) -> dict:
+def verify(row: dict, cxx: str, root: Path = ROOT, image=None, source: Path | None = None, references: dict | None = None) -> dict:
     attempts = []
     for profile in compiler.profiles(row):
-        result = verify_profile(row, cxx, root, image, source, profile)
+        result = verify_profile(row, cxx, root, image, source, profile, references)
         if result.get("matched"):
             return result
         attempts.append(result)
     return {**attempts[-1], "attempts": attempts} if len(attempts) > 1 else attempts[0]
 
 
-def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, profile: str) -> dict:
+def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, profile: str, references: dict | None = None) -> dict:
     source = source or root / row["source"]
     result = {"function": row["id"], "compiler_profile": profile}
     if not source.is_file():
         return {**result, "status": "unimplemented", "matched": False}
     try:
+        if row.get("compile_with"):
+            members = compilation_members(row, functions(root) if references is None else references)
+            paths = [source if member["id"] == row["id"] else root / member["source"] for member in members]
+            obj = compiler.compile_sources(cxx, paths, root / "include", profile)
+            originals = None if image is None else {member["symbol"]: reference_bytes(image, member) for member in members}
+            group = compare_function_set(obj, members, originals)
+            compared = next((item for item in group["results"] if item["symbol"] == row["symbol"]),
+                            {"matched": False, "status": "rejected", "reason": group["reason"]})
+            return {**result, **compared, "compiler": compiler.identity(cxx, profile),
+                    "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                    "compilation_set": [member["id"] for member in members],
+                    "supporting_source_sha256": {member["id"]: hashlib.sha256(path.read_bytes()).hexdigest()
+                                                 for member, path in zip(members, paths)},
+                    "supporting_checks": [item for item in group["results"] if item["symbol"] != row["symbol"]]}
         obj = compiler.compile_source(cxx, source, root / "include", profile)
         address = int(row["address"], 16)
         bindings = {key: int(value, 16) for key, value in row.get("bindings", {}).items()}
@@ -184,7 +198,7 @@ def main(argv=None) -> int:
             raise ValueError("no reconstructed sources selected")
         batch_path = ROOT / "config/batches.json"
         batches = read_json(batch_path) if batch_path.is_file() else None
-        results = [verify(row, cxx, image=image, source=getattr(args, "source", None)) for row in selected]
+        results = [verify(row, cxx, image=image, source=getattr(args, "source", None), references=rows) for row in selected]
         profiles = {p for r in selected for p in compiler.profiles(r)}
         report = {"target": target["id"], "compilers": {p: compiler.identity(cxx, p) for p in sorted(profiles)},
                   "reference": "public SHA-256" if hash_only else "local original bytes", **summary(rows, results, batches)}

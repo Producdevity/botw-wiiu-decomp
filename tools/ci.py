@@ -107,7 +107,7 @@ def inspect_candidate(trusted: Path, candidate: Path, rows: dict[str, dict]) -> 
 def verify_candidate(trusted: Path, candidate: Path, cxx: str) -> list[dict]:
     rows = project.functions(trusted)
     selected = inspect_candidate(trusted, candidate, rows)
-    results = [cli.verify(row, cxx, root=candidate, image=None) for row in selected]
+    results = [cli.verify(row, cxx, root=candidate, image=None, references=rows) for row in selected]
     return results
 
 

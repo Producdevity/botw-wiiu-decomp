@@ -25,7 +25,7 @@ def _address(value: int, label: str) -> int:
 def _symbol_address(obj: ElfObject, symbol: Symbol, addend: int,
                     selected: Symbol, original_address: int,
                     bindings: dict[str, int], data_bindings: dict[str, int],
-                    relocation_type: int) -> int:
+                    relocation_type: int, function_scope: dict | None = None) -> int:
     if symbol.name in data_bindings:
         if (symbol.section_index != SHN_UNDEF or symbol.value != 0 or
                 symbol.type not in (0, 1) or symbol.binding not in (1, 2)):
@@ -42,6 +42,11 @@ def _symbol_address(obj: ElfObject, symbol: Symbol, addend: int,
         section = obj.sections[symbol.section_index]
         if section.type != SHT_PROGBITS or not section.flags & SHF_EXECINSTR:
             raise ElfError(f"unverified local data dependency: {symbol.name or section.name}")
+        if (function_scope is not None and symbol.type == STT_FUNC and
+                symbol.name in function_scope and symbol.name != selected.name):
+            if symbol.name not in bindings or bindings[symbol.name] != function_scope[symbol.name]["address"]:
+                raise ElfError("supporting function requires its trusted original binding")
+            return _address(bindings[symbol.name] + addend, f"resolved address of {symbol.name}")
         if symbol.section_index == selected.section_index:
             destination = symbol.value + addend
             if selected.value <= destination < selected.value + selected.size:
@@ -54,7 +59,53 @@ def _symbol_address(obj: ElfObject, symbol: Symbol, addend: int,
                     f"resolved address of {symbol.name}")
 
 
-def _validate_scope(obj: ElfObject, selected: Symbol) -> None:
+def _validate_function_set(obj: ElfObject, scope: dict) -> None:
+    definitions = [symbol for symbol in obj.symbols if symbol.type == STT_FUNC and
+                   symbol.section_index != SHN_UNDEF]
+    if (len(definitions) != len(scope) or {s.name for s in definitions} != set(scope)):
+        raise ElfError("defined functions differ from the trusted compilation set")
+    sections = {symbol.section_index for symbol in definitions}
+    if len(sections) != 1 or not 0 < next(iter(sections)) < len(obj.sections):
+        raise ElfError("supporting functions require one executable section")
+    section = obj.sections[next(iter(sections))]
+    if section.type != SHT_PROGBITS or section.flags & (SHF_ALLOC | SHF_EXECINSTR) != SHF_ALLOC | SHF_EXECINSTR:
+        raise ElfError("supporting functions require allocated executable PROGBITS")
+    spans = []
+    for symbol in definitions:
+        if (symbol.size != scope[symbol.name]["size"] or not symbol.size or
+                symbol.value % 4 or symbol.size % 4 or symbol.value + symbol.size > section.size):
+            raise ElfError(f"supporting function size or range differs: {symbol.name}")
+        spans.append((symbol.value, symbol.value + symbol.size))
+    spans.sort()
+    if any(left[1] > right[0] for left, right in zip(spans, spans[1:])):
+        raise ElfError("overlapping supporting function bodies")
+    for other in obj.sections:
+        if other.index != section.index and other.flags & SHF_ALLOC and other.size:
+            raise ElfError(f"unverified allocated section: {other.name}")
+    for symbol in obj.symbols:
+        if symbol.section_index == SHN_COMMON:
+            raise ElfError(f"unverified common data: {symbol.name}")
+    end = 0
+    for start, stop in [*spans, (section.size, section.size)]:
+        block = section.data[end:start]
+        if (len(block) >= max(4, section.alignment) or len(block) % 4 or
+                any(word not in (0, 0x60000000) for (word,) in struct.iter_unpack(">I", block))):
+            raise ElfError("unverified bytes outside supporting functions")
+        end = stop
+    for relocation in obj.relocations:
+        if relocation.target_section != section.index or relocation.type == 0:
+            continue
+        if relocation.type not in _WIDTHS:
+            raise ElfError(f"unsupported relocation type {relocation.type} in supporting functions")
+        width = _WIDTHS[relocation.type]
+        if not any(start <= relocation.offset and relocation.offset + width <= stop for start, stop in spans):
+            raise ElfError("relocation writes outside or across supporting functions")
+
+
+def _validate_scope(obj: ElfObject, selected: Symbol, function_scope: dict | None = None) -> None:
+    if function_scope is not None:
+        _validate_function_set(obj, function_scope)
+        return
     section = obj.sections[selected.section_index]
     for other in obj.sections:
         if other.index != section.index and other.flags & SHF_ALLOC and other.size:
@@ -122,7 +173,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
                       original_address: int,
                       symbol_bindings: dict[str, int],
                       data_bindings: dict[str, int] | None = None,
-                      data_relocations: list | None = None) -> tuple[dict, bytes | None]:
+                      data_relocations: list | None = None,
+                      function_scope: dict | None = None) -> tuple[dict, bytes | None]:
     result = {"matched": False, "status": "rejected", "reason": ""}
     try:
         if not isinstance(object_bytes, bytes):
@@ -170,7 +222,7 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
         if selected.size != expected_size:
             result.update(status="mismatch", reason="function size differs")
             return result, None
-        _validate_scope(obj, selected)
+        _validate_scope(obj, selected, function_scope)
         code = bytearray(section.data[selected.value:selected.value + selected.size])
         occupied = set()
         count = 0
@@ -197,7 +249,7 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
             occupied.update(covered)
             symbol = obj.symbols[relocation.symbol_index]
             destination = _symbol_address(obj, symbol, relocation.addend, selected,
-                                          original_address, symbol_bindings, data_bindings, relocation.type)
+                                          original_address, symbol_bindings, data_bindings, relocation.type, function_scope)
             if symbol.name in data_bindings:
                 actual_data.append((offset, relocation.type, symbol.name, destination))
             _apply(code, offset, relocation, destination, original_address + offset)
@@ -248,3 +300,68 @@ def compare_function_hash(object_bytes: bytes, symbol_name: str, expected_sha256
         else:
             result.update(status="mismatch", reason="function SHA-256 differs")
     return result
+
+
+def compare_function_set(object_bytes: bytes, references: list[dict], originals: dict[str, bytes] | None = None) -> dict:
+    """Verify every emitted function against a closed, trusted reference set."""
+    report = {"matched": False, "status": "rejected", "reason": "", "results": []}
+    try:
+        if not isinstance(references, list) or not 2 <= len(references) <= 8:
+            raise ElfError("a compilation set requires two to eight references")
+        scope, ranges = {}, []
+        for row in references:
+            if not isinstance(row, dict):
+                raise ElfError("invalid supporting reference")
+            symbol, size, digest = row["symbol"], row["size"], row["sha256"]
+            address = _address(int(row["address"], 16), "supporting original address")
+            if (not isinstance(symbol, str) or not symbol or symbol in scope or type(size) is not int or
+                    size <= 0 or size % 4 or address % 4 or address + size > 1 << 32):
+                raise ElfError("invalid or duplicate supporting function range")
+            if (not isinstance(digest, str) or len(digest) != 64 or
+                    any(c not in "0123456789abcdef" for c in digest)):
+                raise ElfError("invalid supporting reference SHA-256")
+            scope[symbol] = {"address": address, "size": size}
+            ranges.append((address, address + size))
+        ranges.sort()
+        if any(left[1] > right[0] for left, right in zip(ranges, ranges[1:])):
+            raise ElfError("overlapping original supporting function ranges")
+        if originals is not None and (not isinstance(originals, dict) or set(originals) != set(scope)):
+            raise ElfError("original bytes must cover the entire compilation set")
+        results = []
+        for row in references:
+            symbol = row["symbol"]
+            for field in ("bindings", "data_bindings"):
+                mapping = row.get(field, {})
+                if (not isinstance(mapping, dict) or
+                        any(not isinstance(name, str) or not name or not isinstance(value, str)
+                            for name, value in mapping.items())):
+                    raise ElfError(f"invalid supporting {field}")
+            bindings = {name: _address(int(value, 16), "supporting binding") for name, value in row.get("bindings", {}).items()}
+            for name, address in bindings.items():
+                if name in scope and address != scope[name]["address"]:
+                    raise ElfError("conflicting original supporting function binding")
+            data = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
+            if originals is not None:
+                expected = originals[symbol]
+                if not isinstance(expected, bytes) or len(expected) != row["size"] or _sha(expected) != row["sha256"]:
+                    raise ElfError("original bytes disagree with the supporting reference")
+            result, actual = _resolve_function(object_bytes, symbol, row["size"], scope[symbol]["address"],
+                                               bindings, data, row.get("data_relocations", []), scope)
+            result["expected_sha256"] = row["sha256"]
+            if actual is not None:
+                matched = actual == originals[symbol] if originals is not None else _sha(actual) == row["sha256"]
+                result.update(matched=matched, status="match" if matched else "mismatch",
+                              reason="exact supporting function bytes" if matched else "supporting function bytes differ")
+            results.append(result)
+        accepted = all(result["matched"] for result in results)
+        if not accepted:
+            for result in results:
+                if result["matched"]:
+                    result.update(matched=False, status="rejected", reason="another compilation-set member failed",
+                                  individually_matched=True)
+        report.update(matched=accepted, status="match" if accepted else "mismatch",
+                      reason="all supporting functions match" if accepted else "compilation set did not fully match",
+                      results=results)
+    except (ValueError, TypeError, KeyError, struct.error) as exc:
+        report.update(reason=str(exc))
+    return report

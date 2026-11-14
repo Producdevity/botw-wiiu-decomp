@@ -121,7 +121,7 @@ class CiTests(unittest.TestCase):
         for call in verify.call_args_list:
             trusted = self.rows[call.args[0]["id"]]
             self.assertEqual(call.args, (trusted, "clang"))
-            self.assertEqual(call.kwargs, {"root": self.head, "image": None})
+            self.assertEqual(call.kwargs, {"root": self.head, "image": None, "references": self.rows})
 
     def test_matched_manifest_entry_cannot_be_missing(self):
         self.rows["fn_03000004"]["status"] = "matched"
