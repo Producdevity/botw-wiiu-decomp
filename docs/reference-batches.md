@@ -22,6 +22,7 @@
 | lookup-table-dependency | 1 | 20 | Unmatched |
 | float-comparison-dependencies | 2 | 40 | Unmatched |
 | random-state-context | 1 | 36 | Unmatched |
+| global-float-loads | 12 | 144 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -81,3 +82,10 @@ terminal return, no external interior branch targets, no original relocations
 and no overlap with existing references. An independent RPX reader agrees on the
 whole text and selected span. Existing references remain unchanged. See the
 [random-state evidence](random-state.md).
+
+The global-float-loads batch adds twelve three-instruction getters. Each has a
+separately decoded direct-call entry, complete contiguous control flow and no
+overlapping reference or external interior entry. An independent RPX reader
+agrees on every span and all 24 original HA/LO data fields. The fields already
+contain their linked values; the existing data-address profile preserves them.
+Existing references remain unchanged. See [source contracts](global-float-loads.md).

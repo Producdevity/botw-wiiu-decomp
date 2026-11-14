@@ -1875,6 +1875,23 @@
       "functions": [
         "fn_030c49e0"
       ]
+    },
+    {
+      "id": "global-float-loads",
+      "functions": [
+        "fn_02a2bbb0",
+        "fn_02e2ac6c",
+        "fn_02e54e38",
+        "fn_02e5f0a4",
+        "fn_02ead664",
+        "fn_031709cc",
+        "fn_031a7108",
+        "fn_0359038c",
+        "fn_036fb83c",
+        "fn_03900f64",
+        "fn_03924ee4",
+        "fn_0398a8ec"
+      ]
     }
   ]
 }
