@@ -6,7 +6,7 @@ Community C++ reconstruction of **Wii U v208**, with deterministic matching agai
 
 **Verified code coverage: 22,656 of 36,994,060 bytes in the pinned `.text` section (0.0612%), across 1,249 functions.**
 
-**536 tasks are available** across integer, floating-point, control-flow, loops and calls. [Reference batches and selection evidence](docs/reference-batches.md) · [Named random-state component](docs/random-state.md).
+**548 tasks are available** across integer, floating-point, control-flow, loops and calls. [Reference batches and selection evidence](docs/reference-batches.md) · [Named random-state component](docs/random-state.md).
 
 Matching uses fixed GHS 5.3.22 profiles and Clang for eight bootstrap leaves. Source contracts are inferred from caller/callee evidence; the exact historical compiler version remains unconfirmed. [Verification contract](docs/verification.md).
 

@@ -37392,6 +37392,426 @@
         "callee_evidence": "Interleaves four source-word reads at offsets 0, 4, 8 and 12 with writes through the four output pointers, then returns with the incoming state pointer still in r3.",
         "caller_evidence": "The sole observed direct caller passes the same stack state to the generator and initializer, and supplies four output pointers at consecutive word addresses. It discards this helper result. Explicit pointer forwarding preserves the observed r3 value without claiming the historical return declaration."
       }
+    },
+    {
+      "address": "0x02a2bbb0",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10187f5c": "0x10187f5c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10187f5c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10187f5c",
+          "type": 4
+        }
+      ],
+      "id": "fn_02a2bbb0",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "ba0c826cb85175e6a1e7f50610fa3b24236b422e9a1a34057d8a70c930d2364c",
+      "size": 12,
+      "source": "reconstructions/fn_02a2bbb0.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02a2bbb0",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x02e2ac6c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10212ce8": "0x10212ce8"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10212ce8",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10212ce8",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e2ac6c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "9a67a78b1f7c480dc289c5d47365f6cdd5527ac924e7de6ff0b157b7e77bcff8",
+      "size": 12,
+      "source": "reconstructions/fn_02e2ac6c.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02e2ac6c",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x02e54e38",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10467cc8": "0x10467cc8"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10467cc8",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10467cc8",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e54e38",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "6cd92d7a66e7e608b52fa4171bad41d74675b155644f370d2a08bc8f83074c89",
+      "size": 12,
+      "source": "reconstructions/fn_02e54e38.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02e54e38",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x02e5f0a4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_102164c0": "0x102164c0"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_102164c0",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_102164c0",
+          "type": 4
+        }
+      ],
+      "id": "fn_02e5f0a4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "db191708fb307ed70658d8222cc1ad0beb30ccb24208d97639b97f07eb82f71b",
+      "size": 12,
+      "source": "reconstructions/fn_02e5f0a4.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02e5f0a4",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x02ead664",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1052bd64": "0x1052bd64"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1052bd64",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1052bd64",
+          "type": 4
+        }
+      ],
+      "id": "fn_02ead664",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "af548d90f81b004fd80f946bf39bc6b978cc17a5157f53f4fb6783222cdb61b6",
+      "size": 12,
+      "source": "reconstructions/fn_02ead664.cpp",
+      "status": "unmatched",
+      "symbol": "fn_02ead664",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x031709cc",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1028ab44": "0x1028ab44"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1028ab44",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1028ab44",
+          "type": 4
+        }
+      ],
+      "id": "fn_031709cc",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "fcb3c4c3a3468360ad0fab356e1ed217d32a8d2ab05525a17ad71cb8c031f443",
+      "size": 12,
+      "source": "reconstructions/fn_031709cc.cpp",
+      "status": "unmatched",
+      "symbol": "fn_031709cc",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x031a7108",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1046d29c": "0x1046d29c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1046d29c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1046d29c",
+          "type": 4
+        }
+      ],
+      "id": "fn_031a7108",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "968cf8f18342f3dfa5bd55465da20e9bc02832f3e4ab5c520301561fb7bdf591",
+      "size": 12,
+      "source": "reconstructions/fn_031a7108.cpp",
+      "status": "unmatched",
+      "symbol": "fn_031a7108",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x0359038c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_102e66d4": "0x102e66d4"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_102e66d4",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_102e66d4",
+          "type": 4
+        }
+      ],
+      "id": "fn_0359038c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "b4ae1b756979fbf89fb4d5ba47d36f52874d095d1c911895a0541e7f6cc7a168",
+      "size": 12,
+      "source": "reconstructions/fn_0359038c.cpp",
+      "status": "unmatched",
+      "symbol": "fn_0359038c",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x036fb83c",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1030a108": "0x1030a108"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1030a108",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1030a108",
+          "type": 4
+        }
+      ],
+      "id": "fn_036fb83c",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "a74b6455bf9534efaa5ff34e197c3841550edc845d832fe357141aaba07470f5",
+      "size": 12,
+      "source": "reconstructions/fn_036fb83c.cpp",
+      "status": "unmatched",
+      "symbol": "fn_036fb83c",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x03900f64",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10336ea4": "0x10336ea4"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10336ea4",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10336ea4",
+          "type": 4
+        }
+      ],
+      "id": "fn_03900f64",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "298e47acdacea848e63459c4f88f878611a164cb356f7198e1ba091f25ba568f",
+      "size": 12,
+      "source": "reconstructions/fn_03900f64.cpp",
+      "status": "unmatched",
+      "symbol": "fn_03900f64",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x03924ee4",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_10339458": "0x10339458"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_10339458",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_10339458",
+          "type": 4
+        }
+      ],
+      "id": "fn_03924ee4",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "f1f692f25e7ca6b3122f4710b6a5b80aca2c49a135598c43689c52a08e1c8205",
+      "size": 12,
+      "source": "reconstructions/fn_03924ee4.cpp",
+      "status": "unmatched",
+      "symbol": "fn_03924ee4",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
+    },
+    {
+      "address": "0x0398a8ec",
+      "bindings": {},
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "category": "floating-point",
+      "compiler_profile": "ghs-5.3.22-auto",
+      "data_bindings": {
+        "data_1034a35c": "0x1034a35c"
+      },
+      "data_relocations": [
+        {
+          "offset": 2,
+          "symbol": "data_1034a35c",
+          "type": 6
+        },
+        {
+          "offset": 6,
+          "symbol": "data_1034a35c",
+          "type": 4
+        }
+      ],
+      "id": "fn_0398a8ec",
+      "original_profile": "cafe-data-address-v1",
+      "sha256": "7f62d6891d1cbd3a418ae7fb2f5ef5599b8556faa695feeacf87bdcb77f72218",
+      "size": 12,
+      "source": "reconstructions/fn_0398a8ec.cpp",
+      "status": "unmatched",
+      "symbol": "fn_0398a8ec",
+      "signature_confidence": "float result and minimal no-input machine interface inferred; historical unused receiver parameters and float-versus-double return declaration unresolved",
+      "contract_evidence": {
+        "exported_contract": "float (void)",
+        "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
+        "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      }
     }
   ]
 }

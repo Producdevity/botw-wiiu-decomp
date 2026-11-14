@@ -53,3 +53,8 @@ were then corroborated against the public
 No external implementation was imported. The
 [random-state aliases](random-state.md) are descriptive, not claimed original
 Nintendo symbols.
+
+The twelve [global float loads](global-float-loads.md) were reconstructed from a
+bounded original instruction pattern. Their references and original address
+fields were checked against a separate RPX reader; caller uses and inferred
+interfaces received independent review. No backing data values were imported.
