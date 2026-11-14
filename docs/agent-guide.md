@@ -68,7 +68,9 @@ For indexed records, derive the complete stride, including trailing storage,
 and assert `sizeof` against that stride before trying compiler profiles. Trace
 each branch condition and distinguish register operands from immediate values.
 
-Use established shared declarations under `include/botw/`. Keep unknown layouts
+Use established shared declarations under `include/botw/`. Preserve the row's
+structured `source_contract` when present; it pins the chosen return and argument
+interface. Propose contract changes separately with caller/callee evidence. Keep unknown layouts
 behind opaque pointer boundaries with internal layout casts. Do not export
 translation-unit-local record types. Recheck callers and callees after a shared
 contract change. References with `compile_with` load the listed supporting source

@@ -1,4 +1,4 @@
-"""Report-only cross-TU contract audit using libclang's typed C++ AST."""
+"""Audit cross-TU and pinned source contracts using libclang's typed C++ AST."""
 
 import argparse
 import ctypes as C
@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .compiler import check_source
 from .compiler import locate as locate_compiler
-from .project import ROOT, functions
+from .project import ROOT, functions, validate_source_contract
 
 SHIMS = """typedef float __vec2x32float__ __attribute__((vector_size(8)));
 #define __bytereversed
@@ -458,6 +458,24 @@ class ClangParser:
             self.lib.clang_disposeTranslationUnit(unit)
 
 
+    def source_contract(self, symbol, expected):
+        validate_source_contract(expected)
+        types = [expected["return_type"], *expected["parameter_types"]]
+        records = sorted({name for spelling in types
+                          for name in re.findall(r"\bstruct ([A-Za-z_][A-Za-z0-9_]*)", spelling)})
+        parameters = list(expected["parameter_types"])
+        if expected["variadic"]:
+            parameters.append("...")
+        path = Path(self.temporary.name) / "expected.cpp"
+        path.write_text("".join("struct " + name + ";\n" for name in records)
+                        + 'extern "C" ' + expected["return_type"] + " " + symbol
+                        + "(" + ", ".join(parameters) + ");\n")
+        result = self.parse(path, self.temporary.name)
+        if result["errors"] or len(result["declarations"]) != 1:
+            raise ValueError("unsupported source_contract analysis: " + "; ".join(result["errors"]))
+        return result["declarations"][0]["contract"]
+
+
 def type_identity(t):
     # Forward declarations and completed records have the same contract identity.
     if t.get("kind") == "Record":
@@ -538,8 +556,9 @@ def compare_contracts(declaration, definition):
     return findings
 
 
-def audit_contracts(root=ROOT, libclang=None, compiler=None):
+def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None):
     root = Path(root).resolve()
+    reference_root = Path(reference_root).resolve() if reference_root is not None else root
 
     def git_state():
         commit = subprocess.run(
@@ -564,7 +583,7 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
         }
 
     vcs_before = git_state()
-    manifest = root / "config/functions.json"
+    manifest = reference_root / "config/functions.json"
     manifest_bytes = manifest.read_bytes()
     with tempfile.TemporaryDirectory(prefix="botw-contract-manifest-") as temporary:
         snapshot_root = Path(temporary)
@@ -578,7 +597,8 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
     )
     edges = [(caller, callee) for caller, callee in all_edges if callee in defined]
     unknown = sorted({callee for caller, callee in all_edges if callee not in defined})
-    selected = sorted(callers | {callee for caller, callee in edges})
+    pinned = {key for key in defined if "source_contract" in rows[key]}
+    selected = sorted(callers | {callee for caller, callee in edges} | pinned)
     include = root / "include"
     if include.is_symlink():
         raise ValueError("header directory symlinks are not accepted")
@@ -589,9 +609,8 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
         if header.is_file():
             headers.append(header)
     watched = [manifest] + [root / rows[key]["source"] for key in selected] + headers
-    snapshot = {
-        str(manifest.relative_to(root)): hashlib.sha256(manifest_bytes).hexdigest()
-    }
+    manifest_key = "config/functions.json" if reference_root == root else "<reference>/config/functions.json"
+    snapshot = {manifest_key: hashlib.sha256(manifest_bytes).hexdigest()}
     for path in watched[1:]:
         if path.is_symlink() or not path.is_file() or path.stat().st_size > 256 * 1024:
             raise ValueError(
@@ -610,6 +629,30 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
             key: clang.parse(root / rows[key]["source"], root / "include")
             for key in selected
         }
+        source_contracts = []
+        for key in sorted(pinned):
+            item = {"symbol": key, "status": "unsupported", "comparisons": []}
+            definitions = [d for d in units[key]["declarations"]
+                           if d["symbol"] == key and d["definition"]
+                           and Path(d["location"]["file"]).resolve()
+                           == (root / rows[key]["source"]).resolve()]
+            if units[key]["errors"]:
+                item["reason"] = "translation unit parse/type error"
+            elif len(definitions) != 1:
+                item["reason"] = "missing unique published definition"
+            else:
+                expected = clang.source_contract(key, rows[key]["source_contract"])
+                actual = definitions[0]["contract"]
+                # Only the three explicitly pinned fields are part of this contract.
+                for property in ("calling_convention", "exception_specification"):
+                    expected[property] = actual[property]
+                findings = compare_contracts(expected, actual)
+                for finding in findings:
+                    finding["severity"] = "conflict"
+                item["comparisons"].append({"expected": expected, "definition": definitions[0],
+                                            "findings": findings})
+                item["status"] = "conflict" if findings else "matches_source_contract"
+            source_contracts.append(item)
     checked = []
     for caller, callee in all_edges:
         item = {
@@ -742,12 +785,12 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
             }
         )
     drift = [
-        str(p.relative_to(root))
+        manifest_key if p == manifest else str(p.relative_to(root))
         for p in watched
         if p.is_symlink()
         or not p.is_file()
         or hashlib.sha256(p.read_bytes()).hexdigest()
-        != snapshot[str(p.relative_to(root))]
+        != snapshot[manifest_key if p == manifest else str(p.relative_to(root))]
     ]
     vcs_after = git_state()
     if vcs_before != vcs_after:
@@ -758,15 +801,16 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
         if units[key]["errors"]
     ]
     incomplete = bool(
-        drift or errors or any(e["status"] == "unsupported" for e in checked)
+        drift or errors or any(e["status"] == "unsupported" for e in checked + source_contracts)
     )
     findings_present = any(
-        e["status"] in ("conflict", "review") for e in checked + repeated
+        e["status"] in ("conflict", "review") for e in checked + repeated + source_contracts
     )
     return {
         "schema_version": 1,
-        "mode": "report-only; no code/reference validation or original-type inference",
+        "mode": "source contracts under analysis model; no machine-code validation or original-type inference",
         "canonical_root": str(root),
+        "reference_root": str(reference_root),
         "git_commit": vcs_before["commit"],
         "git_status": vcs_before["status"],
         "clang": clang_version,
@@ -784,6 +828,7 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
         "coverage": {
             "references": len(rows),
             "published_sources": len(defined),
+            "published_sources_with_source_contract": len(pinned),
             "callers_with_bindings": len(callers),
             "binding_edges": len(all_edges),
             "binding_edges_with_published_definitions": len(edges),
@@ -797,6 +842,7 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
         "unsupported_files": errors,
         "units": units,
         "edges": checked,
+        "source_contracts": source_contracts,
         "repeated_unknown_declarations": repeated,
         "status": "incomplete"
         if incomplete
@@ -810,7 +856,7 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None):
 def compact_report(report):
     result = {key: report[key] for key in ("schema_version", "status", "coverage", "error", "source_drift", "unsupported_files") if key in report}
     result["findings"] = []
-    for item in report.get("edges", []) + report.get("repeated_unknown_declarations", []):
+    for item in report.get("edges", []) + report.get("repeated_unknown_declarations", []) + report.get("source_contracts", []):
         if item["status"] in ("conflict", "review", "unsupported"):
             result["findings"].append({
                 **{key: item[key] for key in ("caller", "callee", "symbol", "status", "reason") if key in item},
@@ -822,6 +868,8 @@ def compact_report(report):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--reference-root", type=Path,
+                        help="read expected metadata from this trusted checkout; source/header inputs still come from --root")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--summary", action="store_true", help="print coverage and findings; --output still saves the full report")
     parser.add_argument(
@@ -837,7 +885,7 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     try:
-        result = audit_contracts(args.root, args.libclang, args.compiler)
+        result = audit_contracts(args.root, args.libclang, args.compiler, args.reference_root)
     except (
         OSError,
         ValueError,

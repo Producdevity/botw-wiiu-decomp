@@ -1818,7 +1818,15 @@
       "source": "reconstructions/fn_030c48dc.cpp",
       "symbol": "fn_030c48dc",
       "bindings": {},
-      "compiler_profile": "ghs-5.3.22-auto"
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "void",
+        "parameter_types": [
+          "unsigned int *",
+          "unsigned int"
+        ],
+        "variadic": false
+      }
     },
     {
       "id": "fn_030d8970",
@@ -32746,7 +32754,14 @@
       "source": "reconstructions/fn_030c499c.cpp",
       "symbol": "fn_030c499c",
       "bindings": {},
-      "compiler_profile": "ghs-5.3.22-auto"
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "unsigned int",
+        "parameter_types": [
+          "unsigned int *"
+        ],
+        "variadic": false
+      }
     },
     {
       "id": "fn_031724b4",
@@ -37391,6 +37406,17 @@
         "exported_contract": "const unsigned* (const unsigned* state, unsigned* first, unsigned* second, unsigned* third, unsigned* fourth)",
         "callee_evidence": "Interleaves four source-word reads at offsets 0, 4, 8 and 12 with writes through the four output pointers, then returns with the incoming state pointer still in r3.",
         "caller_evidence": "The sole observed direct caller passes the same stack state to the generator and initializer, and supplies four output pointers at consecutive word addresses. It discards this helper result. Explicit pointer forwarding preserves the observed r3 value without claiming the historical return declaration."
+      },
+      "source_contract": {
+        "return_type": "const unsigned int *",
+        "parameter_types": [
+          "const unsigned int *",
+          "unsigned int *",
+          "unsigned int *",
+          "unsigned int *",
+          "unsigned int *"
+        ],
+        "variadic": false
       }
     },
     {
@@ -37426,6 +37452,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37461,6 +37492,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37496,6 +37532,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37531,6 +37572,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37566,6 +37612,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37601,6 +37652,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37636,6 +37692,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37671,6 +37732,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37706,6 +37772,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37741,6 +37812,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37776,6 +37852,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     },
     {
@@ -37811,6 +37892,11 @@
         "exported_contract": "float (void)",
         "callee_evidence": "Loads one 32-bit floating value into f1 through two canonical original data-address fields, then returns. No incoming GPR or FPR value is consumed.",
         "caller_evidence": "Bounded direct-caller review confirms floating use of f1, directly or through a forwarding wrapper. Some callers prepare r3; unused historical receiver parameters are not established by this leaf."
+      },
+      "source_contract": {
+        "return_type": "float",
+        "parameter_types": [],
+        "variadic": false
       }
     }
   ]

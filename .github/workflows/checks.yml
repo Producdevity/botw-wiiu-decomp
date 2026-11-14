@@ -48,7 +48,7 @@ jobs:
         run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18
       - name: Check candidate C++ declarations
         working-directory: trusted
-        run: python3 tools/contract_audit.py --root "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 --strict --summary
+        run: python3 tools/contract_audit.py --root "$GITHUB_WORKSPACE/candidate" --reference-root "$GITHUB_WORKSPACE/trusted" --compiler clang++-18 --strict --summary
       - name: Check semantic-name catalog
         working-directory: trusted
         run: python3 tools/symbols.py --root "$GITHUB_WORKSPACE/candidate" check
