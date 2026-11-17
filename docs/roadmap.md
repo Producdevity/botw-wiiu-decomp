@@ -21,4 +21,9 @@
 
 Use GitHub Issues for compiler, type and verifier blockers. Include affected function IDs and the precise missing evidence. One shared fix should unblock a group of tasks before more agents repeat the same investigation.
 
-[Workflow assessment and pilot results](workflow-assessment.md)
+Use [Wind Waker's code-and-data link checks](https://github.com/zeldaret/tww/blob/main/docs/decompiling.md)
+as a reference for incremental linking. Group dependent work under one component
+owner and accept focused contributions within it. Track verified bytes,
+component closure and exercised runtime behavior separately. Early runtime
+success can conceal ABI and layout errors, as described in the
+[MW2 reconstruction retrospective](https://momo5502.com/posts/2026-10-09-game-decompilation/).
