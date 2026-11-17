@@ -178,7 +178,7 @@ def main(argv=None) -> int:
             write_json(path / "task.json", {**row, "target": target["id"], "semantic_name": semantic_name,
                        "compiler_profiles": {p: compiler.flags(p) for p in compiler.profiles(row)},
                        "local_only": "Do not publish original.bin, disassembly or compiled objects.",
-                       "source_contract": "Reconstruct readable C++; use the exact exported symbol. Determine types from the original, not an invented stub."})
+                       "source_guidance": "Use the exact exported symbol and preserve any pinned source_contract. Infer unpinned types from original caller and callee evidence."})
             write_context(ROOT, path, row, rows, image)
             emit({"packet": str(path), "context": str(path / "context.json"),
                   "source": row["source"], "symbol": row["symbol"]})

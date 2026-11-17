@@ -1,4 +1,18 @@
-# Contribution model pilot
+# Contribution model pilots
+
+On 2026-11-17, GPT-6.2 Sol at low and medium independently matched four
+synthetic PowerPC targets using the pinned GHS 5.3.22 profiles. Each matched
+three on its first attempt and all four in six checks. The targets were an
+8-byte accessor, 56-byte record lookup, 104-byte call wrapper and 408-byte
+unrolled loop. The strict AST audit rejected three byte-identical interfaces
+per agent against the held-out pins. Both passed after seeing the pins. Low
+used five strict checks and medium used four.
+
+Use low for prepared work. Consider medium for a bounded retry when there
+is new evidence. The pilot measured checker invocations on synthetic
+functions. Real-game throughput and token cost require separate measurements.
+
+## Earlier pilot
 
 On 2026-11-13, GPT-6 Luna at `xhigh` matched all four prepared functions in eight distinct source variants. The maintainer independently rebuilt every final source against the pinned RPX using the canonical verifier.
 

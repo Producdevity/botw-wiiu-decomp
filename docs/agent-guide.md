@@ -65,9 +65,12 @@ python3 tools/decomp.py packet FUNCTION
 
 Use real function IDs and issue numbers. Inspect linked open pull requests
 before duplicating work; submission reports are advisory, and a follow-up may
-still need a new claim. The default list prefers tasks without open PRs. Claim
-without a function selects an available task. Do not start until `accepted: true`; a pending issue does not
-reserve work. Each account can hold eight six-hour reservations. There is no
+still need a new claim. The default list sorts by absence of an open PR,
+absence of a reported blocker, presence of a pinned source interface,
+maintainer priority, then size. Claim without a function takes the first result.
+Use an explicit function ID when working on a shared blocker or prerequisite.
+Do not start until `accepted: true`. A pending issue does not reserve work.
+Each account can hold eight six-hour reservations. There is no
 experience gate. Queue commands return JSON and use GitHub through `gh`.
 
 Load only the selected packet under `.local/packets/FUNCTION/`, relevant shared
@@ -84,7 +87,7 @@ For indexed records, derive the complete stride, including trailing storage,
 and assert `sizeof` against that stride before trying compiler profiles. Trace
 each branch condition and distinguish register operands from immediate values.
 
-Use established shared declarations under `include/botw/`. Preserve the row's
+Use established shared declarations under `include/botw/`. Preserve the packet's
 structured `source_contract` when present; it pins the chosen return and argument
 interface. Propose contract changes separately with caller/callee evidence. Keep unknown layouts
 behind opaque pointer boundaries with internal layout casts. Do not export
