@@ -406,7 +406,14 @@ def task_list(functions: dict[str, dict], claims: dict[str, dict], blockers: dic
                  and minimum <= row.get("size", 0)
                  and (maximum is None or row.get("size", 0) <= maximum)
                  and (not categories or row.get("category") in categories)]
-    return sorted(available, key=lambda row: (bool(row.get("submission_prs")), -row.get("priority", 0), row.get("size", 0), row["id"]))
+    return sorted(available, key=lambda row: (
+        bool(row.get("submission_prs")),
+        bool(row.get("blocker_issues")),
+        "source_contract" not in row,
+        -row.get("priority", 0),
+        row.get("size", 0),
+        row["id"],
+    ))
 
 
 def queue_summary(api: GitHub, functions: dict[str, dict], claims: dict[str, dict],

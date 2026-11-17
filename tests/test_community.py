@@ -231,6 +231,19 @@ class QueueTests(unittest.TestCase):
                 self.assertEqual(queue.main(args), 1)
                 github.assert_not_called()
 
+    def test_queue_prefers_pinned_interfaces_without_reported_blockers(self):
+        plain, pinned, blocked = (f"fn_{address:08x}" for address in (4, 8, 12))
+        contract = {"return_type": "int", "parameter_types": [], "variadic": False}
+        rows = {
+            plain: {"id": plain, "status": "unmatched", "size": 8, "priority": 1},
+            pinned: {"id": pinned, "status": "unmatched", "size": 12, "source_contract": contract},
+            blocked: {"id": blocked, "status": "unmatched", "size": 8, "source_contract": contract},
+        }
+        blockers = {blocked: [{"issue": 17}]}
+        result = queue.task_list(rows, {}, blockers)
+        self.assertEqual([row["id"] for row in result], [pinned, plain, blocked])
+        self.assertEqual(result[-1]["blocker_issues"], blockers[blocked])
+
     def test_claim_filter_failure_does_not_create_issue_and_errors_are_json(self):
         api = RemoteGitHub()
         code, _, errors = self.run_main(api, ["claim", "fn_03000000", "--max-size", "32"])

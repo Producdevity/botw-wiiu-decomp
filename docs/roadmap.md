@@ -1,9 +1,24 @@
 # Priorities
 
-1. **Expand compiler coverage.** GHS 5.3.22 now reproduces loops, branches and an external call. Extend trials to C++ layouts and larger functions; establish the historical version/options. Record failures so community budgets do not repeatedly hit the same limitation.
-2. **Expand the reference safely.** Validate additional boundaries, original RPX relocations, shared constants and tables. Add adversarial fixtures before enabling each relocation or dependency class.
-3. **Share type evidence.** Put common declarations in `include/botw/`. Attach size, alignment and field-offset evidence; assert layouts during compilation. Group blocked functions by the shared declaration they need. Recheck every implementation after a shared-header change.
-4. **Prioritize the H700 port.** Select resource heaps, asset streaming and lifetime management first, then renderer submission and expensive update scheduling. Use measured memory and CPU costs from the existing port to choose clusters. Keep readable text and controller glyphs at 640×480.
-5. **Separate reconstruction from port changes.** Keep matching C++ as the reference. Apply ARM/GLES adaptation and deliberate memory/performance changes in the consuming port, where gameplay and hardware checks can assess them.
+1. **Build one linked component.** Reproduce the random-state and direct-call
+   linker checks, then choose one component with verified code and data. Check
+   linked symbols and bytes and track original-code fallbacks.
+2. **Resolve shared prerequisites.** Group work by common layouts, data,
+   imports and compiler limitations. Put shared declarations in
+   `include/botw/` with asserted sizes, alignment and offsets. Recheck all
+   consumers after a shared-header change.
+3. **Expand references as needed for closure.** Validate boundaries and
+   original RPX relocations in independent checks. Add fixtures for new
+   dependency classes. Test compiler hypotheses on representative functions
+   from the same group and record failed attempts.
+4. **Keep prepared tasks available.** Use reviewed interfaces and supported
+   dependencies for inexpensive contributor work. Publish matched bytes,
+   linked units and evidence gaps alongside function counts.
+5. **Prioritize H700 work using measurements.** Choose resource heaps, asset
+   streaming, lifetimes, renderer submission or update scheduling according
+   to measured costs. Test ARM/GLES adaptation and memory/performance changes
+   in the consuming port. Preserve legibility at 640×480 and verify on device.
 
 Use GitHub Issues for compiler, type and verifier blockers. Include affected function IDs and the precise missing evidence. One shared fix should unblock a group of tasks before more agents repeat the same investigation.
+
+[Workflow assessment and pilot results](workflow-assessment.md)
