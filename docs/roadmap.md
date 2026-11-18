@@ -1,5 +1,11 @@
 # Priorities
 
+Aim for 1% byte coverage of the pinned Wii U `.text` section before broad
+outreach, with at least one linked code-and-data component. Build components
+in local batches and review their contracts, references and exact matches
+before opening a component PR. Expand the admitted backlog from those
+components as needed. Raw discovery counts measure candidate boundaries.
+
 1. **Build one linked component.** Reproduce the random-state and direct-call
    linker checks, then choose one component with verified code and data. Check
    linked symbols and bytes and track original-code fallbacks.

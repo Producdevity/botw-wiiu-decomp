@@ -2,10 +2,12 @@ name: Verify reconstructions
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [master]
   workflow_dispatch:
+  repository_dispatch:
+    types: [getter_merged]
 
 permissions:
   contents: read
@@ -52,3 +54,47 @@ jobs:
       - name: Check semantic-name catalog
         working-directory: trusted
         run: python3 tools/symbols.py --root "$GITHUB_WORKSPACE/candidate" check
+
+  getter-policy:
+    needs: verify
+    if: github.event_name == 'pull_request_target' && github.ref_protected && github.event.pull_request.base.ref == 'master' && !github.event.pull_request.draft
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      functions: ${{ steps.classify.outputs.functions }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: candidate
+          persist-credentials: false
+      - id: classify
+        run: python3 trusted/tools/getter_automerge.py --candidate candidate >> "$GITHUB_OUTPUT"
+
+  merge-getters:
+    needs: getter-policy
+    if: needs.getter-policy.outputs.functions != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      pull-requests: read
+      issues: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Merge verified getter additions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERIFIED_FUNCTIONS: ${{ needs.getter-policy.outputs.functions }}
+        run: |
+          read -r -a functions <<< "$VERIFIED_FUNCTIONS"
+          python3 tools/getter_automerge.py --merge-event "$GITHUB_EVENT_PATH" --functions "${functions[@]}"

@@ -46,6 +46,25 @@ original bytes, disassembly, compiler binaries, object files, assets and saves
 out of commits, issues and pull requests. Cite research and respect source
 licenses; see [provenance](provenance.md).
 
+## Automatic merge for reviewed word getters
+
+The `global-word-loads` batch has an automatic merge path for new files in
+the reviewed getter pattern. Generate the exact source after your claim is
+accepted:
+
+```sh
+python3 tools/getter_automerge.py --print-function FUNCTION > reconstructions/FUNCTION.cpp
+```
+
+List every added ID under `## Functions`, one per line, and fill in the model
+table. Keep the PR to generated getters and hold the claims until merge.
+Exact matching and the strict AST audit run as usual. A separate job checks
+the diff against the trusted batch, and the merge job requires active claims
+by the PR author and GitHub's required checks. An updated base or head
+requires fresh verification. GitHub runs post-merge verification and closes
+completed claims through the getter merge event. PRs outside this pattern
+follow the ordinary review path.
+
 ## Tasks and blockers
 
 The [agent workflow](agent-guide.md) documents the JSON queue CLI. Each account
