@@ -35,6 +35,8 @@ the record when its blocker is resolved.
 | `fn_0272eb1c`, `fn_0272ee28` | Typed 16-byte record traversal preserves the signed initial bound, unsigned live index check, count reload and base fallback. | General emits the original lengths, with different saved-register allocation, stride calculation and return scheduling. |
 | `fn_028675a8` | Two inline arrays of five 28-byte records and the first failing embedded handle are recovered. | Speed emits 264 bytes with different initial register allocation, member address materialization and return scheduling. |
 | `fn_02b1c92c` | Typed member access preserves the embedded handle and three inline 16-byte entries. | GHS removes the repeated bounds check and emits 128 of the original 136 bytes. Three equivalent guard and accessor forms produced the same result. |
+| `fn_03c92e3c` | Signed cursor bounds, selector cases, overflow-safe arithmetic and the two-word return are recovered. | General emits 304 bytes with different allocation of the candidate position and argument registers. Six source variants and four general-profile option probes remained unmatched. |
+| `fn_03c92cb8` | Signed cursor comparison, optional byte store, subsequent reload and unconditional two-word increment are recovered. | General emits 120 bytes with the original branch and reload order and different register allocation. Six source variants and four general-profile option probes remained unmatched. Establish backing-buffer extent and ownership before publication. |
 
 ## Fresh control-flow cases
 
