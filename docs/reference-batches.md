@@ -27,6 +27,7 @@
 | global-byte-loads | 16 | 192 | Unmatched |
 | global-byte-remainder | 18 | 216 | Unmatched |
 | global-word-loads | 14 | 168 | Unmatched |
+| handle-validation-callers | 4 | 780 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -120,3 +121,22 @@ RPX readers agree on all complete spans and 28 original HA/LO fields. Each
 span has a linked entry, terminal return, no overlap and no external interior
 entry. Caller review and AST checks establish the chosen
 [source interfaces](global-word-loads.md); all prior references remain unchanged.
+
+The handle-validation-callers batch groups four callers of `fn_0378da88`
+with its existing dependency `fn_0378d8dc`. The two dependencies rebuild and
+link together at their original addresses for 128 exact bytes without
+original-code fallback. The four callers add 780 bytes of references.
+
+| Function | Bytes | Observed contract |
+| --- | ---: | --- |
+| `fn_0272eb1c` | 180 | Tests records with a 16-byte stride. The caller branches on the normalized result. |
+| `fn_0272ee28` | 200 | Returns a 16-byte-stride record address or null. The caller stores the returned word. |
+| `fn_028675a8` | 264 | Checks two inline arrays of five 28-byte records. The caller branches on the normalized result. |
+| `fn_02b1c92c` | 136 | Checks an embedded handle and returns a nullable record address. Three observed callers supply the index and test or use the address. |
+
+Each span has an independent direct entry and one external call target.
+The original spans have no relocations or unrelocated incoming branches
+to their interior. The interface pins use opaque pointers for the observed
+arguments and record addresses. Reconstruction still needs to preserve
+count reloads, record strides and embedded handle offsets. The full
+object layouts and historical type names remain open.
