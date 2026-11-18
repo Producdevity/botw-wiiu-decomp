@@ -32,6 +32,9 @@ the record when its blocker is resolved.
 | `fn_02802f5c` | Direct value, aggregate, member and copied-value operator forms of a word comparison. | They remove the original stack store/load. Neither a by-value aggregate nor an explicit copy establishes the original source contract. |
 | `fn_02470538` | Three null-guarded predicate forms across all six fixed profiles; the closest emits 72 bytes. The helper now has a shared opaque pointer interface. | Final byte normalization and LR-load scheduling differ. More boolean spelling changes need new compiler or source evidence. A readable candidate is available. |
 | `fn_02a2d984` | Three nonvolatile float-pair copies, including an archived starting source. | All emit 28 bytes instead of 32 by removing an observed float reread. Recover the alias/layout evidence before changing storage qualifiers. |
+| `fn_0272eb1c`, `fn_0272ee28` | Typed 16-byte record traversal preserves the signed initial bound, unsigned live index check, count reload and base fallback. | General emits the original lengths, with different saved-register allocation, stride calculation and return scheduling. |
+| `fn_028675a8` | Two inline arrays of five 28-byte records and the first failing embedded handle are recovered. | Speed emits 264 bytes with different initial register allocation, member address materialization and return scheduling. |
+| `fn_02b1c92c` | Typed member access preserves the embedded handle and three inline 16-byte entries. | GHS removes the repeated bounds check and emits 128 of the original 136 bytes. Three equivalent guard and accessor forms produced the same result. |
 
 ## Fresh control-flow cases
 

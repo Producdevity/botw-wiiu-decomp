@@ -28,6 +28,8 @@
 | global-byte-remainder | 18 | 216 | Unmatched |
 | global-word-loads | 14 | 168 | Unmatched |
 | handle-validation-callers | 4 | 780 | Unmatched |
+| repeated-vector-copies | 8 | 416 | Unmatched |
+| cursor-family-representatives | 2 | 424 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -140,3 +142,18 @@ to their interior. The interface pins use opaque pointers for the observed
 arguments and record addresses. Reconstruction still needs to preserve
 count reloads, record strides and embedded handle offsets. The full
 object layouts and historical type names remain open.
+
+The repeated-vector-copies batch adds eight distinct 52-byte spans identical
+to `fn_03e343b4`. The bodies perform six paired-float reads and writes in the
+same order and retain the two pointer roles. Each span has a direct call entry,
+no original relocations, and no unrelocated external branch to its interior.
+The seed is a source starting point. Each new address needs its own check.
+
+The cursor-family-representatives batch contains one 304-byte position update
+and one 120-byte byte-read operation. Their complete bodies recur at 55 and
+46 separately discovered addresses, respectively. Only these two entries are
+admitted. The position update compares signed 64-bit bounds and returns a
+word pair consumed as a 64-bit value by an observed caller. The byte read
+takes a nullable byte destination, advances a two-word cursor and returns a
+status tested by its caller. Shared field offsets are observed. Complete
+object layout, buffer bounds and historical declarations remain open.
