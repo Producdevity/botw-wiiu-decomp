@@ -37,6 +37,7 @@ the record when its blocker is resolved.
 | `fn_02b1c92c` | Typed member access preserves the embedded handle and three inline 16-byte entries. | GHS removes the repeated bounds check and emits 128 of the original 136 bytes. Three equivalent guard and accessor forms produced the same result. |
 | `fn_03c92e3c` | Signed cursor bounds, selector cases, overflow-safe arithmetic and the two-word return are recovered. | General emits 304 bytes with different allocation of the candidate position and argument registers. Six source variants and four general-profile option probes remained unmatched. |
 | `fn_03c92cb8` | Signed cursor comparison, optional byte store, subsequent reload and unconditional two-word increment are recovered. | General emits 120 bytes with the original branch and reload order and different register allocation. Six source variants and four general-profile option probes remained unmatched. Establish backing-buffer extent and ownership before publication. |
+| `fn_031a73c8` | The 132-byte pointer-ring dequeue recurs at 14 direct entries. Callers support a nullable pointer return and a 16-byte ring with unsigned read and write cursors. | The closest fixed-profile output is 120 bytes. GHS combines slot clears and return paths that the original keeps separate. |
 
 ## Fresh control-flow cases
 

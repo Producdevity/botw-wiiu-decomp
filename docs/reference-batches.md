@@ -31,6 +31,8 @@
 | repeated-vector-copies | 8 | 416 | Unmatched |
 | cursor-family-representatives | 2 | 424 | Unmatched |
 | paired-subtraction-representative | 1 | 36 | Unmatched |
+| reused-bodies | 48 | 1,276 | Unmatched |
+| bounded-vector-lookups | 2 | 560 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -165,3 +167,25 @@ They forward the output address to the following operation. The source pin
 preserves that return value. The body performs two paired subtractions with
 input loads before the first output store. Local GHS probes confirmed native
 paired subtraction from the `__PS_SUB` intrinsic.
+
+The reused-bodies batch contains 48 distinct entries matching 17 published
+source seeds. It covers ordered copies, pair initialization, bounded selection
+and small pointer operations. Both RPX readers agree on every span and its
+relocation-free status. There are 281 unrelocated direct calls and no external
+branch to an interior instruction. Nine additional identical bodies were held
+back for separate interface review.
+
+The bounded-vector-lookups batch contains two identical 280-byte bodies.
+Both use a signed start and end, substitute the vector length for a negative
+end and return the matching index or `-1`. Each has two independent direct
+callers, no original relocations and no external call bindings.
+
+- `fn_03e96784` has a 32-bit unsigned key. Both callers pass its address on
+  the stack, extract an unsigned bitfield from that word and test the result
+  against `-1`.
+- `fn_03f3ea2c` has a pointer key. Both callers pass the address of a stack
+  slot initialized with a derived pointer. Both use the returned index to
+  update the same vector of four-byte entries.
+
+The different key types preserve the observed caller contracts even though
+the compiled bodies are identical. Existing references are unchanged.
