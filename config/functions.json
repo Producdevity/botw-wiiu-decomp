@@ -40408,6 +40408,31 @@
       "contract_evidence": {
         "summary": "Caller consumes the returned status word. The body tests the second argument for null and writes one byte through it when present."
       }
+    },
+    {
+      "id": "fn_034b02f4",
+      "address": "0x034b02f4",
+      "size": 36,
+      "sha256": "de2651d4860309e9bc75611a8e362a5fa1b7d76ac21b88d094a8f63088f641bd",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_034b02f4.cpp",
+      "symbol": "fn_034b02f4",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "void *",
+        "parameter_types": [
+          "void *",
+          "const void *",
+          "const void *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Three observed callers pass output and two paired-float inputs and forward the output pointer to a following call."
+      }
     }
   ]
 }
