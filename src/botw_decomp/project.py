@@ -65,7 +65,8 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
                 "clang-ppc", "ghs-5.3.22-speed", "ghs-5.3.22-general",
                 "ghs-5.3.22-space", "ghs-5.3.22-auto",
                 "ghs-5.3.22-speed-notailrecursion-nopipeline",
-                "ghs-5.3.22-speed-nounroll", "ghs-5.3.22-speed-noconstprop"):
+                "ghs-5.3.22-speed-nounroll", "ghs-5.3.22-speed-noconstprop",
+                "ghs-5.3.22-speed-nopeephole"):
             raise ValueError(f"invalid compiler profile: {key}")
         for name, value in row.get("bindings", {}).items():
             number = int(value, 16)

@@ -3,7 +3,15 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from botw_decomp.compiler import check_text, compile_source, locate
+from botw_decomp.compiler import check_text, compile_source, flags, locate, profiles
+
+
+class CompilerProfileTests(unittest.TestCase):
+    def test_nopeephole_requires_an_explicit_profile(self):
+        profile = "ghs-5.3.22-speed-nopeephole"
+        self.assertEqual(profiles({"compiler_profile": profile}), [profile])
+        self.assertEqual(flags(profile), ["-Ospeed", "-Onopeephole", "-bigendian", "--no_exceptions", "--no_rtti"])
+        self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
 
 
 class SourcePolicyTests(unittest.TestCase):
