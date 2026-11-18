@@ -8,5 +8,6 @@ extern "C" unsigned __LWARX(volatile void*, int);
 extern "C" unsigned __STWCX(volatile void*, int, unsigned);
 extern "C" void __DCBST(volatile void*, int);
 extern "C" void __memory_changed(void);
+extern "C" void __schedule_barrier(void);
 
 #endif

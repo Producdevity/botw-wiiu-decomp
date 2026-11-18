@@ -1,0 +1,3 @@
+extern "C" bool fn_021f6098(const unsigned char* object) {
+    return (object[11] & 1) != 0;
+}

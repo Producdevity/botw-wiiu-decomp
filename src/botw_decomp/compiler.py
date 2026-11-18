@@ -22,6 +22,7 @@ GHS_AUTO_PROFILES = {
 GHS_PROFILES = {
     **GHS_AUTO_PROFILES,
     "ghs-5.3.22-speed-nopeephole": ["-Ospeed", "-Onopeephole"],
+    "ghs-5.3.22-speed-single-exit": ["-Ospeed", "-Xsingle_exit_from_routine"],
 }
 
 

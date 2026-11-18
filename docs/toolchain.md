@@ -123,6 +123,12 @@ manual](https://community.renesas.com/cfs-file/__key/communityserver-discussions
 Local and CI builds independently check the flag on PowerPC GHS 5.3.22.
 The profile is available only on explicitly assigned references.
 
+
+The opt-in `ghs-5.3.22-speed-single-exit` profile pins
+`-Ospeed -Xsingle_exit_from_routine` for the conditional scalar-copy
+wrappers. The switch and emitted function size were verified with the
+pinned GHS archive.
+
 ## Intrinsic declarations
 
 `include/botw/ghs_intrinsics.h` centralizes measured PowerPC intrinsic signatures.
@@ -130,7 +136,8 @@ The profile is available only on explicitly assigned references.
 the indexed-address argument is required. No assembly or SDK header is included.
 `__memory_changed` is a documented compiler barrier that emits no fence
 instruction. It preserves the two observed counted loops under `-Ogeneral`;
-the original purpose of those loops is not established.
+the original purpose of those loops is unknown. The native
+`__schedule_barrier` intrinsic constrains scheduling and also emits no instruction.
 
 GHS also exposes the native `__vec2x32float__` type. Ordinary assignments of
 this type reproduce paired-single loads/stores in `fn_0345abf8` and

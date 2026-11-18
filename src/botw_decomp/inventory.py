@@ -1,10 +1,11 @@
-"""Find bounded direct-call targets for a small reconstruction pilot."""
+"""Find bounded PowerPC functions from independently evidenced entries."""
 import array
+from collections.abc import Set
 import hashlib
 import sys
 
 from .espresso import decode
-from .rpx import Rpx
+from .rpx import Rpx, Section
 
 
 def signed(value: int, bits: int) -> int:
@@ -19,7 +20,7 @@ def branch_target(word: int, address: int) -> int:
     return (displacement if word & 2 else address + displacement) & 0xFFFFFFFF
 
 
-def discover(image: Rpx) -> list[dict]:
+def text_section(image: Rpx) -> Section:
     sections = [s for s in image.sections if s.name == ".text" and s.flags & 4 and s.kind == 1]
     if len(sections) != 1:
         raise ValueError("pilot inventory requires one executable section")
@@ -29,12 +30,33 @@ def discover(image: Rpx) -> list[dict]:
         raise ValueError("pilot inventory requires aligned PowerPC text")
     if not start <= image.entry < end or image.entry % 4:
         raise ValueError("RPX entry must be aligned and inside .text")
+    return text
+
+
+def text_words(text: Section) -> array.array:
     words = array.array("I", text.data)
     if words.itemsize != 4:
         raise ValueError("host unsigned-int width is unsupported")
     if sys.byteorder == "little":
         words.byteswap()
-    entries = {image.entry}
+    return words
+
+
+def discover(
+    image: Rpx, *, candidate_entries: Set[int] | None = None,
+    entry_fences: Set[int] = frozenset(),
+) -> list[dict]:
+    text = text_section(image)
+    start, end = text.address, text.address + len(text.data)
+    words = text_words(text)
+    if candidate_entries is not None:
+        entry_fences = entry_fences | candidate_entries
+    if any(type(address) is not int or address % 4 or not start <= address < end
+           for address in entry_fences):
+        raise ValueError("inventory entries and fences must be aligned and inside .text")
+
+    entries = {image.entry, *entry_fences}
+    direct_entries = {image.entry}
     for i, word in enumerate(words):
         if word >> 26 in (16, 18) and word & 1:
             address = start + i * 4
@@ -42,9 +64,10 @@ def discover(image: Rpx) -> list[dict]:
                 continue
             target = branch_target(word, address)
             if start <= target < end and target % 4 == 0 and target != address + 4:
-                entries.add(target)
+                direct_entries.add(target)
+    entries.update(direct_entries)
     candidates = []
-    for entry in sorted(entries):
+    for entry in sorted(direct_entries if candidate_entries is None else candidate_entries):
         seen, pending, calls = set(), [entry], set()
         branches = floats = 0
         loop = False
@@ -111,10 +134,12 @@ def discover(image: Rpx) -> list[dict]:
         if any(call not in entries or entry < call < entry + size for call in calls):
             continue
         category = "calls" if calls else "loops" if loop else "floating-point" if floats else "control-flow" if branches else "integer"
+        boundary = ("RPX entry" if entry == image.entry else
+                    "direct-call target" if entry in direct_entries else "supplied entry")
         candidates.append({
             "id": f"fn_{entry:08x}", "address": f"0x{entry:08x}", "size": size,
             "sha256": hashlib.sha256(original).hexdigest(), "category": category,
-            "boundary": ("RPX entry" if entry == image.entry else "direct-call target") + "; contiguous bounded control flow",
+            "boundary": boundary + "; contiguous bounded control flow",
             "status": "unmatched", "source": f"reconstructions/fn_{entry:08x}.cpp",
             "symbol": f"fn_{entry:08x}",
             "bindings": {f"fn_{call:08x}": f"0x{call:08x}" for call in sorted(calls)},

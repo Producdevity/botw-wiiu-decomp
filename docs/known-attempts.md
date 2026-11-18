@@ -39,7 +39,6 @@ the record when its blocker is resolved.
 | `fn_03c92cb8` | Signed cursor comparison, optional byte store, subsequent reload and unconditional two-word increment are recovered. | General emits 120 bytes with the original branch and reload order and different register allocation. Six source variants and four general-profile option probes remained unmatched. Establish backing-buffer extent and ownership before publication. |
 | `fn_031a73c8` | The 132-byte pointer-ring dequeue recurs at 14 direct entries. Callers support a nullable pointer return and a 16-byte ring with unsigned read and write cursors. | The closest fixed-profile output is 120 bytes. GHS combines slot clears and return paths that the original keeps separate. |
 | `fn_030ec10c` | The source contract and single hash-helper binding are pinned. The 306 float-triple wrappers use the original lookup address. | The linked-list lookup still differs in the call prologue and miss-path return order under the fixed profiles. |
-| `fn_0246d4c4`, `fn_028d26c4` | The wrappers store a lookup result through the output slot and return whether it is nonnull. Their family differs by payload kind. | A disposable `-Ospeed -Onopeephole` probe leaves the link-register restore and saved-register reload in reverse order. The same difference persists with a `bool` mark flag. |
 
 ## Fresh control-flow cases
 

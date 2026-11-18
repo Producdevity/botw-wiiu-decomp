@@ -35,6 +35,19 @@
 | bounded-vector-lookups | 2 | 560 | Unmatched |
 | lookup-float-triple-copies | 304 | 31,616 | Unmatched |
 | lookup-copy-dependency | 1 | 172 | Unmatched |
+| direct-teardown-wrappers | 297 | 23,764 | Unmatched |
+| fixed-layout-memory-copies | 21 | 940 | Unmatched |
+| intrusive-list-operations | 13 | 836 | Unmatched |
+| lookup-payload-wrappers | 948 | 64,464 | Unmatched |
+| lookup-scalar-copies | 25 | 2,100 | Unmatched |
+| nullable-allocation-wrappers | 115 | 7,076 | Unmatched |
+| nullable-member-accessors | 30 | 1,560 | Unmatched |
+| paired-float-operations | 132 | 4,920 | Unmatched |
+| placement-pointer-adapters | 12 | 96 | Unmatched |
+| runtime-import-wrappers | 5 | 84 | Unmatched |
+| virtual-call-wrappers | 36 | 2,576 | Unmatched |
+| virtual-flag-predicates | 7,317 | 87,068 | Unmatched |
+| virtual-teardown-wrappers | 1,436 | 120,624 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -213,3 +226,34 @@ It calls one opaque-key hash helper, walks a linked record list and compares
 the hash and kind. On success it returns the payload and optionally marks
 the record. All 1,338 observed direct calls supply a zero or one mark flag.
 The underlying key type and record identity remain inferred.
+
+## Generic virtual methods and runtime wrappers
+
+This batch admits 10,387 references and reconstructs 10,393 functions, including
+six previously admitted entries. A separate RPX reader checked the original
+hashes and a complete executable branch scan ruled out outside entries into the
+selected spans. Existing reference ranges, hashes, and bindings are preserved.
+
+The virtual method families have a verified store of a relocated vtable address
+into the receiver and a checked relocation of the method slot to the start of
+the function. The predicate cohort reads one bit from the receiver and returns
+a normalized Boolean. Selection requires consistent slot and vptr offsets
+and corroborating sibling predicate bodies. A small group of constant overrides
+shares the same proven slots and sibling predicates. Other constant-return
+methods remain candidates while receiver and argument evidence is incomplete.
+
+The teardown families test the receiver, call its bound cleanup function, and
+conditionally call the deallocator using the low bit of the flags argument.
+Both direct-call and vtable entries use the observed cleanup target,
+receiver offset and flag value. Simple allocation wrappers preserve existing
+storage on nonnull input and call the bound allocator on null input.
+
+The lookup families store a returned payload pointer or copy a scalar into
+a nonnull lookup result. The former use the pinned speed profile. The
+conditional scalar copies use the opt-in single-exit profile. The 65 paired
+subtraction routines reproduce both pair calculations and the memory
+operation order. The leaf copies, nullable member accessors, placement
+adapters and list helpers have separate source and address checks.
+
+Five Coreinit mutex and memory wrappers pin their import identities as well
+as their raw branch targets through the [function-import profile](data-relocations.md#function-import-branches).

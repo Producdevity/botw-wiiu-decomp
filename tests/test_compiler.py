@@ -14,6 +14,14 @@ class CompilerProfileTests(unittest.TestCase):
         self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
 
 
+    def test_single_exit_requires_an_explicit_profile(self):
+        profile = "ghs-5.3.22-speed-single-exit"
+        self.assertEqual(profiles({"compiler_profile": profile}), [profile])
+        self.assertEqual(flags(profile), ["-Ospeed", "-Xsingle_exit_from_routine",
+                                         "-bigendian", "--no_exceptions", "--no_rtti"])
+        self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
+
+
 class SourcePolicyTests(unittest.TestCase):
     def test_normal_source_and_literal_project_header(self):
         check_text('#include "botw/vector.h"\nextern "C" int f(int x) { return x + 1; }')

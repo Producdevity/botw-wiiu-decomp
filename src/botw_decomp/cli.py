@@ -58,9 +58,11 @@ def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, 
             original = reference_bytes(image, row)
             if hashlib.sha256(original).hexdigest() != row["sha256"]:
                 raise ValueError("reference manifest disagrees with supplied RPX")
-            compared = compare_function(obj, row["symbol"], original, address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []))
+            compared = compare_function(obj, row["symbol"], original, address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []),
+                                        import_relocations=row.get("import_relocations"))
         else:
-            compared = compare_function_hash(obj, row["symbol"], row["sha256"], row["size"], address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []))
+            compared = compare_function_hash(obj, row["symbol"], row["sha256"], row["size"], address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []),
+                                        import_relocations=row.get("import_relocations"))
         return {**result, **compared, "compiler": compiler.identity(cxx, profile),
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
     except (ValueError, OSError, subprocess.TimeoutExpired) as error:
