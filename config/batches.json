@@ -1975,6 +1975,26 @@
         "fn_028675a8",
         "fn_02b1c92c"
       ]
+    },
+    {
+      "id": "repeated-vector-copies",
+      "functions": [
+        "fn_03e63098",
+        "fn_03fc2a60",
+        "fn_03fd1d10",
+        "fn_0412570c",
+        "fn_0415f4f0",
+        "fn_04174190",
+        "fn_041c2708",
+        "fn_0430c000"
+      ]
+    },
+    {
+      "id": "cursor-family-representatives",
+      "functions": [
+        "fn_03c92e3c",
+        "fn_03c92cb8"
+      ]
     }
   ]
 }

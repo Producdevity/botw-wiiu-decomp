@@ -39991,6 +39991,423 @@
       "contract_evidence": {
         "summary": "Checks an embedded handle and returns a record from three inline 16-byte slots. The unsigned bounds check consumes the second argument; callers test and use the returned address."
       }
+    },
+    {
+      "id": "fn_03e63098",
+      "address": "0x03e63098",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_03e63098.cpp",
+      "symbol": "fn_03e63098",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_03fc2a60",
+      "address": "0x03fc2a60",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_03fc2a60.cpp",
+      "symbol": "fn_03fc2a60",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_03fd1d10",
+      "address": "0x03fd1d10",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_03fd1d10.cpp",
+      "symbol": "fn_03fd1d10",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_0412570c",
+      "address": "0x0412570c",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_0412570c.cpp",
+      "symbol": "fn_0412570c",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_0415f4f0",
+      "address": "0x0415f4f0",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_0415f4f0.cpp",
+      "symbol": "fn_0415f4f0",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_04174190",
+      "address": "0x04174190",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_04174190.cpp",
+      "symbol": "fn_04174190",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_041c2708",
+      "address": "0x041c2708",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_041c2708.cpp",
+      "symbol": "fn_041c2708",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_0430c000",
+      "address": "0x0430c000",
+      "size": 52,
+      "sha256": "e11f3182b2826c44a8f72480bef7e40b890ea2883bedf36813b39610f5f2cf65",
+      "category": "floating-point",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_0430c000.cpp",
+      "symbol": "fn_0430c000",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-speed",
+      "source_seed": "fn_03e343b4",
+      "inferred_fields": [
+        {
+          "destination_offset": 0,
+          "source_offset": 0,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 8,
+          "source_offset": 8,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 16,
+          "source_offset": 16,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 24,
+          "source_offset": 24,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 32,
+          "source_offset": 32,
+          "type": "__vec2x32float__"
+        },
+        {
+          "destination_offset": 40,
+          "source_offset": 40,
+          "type": "__vec2x32float__"
+        }
+      ]
+    },
+    {
+      "id": "fn_03c92e3c",
+      "address": "0x03c92e3c",
+      "size": 304,
+      "sha256": "0b9d0dcf0a4ceed1d88854e73f4b992aba1f7e440a5e0e1ec4ad500fc2bba53a",
+      "category": "control-flow",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_03c92e3c.cpp",
+      "symbol": "fn_03c92e3c",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "long long",
+        "parameter_types": [
+          "void *",
+          "int",
+          "unsigned int"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Caller subtracts the returned word pair and compares the signed high half. The body consumes a signed 32-bit displacement and an unsigned selector."
+      }
+    },
+    {
+      "id": "fn_03c92cb8",
+      "address": "0x03c92cb8",
+      "size": 120,
+      "sha256": "52ea6f017362c902e57411ffc84687b8432308e06afca469b75d77966ebc5f06",
+      "category": "control-flow",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_03c92cb8.cpp",
+      "symbol": "fn_03c92cb8",
+      "bindings": {},
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "int",
+        "parameter_types": [
+          "void *",
+          "unsigned char *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Caller consumes the returned status word. The body tests the second argument for null and writes one byte through it when present."
+      }
     }
   ]
 }
