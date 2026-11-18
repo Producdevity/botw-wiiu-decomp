@@ -30,6 +30,7 @@
 | handle-validation-callers | 4 | 780 | Unmatched |
 | repeated-vector-copies | 8 | 416 | Unmatched |
 | cursor-family-representatives | 2 | 424 | Unmatched |
+| paired-subtraction-representative | 1 | 36 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -157,3 +158,10 @@ word pair consumed as a 64-bit value by an observed caller. The byte read
 takes a nullable byte destination, advances a two-word cursor and returns a
 status tested by its caller. Shared field offsets are observed. Complete
 object layout, buffer bounds and historical declarations remain open.
+
+The paired-subtraction representative is a 36-byte body found at 65 candidate
+entries. Its three observed callers pass an output buffer and two inputs.
+They forward the output address to the following operation. The source pin
+preserves that return value. The body performs two paired subtractions with
+input loads before the first output store. Local GHS probes confirmed native
+paired subtraction from the `__PS_SUB` intrinsic.
