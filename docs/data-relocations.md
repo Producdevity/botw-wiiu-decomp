@@ -55,3 +55,17 @@ that source must be revised to satisfy this conservative dependency contract.
 The reference identifies addresses and dependencies. Recovered data layouts,
 contents and semantic names require their own evidence and technical review.
 Private RPX data, packets and disassembly stay local.
+
+## Function import branches
+
+`cafe-import-rel24-v1` verifies relative branches to function-import thunks
+whose displacements are present in the original RPX. The reference pins the
+library, imported function name, branch offset, and thunk address. The exact
+local RPX reader checks a zero-addend `REL24`, a defined function-import
+symbol, a relative branch instruction, and a one-to-one import-to-thunk map.
+It rejects unresolved and ambiguous branches.
+
+The compiled object must contain a zero-addend external `REL24` to the
+bound thunk at each pinned offset. The verifier resolves the compiled
+branch and compares every byte against the original bytes or their trusted
+hash. Both calls and tail branches retain their original link bit.

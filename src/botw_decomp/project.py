@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 
 from .data_relocations import DATA_PROFILE, contract
+from .import_relocations import IMPORT_PROFILE, import_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 FUNCTION_ID = re.compile(r"fn_[0-9a-f]{8}\Z")
@@ -66,14 +67,14 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
                 "ghs-5.3.22-space", "ghs-5.3.22-auto",
                 "ghs-5.3.22-speed-notailrecursion-nopipeline",
                 "ghs-5.3.22-speed-nounroll", "ghs-5.3.22-speed-noconstprop",
-                "ghs-5.3.22-speed-nopeephole"):
+                "ghs-5.3.22-speed-nopeephole", "ghs-5.3.22-speed-single-exit"):
             raise ValueError(f"invalid compiler profile: {key}")
         for name, value in row.get("bindings", {}).items():
             number = int(value, 16)
             if not FUNCTION_ID.fullmatch(name) or name != f"fn_{number:08x}" or number % 4:
                 raise ValueError(f"invalid external binding: {key}")
         profile = row.get("original_profile", "unrelocated")
-        if profile not in ("unrelocated", DATA_PROFILE):
+        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE):
             raise ValueError(f"invalid original profile: {key}")
         data_bindings = row.get("data_bindings", {})
         if not isinstance(data_bindings, dict) or (data_bindings and profile != DATA_PROFILE):
@@ -89,6 +90,13 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
         if profile == DATA_PROFILE and "data_relocations" not in row:
             raise ValueError(f"missing data relocation contract: {key}")
         contract(size, {name: int(value, 16) for name, value in data_bindings.items()}, relocations)
+        imports = row.get("import_relocations", [])
+        if "import_relocations" in row and profile != IMPORT_PROFILE:
+            raise ValueError(f"import relocations require the import profile: {key}")
+        if profile == IMPORT_PROFILE and not imports:
+            raise ValueError(f"missing import relocation contract: {key}")
+        import_contract(size, {name: int(value, 16) for name, value in row.get("bindings", {}).items()},
+                        imports)
         result[key] = row
         ranges.append((address, address + size))
     ranges.sort()

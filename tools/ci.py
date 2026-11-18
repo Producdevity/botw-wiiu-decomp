@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
@@ -107,8 +108,11 @@ def inspect_candidate(trusted: Path, candidate: Path, rows: dict[str, dict]) -> 
 def verify_candidate(trusted: Path, candidate: Path, cxx: str) -> list[dict]:
     rows = project.functions(trusted)
     selected = inspect_candidate(trusted, candidate, rows)
-    results = [cli.verify(row, cxx, root=candidate, image=None, references=rows) for row in selected]
-    return results
+    def verify(row):
+        return cli.verify(row, cxx, root=candidate, image=None, references=rows)
+
+    with ThreadPoolExecutor(max_workers=min(os.cpu_count() or 1, 4)) as workers:
+        return list(workers.map(verify, selected))
 
 
 def main(argv: list[str] | None = None) -> int:

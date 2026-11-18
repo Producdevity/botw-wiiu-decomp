@@ -1,5 +1,6 @@
 """Read a locally supplied Cafe ELF, retaining original section addresses."""
-from dataclasses import dataclass
+from collections import defaultdict
+from dataclasses import dataclass, field
 from bisect import bisect_left
 import hashlib
 from pathlib import Path
@@ -7,6 +8,7 @@ import struct
 import zlib
 
 from .data_relocations import DATA_PROFILE, contract
+from .import_relocations import IMPORT_PROFILE, NAME, import_contract
 
 _RELOCATION_RECORD = struct.Struct(">IBiIIHBB")
 
@@ -39,6 +41,7 @@ class Rpx:
     sorted_relocation_sites: tuple[int, ...]
     sorted_relocation_ends: tuple[int, ...]
     relocation_records: bytes = b""
+    import_branches: dict[int, tuple[str, str, int]] = field(default_factory=dict)
 
     def has_relocation(self, address: int, size: int) -> bool:
         index = bisect_left(self.sorted_relocation_sites, address)
@@ -101,15 +104,58 @@ class Rpx:
             result.append({"site": site, "type": kind, "destination": destination})
         return tuple(result)
 
+    def import_references(self, address: int, size: int):
+        self._code_section(address, size)
+        first = bisect_left(self.sorted_relocation_sites, address)
+        if first and self.sorted_relocation_ends[first - 1] > address:
+            raise RpxError("original relocation crosses a function boundary")
+        last = bisect_left(self.sorted_relocation_sites, address + size)
+        if first == last:
+            raise RpxError("import profile requires original import relocations")
+        result = []
+        for index in range(first, last):
+            site = self.sorted_relocation_sites[index]
+            if site + 4 > address + size or site not in self.import_branches:
+                raise RpxError("unsupported or ambiguous original import relocation")
+            library, name, target = self.import_branches[site]
+            result.append((site - address, f"fn_{target:08x}", library, name, target))
+        return tuple(result)
+
     def read(self, address: int, size: int, *, profile: str = "unrelocated") -> bytes:
-        if profile not in ("unrelocated", DATA_PROFILE):
+        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE):
             raise RpxError("unsupported original reference profile")
         section = self._code_section(address, size)
         if profile == DATA_PROFILE:
             self.data_references(address, size)
+        elif profile == IMPORT_PROFILE:
+            self.import_references(address, size)
         elif self.has_relocation(address, size):
             raise RpxError("original RPX relocations require a verified canonicalisation profile")
         return section.data[address - section.address:address - section.address + size]
+
+
+def _import_branch(site, section, symbol, value, name_offset, strings):
+    if not (symbol.kind == 0x80000002 and symbol.flags & 6 == 6
+            and symbol.address + 8 <= value < symbol.address + symbol.size
+            and value % 4 == 0 and symbol.name.startswith(".fimport_")):
+        return None
+    library = symbol.name.removeprefix(".fimport_")
+    end = strings.find(b"\0", name_offset)
+    if name_offset == 0 or end < 0:
+        return None
+    name = strings[name_offset:end].decode("ascii", errors="replace")
+    if not NAME.fullmatch(library) or not NAME.fullmatch(name):
+        return None
+    word = struct.unpack_from(">I", section.data, site - section.address)[0]
+    if word >> 26 != 18 or word & 2:
+        return None
+    displacement = word & 0x03FFFFFC
+    if displacement & 0x02000000:
+        displacement -= 0x04000000
+    target = site + displacement
+    if not section.address + section.size <= target < 1 << 32:
+        return None
+    return library, name, value, target
 
 
 def parse(data: bytes) -> Rpx:
@@ -188,6 +234,7 @@ def parse(data: bytes) -> Rpx:
     if any(left[1] > right[0] for left, right in zip(allocated, allocated[1:])):
         raise RpxError("overlapping allocated sections")
     relocations = {}
+    import_candidates = {}
     for header, block in zip(headers, contents):
         _, typ, _, _, _, _, link, target, _, entsize = header
         if typ == 4:
@@ -215,16 +262,36 @@ def parse(data: bytes) -> Rpx:
                     raise RpxError("relocation write is outside or misaligned in its target section")
                 if site in relocations:
                     raise RpxError("overlapping relocation writes")
-                _, value, symbol_size, symbol_info, other, shndx = struct.unpack_from(">IIIBBH", symbols, (info >> 8) * 16)
+                symbol_name, value, symbol_size, symbol_info, other, shndx = struct.unpack_from(">IIIBBH", symbols, (info >> 8) * 16)
                 relocations[site] = _RELOCATION_RECORD.pack(site, kind, addend, value, symbol_size, shndx, symbol_info, other)
+                strings_index = headers[link][6]
+                if (kind == 10 and not addend and destination.flags & 4 and symbol_info == 0x12
+                        and not other and not symbol_size and 0 < shndx < count
+                        and 0 < strings_index < count and headers[strings_index][1] == 3):
+                    branch = _import_branch(site, destination, sections[shndx], value, symbol_name,
+                                            contents[strings_index])
+                    if branch is not None:
+                        import_candidates[site] = branch
         elif typ == 9:
             raise RpxError("implicit-addend RPX relocations are unsupported")
     sites = tuple(sorted(relocations))
     ends = tuple(site + _RELOCATION_WIDTHS[relocations[site][4]] for site in sites)
     if any(end > site for end, site in zip(ends, sites[1:])):
         raise RpxError("overlapping relocation writes")
+    targets_by_symbol = defaultdict(set)
+    symbols_by_target = defaultdict(set)
+    for library, name, value, target in import_candidates.values():
+        symbol = (library, name, value)
+        targets_by_symbol[symbol].add(target)
+        symbols_by_target[target].add(symbol)
+    import_branches = {
+        site: (library, name, target)
+        for site, (library, name, value, target) in import_candidates.items()
+        if len(targets_by_symbol[library, name, value]) == len(symbols_by_target[target]) == 1
+    }
     return Rpx(hashlib.sha256(data).hexdigest(), entry, tuple(sections),
-               frozenset(sites), sites, ends, b"".join(relocations[site] for site in sites))
+               frozenset(sites), sites, ends, b"".join(relocations[site] for site in sites),
+               import_branches)
 
 
 def load(path: Path, expected_sha256: str) -> Rpx:
@@ -238,10 +305,21 @@ def load(path: Path, expected_sha256: str) -> Rpx:
 def reference_bytes(image: Rpx, row: dict) -> bytes:
     address, size = int(row["address"], 16), row["size"]
     profile = row.get("original_profile", "unrelocated")
+    if "import_relocations" in row and profile != IMPORT_PROFILE:
+        raise RpxError("import relocations require the import profile")
     if profile == "unrelocated":
         if "data_bindings" in row or "data_relocations" in row:
             raise RpxError("data bindings require the data-address profile")
         return image.read(address, size)
+    if profile == IMPORT_PROFILE:
+        if "data_bindings" in row or "data_relocations" in row:
+            raise RpxError("data bindings require the data-address profile")
+        bindings = {name: int(value, 16) for name, value in row.get("bindings", {}).items()}
+        expected = import_contract(size, bindings, row.get("import_relocations", []))
+        if image.import_references(address, size) != expected:
+            raise RpxError("trusted import relocation contract disagrees with original fields")
+        section = image._code_section(address, size)
+        return section.data[address - section.address:address - section.address + size]
     data = image.read(address, size, profile=profile)
     bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
     try:

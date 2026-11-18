@@ -22,14 +22,15 @@ CODE = bytes.fromhex("386000074e800020")
 
 def make_cafe(*, text=None, relocations=(), symbols=None, text_address=START,
               text_size=None, rodata=b"R" * 16, bss_size=16,
-              rodata_address=RODATA, bss_address=BSS, bss_flags=3):
+              rodata_address=RODATA, bss_address=BSS, bss_flags=3,
+              rodata_name=".rodata", rodata_kind=1, rodata_flags=2):
     """Serialize a small Cafe RPX with explicit symbols and RELA records."""
     text = bytearray(CODE if text is None else text)
     text_size = len(text) if text_size is None else text_size
     sections = [
         ("", 0, 0, 0, b"", 0, 0, 0, 0),
         (".text", 1, 6, text_address, bytes(text), 0, 0, 4, 0),
-        (".rodata", 1, 2, rodata_address, rodata, 0, 0, 4, 0),
+        (rodata_name, rodata_kind, rodata_flags, rodata_address, rodata, 0, 0, 4, 0),
         (".bss", 8, bss_flags, bss_address, bytes(bss_size), 0, 0, 4, 0),
     ]
     indices = {"undef": 0, "text": 1, "rodata": 2, "bss": 3,
