@@ -33,6 +33,8 @@
 | paired-subtraction-representative | 1 | 36 | Unmatched |
 | reused-bodies | 48 | 1,276 | Unmatched |
 | bounded-vector-lookups | 2 | 560 | Unmatched |
+| lookup-float-triple-copies | 304 | 31,616 | Unmatched |
+| lookup-copy-dependency | 1 | 172 | Unmatched |
 
 The larger batch contains 14 integer, 26 floating-point, 20 control-flow, 20 calls, 20 loops tasks. The initial classifier mislabeled six paired-single functions as integer; Espresso decoding corrected those labels without changing any reference bytes, sizes, hashes or bindings. Each is 68–184 bytes. Selection favors varied instruction shapes and code locations; 20 direct graph edges connect these tasks with the completed batch. This is not a complete game inventory.
 
@@ -189,3 +191,25 @@ callers, no original relocations and no external call bindings.
 
 The different key types preserve the observed caller contracts even though
 the compiled bodies are identical. Existing references are unchanged.
+
+The lookup float-triple batch groups 304 new references and uses the two
+previously admitted copies in the same source family. All 306 spans are
+104 bytes. They have identical instructions apart from the displacement of
+one linked call to `fn_030ec10c`. An independent RPX parse verified all spans,
+448 unrelocated direct entries, every external call target, and no overlapping
+references or branches entering the interior. Each wrapper was compiled and
+compared separately. Each resolves one external and two internal branches.
+
+The wrappers pass the owner and an opaque key to the lookup with kind 3 and a
+true mark flag. On success they copy three floats in order from the input
+object into the returned storage. They return true on success or false on a
+null result. Direct caller contexts supply an addressable three-float input
+and a separate key object. The layout is checked in the shared header.
+GHS 5.3.22 uses the opt-in `-Ospeed -Onopeephole` profile. Declaring the
+mark flag as `int` changes the prologue order, while `bool` matches.
+
+The 172-byte lookup dependency is available as an unmatched reference.
+It calls one opaque-key hash helper, walks a linked record list and compares
+the hash and kind. On success it returns the payload and optionally marks
+the record. All 1,338 observed direct calls supply a zero or one mark flag.
+The underlying key type and record identity remain inferred.

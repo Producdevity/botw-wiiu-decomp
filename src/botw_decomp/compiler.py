@@ -11,13 +11,17 @@ FLAGS = ["--target=powerpc-unknown-eabi", "-mcpu=750", "-O2", "-ffreestanding",
          "-fno-exceptions", "-fno-rtti", "-fno-unwind-tables", "-fno-asynchronous-unwind-tables",
          "-fno-stack-protector", "-fno-pic", "-fno-pie", "-fno-builtin", "-std=c++17",
          "-nostdinc", "-nostdinc++", "-fno-digraphs", "-fno-trigraphs"]
-GHS_PROFILES = {
+GHS_AUTO_PROFILES = {
     "ghs-5.3.22-speed": ["-Ospeed"],
     "ghs-5.3.22-general": ["-Ogeneral"],
     "ghs-5.3.22-space": ["-Ospace"],
     "ghs-5.3.22-speed-notailrecursion-nopipeline": ["-Ospeed", "-Onotailrecursion", "-Onopipeline"],
     "ghs-5.3.22-speed-nounroll": ["-Ospeed", "-Onounroll"],
     "ghs-5.3.22-speed-noconstprop": ["-Ospeed", "-Onoconstprop"],
+}
+GHS_PROFILES = {
+    **GHS_AUTO_PROFILES,
+    "ghs-5.3.22-speed-nopeephole": ["-Ospeed", "-Onopeephole"],
 }
 
 
@@ -31,7 +35,7 @@ def flags(profile: str) -> list[str]:
 
 def profiles(row: dict) -> list[str]:
     profile = row.get("compiler_profile", "clang-ppc")
-    return list(GHS_PROFILES) if profile == "ghs-5.3.22-auto" else [profile]
+    return list(GHS_AUTO_PROFILES) if profile == "ghs-5.3.22-auto" else [profile]
 
 
 def ghs_command() -> list[str]:

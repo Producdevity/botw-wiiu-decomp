@@ -115,6 +115,14 @@ that manual is for another target/version, so the relevant PowerPC 5.3.22 output
 were also measured locally against the pinned RPX. This establishes working
 profiles, not the historical compilation options of every original module.
 
+
+The lookup float-triple copies use the opt-in
+`ghs-5.3.22-speed-nopeephole` profile with `-Ospeed -Onopeephole`.
+The flag is documented under Peephole Optimization in the [Green Hills
+manual](https://community.renesas.com/cfs-file/__key/communityserver-discussions-components-files/259/0576.build_5F00_v800.pdf).
+Local and CI builds independently check the flag on PowerPC GHS 5.3.22.
+The profile is available only on explicitly assigned references.
+
 ## Intrinsic declarations
 
 `include/botw/ghs_intrinsics.h` centralizes measured PowerPC intrinsic signatures.
