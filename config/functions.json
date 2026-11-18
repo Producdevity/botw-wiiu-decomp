@@ -39890,6 +39890,107 @@
       },
       "status": "unmatched",
       "symbol": "fn_04194a9c"
+    },
+    {
+      "id": "fn_0272eb1c",
+      "address": "0x0272eb1c",
+      "size": 180,
+      "sha256": "0568b4290d7e8d255455b26dece4ecd6151cfc0dd3deb4d0fd33263837531f26",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_0272eb1c.cpp",
+      "symbol": "fn_0272eb1c",
+      "bindings": {
+        "fn_0378da88": "0x0378da88"
+      },
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "bool",
+        "parameter_types": [
+          "void *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Tests 16-byte records through the shared handle check; the observed caller branches on the normalized result."
+      }
+    },
+    {
+      "id": "fn_0272ee28",
+      "address": "0x0272ee28",
+      "size": 200,
+      "sha256": "7f646a817a31ca9102f38a0acf2b3c9967b2cf3a35af86feea4a05f5ca902f0b",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_0272ee28.cpp",
+      "symbol": "fn_0272ee28",
+      "bindings": {
+        "fn_0378da88": "0x0378da88"
+      },
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "void *",
+        "parameter_types": [
+          "void *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Returns a 16-byte-stride record address or zero. The observed caller stores the returned word to a slot."
+      }
+    },
+    {
+      "id": "fn_028675a8",
+      "address": "0x028675a8",
+      "size": 264,
+      "sha256": "f391ebcd0b4faf049825d78eb7073799c9d1012cc14b573dab40bc1707ced2e5",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_028675a8.cpp",
+      "symbol": "fn_028675a8",
+      "bindings": {
+        "fn_0378da88": "0x0378da88"
+      },
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "bool",
+        "parameter_types": [
+          "void *"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Checks handles in two inline arrays of five 28-byte records. The observed caller branches on the normalized result."
+      }
+    },
+    {
+      "id": "fn_02b1c92c",
+      "address": "0x02b1c92c",
+      "size": 136,
+      "sha256": "0760a04a5bcc60a51d1828d1085b0aa5e9cb0f1fbf97550d93e8408eb5838290",
+      "category": "calls",
+      "boundary": "direct-call target; contiguous bounded control flow",
+      "status": "unmatched",
+      "source": "reconstructions/fn_02b1c92c.cpp",
+      "symbol": "fn_02b1c92c",
+      "bindings": {
+        "fn_0378da88": "0x0378da88"
+      },
+      "compiler_profile": "ghs-5.3.22-auto",
+      "source_contract": {
+        "return_type": "void *",
+        "parameter_types": [
+          "void *",
+          "unsigned int"
+        ],
+        "variadic": false
+      },
+      "contract_evidence": {
+        "summary": "Checks an embedded handle and returns a record from three inline 16-byte slots. The unsigned bounds check consumes the second argument; callers test and use the returned address."
+      }
     }
   ]
 }
