@@ -9,6 +9,8 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    types: [getter_merged]
 
 permissions:
   contents: read
