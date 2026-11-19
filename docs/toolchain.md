@@ -167,3 +167,52 @@ Equality follows by induction over the same operations and ordered memory events
 The model assumes ordinary EABI execution, identical initial registers and data memory, immutable code and no custom register outputs. It excludes observation of changed code bytes, self-modification and exception/debug contexts that inspect intermediate register assignments. Freescale's [EABI register table](https://www.nxp.com/docs/en/engineering-bulletin/EB696.pdf#page=3) classifies the four registers as volatile; that establishes the general convention, not a specific function's calling contract. The supported instructions leave FPRs, LR, CTR and XER unchanged; comparisons retain the same incoming XER.SO dependency.
 
 The prototype has independent implementation review and negative fixtures covering changed memory operands, arithmetic, comparison/branch flags, protected registers, malformed encodings and traversal limits. No trusted equivalence certificates or alternate acceptance route are enabled.
+
+## Source permuter
+
+`tools/permute.py` runs [decomp-permuter](https://github.com/simonlindholm/decomp-permuter)
+(MIT) on a near miss. It only proposes sources. `decomp.py check` stays the only
+acceptance, and the tool runs that check on its best candidate.
+
+```sh
+python3 tools/permute.py FUNCTION --source FILE --minutes 10
+python3 tools/decomp.py check FUNCTION --source .local/permuter/FUNCTION/best.cpp
+```
+
+`--jobs` sets worker threads (default: half the CPUs). `--profile` fixes one of
+the reference's allowed profiles. The exit code is 0 only when the canonical
+check matches `best.cpp`.
+
+The first run installs upstream commit `860b6d95b5350c2677c89b0c195c7bf3bb6bad0b`
+into `.local/tools/decomp-permuter` and verifies the checkout. Its one dependency,
+`toml` 0.10.2, goes into a hash-pinned venv beside it. Nothing is vendored. Output
+goes to `.local/permuter/FUNCTION/`: `best.cpp`, `summary.json` and the upstream
+job directory. Everything there stays private, including the target object built
+from the original span.
+
+Each candidate compiles through the checker's `compiler.compile_source` with one
+fixed profile. A pinned reference uses its profile. An `auto` reference uses the
+profile whose base source scores closest. Calls and data references resolve
+through the reference's bindings at the original address before scoring, so
+correct relocations score as equal. Unbound relocations stay zero. Scores count
+stack offsets and ignore conditional-branch targets (the upstream default). Score
+0 is a strong hint, not a match.
+
+pycparser reads C only. The bridge keeps everything outside the target function
+as verbatim C++ in `PERM_IGNORE`. It gives the parser a C shadow of those
+declarations in `PERM_PRETEND`: namespaces, `extern "C"` and `static_assert`
+removed, `typedef struct X X;` added. An `extern "C"` prototype keeps the
+permuted C definition's linkage. `best.cpp` is your file with only that
+definition replaced.
+
+Limits:
+
+- The target body must be C-like. Templates, member functions, references,
+  `::` qualifiers, overloaded operators and lambdas fail to parse; the tool
+  prints upstream's parse error.
+- `static_cast`, `reinterpret_cast` and `const_cast` become C casts in
+  `best.cpp`, comments in the body are lost, and header macros in the body
+  appear expanded. Restore readable C++ and re-check before you submit.
+- Random passes often add odd code, such as duplicated stores or `new_var`
+  temporaries. Simplify the result, re-check, and submit only readable code.
+- References with `compile_with` are not supported.
