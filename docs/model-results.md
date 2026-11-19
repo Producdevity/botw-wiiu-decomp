@@ -1,4 +1,4 @@
-# Contribution model pilots
+# Model results
 
 On 2026-11-17, GPT-6.2 Sol at low and medium independently matched four
 synthetic PowerPC targets using the pinned GHS 5.3.22 profiles. Each matched

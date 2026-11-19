@@ -30,7 +30,7 @@
       "status": "reviewed",
       "evidence": [
         "The reference copies four state words in order through four destination pointers. Its sole observed direct caller invokes it between the recovered generator and seed routines.",
-        "docs/random-state.md",
+        "docs/function-notes.md#four-word-random-state",
         "https://github.com/open-ead/sead/blob/f4178a21e21235830357dc27c26a2c29956972ed/modules/src/random/seadRandom.cpp"
       ],
       "rationale": "Describes the observed use of this four-word copy in the same random-state component. The original high-level return type remains unknown; the source interface preserves the unchanged incoming pointer."

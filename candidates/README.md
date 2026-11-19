@@ -1,7 +1,7 @@
 # Reconstruction candidates
 
 These C++ starting points are pending exact verification. Look up the function
-in [known attempts](../docs/known-attempts.md) and generate its private packet
+in [function notes](../docs/function-notes.md) and generate its private packet
 before trying a different source form.
 
 ```sh
