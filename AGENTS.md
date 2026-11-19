@@ -86,6 +86,10 @@ first differing offset. Same-size mismatches write one instruction diff per
 compiler profile; the output's `diffs` field lists their paths. Change one thing
 at a time based on that diff.
 
+When only register allocation or instruction order differs, run
+`python3 tools/permute.py FUNCTION --source FILE --minutes 10` before giving up
+([permuter](docs/toolchain.md#source-permuter)).
+
 Stop after about 10 checks without progress, or when the budget is spent. Then
 release the claim. If you learned something the next attempt needs, open a
 blocker issue with the template. Describe the evidence in words. Never paste
