@@ -1,0 +1,10 @@
+extern "C" void* fn_0308e5a0(unsigned int, void*, int);
+extern "C" void* fn_0254246c(void*, const void*);
+
+extern "C" void* fn_02acb6f8(const void* descriptor, void* allocator) {
+    void* object = fn_0308e5a0(216, allocator, 4);
+    if (object) {
+        object = fn_0254246c(object, descriptor);
+    }
+    return object;
+}

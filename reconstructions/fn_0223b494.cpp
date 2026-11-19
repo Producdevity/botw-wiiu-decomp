@@ -1,0 +1,3 @@
+extern "C" void* fn_0223b494(void*, void*) {
+    return 0;
+}

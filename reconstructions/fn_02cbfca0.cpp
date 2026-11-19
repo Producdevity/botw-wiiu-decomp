@@ -1,0 +1,3 @@
+extern "C" void * fn_02cbfca0(const void *, unsigned int) {
+    return 0;
+}
