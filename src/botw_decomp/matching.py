@@ -60,9 +60,14 @@ def _symbol_address(obj: ElfObject, symbol: Symbol, addend: int,
                     f"resolved address of {symbol.name}")
 
 
+def _ghs_file_marker(symbol: Symbol) -> bool:
+    # GHS -g brackets each translation unit with empty ..bof./..eof. function symbols.
+    return symbol.type == STT_FUNC and symbol.size == 0 and symbol.name.startswith(("..bof.", "..eof."))
+
+
 def _validate_function_set(obj: ElfObject, scope: dict) -> None:
     definitions = [symbol for symbol in obj.symbols if symbol.type == STT_FUNC and
-                   symbol.section_index != SHN_UNDEF]
+                   symbol.section_index != SHN_UNDEF and not _ghs_file_marker(symbol)]
     if (len(definitions) != len(scope) or {s.name for s in definitions} != set(scope)):
         raise ElfError("defined functions differ from the trusted compilation set")
     sections = {symbol.section_index for symbol in definitions}
@@ -115,7 +120,7 @@ def _validate_scope(obj: ElfObject, selected: Symbol, function_scope: dict | Non
         if symbol.section_index == SHN_COMMON:
             raise ElfError(f"unverified common data: {symbol.name}")
         if (symbol.index != selected.index and symbol.type == STT_FUNC and
-                symbol.section_index != SHN_UNDEF):
+                symbol.section_index != SHN_UNDEF and not _ghs_file_marker(symbol)):
             raise ElfError(f"unverified additional function: {symbol.name}")
         if symbol.index == selected.index or symbol.section_index != section.index:
             continue

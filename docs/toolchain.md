@@ -92,8 +92,16 @@ Check licenses before importing source.
 
 ## Additional verified profiles
 
-Three further fixed profiles recover code-generation differences without changing
+Four further fixed profiles recover code-generation differences without changing
 reference bytes or permitting source-level assembly:
+
+- `ghs-5.3.22-speed-debug`: `-Ospeed -g`. Debug information keeps return-value
+  and prologue code in source-line order instead of letting the scheduler move it.
+  It matched the blocker functions `fn_030ec10c` and `fn_02470538`, and a sample of
+  33 accepted functions still matches under it, including some that previously
+  needed `nopeephole` or `notailrecursion-nopipeline`. The original build may have
+  used `-g`. `-g` adds only empty `..bof.`/`..eof.` file markers and a
+  non-allocated `.ghsinfo` note, which the checker ignores.
 
 - `ghs-5.3.22-speed-notailrecursion-nopipeline`: `-Ospeed -Onotailrecursion -Onopipeline`. This restores ordinary call frames and the observed operation/epilogue order in 12 pilot wrappers.
 - `ghs-5.3.22-speed-nounroll`: `-Ospeed -Onounroll`. This preserves the counted store loops in three pilot functions.
