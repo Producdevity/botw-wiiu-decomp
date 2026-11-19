@@ -5,9 +5,10 @@ and review boundaries, interfaces and exact matches before opening a component
 PR. Admit references as needed to resolve dependencies and keep a prepared
 contributor queue.
 
-1. **Build one linked component.** Reproduce the random-state and direct-call
-   linker checks, then choose one component with verified code and data. Check
-   linked symbols and bytes and track original-code fallbacks.
+1. **Expand linked components.** The [getter and BSS check](verification.md#linked-component)
+   links code and data at their original addresses. Reproduce the random-state
+   and direct-call linker checks next. Record verified linked symbols, bytes
+   and original-code fallbacks for each component.
 2. **Resolve shared prerequisites.** Group work by common layouts, data,
    imports and compiler limitations. Put shared declarations in
    `include/botw/` with asserted sizes, alignment and offsets. Recheck all

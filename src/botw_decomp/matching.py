@@ -282,7 +282,8 @@ def compare_function(object_bytes: bytes, symbol_name: str, expected: bytes,
                      symbol_bindings: dict[str, int], *,
                      data_bindings: dict[str, int] | None = None,
                      data_relocations: list | None = None,
-                     import_relocations: list | None = None) -> dict:
+                     import_relocations: list | None = None,
+                     differences: dict[str, tuple[bytes, bytes]] | None = None) -> dict:
     if not isinstance(expected, bytes):
         return {"matched": False, "status": "rejected", "reason": "reference input must be bytes"}
     result, actual = _resolve_function(object_bytes, symbol_name, len(expected),
@@ -295,6 +296,8 @@ def compare_function(object_bytes: bytes, symbol_name: str, expected: bytes,
         else:
             difference = next(index for index, (a, b) in enumerate(zip(actual, expected)) if a != b)
             result.update(status="mismatch", reason="function bytes differ", first_difference=difference)
+            if differences is not None:
+                differences[symbol_name] = (expected, actual)
     return result
 
 
@@ -319,7 +322,8 @@ def compare_function_hash(object_bytes: bytes, symbol_name: str, expected_sha256
     return result
 
 
-def compare_function_set(object_bytes: bytes, references: list[dict], originals: dict[str, bytes] | None = None) -> dict:
+def compare_function_set(object_bytes: bytes, references: list[dict], originals: dict[str, bytes] | None = None,
+                         *, differences: dict[str, tuple[bytes, bytes]] | None = None) -> dict:
     """Verify every emitted function against a closed, trusted reference set."""
     report = {"matched": False, "status": "rejected", "reason": "", "results": []}
     try:
@@ -370,6 +374,12 @@ def compare_function_set(object_bytes: bytes, references: list[dict], originals:
                 matched = actual == originals[symbol] if originals is not None else _sha(actual) == row["sha256"]
                 result.update(matched=matched, status="match" if matched else "mismatch",
                               reason="exact supporting function bytes" if matched else "supporting function bytes differ")
+                if not matched and originals is not None:
+                    expected = originals[symbol]
+                    result["first_difference"] = next(i for i, pair in enumerate(zip(expected, actual))
+                                                      if pair[0] != pair[1])
+                    if differences is not None:
+                        differences[symbol] = (expected, actual)
             results.append(result)
         accepted = all(result["matched"] for result in results)
         if not accepted:

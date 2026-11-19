@@ -119,7 +119,7 @@ when useful; they do not replace exact comparison. Keep stable function IDs and
 follow [naming evidence](naming.md).
 
 ```sh
-python3 tools/decomp.py check FUNCTION
+python3 tools/decomp.py check FUNCTION --diff --summary
 python3 tools/contract_audit.py --strict --summary
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
@@ -127,7 +127,9 @@ PYTHONPATH=src python3 -m unittest discover -s tests
 Start with the exact check for the selected function. Run `python3 tools/decomp.py
 check --all --summary` when changing a shared header or compiler input used by
 other functions. Public CI rebuilds all implementations. The full local build
-report is retained in `.local/last-check.json`.
+report is retained in `.local/last-check.json`. Private instruction diffs for
+same-size relocated mismatches go under `.local/diffs/`. See
+[diffing](../README.md#diffing).
 
 To compare local edits with published interfaces, pass `--reference-root` to the
 contract audit with a clean default-branch checkout. CI supplies that trusted
