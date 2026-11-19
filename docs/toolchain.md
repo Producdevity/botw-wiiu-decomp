@@ -47,11 +47,7 @@ The compiler came from the standalone archive used by the
 [decomp.me packaging recipe](https://github.com/decompme/compilers/blob/main/platforms/wiiu/ghs5.3.22/Dockerfile),
 without a Cafe SDK. Compiler binaries stay outside version control.
 
-| Artifact | SHA-256 |
-| --- | --- |
-| `ghs5.3.22.tar.gz` | `41cd0a4723acfbddf8f70a9c3ff84bce7e85087b1d1ccef8bbf5f03d82c2b520` |
-| wibo 1.2.0 `wibo-macos` | `2b3000ef6a7a490c24ccd71967735ae0005e218922e51806cca1b8d77fd3cf7c` |
-| wibo 1.2.0 `wibo-x86_64` | `13f86a2d618f0dbe67179d349625345eabf9b46450295cb4c904e49f6aff85af` |
+See [toolchain pins](../config/toolchains.json) for release URLs and hashes.
 
 [wibo 1.2.0](https://github.com/decompals/wibo/releases/tag/1.2.0) added GHS
 support. Its [macOS build supports Rosetta](https://github.com/decompals/wibo/blob/1.2.0/README.md).
