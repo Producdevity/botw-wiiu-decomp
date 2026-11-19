@@ -16,6 +16,7 @@ changing a candidate. Run the ordinary checker after copying it to the matching
 | [fn_03cafe80.cpp](fn_03cafe80.cpp) | Three bounded counters with wrap at their configured limits. | Correct-size output and matching diagnostic traces in four profiles still differ in exact bytes. |
 | [fn_02470538.cpp](fn_02470538.cpp) | Null-check the nested pointer at offset 44, then test its word-bit helper. | The closest 72-byte forms reverse the original order of the final return normalization and LR load. |
 | [fn_03cbeae8.cpp](fn_03cbeae8.cpp) | Reset six words to all ones and two words to zero. | Typed, byte-offset and member forms remain unmatched. A bounded source-permutation run also failed. |
+| [fn_0234c61c.cpp](fn_0234c61c.cpp) | Scan a bounded byte buffer, clamp the length to capacity, then copy and terminate. | GHS schedules the bound load later and shares its register with the first byte load. See the [reproducer](../docs/known-attempts.md#additional-bounded-attempts). |
 
 The new starting points were compiled against all six fixed GHS profiles and
 compared with the pinned original. None passed. No assembly, original bytes or

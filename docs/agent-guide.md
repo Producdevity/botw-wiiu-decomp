@@ -56,7 +56,7 @@ Use a new evidence-backed hypothesis or choose another task.
 
 ```sh
 python3 tools/community.py summary
-python3 tools/community.py list
+python3 tools/community.py list --prepared --max-size 128
 python3 tools/community.py list --category calls --max-size 128
 python3 tools/community.py claim FUNCTION --wait 120
 python3 tools/community.py status ISSUE --wait 120
@@ -68,6 +68,9 @@ before duplicating work; submission reports are advisory, and a follow-up may
 still need a new claim. The default list sorts by absence of an open PR,
 absence of a reported blocker, presence of a pinned source interface,
 maintainer priority, then size. Claim without a function takes the first result.
+`--prepared` filters to unclaimed functions with a pinned interface and no open
+blocker report or submission. Apply it to `list` or `claim`. Use the ordinary
+list for investigation tasks whose interfaces still need evidence.
 Use an explicit function ID when working on a shared blocker or prerequisite.
 Do not start until `accepted: true`. A pending issue does not reserve work.
 Each account can hold eight six-hour reservations. There is no
@@ -118,12 +121,14 @@ follow [naming evidence](naming.md).
 
 ```sh
 python3 tools/decomp.py check FUNCTION
-python3 tools/decomp.py check --all --summary
 python3 tools/contract_audit.py --strict --summary
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-The full compilation report is retained in `.local/last-check.json`; `--summary` keeps terminal output concise.
+Start with the exact check for the selected function. Run `python3 tools/decomp.py
+check --all --summary` when changing a shared header or compiler input used by
+other functions. Public CI rebuilds all implementations. The full local build
+report is retained in `.local/last-check.json`.
 
 To compare local edits with published interfaces, pass `--reference-root` to the
 contract audit with a clean default-branch checkout. CI supplies that trusted

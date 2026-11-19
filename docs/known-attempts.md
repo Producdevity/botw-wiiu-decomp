@@ -39,6 +39,16 @@ the record when its blocker is resolved.
 | `fn_03c92cb8` | Signed cursor comparison, optional byte store, subsequent reload and unconditional two-word increment are recovered. | General emits 120 bytes with the original branch and reload order and different register allocation. Six source variants and four general-profile option probes remained unmatched. Establish backing-buffer extent and ownership before publication. |
 | `fn_031a73c8` | The 132-byte pointer-ring dequeue recurs at 14 direct entries. Callers support a nullable pointer return and a 16-byte ring with unsigned read and write cursors. | The closest fixed-profile output is 120 bytes. GHS combines slot clears and return paths that the original keeps separate. |
 | `fn_030ec10c` | The source contract and single hash-helper binding are pinned. The 306 float-triple wrappers use the original lookup address. | The linked-list lookup still differs in the call prologue and miss-path return order under the fixed profiles. |
+| `fn_0234c61c` | Four relocated vtable slots establish the 212-byte entry. The data and Coreinit `OSBlockMove` bindings pass the original-reference check. The [candidate](../candidates/fn_0234c61c.cpp) preserves the bounded scan and destination-capacity clamp. | The candidate matches 50 of 53 instruction words. The first byte load and the scan bound share a register, which prevents the original instruction order at offsets 96, 104 and 116. A separate cursor reproduces the bound order and changes seven other register fields. |
+
+Regenerate the private packet and check the bounded-copy candidate with the
+ordinary verifier. The current candidate fails both exact checks.
+
+```sh
+python3 tools/decomp.py packet fn_0234c61c
+python3 tools/decomp.py check fn_0234c61c --source candidates/fn_0234c61c.cpp
+python3 tools/decomp.py check fn_0234c61c --source candidates/fn_0234c61c.cpp --hash-only
+```
 
 ## Fresh control-flow cases
 
