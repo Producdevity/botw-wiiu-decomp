@@ -12,6 +12,7 @@ import sys
 from . import compiler, private_storage, symbols
 from .game_input import resolve_game
 from .context import write_context
+from .draft import write_draft
 from .disassembly import disassemble
 from .matching import compare_function, compare_function_hash, compare_function_set
 from .project import ROOT, compilation_members, functions, local_config, read_json, write_json
@@ -210,8 +211,10 @@ def main(argv=None) -> int:
                        "local_only": "Do not publish original.bin, disassembly or compiled objects.",
                        "source_guidance": "Use the exact exported symbol and preserve any pinned source_contract. Infer unpinned types from original caller and callee evidence."})
             write_context(ROOT, path, row, rows, image)
+            drafted = write_draft(ROOT, path, row, rows, data)
             emit({"packet": str(path), "context": str(path / "context.json"),
-                  "source": row["source"], "symbol": row["symbol"]})
+                  "source": row["source"], "symbol": row["symbol"],
+                  **({"draft": drafted} if drafted else {})})
             return 0
         hash_only = args.command == "progress" or args.hash_only
         diff_requested = getattr(args, "diff", False)
