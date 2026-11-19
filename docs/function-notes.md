@@ -169,7 +169,7 @@ aliases without establishing original Nintendo class or method symbols.
 ## Global getters
 
 Independent RPX readers agreed on the getter spans and HA/LO fields. The
-[reference manifest](../config/functions.json) records each resolved destination
+[reference manifest](../config/functions/) records each resolved destination
 and pinned interface. The implementations read the original external objects
 at runtime. BSS and the writable section flags explain why a named read-only
 section or zero-filled file range does not establish a constant.

@@ -19,23 +19,13 @@ COPIED = ("address", "bindings", "boundary", "category", "id", "sha256", "size",
 BATCH = re.compile(r"[a-z0-9][a-z0-9-]{2,63}\Z")
 
 
-def write_manifest(path: Path, manifest: dict) -> None:
-    """One function per line keeps diffs and merges row-sized."""
-    rows = manifest["functions"]
-    header = {key: value for key, value in manifest.items() if key != "functions"}
-    lines = [json.dumps(row, sort_keys=True, separators=(", ", ": ")) for row in rows]
-    text = json.dumps(header, sort_keys=True)[:-1] + ', "functions": [\n' + ",\n".join(lines) + "\n]}\n"
-    json.loads(text)
-    path.write_text(text, encoding="utf-8")
-
-
 def admit(root: Path, inventory: dict, batch: str) -> list[str]:
     if not BATCH.fullmatch(batch):
         raise ValueError("batch ids use lowercase letters, digits and hyphens")
     target = project.read_json(root / "config/target.json")
     if inventory.get("rpx_sha256") != target["rpx_sha256"]:
         raise ValueError("inventory was not generated from the pinned executable")
-    manifest = project.read_json(root / "config/functions.json")
+    manifest = project.read_manifest(root)
     batches = project.read_json(root / "config/batches.json")
     if any(item["id"] == batch for item in batches["batches"]):
         raise ValueError(f"batch already exists: {batch}")
@@ -62,7 +52,7 @@ def admit(root: Path, inventory: dict, batch: str) -> list[str]:
         return []
     rows.sort(key=lambda item: int(item["address"], 16))
     batches["batches"].append({"id": batch, "functions": added})
-    write_manifest(root / "config/functions.json", manifest)
+    project.write_manifest(root, manifest)
     project.write_json(root / "config/batches.json", batches)
     project.functions(root)
     return added

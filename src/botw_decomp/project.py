@@ -41,8 +41,82 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+MANIFEST_DIRECTORY = "config/functions"
+SHARD_BITS = 20
+SHARD_NAME = re.compile(r"[0-9a-f]{8}\.json\Z")
+
+
+def shard_name(address: int) -> str:
+    """Rows live in the shard for the 1 MiB address range that holds their start."""
+    return f"{address >> SHARD_BITS << SHARD_BITS:08x}.json"
+
+
+def manifest_files(root: Path = ROOT) -> list[Path]:
+    directory = root / MANIFEST_DIRECTORY
+    if directory.is_symlink() or not directory.is_dir():
+        raise ValueError(f"missing function manifest directory: {MANIFEST_DIRECTORY}")
+    paths = sorted(directory.iterdir())
+    for path in paths:
+        if not SHARD_NAME.fullmatch(path.name) or path.is_symlink() or not path.is_file():
+            raise ValueError(f"unexpected function manifest entry: {path.name}")
+    if not paths:
+        raise ValueError("empty function manifest")
+    return paths
+
+
+def assemble_manifest(shards: list[tuple[str, dict]]) -> dict:
+    header, rows = None, []
+    for name, shard in sorted(shards, key=lambda item: item[0]):
+        if (not SHARD_NAME.fullmatch(name) or not isinstance(shard, dict)
+                or not isinstance(shard.get("functions"), list) or not shard["functions"]):
+            raise ValueError(f"invalid function manifest shard: {name}")
+        current = {key: value for key, value in shard.items() if key != "functions"}
+        if header is None:
+            header = current
+        elif current != header:
+            raise ValueError(f"function manifest shard header differs: {name}")
+        for row in shard["functions"]:
+            if not isinstance(row, dict) or shard_name(int(row["address"], 16)) != name:
+                raise ValueError(f"function row is outside its manifest shard: {name}")
+        rows.extend(shard["functions"])
+    if header is None:
+        raise ValueError("empty function manifest")
+    return {**header, "functions": rows}
+
+
+def read_manifest(root: Path = ROOT) -> dict:
+    return assemble_manifest([(path.name, read_json(path)) for path in manifest_files(root)])
+
+
+def manifest_shards(manifest: dict) -> dict[str, str]:
+    """One function per line keeps diffs and merges row-sized."""
+    header = {key: value for key, value in manifest.items() if key != "functions"}
+    grouped: dict[str, list[dict]] = {}
+    for row in sorted(manifest["functions"], key=lambda item: int(item["address"], 16)):
+        grouped.setdefault(shard_name(int(row["address"], 16)), []).append(row)
+    prefix = json.dumps(header, sort_keys=True)[:-1] + ', "functions": [\n'
+    result = {}
+    for name, rows in sorted(grouped.items()):
+        lines = [json.dumps(row, sort_keys=True, separators=(", ", ": ")) for row in rows]
+        result[name] = prefix + ",\n".join(lines) + "\n]}\n"
+    return result
+
+
+def write_manifest(root: Path, manifest: dict) -> None:
+    shards = manifest_shards(manifest)
+    directory = root / MANIFEST_DIRECTORY
+    directory.mkdir(parents=True, exist_ok=True)
+    for name, text in shards.items():
+        json.loads(text)
+    for path in directory.iterdir():
+        if SHARD_NAME.fullmatch(path.name) and path.name not in shards:
+            path.unlink()
+    for name, text in shards.items():
+        (directory / name).write_text(text, encoding="utf-8")
+
+
 def functions(root: Path = ROOT) -> dict[str, dict]:
-    manifest = read_json(root / "config/functions.json")
+    manifest = read_manifest(root)
     if manifest.get("schema_version") != 1:
         raise ValueError("unsupported function manifest schema")
     result = {}

@@ -6,7 +6,7 @@ judges whether two implementations are equivalent.
 ## Exact match
 
 1. Setup verifies the whole RPX SHA-256, then every reference span in
-   [the manifest](../config/functions.json).
+   [the manifest](../config/functions/).
 2. The checker compiles one source to a big-endian PowerPC ELF object. It rejects
    assembly, pragma overrides, non-project includes and unsupported object
    dependencies.

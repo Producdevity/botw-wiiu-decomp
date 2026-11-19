@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from botw_decomp import cli
+from botw_decomp.project import write_manifest
 
 
 class PacketNameTests(unittest.TestCase):
@@ -28,7 +29,7 @@ class PacketNameTests(unittest.TestCase):
                 root = Path(directory)
                 (root / "config").mkdir()
                 (root / "config/target.json").write_text(json.dumps({"id": "fixture", "rpx_sha256": "0" * 64}))
-                (root / "config/functions.json").write_text(json.dumps({"schema_version": 1, "functions": [reference]}))
+                write_manifest(root, {"schema_version": 1, "functions": [reference]})
                 (root / "config/symbols.json").write_text(json.dumps({"schema_version": 1, "functions": records}))
                 with patch.object(cli, "ROOT", root), patch.object(cli, "functions", return_value={key: reference}), \
                      patch.object(cli, "local_config", return_value={"rpx": "private.rpx"}), \

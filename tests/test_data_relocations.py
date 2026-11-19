@@ -12,6 +12,7 @@ from botw_decomp.matching import compare_function, compare_function_hash
 from botw_decomp.project import functions
 from botw_decomp.rpx import DATA_PROFILE, RpxError, parse, reference_bytes
 from tests.test_elf import make_object, replace_integer
+from botw_decomp.project import write_manifest
 
 
 START = 0x1000
@@ -344,8 +345,7 @@ class DataManifestTests(unittest.TestCase):
         self.directory.cleanup()
 
     def write(self, row):
-        (self.root / "config/functions.json").write_text(
-            json.dumps({"schema_version": 1, "functions": [row]}), encoding="utf-8")
+        write_manifest(self.root, {"schema_version": 1, "functions": [row]})
 
     def test_valid_exact_data_name_and_address(self):
         self.write({**self.row, "original_profile": DATA_PROFILE,

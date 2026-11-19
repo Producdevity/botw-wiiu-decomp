@@ -2,6 +2,7 @@
 import hashlib
 import io
 import json
+import shutil
 from contextlib import redirect_stdout
 from pathlib import Path
 import tempfile
@@ -12,6 +13,7 @@ from botw_decomp.compiler import compile_source, locate
 from botw_decomp.contracts import ClangParser, audit_contracts, compact_report, main
 from botw_decomp.elf import parse_object
 from botw_decomp.matching import compare_function_hash
+from botw_decomp.project import write_manifest
 
 SYMBOL = 'fn_00000010'
 
@@ -38,7 +40,7 @@ class TrustedDefinitionBaselines(unittest.TestCase):
             self.source(root, 'extern "C" int ' + SYMBOL + '() { return 7; }')
 
     def manifest(self, root, **changes):
-        (root / 'config/functions.json').write_text(json.dumps({'schema_version': 1, 'functions': [dict(self.row, **changes)]}))
+        write_manifest(root, {'schema_version': 1, 'functions': [dict(self.row, **changes)]})
 
     def source(self, root, value):
         (root / self.row['source']).write_text(value)
@@ -83,7 +85,7 @@ class TrustedDefinitionBaselines(unittest.TestCase):
         self.manifest(self.candidate, source='reconstructions/removed.cpp',
                       source_contract={'return_type': 'long', 'parameter_types': [], 'variadic': False})
         self.assertEqual(self.strict(), 1)
-        (self.candidate / 'config/functions.json').unlink()
+        shutil.rmtree(self.candidate / 'config/functions')
         self.assertEqual(self.strict(), 1)
         (self.candidate / self.row['source']).unlink()
         self.assertEqual(self.strict(), 2)
