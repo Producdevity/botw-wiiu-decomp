@@ -96,7 +96,12 @@ jobs:
           REPORT: ${{ needs.verify.outputs.report }}
           PYTHONPATH: src
         run: |
-          if [[ $(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/master" --jq .object.sha) != "$GITHUB_SHA" ]]; then
+          master_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/master" --jq .object.sha)
+          if [[ ! "$master_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "GitHub did not return a valid master commit."
+            exit 1
+          fi
+          if [[ "$master_sha" != "$GITHUB_SHA" ]]; then
             echo "A newer master commit is awaiting verification."
             exit 0
           fi
@@ -108,7 +113,11 @@ jobs:
           git -C "$progress_dir" remote add origin "$remote"
           if git -C "$progress_dir" ls-remote --exit-code origin refs/heads/progress >/dev/null; then
             git -C "$progress_dir" fetch --depth=1 origin refs/heads/progress
-            git -C "$progress_dir" checkout -q --detach FETCH_HEAD
+            if [[ $(git -C "$progress_dir" ls-tree --name-only FETCH_HEAD) != $'exact-text.svg\nprogress.json' ]]; then
+              echo "The progress branch contains unexpected files."
+              exit 1
+            fi
+            git -C "$progress_dir" reset -q --mixed FETCH_HEAD
           elif [[ $? != 2 ]]; then
             exit 1
           fi
