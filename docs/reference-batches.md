@@ -257,3 +257,35 @@ adapters and list helpers have separate source and address checks.
 
 Five Coreinit mutex and memory wrappers pin their import identities as well
 as their raw branch targets through the [function-import profile](data-relocations.md#function-import-branches).
+
+## Opaque descriptor predicate adapters
+
+`opaque-descriptor-predicate-adapters` provides 73 separately claimable
+60-byte functions. Each has a pinned `bool (void *)` interface. An independent
+reader checked the complete spans, all 292 absolute data relocation fields,
+and the call to `fn_037b82e8` in each function. Private trial sources passed both
+whole-function byte and hash comparisons with `ghs-5.3.22-speed`.
+
+Each adapter builds an eight-byte descriptor on its stack. The payload
+pointer is at offset 0, and the dispatch pointer is at offset 4. The reference
+provides both data bindings. Use `botw/descriptor_predicate.h` for the layout and
+helper declaration. Forward the receiver and descriptor address to
+`fn_037b82e8` and propagate its Boolean result. If GHS reorders the prologue,
+consult the scheduling intrinsic in [toolchain](toolchain.md).
+
+Find these tasks with `python3 tools/community.py list --prepared --category calls
+--max-size 60`. Follow the [agent guide](agent-guide.md) to claim one, generate its
+private packet, and run the exact check.
+
+## Other prepared small functions
+
+These existing direct-call references now have pinned interfaces. Trial sources
+passed exact byte comparison, hash-only verification, and the source-contract
+audit. The manifest's automatic profile search includes each matching profile.
+
+| Function | Scope | Matching profile |
+| --- | --- | --- |
+| `fn_02ea941c` | Signed remainder by 120. Preserve the sign of a negative remainder. | `ghs-5.3.22-speed` |
+| `fn_02c20374` | Test whether signed division by 10,000 truncates to 150. The caller branches on the Boolean result. | `ghs-5.3.22-speed` |
+| `fn_0378f190` | Test the indexed bit in the halfword at receiver offset 280. Preserve the caller's valid index range. | `ghs-5.3.22-speed` |
+| `fn_038ba2fc` | Copy four representation words to receiver offsets 164 through 176. Preserve every bit of the input words. | `ghs-5.3.22-speed-notailrecursion-nopipeline` |

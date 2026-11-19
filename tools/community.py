@@ -98,6 +98,27 @@ def read_functions(path: Path, root: Path | None = None) -> dict[str, dict]:
     return result
 
 
+def remote_tree(api: GitHub, sha: str) -> dict[str, dict]:
+    tree = api.call("GET", api.route(f"git/trees/{sha}"))
+    if not isinstance(tree, dict) or tree.get("truncated") is not False or not isinstance(tree.get("tree"), list):
+        raise QueueError("Remote source tree is incomplete")
+    entries = {}
+    for entry in tree["tree"]:
+        path = entry.get("path") if isinstance(entry, dict) else None
+        if not isinstance(path, str) or path in ("", ".", "..") or "/" in path or path in entries:
+            raise QueueError("Invalid or duplicate remote source tree entry")
+        entries[path] = entry
+    return entries
+
+
+def remote_subtree(api: GitHub, entry: dict) -> dict[str, dict]:
+    sha = entry.get("sha")
+    if (entry.get("type") != "tree" or entry.get("mode") != "040000"
+            or not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha)):
+        raise QueueError("Invalid remote source directory")
+    return remote_tree(api, sha)
+
+
 def remote_functions(api: GitHub) -> dict[str, dict]:
     metadata = api.call("GET", api.route(""))
     branch = metadata.get("default_branch") if isinstance(metadata, dict) else None
@@ -111,25 +132,16 @@ def remote_functions(api: GitHub) -> dict[str, dict]:
     if (not isinstance(commit_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", commit_sha)
             or not isinstance(tree_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", tree_sha)):
         raise QueueError("Invalid default-branch commit or tree")
-    tree = api.call("GET", api.route(f"git/trees/{tree_sha}?recursive=1"))
-    if not isinstance(tree, dict) or tree.get("truncated") is not False or not isinstance(tree.get("tree"), list):
-        raise QueueError("Remote source tree is incomplete")
+    # Recursive tree responses exceed GitHub's size cap on the published tree.
+    tree = remote_tree(api, tree_sha)
+    config = remote_subtree(api, tree["config"]) if "config" in tree else {}
+    sources = remote_subtree(api, tree["reconstructions"]) if "reconstructions" in tree else {}
     completed = set()
-    manifest_entry = None
-    for entry in tree["tree"]:
-        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
-            raise QueueError("Invalid remote source tree entry")
-        path = entry["path"]
-        if path == "config/functions.json":
-            if manifest_entry is not None:
-                raise QueueError("Duplicate remote function manifest")
-            manifest_entry = entry
-        if path == "reconstructions" or path.startswith("reconstructions/"):
-            if entry.get("type") == "tree" and entry.get("mode") == "040000":
-                continue
-            if entry.get("type") != "blob" or entry.get("mode") not in ("100644", "100755"):
-                raise QueueError("Remote reconstructions must be regular files")
-            completed.add(path)
+    for path, entry in sources.items():
+        if entry.get("type") != "blob" or entry.get("mode") not in ("100644", "100755"):
+            raise QueueError("Remote reconstructions must be regular files")
+        completed.add(f"reconstructions/{path}")
+    manifest_entry = config.get("functions.json")
     if (manifest_entry is None or manifest_entry.get("type") != "blob"
             or manifest_entry.get("mode") not in ("100644", "100755")):
         raise QueueError("Remote manifest must be a regular file")
@@ -397,7 +409,7 @@ def reported_submissions(pulls: list[dict], functions: dict[str, dict]) -> dict[
 
 def task_list(functions: dict[str, dict], claims: dict[str, dict], blockers: dict[str, list[dict]],
               minimum: int = 0, maximum: int | None = None, categories: list[str] | None = None,
-              submissions: dict[str, list[dict]] | None = None) -> list[dict]:
+              submissions: dict[str, list[dict]] | None = None, prepared: bool = False) -> list[dict]:
     submissions = submissions or {}
     available = [dict(row, **({"blocker_issues": blockers[key]} if key in blockers else {}),
                       **({"submission_prs": submissions[key]} if key in submissions else {}))
@@ -405,7 +417,8 @@ def task_list(functions: dict[str, dict], claims: dict[str, dict], blockers: dic
                  if row["status"] == "unmatched" and key not in claims
                  and minimum <= row.get("size", 0)
                  and (maximum is None or row.get("size", 0) <= maximum)
-                 and (not categories or row.get("category") in categories)]
+                 and (not categories or row.get("category") in categories)
+                 and (not prepared or ("source_contract" in row and key not in blockers and key not in submissions))]
     return sorted(available, key=lambda row: (
         bool(row.get("submission_prs")),
         bool(row.get("blocker_issues")),
@@ -434,6 +447,7 @@ def queue_summary(api: GitHub, functions: dict[str, dict], claims: dict[str, dic
             "implemented_functions": len(implemented),
             "implemented_bytes": sum(row.get("size", 0) for row in implemented),
             "available_functions": len(task_list(functions, claims, {})), "claimed_functions": len(claims),
+            "prepared_available_functions": len(task_list(functions, claims, blockers, submissions=submissions, prepared=True)),
             "reported_blocked_functions": len(blockers),
             "blockers_are_advisory": True, "blockers": blockers,
             "reported_submission_functions": len(submissions),
@@ -495,6 +509,7 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--min-size", type=int, default=0, help="Minimum original code bytes")
         command.add_argument("--max-size", type=int, help="Maximum original code bytes")
         command.add_argument("--category", action="append", help="Category to include; repeat for several")
+        command.add_argument("--prepared", action="store_true", help="Require a pinned interface and no reported blocker or open submission")
     status = commands.add_parser("status", help="Show accepted claims, or one request")
     status.add_argument("issue", type=int, nargs="?")
     for command in (claim, status):
@@ -536,7 +551,8 @@ def main(argv: list[str] | None = None) -> int:
                 if args.command == "summary":
                     result = queue_summary(api, functions, claims, blockers, submissions)
                 else:
-                    available = task_list(functions, claims, blockers, args.min_size, args.max_size, args.category, submissions)
+                    available = task_list(functions, claims, blockers, args.min_size, args.max_size, args.category,
+                                          submissions, prepared=args.prepared)
                     if args.command == "list":
                         result = available[:max(0, args.limit)]
                     else:

@@ -41,8 +41,8 @@ python3 tools/toolchain.py
 python3 tools/decomp.py setup --game /path/to/your/dump-or-game.wua
 python3 tools/decomp.py doctor
 python3 tools/community.py summary
-python3 tools/community.py list
-python3 tools/community.py claim --wait 120
+python3 tools/community.py list --prepared --max-size 128
+python3 tools/community.py claim FUNCTION --prepared --wait 120
 python3 tools/decomp.py packet FUNCTION
 python3 tools/decomp.py check FUNCTION
 ```

@@ -88,6 +88,8 @@ class RemoteGitHub(FakeGitHub):
     COMMIT = "a" * 40
     TREE = "b" * 40
     BLOB = "c" * 40
+    CONFIG = "d" * 40
+    SOURCES = "e" * 40
 
     def __init__(self, sources=(), issues=(), comments=None):
         super().__init__(issues, comments)
@@ -96,9 +98,16 @@ class RemoteGitHub(FakeGitHub):
                      for key, row in FUNCTIONS.items()}
         self.set_manifest({"functions": list(self.rows.values())})
         self.tree = {"truncated": False, "tree": [
-            {"path": path, "type": "blob", "mode": "100644"} for path in sources] + [
-                {"path": "config/functions.json", "type": "blob", "mode": "100644",
-                 "sha": self.BLOB, "size": self.blob["size"]}]}
+            {"path": "config", "type": "tree", "mode": "040000", "sha": self.CONFIG},
+            {"path": "reconstructions", "type": "tree", "mode": "040000", "sha": self.SOURCES},
+        ]}
+        self.config_tree = {"truncated": False, "tree": [
+            {"path": "functions.json", "type": "blob", "mode": "100644",
+             "sha": self.BLOB, "size": self.blob["size"]},
+        ]}
+        self.source_tree = {"truncated": False, "tree": [
+            {"path": Path(path).name, "type": "blob", "mode": "100644"} for path in sources
+        ]}
 
     def set_manifest(self, value):
         manifest = json.dumps(value).encode()
@@ -116,8 +125,12 @@ class RemoteGitHub(FakeGitHub):
                 return {"sha": self.COMMIT, "commit": {"tree": {"sha": self.TREE}}}
             if path == f"git/blobs/{self.BLOB}":
                 return self.blob
-            if path == f"git/trees/{self.TREE}?recursive=1":
+            if path == f"git/trees/{self.TREE}":
                 return self.tree
+            if path == f"git/trees/{self.CONFIG}":
+                return self.config_tree
+            if path == f"git/trees/{self.SOURCES}":
+                return self.source_tree
         if method == "POST" and path == "issues":
             return {"number": 2, "html_url": "https://github.com/example/project/issues/2"}
         return super().call(method, path, payload)
@@ -134,7 +147,7 @@ class QueueTests(unittest.TestCase):
         api = RemoteGitHub()
         api.rows["fn_03000000"]["status"] = "matched"
         api.set_manifest({"functions": list(api.rows.values())})
-        api.tree["tree"][-1]["size"] = api.blob["size"]
+        api.config_tree["tree"][-1]["size"] = api.blob["size"]
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -152,8 +165,8 @@ class QueueTests(unittest.TestCase):
         api.rows["fn_03000004"] = {"id": "fn_03000004", "size": 32, "status": "unmatched", "source": "reconstructions/fn_03000004.cpp", "category": "loops"}
         api.rows["fn_03000008"] = {"id": "fn_03000008", "size": 12, "status": "unmatched", "source": "reconstructions/fn_03000008.cpp", "category": "integer"}
         api.set_manifest({"functions": list(api.rows.values())})
-        api.tree["tree"][-1]["size"] = api.blob["size"]
-        api.tree["tree"].append({"path": "reconstructions/fn_03000008.cpp", "type": "blob", "mode": "100644"})
+        api.config_tree["tree"][-1]["size"] = api.blob["size"]
+        api.source_tree["tree"].append({"path": "fn_03000008.cpp", "type": "blob", "mode": "100644"})
         code, result, errors = self.run_main(api, ["summary"])
         self.assertEqual((code, errors), (0, ""))
         self.assertEqual(result["snapshot"]["commit"], api.COMMIT)
@@ -199,7 +212,7 @@ class QueueTests(unittest.TestCase):
         api.rows["fn_03000004"] = {"id": "fn_03000004", "size": 256, "status": "unmatched", "source": "reconstructions/fn_03000004.cpp"}
         api.rows["fn_03000008"] = {"id": "fn_03000008", "size": 16, "status": "unmatched", "source": "reconstructions/fn_03000008.cpp"}
         api.set_manifest({"functions": list(api.rows.values())})
-        api.tree["tree"][-1]["size"] = api.blob["size"]
+        api.config_tree["tree"][-1]["size"] = api.blob["size"]
         api.pulls = [{"number": 4, "html_url": "https://example/pull/4", "draft": True, "state": "open",
                       "body": "## Functions\nfn_03000000\nfn_03000008\n"}]
         code, result, errors = self.run_main(api, ["summary"])
@@ -484,17 +497,19 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
         self.assertEqual([path for _, path, _ in api.calls], [
             "", "commits/branch%2Fdefault",
-            f"git/trees/{api.TREE}?recursive=1", f"git/blobs/{api.BLOB}"])
+            f"git/trees/{api.TREE}", f"git/trees/{api.CONFIG}",
+            f"git/trees/{api.SOURCES}", f"git/blobs/{api.BLOB}"])
 
     def test_remote_manifest_larger_than_contents_limit_uses_pinned_blob(self):
         api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
         api.set_manifest({"functions": list(api.rows.values()), "padding": "x" * 1_100_000})
-        api.tree["tree"][-1]["size"] = api.blob["size"]
+        api.config_tree["tree"][-1]["size"] = api.blob["size"]
         self.assertGreater(api.blob["size"], 1_000_000)
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "matched")
         self.assertEqual([path for _, path, _ in api.calls], [
             "", "commits/branch%2Fdefault",
-            f"git/trees/{api.TREE}?recursive=1", f"git/blobs/{api.BLOB}"])
+            f"git/trees/{api.TREE}", f"git/trees/{api.CONFIG}",
+            f"git/trees/{api.SOURCES}", f"git/blobs/{api.BLOB}"])
 
     def test_remote_manifest_metadata_rejects_unsafe_or_oversized_blobs(self):
         invalid = [{"mode": "120000"}, {"type": "commit"}, {"sha": "main"},
@@ -503,7 +518,7 @@ class QueueTests(unittest.TestCase):
         for fields in invalid:
             with self.subTest(fields=fields):
                 api = RemoteGitHub()
-                api.tree["tree"][-1].update(fields)
+                api.config_tree["tree"][-1].update(fields)
                 with self.assertRaises(queue.QueueError):
                     queue.remote_functions(api)
                 self.assertFalse(any("git/blobs/" in path for _, path, _ in api.calls))
@@ -513,9 +528,9 @@ class QueueTests(unittest.TestCase):
             with self.subTest(entries=entries):
                 api = RemoteGitHub()
                 if entries == ["duplicate"]:
-                    api.tree["tree"].append(dict(api.tree["tree"][-1]))
+                    api.config_tree["tree"].append(dict(api.config_tree["tree"][-1]))
                 else:
-                    api.tree["tree"] = entries
+                    api.config_tree["tree"] = entries
                 with self.assertRaises(queue.QueueError):
                     queue.remote_functions(api)
 
@@ -539,7 +554,7 @@ class QueueTests(unittest.TestCase):
             with self.subTest(encoded=encoded, size=size):
                 api = RemoteGitHub()
                 api.blob.update(content=encoded, size=size)
-                api.tree["tree"][-1]["size"] = size
+                api.config_tree["tree"][-1]["size"] = size
                 with self.assertRaises(queue.QueueError):
                     queue.remote_functions(api)
 
@@ -548,7 +563,7 @@ class QueueTests(unittest.TestCase):
             with self.subTest(value=value):
                 api = RemoteGitHub()
                 api.set_manifest(value)
-                api.tree["tree"][-1]["size"] = api.blob["size"]
+                api.config_tree["tree"][-1]["size"] = api.blob["size"]
                 output, errors = io.StringIO(), io.StringIO()
                 with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output), redirect_stderr(errors):
                     self.assertEqual(queue.main(["list"]), 1)
@@ -556,14 +571,27 @@ class QueueTests(unittest.TestCase):
                 self.assertIn("Function", errors.getvalue())
 
     def test_incomplete_remote_tree_fails_closed(self):
-        api = RemoteGitHub()
-        api.tree["truncated"] = True
-        with self.assertRaisesRegex(queue.QueueError, "incomplete"):
-            queue.remote_functions(api)
+        for directory in ("tree", "config_tree", "source_tree"):
+            with self.subTest(directory=directory):
+                api = RemoteGitHub()
+                getattr(api, directory)["truncated"] = True
+                with self.assertRaisesRegex(queue.QueueError, "incomplete"):
+                    queue.remote_functions(api)
+
+    def test_prepared_tasks_require_a_pin_and_no_active_work_or_report(self):
+        pin = {"return_type": "void", "parameter_types": ["void *"], "variadic": False}
+        ids = [f"fn_{0x03000000 + i * 4:08x}" for i in range(5)]
+        rows = {key: {"id": key, "size": 64, "status": "unmatched", "source_contract": pin} for key in ids}
+        del rows[ids[1]]["source_contract"]
+        claims = {ids[2]: {}}
+        blockers = {ids[3]: [{"number": 10}]}
+        submissions = {ids[4]: [{"number": 11}]}
+        available = queue.task_list(rows, claims, blockers, submissions=submissions, prepared=True)
+        self.assertEqual([row["id"] for row in available], [ids[0]])
 
     def test_remote_symlink_cannot_mark_task_complete(self):
         api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
-        api.tree["tree"][0]["mode"] = "120000"
+        api.source_tree["tree"][0]["mode"] = "120000"
         with self.assertRaisesRegex(queue.QueueError, "regular files"):
             queue.remote_functions(api)
 
