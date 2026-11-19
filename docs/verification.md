@@ -72,8 +72,10 @@ Types are primitive C types or single pointers such as `void *`,
 
 ## Pull request checks
 
-PR workflows run the base branch's checker and references. Candidate code is
-checked out as data and compiled on a disposable runner with a read-only token.
+PR workflows run current master's checker and references against GitHub's test
+merge of the PR into master, so a branch never has to be up to date. A PR with
+merge conflicts cannot be checked until it is rebased. Candidate code is checked
+out as data and compiled on a disposable runner with a read-only token.
 Candidate scripts never run.
 
 - `verify` compiles the reconstructions whose sources changed, plus their

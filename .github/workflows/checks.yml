@@ -27,18 +27,29 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - name: Check out trusted verifier
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.event.pull_request.base.sha || github.sha }}
-          path: trusted
-          persist-credentials: false
+      # A PR is checked as GitHub's test merge into current master, so files that
+      # changed on master after the PR branched do not count as PR changes.
       - name: Check out candidate as data
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.sha }}
+          fetch-depth: 2
           path: candidate
+          persist-credentials: false
+      - name: Resolve trusted base
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = pull_request_target ]; then
+            echo "sha=$(git -C candidate rev-parse HEAD^1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check out trusted verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ steps.base.outputs.sha }}
+          path: trusted
           persist-credentials: false
       - name: Install PowerPC compiler
         run: |
