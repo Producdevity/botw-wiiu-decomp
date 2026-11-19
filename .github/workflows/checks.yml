@@ -113,10 +113,12 @@ jobs:
           git -C "$progress_dir" remote add origin "$remote"
           if git -C "$progress_dir" ls-remote --exit-code origin refs/heads/progress >/dev/null; then
             git -C "$progress_dir" fetch --depth=1 origin refs/heads/progress
-            if [[ $(git -C "$progress_dir" ls-tree --name-only FETCH_HEAD) != $'exact-text.svg\nprogress.json' ]]; then
-              echo "The progress branch contains unexpected files."
-              exit 1
-            fi
+            while read -r name; do
+              case "$name" in
+                exact-text.svg|progress-map.svg|progress.json) ;;
+                *) echo "The progress branch contains unexpected files."; exit 1 ;;
+              esac
+            done < <(git -C "$progress_dir" ls-tree --name-only FETCH_HEAD)
             git -C "$progress_dir" reset -q --mixed FETCH_HEAD
           elif [[ $? != 2 ]]; then
             exit 1
@@ -125,13 +127,19 @@ jobs:
           import json
           import os
           from pathlib import Path
+          from botw_decomp import project
+          from botw_decomp.progress_map import write_map
           from botw_decomp.verification_report import write_progress
 
-          write_progress(Path(os.environ["PROGRESS_DIR"]), json.loads(os.environ["REPORT"]),
+          directory = Path(os.environ["PROGRESS_DIR"])
+          write_progress(directory, json.loads(os.environ["REPORT"]),
                          os.environ["GITHUB_SHA"], os.environ["GITHUB_RUN_ID"])
+          # The verify job passed with no failures, so every published source matched.
+          write_map(directory, project.read_json(project.ROOT / "config/target.json"),
+                    project.functions(project.ROOT), project.ROOT)
           PY
           cd "$progress_dir"
-          git add exact-text.svg progress.json
+          git add exact-text.svg progress-map.svg progress.json
           if git diff --cached --quiet; then
             exit 0
           fi

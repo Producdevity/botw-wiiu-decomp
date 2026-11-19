@@ -3,9 +3,13 @@
 [![Verification](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml/badge.svg?branch=master&event=push)](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml?query=branch%3Amaster)
 [![Exact .text match](https://raw.githubusercontent.com/Producdevity/botw-wiiu-decomp/progress/exact-text.svg)](https://github.com/Producdevity/botw-wiiu-decomp/blob/progress/progress.json)
 
+[![Exact coverage map](https://raw.githubusercontent.com/Producdevity/botw-wiiu-decomp/progress/progress-map.svg)](https://github.com/Producdevity/botw-wiiu-decomp/blob/progress/progress.json)
+
 Community C++ reconstruction of the **USA Wii U v208** executable. Every
 function is checked byte for byte against the original PowerPC code. The badge
-shows exact function bytes as a share of the whole `.text` section.
+shows exact function bytes as a share of the whole `.text` section. The map
+tiles `.text` by address: 1 MiB regions split into 32 KiB blocks. Green is
+matched, blue is admitted and ready to reconstruct, gray is not yet admitted.
 
 Sources compile with fixed GHS 5.3.22 profiles, plus Clang for some simple
 leaves. The original compiler version is unconfirmed.
