@@ -6,7 +6,7 @@ body:
     id: function
     attributes:
       label: Function
-      description: Copy an unmatched function ID from config/functions.json.
+      description: Copy an unmatched function ID from config/functions/.
       placeholder: fn_03000000
     validations:
       required: true

@@ -2,6 +2,7 @@
 
 import hashlib
 import io
+import shutil
 import json
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -14,6 +15,7 @@ from botw_decomp.contracts import ClangParser, audit_contracts, compact_report, 
 from botw_decomp.elf import parse_object
 from botw_decomp.matching import compare_function_hash
 from botw_decomp.project import functions, validate_source_contract
+from botw_decomp.project import read_manifest, write_manifest as project_write_manifest
 
 
 SYMBOL = "fn_00000010"
@@ -66,8 +68,7 @@ def write_manifest(root, expected=None, include_contract=False):
            "source": "reconstructions/" + SYMBOL + ".cpp", "status": "unmatched"}
     if expected is not None or include_contract:
         row["source_contract"] = expected
-    (root / "config").mkdir(parents=True, exist_ok=True)
-    (root / "config/functions.json").write_text(json.dumps({"schema_version": 1, "functions": [row]}))
+    project_write_manifest(root, {"schema_version": 1, "functions": [row]})
     return row
 
 
@@ -116,8 +117,7 @@ class TrustedSourceContracts(unittest.TestCase):
 
     def test_distinct_pinned_contracts_remain_associated_with_each_symbol(self):
         other = "fn_00000020"
-        manifest = self.trusted / "config/functions.json"
-        value = json.loads(manifest.read_text())
+        value = read_manifest(self.trusted)
         value["functions"].append({
             "id": other, "address": "0x00000020", "size": 8,
             "sha256": "0" * 64, "symbol": other,
@@ -125,7 +125,7 @@ class TrustedSourceContracts(unittest.TestCase):
             "source_contract": {"return_type": "float",
                                 "parameter_types": ["const float *"], "variadic": False},
         })
-        manifest.write_text(json.dumps(value))
+        project_write_manifest(self.trusted, value)
         other_path = self.root / "reconstructions" / (other + ".cpp")
         other_path.write_text('extern "C" float ' + other + '(const float *value) { return *value; }')
         matching = {item["symbol"]: item for item in self.audit()["source_contracts"]}
@@ -209,7 +209,7 @@ class TrustedSourceContracts(unittest.TestCase):
         self.assertEqual(self.strict(), 1)
         write_manifest(self.root)
         self.assertEqual(self.strict(), 1)
-        (self.root / "config/functions.json").unlink()
+        shutil.rmtree(self.root / "config/functions")
         self.assertEqual(self.strict(), 1)
 
     def test_typedef_and_parameter_top_level_qualifiers_normalize(self):
@@ -272,7 +272,7 @@ class TrustedSourceContracts(unittest.TestCase):
         with patch.object(ClangParser, "parse", mutate):
             report = self.audit()
         self.assertEqual(report["status"], "incomplete")
-        self.assertIn("<reference>/config/functions.json", report["source_drift"])
+        self.assertIn("<reference>/config/functions/00000000.json", report["source_drift"])
 
 
 if __name__ == "__main__":

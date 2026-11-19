@@ -53,7 +53,7 @@ class SupportingCompilationProjectTests(unittest.TestCase):
             (root / "config").mkdir()
             row = fn(0x1000)
             row["compile_with"] = ["fn_00009999"]
-            (root / "config/functions.json").write_text(json.dumps(manifest(row)))
+            project.write_manifest(root, manifest(row))
             with self.assertRaisesRegex(ValueError, "supporting compilation"):
                 project.functions(root)
 

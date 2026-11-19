@@ -11,6 +11,7 @@ from botw_decomp.project import functions
 from botw_decomp.rpx import DATA_PROFILE, RpxError, parse, reference_bytes
 from tests.test_data_relocations import BSS, RODATA, START, make_cafe
 from tests.test_elf import make_object
+from botw_decomp.project import write_manifest
 
 
 THUNK = START + 0x80
@@ -135,8 +136,7 @@ class MixedProfileTests(unittest.TestCase):
             config.mkdir()
 
             def load(entry):
-                (config / "functions.json").write_text(
-                    json.dumps({"schema_version": 1, "functions": [entry]}))
+                write_manifest(config.parent, {"schema_version": 1, "functions": [entry]})
                 return functions(config.parent)
 
             self.assertEqual(load(row), {function: row})
