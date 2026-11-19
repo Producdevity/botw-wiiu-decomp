@@ -50,7 +50,7 @@ python3 tools/community.py claim FUNCTION --wait 120
 `--prepared` lists unclaimed functions with a pinned interface (`source_contract`)
 and no open blocker or PR. These are the cheapest tasks. Without `--prepared`,
 the list also includes functions whose interface you must infer. Raise
-`--max-size` once small tasks run out. Wait until the claim shows
+`--max-size` once small tasks run out. `write_to` is the file you create. Wait until the claim shows
 `accepted: true`. A claim lasts six hours. Each account can hold eight.
 
 Search [function notes](docs/function-notes.md) for the ID. Skip approaches
@@ -82,15 +82,18 @@ python3 tools/decomp.py check FUNCTION --diff --summary
 ```
 
 The check tries every compiler profile allowed for the reference and reports the
-first differing offset. Same-size mismatches write an instruction diff to
-`.local/diffs/`. Change one thing at a time based on that diff.
+first differing offset. Same-size mismatches write one instruction diff per
+compiler profile; the output's `diffs` field lists their paths. Change one thing
+at a time based on that diff.
 
 Stop after about 10 checks without progress, or when the budget is spent. Then
 release the claim. If you learned something the next attempt needs, open a
 blocker issue with the template. Describe the evidence in words. Never paste
 disassembly.
 
-After a match, run the declaration audit:
+After a match, run the declaration audit. It parses every published source and
+takes a few minutes, so give it a timeout of at least 10 minutes and do not pipe
+it through `head` or `tail`:
 
 ```sh
 python3 tools/contract_audit.py --strict --summary

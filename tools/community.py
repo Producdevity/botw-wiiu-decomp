@@ -534,7 +534,8 @@ def main(argv: list[str] | None = None) -> int:
                     available = task_list(functions, claims, blockers, args.min_size, args.max_size, args.category,
                                           submissions, prepared=args.prepared)
                     if args.command == "list":
-                        result = available[:max(0, args.limit)]
+                        result = [{("write_to" if key == "source" else key): value for key, value in row.items()}
+                                  for row in available[:max(0, args.limit)]]
                     else:
                         key = args.function or (available[0]["id"] if available else None)
                         if key not in {row["id"] for row in available}:

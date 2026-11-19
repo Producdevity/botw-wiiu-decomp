@@ -69,7 +69,7 @@ class PreflightTests(unittest.TestCase):
             result = preflight.assess(root, rpx)
             self.assertEqual(result["status"], "action_required")
             self.assertEqual([action["id"] for action in result["actions"]], ["configuration"])
-            self.assertEqual(result["actions"][0]["command"], ["python3", "tools/decomp.py", "setup", "--rpx", str(rpx), "--compiler", "/llvm/clang++"])
+            self.assertEqual(result["actions"][0]["command"], ["python3", "tools/decomp.py", "setup", "--rpx", str(rpx)])
             self.assertFalse((root / ".local/config.json").exists())
 
     def test_missing_rpx_requests_only_local_path_not_an_upload(self):
@@ -209,7 +209,7 @@ class PreflightTests(unittest.TestCase):
                 result = preflight.assess(root, archive)
             self.assertEqual(result["status"], "action_required")
             configuration = next(row for row in result["actions"] if row["id"] == "configuration")
-            self.assertEqual(configuration["command"], ["python3", "tools/decomp.py", "setup", "--game", str(archive), "--compiler", "/llvm/clang++"])
+            self.assertEqual(configuration["command"], ["python3", "tools/decomp.py", "setup", "--game", str(archive)])
             self.assertFalse(cached.exists())
 
     def test_timeout_is_an_action_and_command_exit_code_follows_readiness(self):
