@@ -14,9 +14,9 @@ BLR = 0x4E800020
 NOP = 0x60000000
 
 
-def inventory(words, relocations=(), entry=START):
+def inventory(words, relocations=(), entry=START, **options):
     code = b"".join(struct.pack(">I", word) for word in words)
-    return discover(parse(make_rpx(code, relocations, entry=entry)))
+    return discover(parse(make_rpx(code, relocations, entry=entry)), **options)
 
 
 class InventoryTests(unittest.TestCase):
@@ -74,6 +74,20 @@ class InventoryTests(unittest.TestCase):
         for branch in (0x4E800420, 0x4E800421, 0x4E800021, 0x4C000064):
             with self.subTest(branch=hex(branch)):
                 self.assertEqual(inventory([LI, branch]), [])
+
+    def test_indirect_call_is_admitted_only_when_enabled(self):
+        words = [0x7D8903A6, 0x4E800421, LI, BLR]
+        self.assertEqual(inventory(words), [])
+        item, = inventory(words, indirect_calls=True)
+        self.assertEqual(item["size"], 16)
+        self.assertEqual(item["category"], "calls")
+        self.assertEqual(item["bindings"], {})
+        self.assertIn("indirect calls through CTR", item["boundary"])
+
+    def test_indirect_calls_keep_other_indirect_transfers_closed(self):
+        for branch in (0x4E800420, 0x4E800021, 0x4D820421, 0x4E800C21):
+            with self.subTest(branch=hex(branch)):
+                self.assertEqual(inventory([LI, branch, BLR], indirect_calls=True), [])
 
     def test_link_to_next_instruction_is_not_a_function_call(self):
         self.assertEqual(inventory([0x48000005, LI, BLR]), [])

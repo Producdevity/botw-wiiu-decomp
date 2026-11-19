@@ -39,6 +39,11 @@ bounded, contiguous control flow and no original relocations. Opt-in modes:
   relocation contract read from the RPX, and discovery re-reads the span through
   that contract before emitting it. Every address taken into `.text` (vtable
   slots, function-pointer loads) also fences these spans.
+- `--indirect-calls`: bounded functions that make unconditional `bctrl` calls
+  (virtual calls and function pointers). The call returns to the next
+  instruction and emits no binding; the bytes compare like any other
+  instruction. Taken `.text` addresses fence these spans too. Conditional
+  `bcctrl`, `bctr` and `bclrl` stay excluded.
 
 A new span cannot contain another entry or branch target or overlap a body.
 Outside `--original-relocations` it cannot include an original relocation.
