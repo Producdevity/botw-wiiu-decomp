@@ -65,7 +65,10 @@ class FakeApi:
         if path.endswith("git/ref/heads/master"):
             return {"object": {"sha": self.master}}
         if path.endswith("pulls/7") and method == "GET":
-            return {"state": "open", "head": {"sha": HEAD}, "base": {"ref": "master"}}
+            return {"state": "open", "base": {"ref": "master"},
+                    "head": {"sha": HEAD, "ref": "add-source", "repo": {"full_name": self.repository}}}
+        if method == "DELETE" and path.endswith("git/refs/heads/add-source"):
+            return None
         if path.endswith("pulls/7/merge"):
             self.master = MERGED
             return {"merged": True, "sha": MERGED}
@@ -162,6 +165,7 @@ class AutomergeTests(unittest.TestCase):
                     unittest.mock.patch.dict(automerge.os.environ, {"GITHUB_REPOSITORY": api.repository}):
                 self.assertEqual(automerge.merge(plan), {"merged": [7]})
                 self.assertTrue(any(path.endswith("dispatches") for _, path, _ in api.calls))
+                self.assertIn(("DELETE", f"repos/{api.repository}/git/refs/heads/add-source", None), api.calls)
                 api = FakeApi()
                 api.master = MERGED
                 with unittest.mock.patch.object(automerge.community, "GitHub", return_value=api):
