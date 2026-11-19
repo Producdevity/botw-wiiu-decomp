@@ -48,6 +48,21 @@ class AdmitTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             admit.admit(self.root, {"rpx_sha256": "f" * 64, "functions": [row(0x03000040)]}, "discovered-test")
 
+    def test_relocation_contract_is_admitted_and_validated(self):
+        relocated = {**row(0x03000040, 12), "original_profile": "cafe-data-address-v1",
+                     "data_bindings": {"data_10000000": "0x10000000"},
+                     "data_relocations": [{"offset": 2, "symbol": "data_10000000", "type": 6},
+                                          {"offset": 6, "symbol": "data_10000000", "type": 4}]}
+        admit.admit(self.root, {"rpx_sha256": "f" * 64, "functions": [relocated]}, "discovered-test")
+        admitted = project.functions(self.root)["fn_03000040"]
+        self.assertEqual(admitted["data_relocations"], relocated["data_relocations"])
+        self.assertEqual(admitted["original_profile"], "cafe-data-address-v1")
+        broken = {**relocated, "id": "fn_03000080", "symbol": "fn_03000080", "address": "0x03000080",
+                  "source": "reconstructions/fn_03000080.cpp", "data_bindings": {}}
+        with self.assertRaises(ValueError):
+            admit.admit(self.root, {"rpx_sha256": "f" * 64, "functions": [broken]}, "discovered-other")
+        self.assertNotIn("fn_03000080", project.functions(self.root))
+
 
 if __name__ == "__main__":
     unittest.main()

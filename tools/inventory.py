@@ -17,6 +17,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--rpx", type=Path, help="use this RPX instead of the local setup path")
     parser.add_argument("--short-tails", action="store_true", help="include short direct-tail adapters")
     parser.add_argument("--blr-leaves", action="store_true", help="include single-blr leaves without inferring signatures")
+    parser.add_argument("--original-relocations", action="store_true",
+                        help="include bounded functions whose original relocations fit the data-address or import profiles")
     parser.add_argument("--vtables", action="store_true", help="include candidates from a checked GHS vtable pattern")
     parser.add_argument("--tail-target-policy", choices=("bounded", "direct-call"), default="bounded",
                         help="direct-call also permits independently called entries without a bounded body")
@@ -33,6 +35,7 @@ def main(argv: list[str] | None = None) -> int:
         rows, summary = discover_extended(
             image, short_tails=args.short_tails, blr_leaves=args.blr_leaves,
             max_size=args.max_size, tail_target_policy=args.tail_target_policy,
+            original_relocations=args.original_relocations,
         )
         if args.vtables:
             additions, vtable_summary = discover_vtables(image, rows, admitted=project.functions().values())
@@ -44,7 +47,8 @@ def main(argv: list[str] | None = None) -> int:
             "schema_version": 1, "rpx_sha256": image.sha256,
             "scope": "Candidate boundary/binding metadata; not ABI proof or reconstruction acceptance.",
             "options": {"short_tails": args.short_tails, "blr_leaves": args.blr_leaves,
-                        "max_size": args.max_size, "tail_target_policy": args.tail_target_policy},
+                        "max_size": args.max_size, "tail_target_policy": args.tail_target_policy,
+                        "original_relocations": args.original_relocations},
             "summary": summary, "functions": rows,
         }
         if args.vtables:

@@ -49,6 +49,16 @@ class Rpx:
                 (index < len(self.sorted_relocation_sites) and
                  self.sorted_relocation_sites[index] < address + size))
 
+    def text_address_targets(self) -> set[int]:
+        """Destinations of absolute ADDR32/ADDR16_LO relocations, from any section."""
+        result = set()
+        for index in range(len(self.sorted_relocation_sites)):
+            _, kind, addend, value, *_ = _RELOCATION_RECORD.unpack_from(
+                self.relocation_records, index * _RELOCATION_RECORD.size)
+            if kind in (1, 4):
+                result.add((value + addend) & 0xFFFFFFFF)
+        return result
+
     def _code_section(self, address: int, size: int) -> Section:
         if (type(address) is not int or type(size) is not int or
                 size <= 0 or address < 0 or address + size > 0x100000000):

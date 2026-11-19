@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import re
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -16,6 +17,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from botw_decomp import project
 
 COPIED = ("address", "bindings", "boundary", "category", "id", "sha256", "size", "source", "symbol")
+RELOCATION_CONTRACT = ("data_bindings", "data_relocations", "import_relocations", "original_profile")
 BATCH = re.compile(r"[a-z0-9][a-z0-9-]{2,63}\Z")
 
 
@@ -34,7 +36,8 @@ def admit(root: Path, inventory: dict, batch: str) -> list[str]:
     starts = [start for start, _ in ranges]
     added = []
     for candidate in sorted(inventory["functions"], key=lambda item: int(item["address"], 16)):
-        if candidate.get("status") != "unmatched" or set(candidate) - {*COPIED, "status", "discovery_evidence"}:
+        if (candidate.get("status") != "unmatched"
+                or set(candidate) - {*COPIED, *RELOCATION_CONTRACT, "status", "discovery_evidence"}):
             continue
         start = int(candidate["address"], 16)
         end = start + candidate["size"]
@@ -42,6 +45,7 @@ def admit(root: Path, inventory: dict, batch: str) -> list[str]:
         if index and ranges[index - 1][1] > start:
             continue
         row = {key: candidate[key] for key in COPIED}
+        row.update((key, candidate[key]) for key in RELOCATION_CONTRACT if key in candidate)
         row.update(status="unmatched", compiler_profile="ghs-5.3.22-auto")
         position = bisect.bisect_left(starts, start)
         starts.insert(position, start)
@@ -52,9 +56,11 @@ def admit(root: Path, inventory: dict, batch: str) -> list[str]:
         return []
     rows.sort(key=lambda item: int(item["address"], 16))
     batches["batches"].append({"id": batch, "functions": added})
+    with tempfile.TemporaryDirectory(prefix="botw-admit-") as staging:
+        project.write_manifest(Path(staging), manifest)
+        project.functions(Path(staging))
     project.write_manifest(root, manifest)
     project.write_json(root / "config/batches.json", batches)
-    project.functions(root)
     return added
 
 
