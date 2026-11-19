@@ -91,14 +91,17 @@ the [coverage badge](https://github.com/Producdevity/botw-wiiu-decomp/blob/progr
 The `automerge` workflow runs after each check completes and every 30 minutes,
 one run at a time. A PR is eligible when:
 
-- every changed file is a new `reconstructions/fn_XXXXXXXX.cpp` for a trusted
-  reference that has no source on master yet;
-- `## Functions` lists exactly those IDs and the model table is complete;
+- every changed file is either a new `reconstructions/fn_XXXXXXXX.cpp` for a
+  trusted reference that has no source on master yet, or an
+  `include/botw/*.h` header that is new or keeps every existing line in order
+  and only inserts lines;
+- `## Functions` lists exactly the new source IDs (`none` for a header-only PR)
+  and the model table is complete;
 - `verify` and `pr-metadata` passed on the PR head.
 
 The selection job re-checks eligible PRs on top of current master, with a
-read-only token. It recompiles each new function and reruns the strict audit on
-the combined tree. This catches two PRs that declare the same callee differently.
+read-only token. It recompiles each new function, or every published function
+when a header changes, and reruns the strict audit on the combined tree. This catches two PRs that declare the same callee differently.
 A separate job merges the verified plan only while master is still the verified
 commit, then triggers the full rebuild. Claims are advisory and do not affect
 merging. Whichever PR lands first wins.

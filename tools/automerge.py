@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Merge pull requests that only add exact, audited reconstructions.
 
-`select` runs with a read-only token. It re-verifies every eligible PR's new
-sources on top of the current default branch and writes a merge plan. `merge`
+Eligible changes are new sources for trusted references and purely additive
+header changes: new `include/botw/` headers, or edits that keep every existing
+line in order. `select` runs with a read-only token. It re-verifies every
+eligible PR on top of the current default branch (all published functions when a
+header changes) and writes a merge plan. `merge`
 runs with write access, compiles nothing, and merges the plan only while the
 default branch is still the verified commit.
 """
@@ -11,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import difflib
 import json
 import os
 from pathlib import Path
@@ -25,6 +29,7 @@ import pr_metadata
 
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 SOURCE = re.compile(r"reconstructions/(fn_[0-9a-f]{8})\.cpp\Z")
+HEADER = re.compile(r"include/botw/(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+\.h\Z")
 REQUIRED_CHECKS = ("verify", "pr-metadata")
 MAX_SOURCE_BYTES = 64 * 1024
 MAX_PULLS = 10
@@ -38,17 +43,35 @@ def declared_functions(body: str) -> list[str]:
 
 
 def eligible_sources(files: list[dict], rows: dict[str, dict], published: set[str]) -> dict[str, str] | None:
-    """Return {path: blob_sha} when every change adds a new source for a trusted reference."""
+    """Return {path: blob_sha} when every change adds a new source or touches a project header.
+
+    Header edits are only candidates here; `additive` checks their content later.
+    """
     result = {}
     for entry in files:
         name = entry.get("filename")
-        match = SOURCE.fullmatch(name) if isinstance(name, str) else None
-        if (entry.get("status") != "added" or match is None or match.group(1) not in rows
-                or name in published or not isinstance(entry.get("sha"), str)
-                or not SHA.fullmatch(entry["sha"])):
+        if not isinstance(name, str) or not isinstance(entry.get("sha"), str) or not SHA.fullmatch(entry["sha"]):
+            return None
+        match = SOURCE.fullmatch(name)
+        if match is not None:
+            if entry.get("status") != "added" or match.group(1) not in rows or name in published:
+                return None
+        elif not (HEADER.fullmatch(name) and entry.get("status") in ("added", "modified")) or name in published:
             return None
         result[name] = entry["sha"]
     return result or None
+
+
+def additive(old: bytes | None, new: bytes) -> bool:
+    """True when `new` keeps every line of `old` in order and only inserts lines."""
+    if old is None:
+        return True
+    try:
+        before, after = old.decode("utf-8").splitlines(), new.decode("utf-8").splitlines()
+    except UnicodeDecodeError:
+        return False
+    matcher = difflib.SequenceMatcher(None, before, after, autojunk=False)
+    return all(tag in ("equal", "insert") for tag, *_ in matcher.get_opcodes())
 
 
 def checks_passed(api: community.GitHub, head: str) -> bool:
@@ -73,7 +96,9 @@ def read_blob(api: community.GitHub, repository: str, sha: str) -> bytes:
     return data
 
 
-def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]) -> list[dict]:
+def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str],
+               root: Path | None = None) -> list[dict]:
+    root = ci.ROOT if root is None else root
     selected, taken = [], set()
     for pull in api.open_pulls():
         if len(selected) == MAX_PULLS:
@@ -82,12 +107,13 @@ def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]
         if pull.get("draft") or base.get("ref") != "master" or not SHA.fullmatch(head.get("sha", "")):
             continue
         files = api.pages(api.route(f"pulls/{pull['number']}/files"))
-        sources = eligible_sources(files, rows, published | taken)
+        sources = eligible_sources(files, rows, published - set(filter(HEADER.fullmatch, published)) | taken)
         if sources is None:
             continue
-        functions = sorted(SOURCE.fullmatch(name).group(1) for name in sources)
+        functions = sorted(SOURCE.fullmatch(name).group(1) for name in sources if SOURCE.fullmatch(name))
         body = pull.get("body") or ""
-        if not pr_metadata.validate_body(body)[0] or declared_functions(body) != functions:
+        if (not pr_metadata.validate_body(body)[0]
+                or declared_functions(body) not in ((functions,) if functions else ([], ["none"]))):
             continue
         if not checks_passed(api, head["sha"]):
             continue
@@ -98,6 +124,10 @@ def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]
             contents = {name: read_blob(api, repository, sha) for name, sha in sources.items()}
         except (ValueError, community.QueueError):
             continue
+        headers = [name for name in contents if HEADER.fullmatch(name)]
+        if not all(additive((root / name).read_bytes() if (root / name).is_file() else None, contents[name])
+                   for name in headers):
+            continue
         taken.update(contents)
         selected.append({"number": pull["number"], "head": head["sha"], "functions": functions,
                          "contents": contents})
@@ -106,31 +136,42 @@ def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]
 
 def overlay(root: Path, pulls: list[dict]) -> None:
     for pull in pulls:
+        pull["replaced"] = []
         for name, data in pull["contents"].items():
             path = root / name
             if path.exists():
-                raise ValueError(f"{name} already exists")
+                if not HEADER.fullmatch(name):
+                    raise ValueError(f"{name} already exists")
+                pull["replaced"].append(name)
+            path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
-    subprocess.run(["git", "-C", str(root), "add", "--", "reconstructions"], check=True, timeout=120)
+    names = [name for pull in pulls for name in pull["contents"]]
+    subprocess.run(["git", "-C", str(root), "add", "--", *names], check=True, timeout=120)
 
 
 def remove(root: Path, pulls: list[dict]) -> None:
-    names = [name for pull in pulls for name in pull["contents"]]
-    if names:
-        subprocess.run(["git", "-C", str(root), "rm", "-q", "--cached", "--", *names], check=True, timeout=120)
-        for name in names:
+    replaced = [name for pull in pulls for name in pull.get("replaced", [])]
+    added = [name for pull in pulls for name in pull["contents"] if name not in replaced]
+    if added:
+        subprocess.run(["git", "-C", str(root), "rm", "-q", "--cached", "--", *added], check=True, timeout=120)
+        for name in added:
             (root / name).unlink()
+    if replaced:
+        subprocess.run(["git", "-C", str(root), "checkout", "-q", "HEAD", "--", *replaced], check=True, timeout=120)
 
 
 def passes(root: Path, trusted: Path, cxx: str, rows: dict[str, dict], pulls: list[dict]) -> bool:
     overlay(root, pulls)
     try:
-        for pull in pulls:
-            for key in pull["functions"]:
-                result = ci.cli.verify(rows[key], cxx, root=root, image=None, references=rows)
-                if result.get("matched") is not True:
-                    print(json.dumps({"pull": pull["number"], "rejected": key}), flush=True)
-                    return False
+        try:
+            results = ci.verify_candidate(trusted, root, cxx, rows=rows, changed_only=True)
+        except ci.VerificationError as error:
+            print(json.dumps({"pulls": [pull["number"] for pull in pulls], "rejected": str(error)}), flush=True)
+            return False
+        rejected = [result["function"] for result in results if result.get("matched") is not True]
+        if rejected:
+            print(json.dumps({"pulls": [pull["number"] for pull in pulls], "rejected": rejected[:20]}), flush=True)
+            return False
         audit = subprocess.run(
             [sys.executable, str(trusted / "tools/contract_audit.py"), "--root", str(root),
              "--reference-root", str(trusted), "--compiler", cxx, "--strict", "--summary"],
@@ -149,7 +190,7 @@ def select(output: Path, compiler: str) -> dict:
     rows = ci.project.functions(root)
     published = set(ci.tracked_files(root))
     api = community.GitHub(os.environ["GITHUB_REPOSITORY"])
-    pulls = candidates(api, rows, published)
+    pulls = candidates(api, rows, published, root)
     cxx = ci.compiler.locate(compiler)
     chosen: list[dict] = []
     if pulls:

@@ -1,5 +1,6 @@
 import base64
 import json
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -25,18 +26,22 @@ BODY = f"""## Functions
 | Implementation | human | human |
 """
 SOURCE = b'extern "C" void fn_03000000() {}\n'
+HEADER_BLOB = "e" * 40
+HEADER_PATH = "include/botw/types.h"
+OLD_HEADER = b"#pragma once\nstruct A;\n"
 
 
 class FakeApi:
     repository = "example/decomp"
 
-    def __init__(self, files=None, checks=("success", "success"), body=BODY):
+    def __init__(self, files=None, checks=("success", "success"), body=BODY, header=None):
         self.files = files if files is not None else [
             {"filename": f"reconstructions/{KEY}.cpp", "status": "added", "sha": BLOB}]
         self.checks = checks
         self.body = body
         self.master = BASE
         self.calls = []
+        self.blobs = {BLOB: SOURCE, HEADER_BLOB: header or b""}
 
     def route(self, suffix):
         return f"repos/{self.repository}/{suffix}"
@@ -53,9 +58,10 @@ class FakeApi:
         if path.endswith("check-runs?per_page=100"):
             return {"check_runs": [{"id": 1, "name": name, "conclusion": conclusion}
                                    for name, conclusion in zip(automerge.REQUIRED_CHECKS, self.checks)]}
-        if path == f"repos/someone/decomp/git/blobs/{BLOB}":
-            return {"sha": BLOB, "encoding": "base64", "size": len(SOURCE),
-                    "content": base64.b64encode(SOURCE).decode()}
+        if path.startswith("repos/someone/decomp/git/blobs/"):
+            sha = path.rsplit("/", 1)[1]
+            return {"sha": sha, "encoding": "base64", "size": len(self.blobs[sha]),
+                    "content": base64.b64encode(self.blobs[sha]).decode()}
         if path.endswith("git/ref/heads/master"):
             return {"object": {"sha": self.master}}
         if path.endswith("pulls/7") and method == "GET":
@@ -74,7 +80,9 @@ class AutomergeTests(unittest.TestCase):
     def test_only_new_sources_for_trusted_references_are_eligible(self):
         added = {"filename": f"reconstructions/{KEY}.cpp", "status": "added", "sha": BLOB}
         self.assertEqual(automerge.eligible_sources([added], self.rows, set()), {added["filename"]: BLOB})
-        for change in ({"status": "modified"}, {"filename": "include/botw/x.h"},
+        for change in ({"status": "modified"}, {"filename": "include/other.h"},
+                       {"filename": HEADER_PATH, "status": "removed"},
+                       {"filename": HEADER_PATH, "status": "renamed"},
                        {"filename": "reconstructions/fn_04000000.cpp"}, {"filename": "docs/x.md"},
                        {"sha": "main"}):
             with self.subTest(change=change):
@@ -95,6 +103,55 @@ class AutomergeTests(unittest.TestCase):
         api = FakeApi()
         api.open_pulls = lambda: [dict(FakeApi.open_pulls(api)[0], number=7), dict(FakeApi.open_pulls(api)[0], number=8)]
         self.assertEqual([p["number"] for p in automerge.candidates(api, self.rows, set())], [7])
+
+    def test_header_changes_must_keep_every_existing_line_in_order(self):
+        self.assertTrue(automerge.additive(None, b"struct B;\n"))
+        self.assertTrue(automerge.additive(OLD_HEADER, b"#pragma once\nstruct A;\nstruct B;\n"))
+        self.assertTrue(automerge.additive(OLD_HEADER, b"#pragma once\nstruct Z;\nstruct A;\n"))
+        self.assertFalse(automerge.additive(OLD_HEADER, b"#pragma once\n"))
+        self.assertFalse(automerge.additive(OLD_HEADER, b"#pragma once\nstruct A2;\n"))
+        self.assertFalse(automerge.additive(OLD_HEADER, b"struct A;\n#pragma once\n"))
+
+    def header_api(self, header, body=BODY, with_source=True):
+        files = [{"filename": HEADER_PATH, "status": "modified", "sha": HEADER_BLOB}]
+        if with_source:
+            files.append({"filename": f"reconstructions/{KEY}.cpp", "status": "added", "sha": BLOB})
+        return FakeApi(files=files, body=body, header=header)
+
+    def test_additive_header_pulls_are_candidates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "include/botw").mkdir(parents=True)
+            (root / HEADER_PATH).write_bytes(OLD_HEADER)
+            published = {HEADER_PATH}
+            grown = OLD_HEADER + b"struct B;\n"
+            pull, = automerge.candidates(self.header_api(grown), self.rows, published, root)
+            self.assertEqual((pull["functions"], pull["contents"][HEADER_PATH]), ([KEY], grown))
+            self.assertEqual(automerge.candidates(self.header_api(b"struct B;\n"), self.rows, published, root), [])
+            none_body = BODY.replace(KEY, "none")
+            pull, = automerge.candidates(self.header_api(grown, none_body, False), self.rows, published, root)
+            self.assertEqual(pull["functions"], [])
+            self.assertEqual(automerge.candidates(self.header_api(grown, BODY, False), self.rows, published, root), [])
+
+    def test_overlay_and_remove_restore_master(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            (root / "include/botw").mkdir(parents=True)
+            (root / "reconstructions").mkdir()
+            (root / HEADER_PATH).write_bytes(OLD_HEADER)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "base"],
+                           check=True)
+            source = f"reconstructions/{KEY}.cpp"
+            pulls = [{"contents": {HEADER_PATH: OLD_HEADER + b"struct B;\n", source: SOURCE}}]
+            automerge.overlay(root, pulls)
+            self.assertEqual((root / HEADER_PATH).read_bytes(), OLD_HEADER + b"struct B;\n")
+            automerge.remove(root, pulls)
+            self.assertEqual((root / HEADER_PATH).read_bytes(), OLD_HEADER)
+            self.assertFalse((root / source).exists())
+            status = subprocess.run(["git", "-C", str(root), "status", "--porcelain"], capture_output=True, text=True)
+            self.assertEqual(status.stdout, "")
 
     def test_merge_stops_when_master_moved(self):
         with tempfile.TemporaryDirectory() as directory:
