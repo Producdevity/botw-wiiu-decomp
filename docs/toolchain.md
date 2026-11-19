@@ -5,38 +5,19 @@ external call. Use it for broader reconstruction; keep Clang for its verified
 leaf functions. BotW's historical compiler version and complete flags remain
 unconfirmed.
 
-The initial 17 reconstructions reproduce **304 original bytes**: eight with
-Clang and nine with GHS. This is a verified bootstrap, not a completion estimate.
-
 ## Verified target
 
-- Wii U v208 `U-King.rpx`, SHA-256
-  `ba58da5b95ce929e005d058ceb08b9b2788d1ab2bbc8a6c189bbadca0bb34d30`.
+- Wii U v208 `U-King.rpx`, pinned in [the target manifest](../config/target.json).
 - ELF32, big-endian PowerPC. RPX file info reports Cafe SDK `21301`, revision
   `68939`. These identify the SDK, not the compiler.
 - No compiler version was recovered from the inspected RPX metadata.
 
-## Working bootstrap
+## Clang leaf profile
 
-The initial eight reconstructed functions compile with **Homebrew clang version
-23.1.4** and match 84 original bytes exactly. Each starts at a direct call target,
-ends with a return, has no reference relocation in its span, and produces no
-unresolved object relocation. Original class and type names remain unknown.
-
-Profile `clang-ppc`:
-
-```sh
-clang --target=powerpc-unknown-eabi -mcpu=750 -O2 -ffreestanding \
-  -fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables \
-  -fno-stack-protector -fno-pic -fno-pie -fno-builtin -std=c++17 \
-  -c function.cpp -o function.o
-```
-
-This is a functioning compiler profile, not an identification of Nintendo's
-toolchain. Ordinary integer, loop, branch and vector examples were also tried at
-`-O2` and `-O1`; only small leaf patterns matched. Register allocation and C++ ABI
-differences make stock Clang insufficient for broad matching. Do not add inline
-assembly or byte-emission workarounds to inflate progress.
+`clang-ppc` uses the 32-bit PowerPC EABI target and freestanding C++.
+Register allocation and C++ ABI differences limit its usefulness beyond simple
+leaves. The [compiler module](../src/botw_decomp/compiler.py) defines the exact
+flags used by the checker.
 
 ## Working GHS profiles
 
@@ -49,11 +30,6 @@ bootstrap Mac through wibo 1.2.0 and Rosetta:
 wibo "$GHS_ROOT/bin/cxppc.exe" -c -Ospeed -bigendian \
   --no_exceptions --no_rtti -tmp=compiler-tmp -o function.o function.cpp
 ```
-
-Nine additional functions, **220 bytes**, matched with this compiler. The project
-verifier checked internal branch relocations and an external `REL24` call against
-its bound original destination. Examples include string scans, a strided float
-copy, signed maximum, and a call followed by a signed-result test.
 
 | Profile | Optimization |
 | --- | --- |
@@ -90,15 +66,8 @@ Both macOS and Linux builds are verified; the public acceptance workflow rebuild
 | [NW4F-Eft](https://github.com/open-ead/NW4F-Eft/tree/nsmbu) | Wii U particle-library reconstruction | NSMBU; exact matching is not its current priority. |
 | [RedHills](https://github.com/Zenith-Team/RedHills) | Open-source Clang fork implementing the GHS C++ ABI | Full matching code generation is explicitly outside its goals. |
 
-No dedicated established BotW Wii U matching decompilation was identified in
-this source review. These projects are research inputs, not a substitute for a
-Wii U reference build. Check licenses before importing source.
-
-Next compiler work: expand beyond these small functions into engine classes and
-renderer code. Record shared layouts with evidence and compile-time offset/size
-checks so one correction can unblock many functions. Matching function bytes
-does not identify its original name or parameter types; those remain explicit
-inferences in the manifest.
+Corroborate shared layouts and API hypotheses against the Wii U reference.
+Check licenses before importing source.
 
 ## Additional verified profiles
 

@@ -2,11 +2,9 @@
 
 [![Verification](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml/badge.svg)](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml)
 
-Community C++ reconstruction of **Wii U v208**, with deterministic matching against the original PowerPC code. The intended consumer is a native Linux ARM port targeting **H700, 1 GB RAM, GLES 3.2 and no swap**.
+Community C++ reconstruction of the **USA Wii U v208** executable, checked byte for byte against the original PowerPC code.
 
-**Coverage checkpoint (2026-11-18): 23,352 of 36,994,060 bytes in the pinned `.text` section (0.0631%), across 1,307 functions.**
-
-Run `python3 tools/community.py summary` for current counts and `python3 tools/community.py list` for available tasks. [Reference batches and selection evidence](docs/reference-batches.md) · [Named random-state component](docs/random-state.md).
+`python3 tools/community.py summary` reports the current reference, source and claim counts from the default branch. See the [latest master verification](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml?query=branch%3Amaster) for exact-match results. Measure code coverage against the pinned `.text` size in [the target manifest](config/target.json).
 
 Matching uses fixed GHS 5.3.22 profiles and Clang for simple leaves. Source contracts are inferred from caller/callee evidence; the exact historical compiler version remains unconfirmed. [Verification contract](docs/verification.md).
 
@@ -59,17 +57,11 @@ python3 tools/contract_audit.py --strict --summary
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-Public CI compares against fixed function hashes, addresses and reference bindings. A source PR cannot change those references or the checker and still pass the source acceptance job. All existing implementations are rebuilt when shared headers change. Claims use GitHub Issues with six-hour expiry. The queue also links shared blockers and open PRs, and prioritises tasks without a pending submission.
+Public CI rebuilds the submitted tree against trusted function hashes, addresses and bindings. Reference and checker changes go through maintainer verification. Claims use GitHub Issues with six-hour expiry.
 
-- [Verification contract and current coverage](docs/verification.md)
-- [Reference batches and selection evidence](docs/reference-batches.md)
-- [Opt-in function discovery](docs/inventory.md)
-- [Supporting-function compilation](docs/supporting-compilation.md)
-- [Cross-file C++ declaration checks](docs/contract-audit.md)
-- [Compiler evidence and prior projects](docs/toolchain.md)
-- [Unaccepted candidates and register diagnostics](docs/register-diagnostics.md)
-- [Known unmatched attempts and missing evidence](docs/known-attempts.md)
-- [Naming evidence and stable function IDs](docs/naming.md)
+- [Verification and coverage](docs/verification.md)
+- [Reference selection and task notes](docs/reference-batches.md)
+- [Known attempts and candidate sources](docs/known-attempts.md)
 - [Development priorities](docs/roadmap.md)
 
 Only original project tooling and reconstructed source belong here. No Nintendo game files, extracted machine code, proprietary SDK, compiler binaries or generated disassembly are distributed. This project is not affiliated with Nintendo.

@@ -1,6 +1,6 @@
 # Provenance
 
-The 17 initial C++ implementations were written from instruction behavior observed in a locally supplied Wii U v208 RPX. Their generic function names identify addresses rather than claiming recovered original symbols. Each implementation was compiled independently and compared with the original bytes. Inferred signatures are recorded in the manifest.
+The reconstruction sources are independently written from instruction behavior observed in the pinned Wii U v208 RPX. Stable function IDs identify addresses. The verifier compiles each implementation and checks the whole span. Reviewed interface assumptions live in the manifest.
 
 The Python tooling and synthetic test fixtures were written for this project. No source was copied from the Switch decompilation, BotW-Native or Nintendo SDKs. Public project references used during investigation are linked in [toolchain.md](toolchain.md).
 
@@ -54,29 +54,21 @@ No external implementation was imported. The
 [random-state aliases](random-state.md) are descriptive, not claimed original
 Nintendo symbols.
 
-The twelve [global float loads](global-float-loads.md) were reconstructed from a
-bounded original instruction pattern. Their references and original address
-fields were checked against a separate RPX reader; caller uses and inferred
-interfaces received independent review. No backing data values were imported.
+## Global getter evidence
 
-The six [global scalar loads](global-scalar-loads.md) were independently
-reconstructed and checked against original spans and address fields. Caller
-review distinguished signed-word and pointer uses before interface selection.
-No backing data values or external implementation were imported.
+Independent RPX readers agreed on the getter spans and HA/LO fields. The
+[reference manifest](../config/functions.json) records each resolved destination
+and pinned interface. The implementations read the original external objects
+at runtime. BSS and the writable section flags explain why a named read-only
+section or zero-filled file range does not establish a constant.
 
-The sixteen [global byte getters](global-byte-loads.md) were independently
-reconstructed from bounded original instruction behavior. Complete spans and
-all original address fields agree between separate RPX readers; source and
-caller contracts received independent review. No backing data was imported.
-
-The eighteen [additional global byte getters](global-byte-remainder.md) were
-rediscovered from the pinned private RPX. Independent readers agree on their
-complete spans and all original data-field destinations. Reviewed references
-preserve the original hashes and select existing immutable compiler profiles;
-source implementation coverage is verified separately.
-
-The fourteen [global word getters](global-word-loads.md) were independently
-reconstructed from complete original spans. Caller data flow supports numeric
-and pointer interfaces; source AST checks preserve their reviewed types.
-Independent readers agree on the spans and all original address-field targets.
-No backing data or compiler-generated objects are included.
+- The float getters load F1, and inspected consumers use floating-point data.
+  This supports the chosen float return. The original declarations and unused
+  parameters remain unknown.
+- The byte getters zero-extend the loaded byte. Inspected callers test zero,
+  store the byte, forward it in argument registers or discard it. The reviewed
+  interface preserves the complete byte, and no 0–1 storage invariant is known.
+- For the mixed scalar batch, `fn_02a13ed4` feeds a signed conversion and
+  `fn_02da9ff8` feeds null checks and pointer dereferences.
+- The [global word getter review](global-word-loads.md) records evidence for
+  its distinct opaque pointer interfaces and deferred cases.

@@ -28,7 +28,7 @@ The initial 100 tasks were selected across integer, floating-point, control-flow
 
 Unmatched tasks try fixed GHS optimization profiles: speed, general, space, speed with tail recursion and pipeline scheduling disabled, speed without loop unrolling, and speed without constant propagation. Each attempt receives the same exact comparison; a match records the successful profile. No profile may relax comparison or change trusted reference bytes.
 
-`python3 tools/decomp.py progress` rebuilds available implementations and reports pilot counts. It does not calculate a misleading percentage of the whole game.
+See [coverage reporting](verification.md#coverage) for rebuild and queue commands.
 
 ## Maintaining the verifier
 
