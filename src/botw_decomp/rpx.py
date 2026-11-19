@@ -8,7 +8,7 @@ import struct
 import zlib
 
 from .data_relocations import DATA_PROFILE, contract
-from .import_relocations import IMPORT_PROFILE, NAME, import_contract
+from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE, NAME, import_contract
 
 _RELOCATION_RECORD = struct.Struct(">IBiIIHBB")
 
@@ -121,14 +121,39 @@ class Rpx:
             result.append((site - address, f"fn_{target:08x}", library, name, target))
         return tuple(result)
 
+    def mixed_references(self, address: int, size: int):
+        self._code_section(address, size)
+        end = address + size
+        first = bisect_left(self.sorted_relocation_sites, address)
+        last = bisect_left(self.sorted_relocation_sites, end)
+        sites = [site for site in self.sorted_relocation_sites[first:last]
+                 if site in self.import_branches]
+        data, imports = [], []
+        cursor = address
+        for site in sites:
+            if site + 4 > end:
+                raise RpxError("original relocation crosses a function boundary")
+            if cursor < site:
+                data.extend(self.data_references(cursor, site - cursor))
+            (_, symbol, library, name, target), = self.import_references(site, 4)
+            imports.append((site - address, symbol, library, name, target))
+            cursor = site + 4
+        if cursor < end:
+            data.extend(self.data_references(cursor, end - cursor))
+        if not data or not imports:
+            raise RpxError("combined profile requires original data and import relocations")
+        return tuple(data), tuple(imports)
+
     def read(self, address: int, size: int, *, profile: str = "unrelocated") -> bytes:
-        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE):
+        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE, MIXED_PROFILE):
             raise RpxError("unsupported original reference profile")
         section = self._code_section(address, size)
         if profile == DATA_PROFILE:
             self.data_references(address, size)
         elif profile == IMPORT_PROFILE:
             self.import_references(address, size)
+        elif profile == MIXED_PROFILE:
+            self.mixed_references(address, size)
         elif self.has_relocation(address, size):
             raise RpxError("original RPX relocations require a verified canonicalisation profile")
         return section.data[address - section.address:address - section.address + size]
@@ -305,29 +330,35 @@ def load(path: Path, expected_sha256: str) -> Rpx:
 def reference_bytes(image: Rpx, row: dict) -> bytes:
     address, size = int(row["address"], 16), row["size"]
     profile = row.get("original_profile", "unrelocated")
-    if "import_relocations" in row and profile != IMPORT_PROFILE:
+    if "import_relocations" in row and profile not in (IMPORT_PROFILE, MIXED_PROFILE):
         raise RpxError("import relocations require the import profile")
+    if (("data_bindings" in row or "data_relocations" in row)
+            and profile not in (DATA_PROFILE, MIXED_PROFILE)):
+        raise RpxError("data bindings require the data-address profile")
     if profile == "unrelocated":
-        if "data_bindings" in row or "data_relocations" in row:
-            raise RpxError("data bindings require the data-address profile")
         return image.read(address, size)
-    if profile == IMPORT_PROFILE:
-        if "data_bindings" in row or "data_relocations" in row:
-            raise RpxError("data bindings require the data-address profile")
+    if profile == MIXED_PROFILE:
+        original_data, original_imports = image.mixed_references(address, size)
+    elif profile == DATA_PROFILE:
+        original_data = image.data_references(address, size)
+    elif profile == IMPORT_PROFILE:
+        original_imports = image.import_references(address, size)
+    else:
+        raise RpxError("unsupported original reference profile")
+    if profile in (IMPORT_PROFILE, MIXED_PROFILE):
         bindings = {name: int(value, 16) for name, value in row.get("bindings", {}).items()}
         expected = import_contract(size, bindings, row.get("import_relocations", []))
-        if image.import_references(address, size) != expected:
+        if original_imports != expected:
             raise RpxError("trusted import relocation contract disagrees with original fields")
-        section = image._code_section(address, size)
-        return section.data[address - section.address:address - section.address + size]
-    data = image.read(address, size, profile=profile)
-    bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
-    try:
-        expected = contract(size, bindings, row.get("data_relocations", []))
-    except ValueError as exc:
-        raise RpxError(str(exc)) from exc
-    actual = tuple(sorted((item["site"] - address, item["type"], f"data_{item['destination']:08x}",
-                           item["destination"]) for item in image.data_references(address, size)))
-    if actual != expected:
-        raise RpxError("trusted data relocation contract disagrees with original fields")
-    return data
+    if profile in (DATA_PROFILE, MIXED_PROFILE):
+        bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
+        try:
+            expected = contract(size, bindings, row.get("data_relocations", []))
+        except ValueError as exc:
+            raise RpxError(str(exc)) from exc
+        actual = tuple((item["site"] - address, item["type"], f"data_{item['destination']:08x}",
+                        item["destination"]) for item in original_data)
+        if actual != expected:
+            raise RpxError("trusted data relocation contract disagrees with original fields")
+    section = image._code_section(address, size)
+    return section.data[address - section.address:address - section.address + size]

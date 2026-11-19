@@ -1,0 +1,23 @@
+#include "botw/runtime_tag_query.h"
+
+using runtime_tag_query::Token;
+
+extern "C" unsigned data_104874b0;
+extern "C" RuntimeTag data_104874bc;
+extern "C" const RuntimeVTable data_102a8390;
+extern "C" unsigned data_10485ed4;
+extern "C" RuntimeTag data_10486d3c;
+extern "C" const RuntimeVTable data_102a8380;
+extern "C" unsigned data_10485ed0;
+extern "C" RuntimeTag data_10486d38;
+extern "C" const RuntimeVTable data_102a8370;
+
+typedef Token<&data_104874b0, &data_104874bc, &data_102a8390> Type0;
+typedef Token<&data_10485ed4, &data_10486d3c, &data_102a8380> Type1;
+typedef Token<&data_10485ed0, &data_10486d38, &data_102a8370> Type2;
+
+extern "C" bool fn_032cbe6c(const void*, const RuntimeTag* other) {
+    if (other == &Type0::get())
+        return true;
+    return other == &Type1::get() ? 1u : (other == &Type2::get()) & 0xffu;
+}

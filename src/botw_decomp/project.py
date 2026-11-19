@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 
 from .data_relocations import DATA_PROFILE, contract
-from .import_relocations import IMPORT_PROFILE, import_contract
+from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE, import_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 FUNCTION_ID = re.compile(r"fn_[0-9a-f]{8}\Z")
@@ -67,17 +67,20 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
                 "ghs-5.3.22-space", "ghs-5.3.22-auto",
                 "ghs-5.3.22-speed-notailrecursion-nopipeline",
                 "ghs-5.3.22-speed-nounroll", "ghs-5.3.22-speed-noconstprop",
-                "ghs-5.3.22-speed-nopeephole", "ghs-5.3.22-speed-single-exit"):
+                "ghs-5.3.22-speed-nopeephole", "ghs-5.3.22-speed-single-exit",
+                "ghs-5.3.22-speed-no-uvfd-info", "ghs-5.3.22-speed-no-two-predecessor-merge"):
             raise ValueError(f"invalid compiler profile: {key}")
         for name, value in row.get("bindings", {}).items():
             number = int(value, 16)
             if not FUNCTION_ID.fullmatch(name) or name != f"fn_{number:08x}" or number % 4:
                 raise ValueError(f"invalid external binding: {key}")
         profile = row.get("original_profile", "unrelocated")
-        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE):
+        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE, MIXED_PROFILE):
             raise ValueError(f"invalid original profile: {key}")
+        has_data = profile in (DATA_PROFILE, MIXED_PROFILE)
+        has_imports = profile in (IMPORT_PROFILE, MIXED_PROFILE)
         data_bindings = row.get("data_bindings", {})
-        if not isinstance(data_bindings, dict) or (data_bindings and profile != DATA_PROFILE):
+        if not isinstance(data_bindings, dict) or (data_bindings and not has_data):
             raise ValueError(f"invalid data bindings: {key}")
         for name, value in data_bindings.items():
             if (not isinstance(name, str) or not isinstance(value, str) or
@@ -85,18 +88,23 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
                     name != f"data_{int(value, 16):08x}"):
                 raise ValueError(f"invalid data binding: {key}")
         relocations = row.get("data_relocations", [])
-        if ("data_bindings" in row or "data_relocations" in row) and profile != DATA_PROFILE:
+        if ("data_bindings" in row or "data_relocations" in row) and not has_data:
             raise ValueError(f"data contract requires the data-address profile: {key}")
-        if profile == DATA_PROFILE and "data_relocations" not in row:
+        if (has_data and "data_relocations" not in row
+                or profile == MIXED_PROFILE and not relocations):
             raise ValueError(f"missing data relocation contract: {key}")
-        contract(size, {name: int(value, 16) for name, value in data_bindings.items()}, relocations)
+        data_fields = contract(size, {name: int(value, 16) for name, value in data_bindings.items()},
+                               relocations)
         imports = row.get("import_relocations", [])
-        if "import_relocations" in row and profile != IMPORT_PROFILE:
+        if "import_relocations" in row and not has_imports:
             raise ValueError(f"import relocations require the import profile: {key}")
-        if profile == IMPORT_PROFILE and not imports:
+        if has_imports and not imports:
             raise ValueError(f"missing import relocation contract: {key}")
-        import_contract(size, {name: int(value, 16) for name, value in row.get("bindings", {}).items()},
-                        imports)
+        import_fields = import_contract(
+            size, {name: int(value, 16) for name, value in row.get("bindings", {}).items()}, imports)
+        import_words = {offset for offset, *_ in import_fields}
+        if any(offset // 4 * 4 in import_words for offset, *_ in data_fields):
+            raise ValueError(f"overlapping data and import relocation contracts: {key}")
         result[key] = row
         ranges.append((address, address + size))
     ranges.sort()

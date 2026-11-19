@@ -1,11 +1,15 @@
 import hashlib
+import json
 import struct
+import tempfile
 import unittest
+from pathlib import Path
 
-from botw_decomp.import_relocations import IMPORT_PROFILE
+from botw_decomp.import_relocations import IMPORT_PROFILE, MIXED_PROFILE
 from botw_decomp.matching import compare_function, compare_function_hash
-from botw_decomp.rpx import RpxError, parse, reference_bytes
-from tests.test_data_relocations import RODATA, START, make_cafe
+from botw_decomp.project import functions
+from botw_decomp.rpx import DATA_PROFILE, RpxError, parse, reference_bytes
+from tests.test_data_relocations import BSS, RODATA, START, make_cafe
 from tests.test_elf import make_object
 
 
@@ -88,3 +92,93 @@ class ImportProfileTests(unittest.TestCase):
         result = compare_function(obj, "target", expected, START, BINDING,
                                   import_relocations=[IMPORT])
         self.assertEqual(result["status"], "rejected")
+
+
+class MixedProfileTests(unittest.TestCase):
+    data_symbol = f"data_{BSS:08x}"
+    data_field = {"offset": 2, "type": 4, "symbol": data_symbol}
+    import_field = {**IMPORT, "offset": 4}
+    row = {**ROW, "size": 12, "original_profile": MIXED_PROFILE,
+           "data_bindings": {data_symbol: f"0x{BSS:08x}"}, "data_relocations": [data_field],
+           "import_relocations": [import_field]}
+    code = struct.pack(">I", 0x38800000 | BSS) + branch(START + 4, THUNK) + RETURN
+    fields = [(START + 2, 4, "zero", 0), (START + 4, 10, "copy", 0)]
+
+    def test_original_and_compiled_mixed_fields_are_both_verified(self):
+        image = fixture(self.code, self.fields)
+        raw = reference_bytes(image, self.row)
+        self.assertEqual(raw, self.code)
+        self.assertEqual(image.read(START, 12, profile=MIXED_PROFILE), self.code)
+        obj = make_object(bytes.fromhex("38800000480000014e800020"),
+                          extra_symbols=[(self.data_symbol, 0, 0, 0x11, 0, "undef"),
+                                         (SYMBOL, 0, 0, 0x12, 0, "undef")],
+                          relocations=[(2, 4, self.data_symbol, 0), (4, 10, SYMBOL, 0)])
+        metadata = dict(data_bindings={self.data_symbol: BSS},
+                        data_relocations=[self.data_field], import_relocations=[self.import_field])
+        self.assertTrue(compare_function(obj, "target", raw, START, BINDING, **metadata)["matched"])
+        digest = hashlib.sha256(raw).hexdigest()
+        self.assertTrue(compare_function_hash(obj, "target", digest, 12, START, BINDING,
+                                              **metadata)["matched"])
+        for symbol, offset, kind in [(self.data_symbol, 2, 4), (SYMBOL, 4, 10)]:
+            missing = make_object(raw, extra_symbols=[(symbol, 0, 0, 0x10, 0, "undef")],
+                                  relocations=[(offset, kind, symbol, 0)])
+            self.assertEqual(compare_function_hash(missing, "target", digest, 12, START,
+                                                   BINDING, **metadata)["status"], "rejected")
+
+    def test_manifest_requires_disjoint_nonempty_contracts(self):
+        function = f"fn_{START:08x}"
+        row = {**self.row, "address": f"0x{START:08x}", "id": function,
+               "source": f"reconstructions/{function}.cpp", "status": "unmatched",
+               "symbol": function, "sha256": hashlib.sha256(self.code).hexdigest()}
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary) / "config"
+            config.mkdir()
+
+            def load(entry):
+                (config / "functions.json").write_text(
+                    json.dumps({"schema_version": 1, "functions": [entry]}))
+                return functions(config.parent)
+
+            self.assertEqual(load(row), {function: row})
+            for fields, reason in [
+                ({"data_bindings": {}, "data_relocations": []}, "missing data"),
+                ({"import_relocations": []}, "missing import"),
+                ({"data_relocations": [{**self.data_field, "offset": 6}]}, "overlapping"),
+            ]:
+                with self.subTest(fields=fields), self.assertRaisesRegex(ValueError, reason):
+                    load({**row, **fields})
+
+    def test_rejects_incomplete_or_incorrect_original_metadata(self):
+        image = fixture(self.code, self.fields)
+        for row in [{**self.row, "data_bindings": {}, "data_relocations": []},
+                    {**self.row, "import_relocations": []},
+                    {**self.row, "import_relocations": [{**self.import_field, "name": "clear"}]}]:
+            with self.subTest(row=row), self.assertRaisesRegex(RpxError, "contract disagrees"):
+                reference_bytes(image, row)
+        with self.assertRaisesRegex(RpxError, "link-address value"):
+            fixture(bytes(4) + self.code[4:], self.fields).read(START, 12, profile=MIXED_PROFILE)
+        with self.assertRaisesRegex(RpxError, "unsupported"):
+            fixture(self.code, [*self.fields, (START + 8, 26, "zero", 0)]).read(
+                START, 12, profile=MIXED_PROFILE)
+        with self.assertRaisesRegex(RpxError, "requires original data and import relocations"):
+            fixture(self.code, self.fields[1:]).read(START, 12, profile=MIXED_PROFILE)
+
+    def test_original_boundary_cannot_split_either_field(self):
+        image = fixture(self.code, self.fields)
+        with self.assertRaisesRegex(RpxError, "crosses a function boundary"):
+            image.read(START + 3, 9, profile=MIXED_PROFILE)
+        with self.assertRaisesRegex(RpxError, "crosses a function boundary"):
+            image.read(START, 7, profile=MIXED_PROFILE)
+
+    def test_checks_data_between_and_after_imports(self):
+        code = self.code[:8] + self.code[:4] + branch(START + 12, THUNK) + self.code[:4] + RETURN
+        image = fixture(code, [*self.fields, (START + 10, 4, "zero", 0),
+                               (START + 12, 10, "copy", 0), (START + 18, 4, "zero", 0)])
+        row = {**self.row, "size": len(code),
+               "data_relocations": [self.data_field, {**self.data_field, "offset": 10},
+                                    {**self.data_field, "offset": 18}],
+               "import_relocations": [self.import_field, {**self.import_field, "offset": 12}]}
+        self.assertEqual(reference_bytes(image, row), code)
+        for profile in (DATA_PROFILE, IMPORT_PROFILE):
+            with self.subTest(profile=profile), self.assertRaisesRegex(RpxError, "unsupported"):
+                image.read(START, len(code), profile=profile)
