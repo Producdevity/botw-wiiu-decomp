@@ -26,19 +26,20 @@ GitHub account. Do not add AI attribution to commits.
 ## 1. Set up (once per machine)
 
 ```sh
-python3 tools/preflight.py --game PATH      # read-only; follow any "actions" it prints
-python3 tools/toolchain.py                  # downloads hash-pinned GHS + wibo into .local/
-python3 tools/decomp.py setup --game PATH   # verifies the executable's SHA-256
-python3 tools/decomp.py doctor
+python3 tools/start.py --game PATH
 ```
 
-`PATH` is a decrypted dump folder, `.wua` archive or raw `U-King.rpx`. Setup
-copies only the 22 MiB executable into `.local/`. Prerequisites are in the
-[README](README.md#local-commands). A missing tool is a setup problem to fix or
-report, never a reason to skip verification.
+`PATH` is a decrypted dump folder, `.wua` archive or raw `U-King.rpx`. The
+command downloads the hash-pinned compiler into `.local/`, verifies the
+executable's SHA-256, copies only the 22 MiB executable and runs `doctor`. Rerun
+it until it prints `"status": "ready"`. It runs every step it safely can and
+lists the rest under `actions`: install missing prerequisites yourself
+([README](README.md#local-commands)), and ask the user only for actions marked
+`"actor": "user"`. A missing tool is a setup problem to fix or report, never a
+reason to skip verification.
 
-Fork `Producdevity/botw-wiiu-decomp` with `gh` if needed, and push branches to
-the fork.
+If the output has a `fork` field, the account cannot push here: fork with the
+printed command and push branches to the fork.
 
 ## 2. Pick and claim a task
 
