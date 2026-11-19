@@ -2,9 +2,9 @@
 import argparse
 from difflib import unified_diff
 import hashlib
+import os
 import json
 from pathlib import Path
-import secrets
 import shutil
 import subprocess
 import sys
@@ -80,9 +80,12 @@ def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, 
 def write_diffs(root: Path, function: str, diffs: dict, rows: dict) -> list[str]:
     if not diffs:
         return []
-    parts = (".local", "diffs", function, secrets.token_hex(8))
+    parts = (".local", "diffs", function)
     paths = []
     with private_storage.directory(root, parts) as directory:
+        for stale in os.listdir(directory):
+            if stale.endswith(".diff"):
+                os.unlink(stale, dir_fd=directory)
         for profile, differences in diffs.items():
             for symbol, (expected, actual) in differences.items():
                 address = int(rows[symbol]["address"], 16)
@@ -94,6 +97,15 @@ def write_diffs(root: Path, function: str, diffs: dict, rows: dict) -> list[str]
                     raise ValueError("diff file already exists")
                 paths.append(str(Path(*parts, filename)))
     return paths
+
+
+DIAGNOSTIC_KEYS = ("compiler_profile", "status", "reason", "first_difference", "actual_size", "expected_size")
+
+
+def compact_failure(result: dict) -> dict:
+    attempts = result.get("attempts", [result])
+    return {"function": result["function"],
+            "attempts": [{key: attempt[key] for key in DIAGNOSTIC_KEYS if key in attempt} for attempt in attempts]}
 
 
 def summary(rows: dict, results: list[dict], batches: dict | None = None) -> dict:
@@ -244,8 +256,8 @@ def main(argv=None) -> int:
             report["diffs"] = write_diffs(ROOT, args.function, diffs, rows)
         write_json(ROOT / ".local/last-check.json", report)
         if args.summary:
-            emit({**{key: value for key, value in report.items() if key not in ("results", "batches")},
-                  "failures": [result for result in results if not result["matched"]]})
+            emit({**{key: value for key, value in report.items() if key not in ("results", "batches", "compilers")},
+                  "failures": [compact_failure(result) for result in results if not result["matched"]]})
         else:
             emit(report)
         return 0 if all(r["matched"] for r in results) else 1

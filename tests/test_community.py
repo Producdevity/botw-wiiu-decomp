@@ -295,6 +295,16 @@ class QueueTests(unittest.TestCase):
             else:
                 self.assertIn("own claim", json.loads(errors)["error"])
 
+    def test_release_by_function_id_finds_own_open_claim(self):
+        request = issue(1, owner="contributor")
+        api = FakeGitHub([request], {1: [comment_for(request)]})
+        function = queue.requested_function(request)
+        code, result, errors = self.run_main(api, ["release", function])
+        self.assertEqual((code, result), (0, {"issue": 1, "state": "closed"}), errors)
+        code, result, errors = self.run_main(FakeGitHub([issue(1, owner="other")], {}), ["release", function])
+        self.assertEqual(code, 1)
+        self.assertIn("No open claim", json.loads(errors)["error"])
+
     def test_invalid_manifest_filter_fields_fail_closed(self):
         for fields in ({"size": True}, {"size": "32"}, {"size": 0}, {"category": []}, {"priority": "high"}):
             with self.subTest(fields=fields), self.assertRaises(queue.QueueError):

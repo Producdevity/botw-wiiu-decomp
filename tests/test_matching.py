@@ -27,6 +27,14 @@ class MatchingTests(unittest.TestCase):
         self.assertFalse(result["matched"])
         self.assertEqual(result["first_difference"], 3)
 
+    def test_size_mismatch_records_unrelocated_candidate_for_diffs(self):
+        differences = {}
+        result = compare_function(make_object(CODE + CODE, symbol_size=16), "target", CODE, START, {},
+                                  differences=differences)
+        self.assertEqual(result["reason"], "function size differs")
+        self.assertFalse(result["matched"])
+        self.assertEqual(differences["target"], (CODE, CODE + CODE))
+
     def test_exact_size_is_required(self):
         result = self.compare(make_object(CODE + bytes(4)))
         self.assertEqual(result["status"], "mismatch")
