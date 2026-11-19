@@ -20,12 +20,21 @@ class StartTests(unittest.TestCase):
             {"actions": []},
         ]
         commands = []
-        with mock.patch.object(start, "push_access", return_value=True):
+        with mock.patch.object(start, "push_access", return_value=True), \
+                mock.patch.object(start.draft, "installed", return_value=False):
             result = start.prepare(Path("g"), assess=lambda root, game: states.pop(0),
                                    execute=lambda command: commands.append(command) or completed())
         self.assertEqual(result["status"], "ready")
-        self.assertEqual(result["done"], ["ghs", "configuration", "doctor"])
-        self.assertEqual(commands[-1], ["python3", "tools/decomp.py", "doctor"])
+        self.assertEqual(result["done"], ["ghs", "configuration", "doctor", "m2c"])
+        self.assertEqual(commands[-2:], [["python3", "tools/decomp.py", "doctor"], ["python3", "tools/draft.py", "install"]])
+
+    def test_optional_draft_install_failure_does_not_block(self):
+        calls = iter([completed(), completed(1, err="no git")])
+        with mock.patch.object(start, "push_access", return_value=True), \
+                mock.patch.object(start.draft, "installed", return_value=False):
+            result = start.prepare(None, assess=lambda root, game: {"actions": []}, execute=lambda command: next(calls))
+        self.assertEqual(result["status"], "ready")
+        self.assertIn("optional", result)
         self.assertNotIn("fork", result)
 
     def test_user_actions_are_reported_not_run(self):
@@ -45,7 +54,8 @@ class StartTests(unittest.TestCase):
         self.assertIn("download failed", result["actions"][0]["detail"])
 
     def test_missing_push_access_suggests_fork(self):
-        with mock.patch.object(start, "push_access", return_value=False):
+        with mock.patch.object(start, "push_access", return_value=False), \
+                mock.patch.object(start.draft, "installed", return_value=True):
             result = start.prepare(None, assess=lambda root, game: {"actions": []},
                                    execute=lambda command: completed())
         self.assertIn("gh repo fork", result["fork"])

@@ -16,6 +16,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import preflight  # noqa: E402
+from botw_decomp import draft  # noqa: E402
 
 UPSTREAM = "Producdevity/botw-wiiu-decomp"
 AUTOMATIC = ("wua_reader", "ghs", "configuration")
@@ -57,6 +58,14 @@ def prepare(game: Path | None, assess=preflight.assess, execute=run) -> dict:
                 "actions": [{"id": "doctor", "actor": "agent", "detail": doctor.stdout.strip() or doctor.stderr.strip()}]}
     done.append("doctor")
     report = {"status": "ready", "done": done, "next": NEXT}
+    if not draft.installed(ROOT):
+        drafts = execute(["python3", "tools/draft.py", "install"])
+        if drafts.returncode == 0:
+            done.append("m2c")
+        else:
+            report["optional"] = "m2c draft generator could not be installed; packets work without draft.cpp"
+    else:
+        done.append("m2c")
     access = push_access()
     if access is False:
         report["fork"] = f"No push access to {UPSTREAM}: run gh repo fork {UPSTREAM} --remote and push branches to your fork"

@@ -32,7 +32,8 @@ python3 tools/start.py --game PATH
 
 `PATH` is a decrypted dump folder, `.wua` archive or raw `U-King.rpx`. The
 command downloads the hash-pinned compiler into `.local/`, verifies the
-executable's SHA-256, copies only the 22 MiB executable and runs `doctor`. Rerun
+executable's SHA-256, copies only the 22 MiB executable, runs `doctor` and
+installs the optional m2c drafter that writes `draft.cpp` into packets. Rerun
 it until it prints `"status": "ready"`. It runs every step it safely can and
 lists the rest under `actions`: install missing prerequisites yourself
 ([README](README.md#local-commands)), and ask the user only for actions marked
@@ -112,12 +113,11 @@ lists each profile's result with its first differing offset or actual size. Each
 check replaces the instruction diffs in `.local/diffs/FUNCTION/`, one per
 profile, and the output's `diffs` field lists them. Change one thing at a time
 based on the closest diff. When only register choice or instruction order
-differs, matches usually come from reordering statements, splitting or merging
-expressions, or renaming and reordering locals.
-
-When only register allocation or instruction order differs, run
+differs, try reordering statements, splitting or merging expressions, or
+reordering locals. If a few tries do not fix it, run
 `python3 tools/permute.py FUNCTION --source FILE --minutes 10` before giving up
-([permuter](docs/toolchain.md#source-permuter)).
+([permuter](docs/toolchain.md#source-permuter)). Clean up its `best.cpp` and
+check it again before submitting.
 
 Stop after about 10 checks without progress, or when the budget is spent. Then
 release the claim. If you learned something the next attempt needs, open a
