@@ -71,4 +71,5 @@ python3 tools/contract_audit.py --strict --summary
 
 Only original tooling and reconstructed source belong here. No Nintendo game
 files, machine code, SDK, compiler binaries or disassembly are distributed. This
-project is not affiliated with Nintendo. Licensed [GPL-3.0-only](LICENSE).
+project is not affiliated with Nintendo. Released under [CC0 1.0](LICENSE).
+Vendored code in `third_party/` keeps its own license; see each `LICENSE` there.
