@@ -10,6 +10,9 @@ from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE
 from .rpx import DATA_PROFILE, Rpx, RpxError, Section, reference_bytes
 
 
+BCTRL = 0x4E800421
+
+
 def signed(value: int, bits: int) -> int:
     return (value ^ (1 << (bits - 1))) - (1 << (bits - 1))
 
@@ -79,9 +82,11 @@ def relocation_contract(image: Rpx, entry: int, size: int, imports: dict[int, in
 def discover(
     image: Rpx, *, candidate_entries: Set[int] | None = None,
     entry_fences: Set[int] = frozenset(), original_relocations: bool = False,
+    indirect_calls: bool = False,
 ) -> list[dict]:
     """Bounded functions; original_relocations also admits spans whose relocations
-    all fit the data-address or import-REL24 profiles."""
+    all fit the data-address or import-REL24 profiles, and indirect_calls admits
+    unconditional `bctrl` calls that return to the next instruction."""
     text = text_section(image)
     start, end = text.address, text.address + len(text.data)
     words = text_words(text)
@@ -102,15 +107,16 @@ def discover(
             if start <= target < end and target % 4 == 0 and target != address + 4:
                 direct_entries.add(target)
     entries.update(direct_entries)
-    if original_relocations:
-        # Relocated spans need stronger boundary evidence: any address taken into
-        # .text (virtual tables, function-pointer loads) also fences the walk.
+    if original_relocations or indirect_calls:
+        # Relocated spans and indirect callers need stronger boundary evidence: any
+        # address taken into .text (virtual tables, function-pointer loads) also
+        # fences the walk.
         entries.update(target for target in image.text_address_targets()
                        if start <= target < end and target % 4 == 0)
     candidates = []
     for entry in sorted(direct_entries if candidate_entries is None else candidate_entries):
         seen, pending, calls, imports = set(), [entry], set(), {}
-        branches = floats = 0
+        branches = floats = indirect = 0
         loop = False
         valid = True
         while pending and valid:
@@ -153,6 +159,8 @@ def discover(
                         pending.append(target)
                         if op == 18 or ((word >> 21) & 20) == 20:
                             break
+                elif indirect_calls and word == BCTRL:
+                    indirect += 1
                 elif op == 19:
                     xo = (word >> 1) & 1023
                     if xo not in (0, 16, 33, 129, 150, 193, 225, 257, 289, 417, 449, 528):
@@ -185,7 +193,7 @@ def discover(
             continue
         if any(call not in entries or entry < call < entry + size for call in calls):
             continue
-        category = "calls" if calls or imports else "loops" if loop else "floating-point" if floats else "control-flow" if branches else "integer"
+        category = "calls" if calls or imports or indirect else "loops" if loop else "floating-point" if floats else "control-flow" if branches else "integer"
         boundary = ("RPX entry" if entry == image.entry else
                     "direct-call target" if entry in direct_entries else "supplied entry")
         targets = calls | set(imports.values())
@@ -197,6 +205,8 @@ def discover(
             "symbol": f"fn_{entry:08x}",
             "bindings": {f"fn_{call:08x}": f"0x{call:08x}" for call in sorted(targets)},
         }
+        if indirect:
+            row["boundary"] += "; indirect calls through CTR"
         if contract:
             row["boundary"] += "; original relocations fit " + contract["original_profile"]
             row.update(contract)

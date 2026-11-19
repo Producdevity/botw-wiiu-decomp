@@ -41,7 +41,7 @@ def _recognizable_entry(word: int) -> bool:
 def discover_extended(
     image: Rpx, *, short_tails: bool = False, blr_leaves: bool = False,
     max_size: int = 64, tail_target_policy: str = "bounded",
-    original_relocations: bool = False,
+    original_relocations: bool = False, indirect_calls: bool = False,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Append opt-in candidates without changing canonical discovery rows.
 
@@ -49,13 +49,13 @@ def discover_extended(
     The direct-call policy also accepts independently called entry addresses;
     that evidence does not establish the destination's complete body or ABI.
     """
-    if type(short_tails) is not bool or type(blr_leaves) is not bool or type(original_relocations) is not bool:
+    if any(type(flag) is not bool for flag in (short_tails, blr_leaves, original_relocations, indirect_calls)):
         raise ValueError("opt-in flags must be bool")
     if type(max_size) is not int or not 4 <= max_size <= 256 or max_size % 4:
         raise ValueError("max_size must be aligned and between 4 and 256")
     if tail_target_policy not in ("bounded", "direct-call"):
         raise ValueError("unknown tail target policy")
-    baseline = discover(image, original_relocations=original_relocations)
+    baseline = discover(image, original_relocations=original_relocations, indirect_calls=indirect_calls)
     if not short_tails and not blr_leaves:
         return baseline, {"enabled": False, "baseline_functions": len(baseline), "additions": 0}
 
