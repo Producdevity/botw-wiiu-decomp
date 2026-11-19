@@ -8,8 +8,9 @@
 Community C++ reconstruction of the **USA Wii U v208** executable. Every
 function is checked byte for byte against the original PowerPC code. The badge
 shows exact function bytes as a share of the whole `.text` section. The map
-tiles `.text` by address: 1 MiB regions split into 32 KiB blocks. Green is
-matched, blue is admitted and ready to reconstruct, gray is not yet admitted.
+tiles `.text` by address: 1 MiB regions split into inferred source units
+([how units are inferred](docs/units.md)). Green is matched, blue is admitted
+and ready to reconstruct, gray is not yet admitted.
 
 Sources compile with fixed GHS 5.3.22 profiles, plus Clang for some simple
 leaves. The original compiler version is unconfirmed.
