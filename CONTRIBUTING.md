@@ -41,7 +41,8 @@ reasoning or effort setting. Write `not exposed` when the setting is unknown and
 
 ## License and provenance
 
-Contributions are licensed [GPL-3.0-only](LICENSE). Write sources from the
+Contributions are dedicated to the public domain under [CC0 1.0](LICENSE). Code
+imported into `third_party/` keeps its upstream license. Write sources from the
 original instructions. Do not copy code from other decompilations or SDKs. Other
 projects may inform names and layouts as research leads; cite them in the PR.
 Never commit RPX files, original bytes, disassembly, compiler binaries, object
