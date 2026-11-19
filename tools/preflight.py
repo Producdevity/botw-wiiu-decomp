@@ -143,10 +143,10 @@ def assess(root: Path, rpx: Path | None = None, requested_compiler: str | None =
     configured = (rpx_ready and cxx is not None and game.rpx.is_file()
                   and settings.get("rpx") == str(game.rpx)
                   and settings.get("compiler") == cxx and config_error is None)
-    setup = (["python3", "tools/decomp.py", "setup", "--rpx" if game.format == "rpx" else "--game",
-              str(game.source), "--compiler", cxx] if rpx_ready and cxx else None)
+    setup = (["python3", "tools/decomp.py", "setup", "--rpx" if game.format == "rpx" else "--game", str(game.source)]
+             + (["--compiler", cxx] if requested_compiler else []) if rpx_ready and cxx and installed else None)
     record("configuration", configured, config_error or ("Local executable and compiler configured" if configured else "Local setup is incomplete or differs from the supplied paths"),
-           "After tool prerequisites pass, run setup then python3 tools/decomp.py doctor", command=setup)
+           "Run setup then python3 tools/decomp.py doctor" if installed else "Install the GHS toolchain first, then rerun preflight", command=setup)
     return {"status": "ready" if not actions else "action_required", "checks": checks, "actions": actions,
             "scope": "Read-only readiness assessment; doctor and exact-byte checks remain required"}
 

@@ -1,5 +1,25 @@
 # Model results
 
+## Live contributor trial
+
+On 2026-11-19, Claude Sonnet 5.5 at medium effort followed `AGENTS.md` from a
+fresh worktree with only the game path. It ran setup, claimed the first prepared
+task, matched `fn_0378f190` (32 bytes, a bit test on a 16-bit field) on its third
+check, passed the strict audit and opened a PR. The first two checks differed
+only in register allocation, fixed by reordering statements. The run took about
+six minutes and 23 model calls: 4.9k output tokens, 63k cache-write and 2.3M
+cache-read input tokens. No human input was needed after the game path.
+
+Friction it reported, since fixed: preflight suggested a redundant `--compiler`
+flag, diff paths were easy to miss, the audit's runtime was undocumented and the
+task listing's `source` field read as an existing file.
+
+One small prepared task is not a capability ceiling. Sonnet at medium is a
+reasonable default for prepared tasks up to 128 bytes. Measure unprepared and
+larger tasks separately before recommending cheaper models for them.
+
+## Synthetic pilot
+
 On 2026-11-17, GPT-6.2 Sol at low and medium independently matched four
 synthetic PowerPC targets using the pinned GHS 5.3.22 profiles. Each matched
 three on its first attempt and all four in six checks. The targets were an
@@ -12,7 +32,7 @@ Use low for prepared work. Consider medium for a bounded retry when there
 is new evidence. The pilot measured checker invocations on synthetic
 functions. Real-game throughput and token cost require separate measurements.
 
-## Earlier pilot
+## Prepared pilot
 
 On 2026-11-13, GPT-6 Luna at `xhigh` matched all four prepared functions in eight distinct source variants. The maintainer independently rebuilt every final source against the pinned RPX using the canonical verifier.
 
