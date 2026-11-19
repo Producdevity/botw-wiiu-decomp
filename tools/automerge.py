@@ -233,6 +233,13 @@ def merge(plan_path: Path) -> dict:
             break
         expected = result["sha"]
         merged.append(pull["number"])
+        head = state["head"]
+        if (head.get("repo") or {}).get("full_name") == api.repository and isinstance(head.get("ref"), str):
+            # Merges made with GITHUB_TOKEN skip the repository's delete-branch-on-merge setting.
+            try:
+                api.call("DELETE", api.route(f"git/refs/heads/{head['ref']}"))
+            except community.QueueError:
+                pass
     if merged:
         # GITHUB_TOKEN merges do not trigger push workflows; dispatch the post-merge checks.
         api.call("POST", api.route("dispatches"), {"event_type": "automerged"})
