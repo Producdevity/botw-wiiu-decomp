@@ -21,9 +21,11 @@ disassembly. `admit_references.py` appends rows whose spans overlap no existing
 reference. It sets `ghs-5.3.22-auto` and records the batch. `doctor` re-reads
 every span from the RPX. Open the change as a maintenance PR (see below).
 
-`config/functions.json` stores one function per line and is about 46 MB.
-GitHub warns at 50 MB and rejects files over 100 MB. Shard the manifest, for
-example by address range, before the next large admission.
+The manifest is sharded into `config/functions/XXXXXXXX.json`, one file per
+1 MiB of address space, named by the range start. Each shard keeps one function
+per line in address order. Tools read and write it through
+`project.read_manifest` and `project.write_manifest`; never edit a shard by hand.
+A test fails if a shard reaches GitHub's 50 MB warning size.
 
 Discovery is deterministic. The default mode admits direct-call targets with
 bounded, contiguous control flow and no original relocations. Opt-in modes:
@@ -32,11 +34,16 @@ bounded, contiguous control flow and no original relocations. Opt-in modes:
 - `--blr-leaves`: independently called single-`blr` functions.
 - `--vtables`: virtual-table slots, using the GHS table pattern.
 - `--max-size` (4–256, default 64) bounds the short adapters.
+- `--original-relocations`: bounded functions whose original relocations all fit
+  `cafe-data-address-v1`, `cafe-import-rel24-v1` or both. Each row carries the
+  relocation contract read from the RPX, and discovery re-reads the span through
+  that contract before emitting it. Every address taken into `.text` (vtable
+  slots, function-pointer loads) also fences these spans.
 
-A new span cannot contain another entry or branch target, overlap a body, or
-include an original relocation. Functions with data or import relocations need
-the [relocation profiles](verification.md#original-relocation-profiles) and
-per-field review before admission.
+A new span cannot contain another entry or branch target or overlap a body.
+Outside `--original-relocations` it cannot include an original relocation.
+Other relocation classes (code addresses, jump tables) stay excluded; see
+[relocation profiles](verification.md#original-relocation-profiles).
 
 ### Pinning interfaces
 

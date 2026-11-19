@@ -28,7 +28,7 @@ class CiTests(unittest.TestCase):
         self.head = Path(self.temporary.name) / "head"
         self.rows = {r["id"]: r for r in [row(0x03000000), row(0x03000004)]}
         self.base.mkdir()
-        self.write(self.base, "config/functions.json", json.dumps({"schema_version": 1, "functions": list(self.rows.values())}))
+        ci.project.write_manifest(self.base, {"schema_version": 1, "functions": list(self.rows.values())})
         self.write(self.base, "reconstructions/fn_03000000.cpp", 'extern "C" void fn_03000000() {}\n')
         self.write(self.base, "tools/ci.py", "trusted checker\n")
         self.write(self.base, ".github/workflows/checks.yml", "trusted workflow\n")
@@ -96,7 +96,7 @@ class CiTests(unittest.TestCase):
     def test_manifest_hash_tampering_is_rejected_before_compilation(self):
         changed = copy.deepcopy(self.rows)
         changed["fn_03000000"]["sha256"] = "b" * 64
-        self.write(self.head, "config/functions.json", json.dumps({"schema_version": 1, "functions": list(changed.values())}))
+        ci.project.write_manifest(self.head, {"schema_version": 1, "functions": list(changed.values())})
         self.stage(self.head)
         with patch.object(ci.cli, "verify") as verify:
             with self.assertRaisesRegex(ci.VerificationError, "Maintainer-only"):

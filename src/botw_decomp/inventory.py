@@ -1,11 +1,13 @@
 """Find bounded PowerPC functions from independently evidenced entries."""
 import array
+from bisect import bisect_left
 from collections.abc import Set
 import hashlib
 import sys
 
 from .espresso import decode
-from .rpx import Rpx, Section
+from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE
+from .rpx import DATA_PROFILE, Rpx, RpxError, Section, reference_bytes
 
 
 def signed(value: int, bits: int) -> int:
@@ -42,10 +44,44 @@ def text_words(text: Section) -> array.array:
     return words
 
 
+def relocation_contract(image: Rpx, entry: int, size: int, imports: dict[int, int]) -> dict:
+    """Describe a span's original relocations with an existing verifier profile."""
+    first = bisect_left(image.sorted_relocation_sites, entry)
+    last = bisect_left(image.sorted_relocation_sites, entry + size)
+    sites = image.sorted_relocation_sites[first:last]
+    if not sites:
+        return {}
+    if set(imports) - set(sites):
+        raise RpxError("import call without an original import relocation")
+    if all(site in image.import_branches for site in sites):
+        profile, data, linked = IMPORT_PROFILE, (), image.import_references(entry, size)
+    elif any(site in image.import_branches for site in sites):
+        profile = MIXED_PROFILE
+        data, linked = image.mixed_references(entry, size)
+    else:
+        profile, data, linked = DATA_PROFILE, image.data_references(entry, size), ()
+    row = {"original_profile": profile}
+    if data:
+        row["data_bindings"] = {f"data_{item['destination']:08x}": f"0x{item['destination']:08x}"
+                                for item in sorted(data, key=lambda item: item["destination"])}
+        row["data_relocations"] = [
+            {"offset": item["site"] - entry, "symbol": f"data_{item['destination']:08x}",
+             "type": item["type"]} for item in data]
+    if linked:
+        row["import_relocations"] = [
+            {"offset": offset, "symbol": symbol, "library": library, "name": name}
+            for offset, symbol, library, name, _target in linked]
+        if any(imports.get(entry + offset) != target for offset, _, _, _, target in linked):
+            raise RpxError("import call target disagrees with its relocation")
+    return row
+
+
 def discover(
     image: Rpx, *, candidate_entries: Set[int] | None = None,
-    entry_fences: Set[int] = frozenset(),
+    entry_fences: Set[int] = frozenset(), original_relocations: bool = False,
 ) -> list[dict]:
+    """Bounded functions; original_relocations also admits spans whose relocations
+    all fit the data-address or import-REL24 profiles."""
     text = text_section(image)
     start, end = text.address, text.address + len(text.data)
     words = text_words(text)
@@ -66,9 +102,14 @@ def discover(
             if start <= target < end and target % 4 == 0 and target != address + 4:
                 direct_entries.add(target)
     entries.update(direct_entries)
+    if original_relocations:
+        # Relocated spans need stronger boundary evidence: any address taken into
+        # .text (virtual tables, function-pointer loads) also fences the walk.
+        entries.update(target for target in image.text_address_targets()
+                       if start <= target < end and target % 4 == 0)
     candidates = []
     for entry in sorted(direct_entries if candidate_entries is None else candidate_entries):
-        seen, pending, calls = set(), [entry], set()
+        seen, pending, calls, imports = set(), [entry], set(), {}
         branches = floats = 0
         loop = False
         valid = True
@@ -92,6 +133,12 @@ def discover(
                            or (espresso is not None and espresso.floating_point))
                 if op in (16, 18):
                     target = branch_target(word, address)
+                    if original_relocations and address in image.import_branches:
+                        imports[address] = image.import_branches[address][2]
+                        if not word & 1:
+                            break
+                        address += 4
+                        continue
                     if word & 1:
                         if target == address + 4:
                             valid = False
@@ -128,22 +175,34 @@ def discover(
         if size < 8 or len(seen) * 4 != size:
             continue
         try:
-            original = image.read(entry, size)
+            relocated = original_relocations and image.has_relocation(entry, size)
+            contract = relocation_contract(image, entry, size, imports) if relocated else {}
+            if imports and not contract:
+                continue
+            original = image.read(entry, size, **({"profile": contract["original_profile"]}
+                                                   if contract else {}))
         except ValueError:
             continue
         if any(call not in entries or entry < call < entry + size for call in calls):
             continue
-        category = "calls" if calls else "loops" if loop else "floating-point" if floats else "control-flow" if branches else "integer"
+        category = "calls" if calls or imports else "loops" if loop else "floating-point" if floats else "control-flow" if branches else "integer"
         boundary = ("RPX entry" if entry == image.entry else
                     "direct-call target" if entry in direct_entries else "supplied entry")
-        candidates.append({
+        targets = calls | set(imports.values())
+        row = {
             "id": f"fn_{entry:08x}", "address": f"0x{entry:08x}", "size": size,
             "sha256": hashlib.sha256(original).hexdigest(), "category": category,
             "boundary": boundary + "; contiguous bounded control flow",
             "status": "unmatched", "source": f"reconstructions/fn_{entry:08x}.cpp",
             "symbol": f"fn_{entry:08x}",
-            "bindings": {f"fn_{call:08x}": f"0x{call:08x}" for call in sorted(calls)},
-        })
+            "bindings": {f"fn_{call:08x}": f"0x{call:08x}" for call in sorted(targets)},
+        }
+        if contract:
+            row["boundary"] += "; original relocations fit " + contract["original_profile"]
+            row.update(contract)
+            if reference_bytes(image, row) != original:
+                raise RpxError("relocated reference does not reproduce its original bytes")
+        candidates.append(row)
     return candidates
 
 

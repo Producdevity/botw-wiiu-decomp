@@ -13,6 +13,7 @@ from botw_decomp.contracts import (
     locate_libclang,
     main,
 )
+from botw_decomp.project import read_manifest, write_manifest
 
 HERE = Path(__file__).parent
 FUNCTION = "fn_00000001"
@@ -262,9 +263,7 @@ class BindingScope(ParsedContracts, unittest.TestCase):
                 (root / "reconstructions/fn_00000020.cpp").write_text(
                     'extern "C" void fn_00000020() {}'
                 )
-            (root / "config/functions.json").write_text(
-                json.dumps({"schema_version": 1, "functions": functions})
-            )
+            write_manifest(root, {"schema_version": 1, "functions": functions})
             if source_symlink:
                 path = root / "reconstructions/fn_00000020.cpp"
                 path.unlink()
@@ -274,10 +273,9 @@ class BindingScope(ParsedContracts, unittest.TestCase):
 
                 def mutate(snapshot_root):
                     rows = functions(snapshot_root)
-                    path = root / "config/functions.json"
-                    changed = json.loads(path.read_text())
+                    changed = read_manifest(root)
                     changed["functions"][0]["bindings"] = {"fn_00000008": "0x00000008"}
-                    path.write_text(json.dumps(changed))
+                    write_manifest(root, changed)
                     return rows
 
                 with patch("botw_decomp.contracts.functions", mutate):
@@ -394,7 +392,7 @@ class BindingScope(ParsedContracts, unittest.TestCase):
             manifest_race=True,
         )
         self.assertEqual(result["status"], "incomplete")
-        self.assertIn("config/functions.json", result["source_drift"])
+        self.assertIn("config/functions/00000000.json", result["source_drift"])
 
     def test_source_include_restrictions_are_kept(self):
         with self.assertRaisesRegex(

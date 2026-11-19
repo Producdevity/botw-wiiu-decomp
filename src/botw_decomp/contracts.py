@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .compiler import check_source
 from .compiler import locate as locate_compiler
-from .project import ROOT, functions, validate_source_contract
+from .project import MANIFEST_DIRECTORY, ROOT, functions, manifest_files, validate_source_contract
 
 SHIMS = """typedef float __vec2x32float__ __attribute__((vector_size(8)));
 #define __bytereversed
@@ -600,12 +600,13 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
         }
 
     vcs_before = git_state()
-    manifest = reference_root / "config/functions.json"
-    manifest_bytes = manifest.read_bytes()
+    manifest_paths = manifest_files(reference_root)
+    manifest_bytes = {path.name: path.read_bytes() for path in manifest_paths}
     with tempfile.TemporaryDirectory(prefix="botw-contract-manifest-") as temporary:
         snapshot_root = Path(temporary)
-        (snapshot_root / "config").mkdir()
-        (snapshot_root / "config/functions.json").write_bytes(manifest_bytes)
+        (snapshot_root / MANIFEST_DIRECTORY).mkdir(parents=True)
+        for name, data in manifest_bytes.items():
+            (snapshot_root / MANIFEST_DIRECTORY / name).write_bytes(data)
         rows = functions(snapshot_root)
     defined = {key for key, row in rows.items() if (root / row["source"]).is_file()}
     callers = {key for key in defined if rows[key].get("bindings")}
@@ -635,9 +636,11 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
 
     headers = headers_at(root)
     trusted_headers = headers_at(reference_root)
-    manifest_key = "config/functions.json" if reference_root == root else "<reference>/config/functions.json"
-    watched = {manifest_key: manifest}
-    snapshot = {manifest_key: hashlib.sha256(manifest_bytes).hexdigest()}
+    manifest_prefix = ("" if reference_root == root else "<reference>/") + MANIFEST_DIRECTORY + "/"
+    manifest_keys = {manifest_prefix + path.name for path in manifest_paths}
+    watched = {manifest_prefix + path.name: path for path in manifest_paths}
+    snapshot = {manifest_prefix + name: hashlib.sha256(data).hexdigest()
+                for name, data in manifest_bytes.items()}
     inputs = [(root, "", [root / rows[key]["source"] for key in selected] + headers)]
     if reference_root != root:
         inputs.append((reference_root, "<reference>/",
@@ -650,7 +653,7 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
             watched[key] = path
             snapshot[key] = hashlib.sha256(path.read_bytes()).hexdigest()
     for key, path in watched.items():
-        if key != manifest_key:
+        if key not in manifest_keys:
             check_source(path)
 
     with ClangParser(libclang, compiler, root) as clang:
@@ -870,6 +873,12 @@ def audit_contracts(root=ROOT, libclang=None, compiler=None, reference_root=None
             drift.append(prefix + "<source inventory changed during audit>")
         if headers_at(base) != before_headers:
             drift.append(prefix + "<header inventory changed during audit>")
+    try:
+        manifest_changed = [path.name for path in manifest_files(reference_root)] != list(manifest_bytes)
+    except ValueError:
+        manifest_changed = True
+    if manifest_changed:
+        drift.append(manifest_prefix + "<shard set changed during audit>")
     vcs_after = git_state()
     if vcs_before != vcs_after:
         drift.append("<git state changed during audit>")

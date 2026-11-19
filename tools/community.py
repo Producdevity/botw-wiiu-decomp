@@ -18,7 +18,9 @@ REPO = "Producdevity/botw-wiiu-decomp"
 ROOT = Path(__file__).resolve().parents[1]
 LEASE_HOURS = 6
 MAX_CLAIMS = 8
-MAX_REMOTE_MANIFEST_BYTES = 100_000_000
+MAX_REMOTE_MANIFEST_BYTES = 1_000_000_000
+MANIFEST_DIRECTORY = "config/functions"
+SHARD = re.compile(r"[0-9a-f]{8}\.json\Z")
 BOT_ID = 41898282
 FUNCTION = re.compile(r"fn_[0-9a-f]{8}\Z")
 RECORD = re.compile(r"<!-- botw-claim-v1 (\{[^\n]*\}) -->")
@@ -82,9 +84,32 @@ def parse_functions(value, completed_sources: set[str] | None = None) -> dict[st
     return result
 
 
+def join_shards(shards: list[tuple[str, bytes]]) -> list[dict]:
+    """Concatenate config/functions/*.json in name order."""
+    if not shards:
+        raise QueueError("Function manifest has no shards")
+    rows = []
+    for name, data in sorted(shards):
+        if not SHARD.fullmatch(name):
+            raise QueueError(f"Unexpected function manifest entry: {name}")
+        try:
+            value = json.loads(data)
+        except (ValueError, TypeError) as error:
+            raise QueueError(f"Invalid function manifest shard: {name}") from error
+        if not isinstance(value, dict) or not isinstance(value.get("functions"), list):
+            raise QueueError(f"Function manifest shard must contain a list: {name}")
+        rows.extend(value["functions"])
+    return rows
+
+
 def read_functions(path: Path, root: Path | None = None) -> dict[str, dict]:
     root = root or path.resolve().parents[1]
-    result = parse_functions(json.loads(path.read_text()))
+    if path.is_symlink() or not path.is_dir():
+        raise QueueError(f"Function manifest must be a directory: {path}")
+    entries = sorted(path.iterdir())
+    if any(entry.is_symlink() or not entry.is_file() for entry in entries):
+        raise QueueError("Function manifest shards must be regular files")
+    result = parse_functions(join_shards([(entry.name, entry.read_bytes()) for entry in entries]))
     for row in result.values():
         if "source" not in row:
             row["status"] = "unmatched"
@@ -104,7 +129,7 @@ def git(root: Path, *args: str, timeout: int = 30) -> bytes:
     return result.stdout
 
 
-def git_snapshot(url: str, branch: str, root: Path = ROOT) -> tuple[str, bytes, set[str]]:
+def git_snapshot(url: str, branch: str, root: Path = ROOT) -> tuple[str, list[dict], set[str]]:
     """Fetch the default branch with git; GitHub's tree API fails on the source directory."""
     if not re.fullmatch(r"[A-Za-z0-9._/-]+", branch) or branch.startswith("-") or ".." in branch:
         raise QueueError("Invalid default branch name")
@@ -114,12 +139,20 @@ def git_snapshot(url: str, branch: str, root: Path = ROOT) -> tuple[str, bytes, 
     commit = git(root, "rev-parse", "--verify", "FETCH_HEAD^{commit}").decode().strip()
     if not re.fullmatch(r"[0-9a-f]{40}", commit):
         raise QueueError("Invalid default-branch commit")
-    entry = git(root, "ls-tree", "-z", commit, "config/functions.json").rstrip(b"\0")
-    if not entry.startswith((b"100644 blob ", b"100755 blob ")):
-        raise QueueError("Remote manifest must be a regular file")
-    manifest = git(root, "cat-file", "blob", f"{commit}:config/functions.json")
-    if not 0 < len(manifest) <= MAX_REMOTE_MANIFEST_BYTES:
-        raise QueueError("Invalid remote function manifest size")
+    shards, total = [], 0
+    for line in git(root, "ls-tree", "-z", commit, MANIFEST_DIRECTORY + "/").split(b"\0"):
+        if not line:
+            continue
+        metadata, path = line.split(b"\t", 1)
+        name = path.decode().removeprefix(MANIFEST_DIRECTORY + "/")
+        if not metadata.startswith((b"100644 blob ", b"100755 blob ")) or not SHARD.fullmatch(name):
+            raise QueueError("Remote manifest shards must be regular files")
+        data = git(root, "cat-file", "blob", f"{commit}:{MANIFEST_DIRECTORY}/{name}")
+        total += len(data)
+        if not data or total > MAX_REMOTE_MANIFEST_BYTES:
+            raise QueueError("Invalid remote function manifest size")
+        shards.append((name, data))
+    manifest = join_shards(shards)
     sources = set()
     for line in git(root, "ls-tree", "-z", commit, "reconstructions/").split(b"\0"):
         if not line:
@@ -138,12 +171,8 @@ def remote_functions(api: GitHub) -> dict[str, dict]:
     if not isinstance(branch, str) or not branch:
         raise QueueError("Repository has no default branch")
     commit, manifest, completed = api.default_snapshot(branch)
-    try:
-        value = json.loads(manifest)
-    except (ValueError, TypeError) as error:
-        raise QueueError("Invalid remote function manifest") from error
     api.snapshot = {"default_branch": branch, "commit": commit}
-    return parse_functions(value, completed)
+    return parse_functions(manifest, completed)
 
 
 def requested_function(issue: dict) -> str:
@@ -227,7 +256,7 @@ class GitHub:
                 return result
         raise QueueError("Queue exceeds the 10,000-entry safety bound")
 
-    def default_snapshot(self, branch: str) -> tuple[str, bytes, set[str]]:
+    def default_snapshot(self, branch: str) -> tuple[str, list[dict], set[str]]:
         url = os.environ.get("BOTW_UPSTREAM_URL") or f"https://github.com/{self.repository}.git"
         return git_snapshot(url, branch)
 
@@ -477,8 +506,8 @@ def wait_for_request(api: GitHub, number: int, functions: dict[str, dict], secon
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default=REPO)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "config/functions.json",
-                        help="Trusted default-branch checkout manifest for reconcile only")
+    parser.add_argument("--manifest", type=Path, default=ROOT / MANIFEST_DIRECTORY,
+                        help="Trusted default-branch checkout manifest directory for reconcile only")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("summary", help="Summarize published references and advisory blocker issues")
     listing = commands.add_parser("list", help="List available tasks")

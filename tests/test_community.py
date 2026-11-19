@@ -29,6 +29,12 @@ def comment_for(request, expires=NOW + dt.timedelta(hours=1), issued=NOW - dt.ti
             "body": f"<!-- botw-claim-v1 {json.dumps(record)} -->"}
 
 
+
+def write_shards(directory, rows):
+    directory.mkdir(parents=True)
+    (directory / "03000000.json").write_text(json.dumps({"functions": rows}))
+    return directory
+
 class FakeGitHub:
     def __init__(self, issues, comments=None):
         self.data = {row["number"]: copy.deepcopy(row) for row in issues}
@@ -100,7 +106,7 @@ class RemoteGitHub(FakeGitHub):
 
     def default_snapshot(self, branch):
         self.calls.append(("GIT", branch, None))
-        return self.COMMIT, self.manifest, set(self.sources)
+        return self.COMMIT, queue.join_shards([("03000000.json", self.manifest)]), set(self.sources)
 
     def call(self, method, path, payload=None):
         self.calls.append((method, path, payload))
@@ -128,9 +134,7 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            path = root / "config/functions.json"
-            path.parent.mkdir()
-            path.write_text(json.dumps({"functions": list(api.rows.values())}))
+            path = write_shards(root / "config/functions", list(api.rows.values()))
             self.assertEqual(queue.read_functions(path)["fn_03000000"]["status"], "unmatched")
 
     def test_summary_counts_one_pinned_reference_snapshot_and_advisory_blockers(self):
@@ -411,24 +415,21 @@ class QueueTests(unittest.TestCase):
 
     def test_manifest_rejects_duplicate_or_invalid_ids(self):
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "functions.json"
-            path.write_text(json.dumps({"functions": [FUNCTIONS["fn_03000000"]] * 2}))
+            path = write_shards(Path(directory) / "functions", [FUNCTIONS["fn_03000000"]] * 2)
             with self.assertRaises(queue.QueueError):
                 queue.read_functions(path)
 
     def test_landed_source_completes_task_without_manifest_edit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            path = root / "config/functions.json"
-            path.parent.mkdir()
             row = {**FUNCTIONS["fn_03000000"], "source": "reconstructions/fn_03000000.cpp"}
-            path.write_text(json.dumps({"functions": [row]}))
+            path = write_shards(root / "config/functions", [row])
             source = root / row["source"]
             source.parent.mkdir()
             source.write_text('extern "C" void fn_03000000() {}\n')
             functions = queue.read_functions(path)
             self.assertEqual(functions[row["id"]]["status"], "matched")
-            self.assertEqual(json.loads(path.read_text())["functions"][0]["status"], "unmatched")
+            self.assertEqual(json.loads((path / "03000000.json").read_text())["functions"][0]["status"], "unmatched")
             request = issue(1)
             api = FakeGitHub([request, issue(2)], {1: [comment_for(request)]})
             self.assertEqual(queue.reconcile(api, functions, NOW), {"accepted": 0, "closed": 2})
@@ -436,9 +437,8 @@ class QueueTests(unittest.TestCase):
 
     def test_source_path_cannot_escape_reconstruction_directory(self):
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "functions.json"
             row = {**FUNCTIONS["fn_03000000"], "source": "../other.cpp"}
-            path.write_text(json.dumps({"functions": [row]}))
+            path = write_shards(Path(directory) / "functions", [row])
             with self.assertRaisesRegex(queue.QueueError, "Invalid source path"):
                 queue.read_functions(path)
 
@@ -450,9 +450,7 @@ class QueueTests(unittest.TestCase):
         api = RemoteGitHub(issues=[request], comments={1: [record]})
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            manifest = root / "config/functions.json"
-            manifest.parent.mkdir()
-            manifest.write_text(json.dumps({"functions": list(api.rows.values())}))
+            manifest = write_shards(root / "config/functions", list(api.rows.values()))
             source = root / "reconstructions/fn_03000000.cpp"
             source.parent.mkdir()
             source.write_text("unfinished local source\n")
@@ -465,8 +463,7 @@ class QueueTests(unittest.TestCase):
     def test_client_list_and_claim_ignore_stale_local_manifest(self):
         api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
         with tempfile.TemporaryDirectory() as directory:
-            manifest = Path(directory) / "functions.json"
-            manifest.write_text(json.dumps({"functions": list(api.rows.values())}))
+            manifest = write_shards(Path(directory) / "functions", list(api.rows.values()))
             output, errors = io.StringIO(), io.StringIO()
             with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output), redirect_stderr(errors):
                 self.assertEqual(queue.main(["--manifest", str(manifest), "list"]), 0)
@@ -542,9 +539,10 @@ class GitSnapshotTests(unittest.TestCase):
         for root in (self.upstream, self.local):
             root.mkdir()
             self.git(root, "init", "-q", "-b", "main")
-        (self.upstream / "config").mkdir()
+        (self.upstream / "config/functions").mkdir(parents=True)
         (self.upstream / "reconstructions").mkdir()
-        (self.upstream / "config/functions.json").write_text('{"functions": []}')
+        (self.upstream / "config/functions/03000000.json").write_text(
+            json.dumps({"functions": [FUNCTIONS["fn_03000000"]]}))
         (self.upstream / "reconstructions/fn_03000000.cpp").write_text("void f() {}\n")
 
     @staticmethod
@@ -560,7 +558,7 @@ class GitSnapshotTests(unittest.TestCase):
         self.commit()
         commit, manifest, sources = queue.git_snapshot(str(self.upstream), "main", self.local)
         self.assertRegex(commit, r"^[0-9a-f]{40}$")
-        self.assertEqual(json.loads(manifest), {"functions": []})
+        self.assertEqual(manifest, [FUNCTIONS["fn_03000000"]])
         self.assertEqual(sources, {"reconstructions/fn_03000000.cpp"})
 
     def test_symlink_cannot_mark_task_complete(self):
@@ -572,11 +570,24 @@ class GitSnapshotTests(unittest.TestCase):
     def test_rejects_option_like_branch_and_missing_manifest(self):
         with self.assertRaises(queue.QueueError):
             queue.git_snapshot(str(self.upstream), "--upload-pack=x", self.local)
-        (self.upstream / "config/functions.json").unlink()
+        (self.upstream / "config/functions/03000000.json").unlink()
         (self.upstream / "config/other.json").write_text("{}")
         self.commit()
-        with self.assertRaisesRegex(queue.QueueError, "regular file"):
+        with self.assertRaisesRegex(queue.QueueError, "no shards"):
             queue.git_snapshot(str(self.upstream), "main", self.local)
+
+    def test_rejects_unexpected_manifest_entries(self):
+        (self.upstream / "config/functions/notes.txt").write_text("x")
+        self.commit()
+        with self.assertRaisesRegex(queue.QueueError, "regular files"):
+            queue.git_snapshot(str(self.upstream), "main", self.local)
+
+    def test_joins_shards_in_name_order(self):
+        second = {**FUNCTIONS["fn_03000000"], "id": "fn_03100000", "address": "0x03100000"}
+        (self.upstream / "config/functions/03100000.json").write_text(json.dumps({"functions": [second]}))
+        self.commit()
+        _, manifest, _ = queue.git_snapshot(str(self.upstream), "main", self.local)
+        self.assertEqual([row["id"] for row in manifest], ["fn_03000000", "fn_03100000"])
 
 if __name__ == "__main__":
     unittest.main()
