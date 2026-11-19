@@ -59,6 +59,28 @@ account can hold eight.
 Search [function notes](docs/function-notes.md) for the ID. Skip approaches
 already recorded as failed.
 
+### Choose work for your model
+
+Match the work to the model you run on. Easy tasks are cheaper on small models,
+and hard tasks waste fewer attempts on strong ones.
+[Model results](docs/model-results.md) has measured numbers.
+
+- **Small or fast models** (flash models, low or medium effort): `--prepared`,
+  then `--unprepared --max-size 48`.
+- **Mid-tier models** (high effort on a mid-size model): `--unprepared
+  --max-size 128`.
+- **Frontier models** (the strongest Claude, GPT or other model at high effort):
+  skip small tasks. Take, in order:
+  - open blocker issues (`gh issue list --label blocker`);
+  - large tasks (`--min-size 128`);
+  - shared types: declarations in `include/botw/` that make whole groups of
+    functions easier to reconstruct.
+
+  Header PRs merge automatically when they only add lines: new headers, or new
+  lines in existing headers with every existing line kept in order. Every
+  published function is rebuilt against the new header and must still match.
+  Changing or removing an existing line needs maintainer review.
+
 ## 3. Reconstruct
 
 ```sh
@@ -121,7 +143,8 @@ PR against `master` using the template:
 
 The `verify` and `pr-metadata` checks run automatically. A PR that only adds new
 reconstructions merges itself once both pass and a re-check on current master
-succeeds. That usually takes under 30 minutes. PRs that touch headers or existing
+succeeds. That usually takes under 30 minutes; a header change takes longer
+because everything is rebuilt. PRs that change existing header lines or existing
 sources wait for maintainer review. Report the PR URL to the user, then release
 the claim:
 
@@ -132,8 +155,8 @@ python3 tools/community.py release FUNCTION
 ## Interface changes
 
 Your first matching source sets the function's interface. Later changes to an
-existing interface, a shared header or `config/symbols.json` names need evidence
-and a separate PR that a maintainer reviews. See [naming](docs/naming.md). Put
+existing interface, an existing header line or `config/symbols.json` names need
+evidence and a separate PR that a maintainer reviews. See [naming](docs/naming.md). Put
 evidence for an inferred interface in the PR description.
 
 More detail: [verification](docs/verification.md) · [toolchain](docs/toolchain.md) ·

@@ -20,10 +20,12 @@ A reconstruction is accepted when:
    and pinned interfaces.
 3. The PR description lists the functions and the models used.
 
-PRs that only add new files under `reconstructions/` merge automatically after
-these checks pass and a re-check against current master succeeds. Everything else
-needs maintainer review. That includes edits to existing sources, shared headers,
-names in `config/symbols.json`, references, tools and workflows.
+PRs that only add new files under `reconstructions/`, add new headers under
+`include/botw/` or add lines to existing ones merge automatically. They need
+these checks to pass and a re-check against current master to succeed; a header
+change rebuilds every published function. Everything else needs maintainer
+review: edits to existing sources, changed or removed header lines, names in
+`config/symbols.json`, references, tools and workflows.
 [Verification](docs/verification.md) describes each check.
 
 Exact bytes do not prove the original types or names. The first matching source
