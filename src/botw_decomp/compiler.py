@@ -18,6 +18,7 @@ GHS_AUTO_PROFILES = {
     "ghs-5.3.22-speed-notailrecursion-nopipeline": ["-Ospeed", "-Onotailrecursion", "-Onopipeline"],
     "ghs-5.3.22-speed-nounroll": ["-Ospeed", "-Onounroll"],
     "ghs-5.3.22-speed-noconstprop": ["-Ospeed", "-Onoconstprop"],
+    "ghs-5.3.22-speed-debug": ["-Ospeed", "-g"],
 }
 GHS_PROFILES = {
     **GHS_AUTO_PROFILES,

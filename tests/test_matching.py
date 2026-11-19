@@ -126,6 +126,14 @@ class MatchingTests(unittest.TestCase):
             obj = make_object(CODE + CODE, symbol_size=8, extra_symbols=[symbol])
             self.assertEqual(self.compare(obj)["status"], "rejected")
 
+    def test_empty_ghs_file_markers_are_allowed(self):
+        markers = [("..bof.unit", 0, 0, 0x12, 0, "text"), ("..eof.unit", 8, 0, 0x12, 0, "text")]
+        self.assertTrue(self.compare(make_object(extra_symbols=markers))["matched"])
+        sized = [("..bof.unit", 0, 8, 0x12, 0, "text")]
+        self.assertEqual(self.compare(make_object(extra_symbols=sized))["status"], "rejected")
+        hidden = [("..eof.unit", 8, 0, 0x12, 0, "text")]
+        self.assertEqual(self.compare(make_object(CODE + CODE, symbol_size=8, extra_symbols=hidden))["status"], "rejected")
+
     def test_unverified_text_cannot_hide_outside_symbol_size(self):
         obj = make_object(CODE + CODE, symbol_size=8)
         self.assertEqual(self.compare(obj)["status"], "rejected")
