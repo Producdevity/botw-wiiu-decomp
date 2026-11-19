@@ -1,12 +1,27 @@
 # Breath of the Wild — Wii U reconstruction
 
-[![Verification](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml/badge.svg)](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml)
+[![Verification](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml/badge.svg?branch=master&event=push)](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml?query=branch%3Amaster)
+[![Exact .text match](https://raw.githubusercontent.com/Producdevity/botw-wiiu-decomp/progress/exact-text.svg)](https://github.com/Producdevity/botw-wiiu-decomp/blob/progress/progress.json)
 
 Community C++ reconstruction of the **USA Wii U v208** executable, checked byte for byte against the original PowerPC code.
 
-`python3 tools/community.py summary` reports the current reference, source and claim counts from the default branch. See the [latest master verification](https://github.com/Producdevity/botw-wiiu-decomp/actions/workflows/checks.yml?query=branch%3Amaster) for exact-match results. Measure code coverage against the pinned `.text` size in [the target manifest](config/target.json).
+The coverage badge measures exact function bytes against the full `.text` section of the pinned executable. `python3 tools/community.py summary` reports reference, source and claim counts. [Coverage method](docs/verification.md#coverage).
 
 Matching uses fixed GHS 5.3.22 profiles and Clang for simple leaves. Source contracts are inferred from caller/callee evidence; the exact historical compiler version remains unconfirmed. [Verification contract](docs/verification.md).
+
+## Supported game files
+
+The supported target is **USA Wii U v208** (`wiiu-usa-v208`). Setup accepts your own:
+
+- Decrypted game dump folder containing the v208 executable. A folder with both
+  the Dumpling base and update dumps also works.
+- `.wua` archive containing the v208 executable.
+- Raw v208 `U-King.rpx` from the game's `code/` folder.
+
+Setup selects the executable by its pinned SHA-256. DLC is optional. Use
+decrypted inputs for setup. Follow the [Wii U Hacks Guide](https://wiiu.hacks.guide/) and
+[Dumpling game and update dumping guide](https://wiki.hacks.guide/wiki/Wii_U:Dump_Games)
+to make your own dump.
 
 ## Contribute with your agent
 
@@ -15,17 +30,6 @@ Point your coding agent at this repository and ask it to contribute:
 > Read AGENTS.md and contribute one verified function within my budget. Ask for my game dump path if needed; handle setup and submit a pull request.
 
 The agent handles setup, task reservations, reconstruction and checks. You supply your own game dump path and GitHub account. [Agent entry point](AGENTS.md) · [Contribution guide](CONTRIBUTING.md).
-
-## Your game dump
-
-`U-King.rpx` is the game's PowerPC executable inside its `code/` folder. This
-project requires the USA game updated to v208. Give setup your own game dump
-folder or `.wua` archive; it selects and hash-checks the executable for you. No
-manual conversion or RPX path search is needed. Decrypted Dumpling base and
-update folders are accepted; a `.wua` can bundle base, update, and DLC. DLC is
-not required. Follow the [Wii U Hacks Guide](https://wiiu.hacks.guide/) and
-[Dumpling game and update dumping guide](https://wiki.hacks.guide/wiki/Wii_U:Dump_Games)
-to make your own dump.
 
 ## Local commands
 
@@ -48,6 +52,24 @@ python3 tools/decomp.py check FUNCTION
 Preflight reports setup actions without modifying files. Setup builds the WUA reader when needed and configures the hash-verified executable; `--rpx` remains an alias. [Detailed agent setup](docs/agent-guide.md).
 
 The toolchain command downloads hash-pinned GHS and wibo releases from their upstream distribution into `.local/`; it supports macOS (Rosetta on Apple Silicon) and x86-64 Linux. Use `--compiler /path/to/clang++` during setup if necessary. `packet` creates private bytes, disassembly, caller/callee context and task metadata under ignored `.local/`. Submit readable C++ under `reconstructions/`; never submit the packet.
+
+## Diffing
+
+After setup, generate the original function packet, then compare your source.
+
+```sh
+python3 tools/decomp.py packet FUNCTION
+python3 tools/decomp.py check FUNCTION --diff --summary
+```
+
+The packet contains the original disassembly. The check saves its full report
+in `.local/last-check.json`. On a same-size mismatch after relocation, it reports
+the first differing byte offset and saves a private instruction diff under
+`.local/diffs/`. Use `--source candidates/FUNCTION.cpp` to inspect a retained
+candidate. Size and relocation failures appear in the check report.
+[Register diagnostics](docs/register-diagnostics.md).
+
+## Published verification
 
 Without game files, anyone can independently rebuild the published implementations:
 

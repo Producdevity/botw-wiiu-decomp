@@ -28,3 +28,5 @@ Compiler/profile and exact commands with results (including failed or unrun chec
 Contract: established declaration reused, or caller/callee evidence for changed arguments, returns and layouts.
 
 Naming: stable IDs retained; evidence and certainty for proposed names. Catalog promotion belongs in a separate maintainer-reviewed maintenance PR.
+
+<!-- For shared ABI or verifier maintenance, record the reviewer, exact reviewed commit, and independent evidence or verify-maintenance run. -->

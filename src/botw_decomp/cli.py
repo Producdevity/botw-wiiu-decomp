@@ -1,13 +1,15 @@
 """Local contributor commands and public hash verification."""
 import argparse
+from difflib import unified_diff
 import hashlib
 import json
 from pathlib import Path
+import secrets
 import shutil
 import subprocess
 import sys
 
-from . import compiler, symbols
+from . import compiler, private_storage, symbols
 from .game_input import resolve_game
 from .context import write_context
 from .disassembly import disassemble
@@ -20,28 +22,34 @@ def emit(value):
     print(json.dumps(value, indent=2, sort_keys=True))
 
 
-def verify(row: dict, cxx: str, root: Path = ROOT, image=None, source: Path | None = None, references: dict | None = None) -> dict:
+def verify(row: dict, cxx: str, root: Path = ROOT, image=None, source: Path | None = None,
+           references: dict | None = None, *, diffs: dict | None = None) -> dict:
     attempts = []
     for profile in compiler.profiles(row):
-        result = verify_profile(row, cxx, root, image, source, profile, references)
+        differences = None if diffs is None else {}
+        result = verify_profile(row, cxx, root, image, source, profile, references, differences)
+        if differences:
+            diffs[profile] = differences
         if result.get("matched"):
             return result
         attempts.append(result)
     return {**attempts[-1], "attempts": attempts} if len(attempts) > 1 else attempts[0]
 
 
-def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, profile: str, references: dict | None = None) -> dict:
+def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, profile: str,
+                   references: dict | None = None, differences: dict | None = None) -> dict:
     source = source or root / row["source"]
     result = {"function": row["id"], "compiler_profile": profile}
     if not source.is_file():
         return {**result, "status": "unimplemented", "matched": False}
     try:
+        diagnostic = {} if differences is None else {"differences": differences}
         if row.get("compile_with"):
             members = compilation_members(row, functions(root) if references is None else references)
             paths = [source if member["id"] == row["id"] else root / member["source"] for member in members]
             obj = compiler.compile_sources(cxx, paths, root / "include", profile)
             originals = None if image is None else {member["symbol"]: reference_bytes(image, member) for member in members}
-            group = compare_function_set(obj, members, originals)
+            group = compare_function_set(obj, members, originals, **diagnostic)
             compared = next((item for item in group["results"] if item["symbol"] == row["symbol"]),
                             {"matched": False, "status": "rejected", "reason": group["reason"]})
             return {**result, **compared, "compiler": compiler.identity(cxx, profile),
@@ -59,7 +67,7 @@ def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, 
             if hashlib.sha256(original).hexdigest() != row["sha256"]:
                 raise ValueError("reference manifest disagrees with supplied RPX")
             compared = compare_function(obj, row["symbol"], original, address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []),
-                                        import_relocations=row.get("import_relocations"))
+                                        import_relocations=row.get("import_relocations"), **diagnostic)
         else:
             compared = compare_function_hash(obj, row["symbol"], row["sha256"], row["size"], address, bindings, data_bindings=data_bindings, data_relocations=row.get("data_relocations", []),
                                         import_relocations=row.get("import_relocations"))
@@ -67,6 +75,25 @@ def verify_profile(row: dict, cxx: str, root: Path, image, source: Path | None, 
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
     except (ValueError, OSError, subprocess.TimeoutExpired) as error:
         return {**result, "status": "rejected", "matched": False, "reason": str(error)}
+
+
+def write_diffs(root: Path, function: str, diffs: dict, rows: dict) -> list[str]:
+    if not diffs:
+        return []
+    parts = (".local", "diffs", function, secrets.token_hex(8))
+    paths = []
+    with private_storage.directory(root, parts) as directory:
+        for profile, differences in diffs.items():
+            for symbol, (expected, actual) in differences.items():
+                address = int(rows[symbol]["address"], 16)
+                before = disassemble(expected, address, symbol).splitlines(keepends=True)
+                after = disassemble(actual, address, symbol).splitlines(keepends=True)
+                data = "".join(unified_diff(before, after, fromfile="original", tofile="relocated candidate"))
+                filename = f"{symbol}-{profile}.diff"
+                if not private_storage.create_file(directory, filename, data.encode("utf-8")):
+                    raise ValueError("diff file already exists")
+                paths.append(str(Path(*parts, filename)))
+    return paths
 
 
 def summary(rows: dict, results: list[dict], batches: dict | None = None) -> dict:
@@ -123,6 +150,7 @@ def main(argv=None) -> int:
     check.add_argument("--all", action="store_true")
     check.add_argument("--source", type=Path)
     check.add_argument("--hash-only", action="store_true", help="use public hashes; no RPX required")
+    check.add_argument("--diff", action="store_true", help="save private instruction diffs for a single function")
     check.add_argument("--compiler")
     check.add_argument("--summary", action="store_true", help="print totals and failures; keep the full report in .local/last-check.json")
     progress = commands.add_parser("progress", help="rebuild implementations and report pilot matches")
@@ -186,6 +214,9 @@ def main(argv=None) -> int:
                   "source": row["source"], "symbol": row["symbol"]})
             return 0
         hash_only = args.command == "progress" or args.hash_only
+        diff_requested = getattr(args, "diff", False)
+        if diff_requested and (args.all or hash_only or not args.function):
+            raise ValueError("--diff requires one function and its local original bytes")
         settings = {} if hash_only else local_config()
         cxx = compiler.locate(args.compiler or settings.get("compiler"))
         identity = compiler.version(cxx)
@@ -203,10 +234,14 @@ def main(argv=None) -> int:
             raise ValueError("no reconstructed sources selected")
         batch_path = ROOT / "config/batches.json"
         batches = read_json(batch_path) if batch_path.is_file() else None
-        results = [verify(row, cxx, image=image, source=getattr(args, "source", None), references=rows) for row in selected]
+        diffs = {} if diff_requested else None
+        results = [verify(row, cxx, root=ROOT, image=image, source=getattr(args, "source", None),
+                          references=rows, diffs=diffs) for row in selected]
         profiles = {p for r in selected for p in compiler.profiles(r)}
         report = {"target": target["id"], "compilers": {p: compiler.identity(cxx, p) for p in sorted(profiles)},
                   "reference": "public SHA-256" if hash_only else "local original bytes", **summary(rows, results, batches)}
+        if diff_requested:
+            report["diffs"] = write_diffs(ROOT, args.function, diffs, rows)
         write_json(ROOT / ".local/last-check.json", report)
         if args.summary:
             emit({**{key: value for key, value in report.items() if key not in ("results", "batches")},

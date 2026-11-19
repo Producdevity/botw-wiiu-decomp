@@ -25,6 +25,16 @@ The default reference profile excludes any original span affected by an RPX relo
 
 ## Coverage
 
+`verify` writes a job summary with the target, base and candidate commits,
+matched bytes and failures. When GitHub confirms a successful master build of
+the exact base commit, the summary also shows new matches, lost matches and
+the byte delta. It lists up to 20 IDs per group. The job log has every check.
+
+Successful protected master builds publish `exact-text.svg` and `progress.json`
+on the `progress` branch. The JSON records the verified commit and Actions run
+ID. This measures exact executable text bytes. The
+[linked component check](#linked-component) verifies a closed code-and-data unit.
+
 `python3 tools/decomp.py check --all --hash-only --summary` reports `matched_functions` and
 `matched_bytes` for a rebuilt checkout. Divide `matched_bytes` by the total `text[].size`
 in [the target manifest](../config/target.json) to calculate exact executable-code coverage.
@@ -36,6 +46,24 @@ The [discovery inventory](inventory.md) proposes function boundaries. The truste
 Compiler options are defined in [the compiler module](../src/botw_decomp/compiler.py).
 Each selected profile uses the same exact comparison.
 
+## Linked component
+
+Install LLVM and LLD (`brew install llvm lld` or `sudo apt install llvm-18 lld-18`).
+Run `python3 tools/check_linked_component.py` with the configured toolchain on
+`PATH`. It links the [numeric getter](global-word-loads.md) at its original
+address with its documented four-byte zero-initialized word. LLD checks both
+symbols and span sizes. The resulting code must match the pinned hash. The
+link uses zero original-code fallbacks.
+
+Pass `--game PATH` to also verify the linked bytes and writable BSS against your
+own pinned RPX. The temporary ELF is never executed.
+
 ## Maintaining the verifier
 
-Tooling, reference and workflow changes intentionally fail the ordinary source-acceptance job. Maintainers review those changes separately, dispatch the verification workflow at the reviewed branch, and check its tests and all existing matches before merging. The repository requires PRs and the `verify` and `pr-metadata` checks for normal contributions; maintainers retain an administrative path for reviewed verifier updates. Third-party review bots do not decide whether reconstructed code matches.
+Tooling, reference and workflow changes intentionally fail the ordinary
+source-acceptance job. Review the change separately and dispatch the workflow
+at the reviewed branch. Check `verify-maintenance` on the exact reviewed SHA,
+then record the reviewer and run link on the PR before using the maintainer
+merge path. The repository requires PRs and GitHub Actions `verify` and
+`pr-metadata` checks for normal contributions. Model disclosure records who did
+the work. Acceptance uses exact verification and documented contract evidence.

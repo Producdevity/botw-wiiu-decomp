@@ -1,4 +1,5 @@
 from contextlib import redirect_stdout
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -7,9 +8,41 @@ import unittest
 from unittest.mock import patch
 
 from botw_decomp import cli, contracts
+from tests.test_rpx import CODE, START, make_rpx
 
 
 class ReportOutputTests(unittest.TestCase):
+    def test_private_instruction_diff_keeps_the_exact_mismatch(self):
+        key = f"fn_{START:08x}"
+        original = make_rpx()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "config").mkdir()
+            (root / "include").mkdir()
+            (root / "config/target.json").write_text(json.dumps({
+                "id": "fixture", "rpx_sha256": hashlib.sha256(original).hexdigest(),
+            }))
+            rpx = root / "synthetic.rpx"
+            rpx.write_bytes(original)
+            source = root / "candidate.cpp"
+            source.write_text(f'extern "C" int {key}() {{ return 8; }}\n')
+            rows = {key: {"id": key, "address": hex(START), "size": len(CODE), "symbol": key,
+                          "sha256": hashlib.sha256(CODE).hexdigest(), "source": "candidate.cpp"}}
+            output = io.StringIO()
+            with patch.object(cli, "ROOT", root), patch.object(cli, "functions", return_value=rows), \
+                    patch.object(cli, "local_config", return_value={"rpx": str(rpx)}), redirect_stdout(output):
+                self.assertEqual(cli.main(["check", key, "--diff", "--summary"]), 1)
+            result = json.loads(output.getvalue())
+            self.assertEqual(result["failures"][0].get("first_difference"), 3, result["failures"][0])
+            self.assertEqual(len(result["diffs"]), 1)
+            diff = root / result["diffs"][0]
+            self.assertTrue(diff.is_relative_to(root / ".local/diffs" / key))
+            self.assertEqual(diff.stat().st_mode & 0o777, 0o600)
+            self.assertIn("--- original\n+++ relocated candidate\n", diff.read_text())
+            self.assertIn("38 60 00 07", diff.read_text())
+            self.assertIn("38 60 00 08", diff.read_text())
+            self.assertNotIn("38 60 00 07", output.getvalue())
+
     def test_check_summary_still_checks_every_source_and_retains_failure(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

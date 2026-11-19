@@ -16,7 +16,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from botw_decomp import cli, compiler, project
+from botw_decomp import cli, compiler, project, verification_report
 
 
 class VerificationError(ValueError):
@@ -58,7 +58,7 @@ def is_header(name: str) -> bool:
 
 
 def is_document(name: str) -> bool:
-    return name in ("README.md", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md") or (
+    return name in ("README.md", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "candidates/README.md") or (
         name.startswith("docs/") and name.endswith(".md")
     )
 
@@ -105,8 +105,8 @@ def inspect_candidate(trusted: Path, candidate: Path, rows: dict[str, dict]) -> 
     return selected
 
 
-def verify_candidate(trusted: Path, candidate: Path, cxx: str) -> list[dict]:
-    rows = project.functions(trusted)
+def verify_candidate(trusted: Path, candidate: Path, cxx: str, *, rows: dict | None = None) -> list[dict]:
+    rows = project.functions(trusted) if rows is None else rows
     selected = inspect_candidate(trusted, candidate, rows)
     def verify(row):
         return cli.verify(row, cxx, root=candidate, image=None, references=rows)
@@ -115,21 +115,64 @@ def verify_candidate(trusted: Path, candidate: Path, cxx: str) -> list[dict]:
         return list(workers.map(verify, selected))
 
 
+def git_output(root: Path, *args: str) -> str:
+    return subprocess.run(["git", "-C", str(root), *args], check=True, capture_output=True,
+                          text=True, timeout=30).stdout
+
+
+def write_github_report(candidate: Path, rows: dict, target: dict, results: list[dict],
+                        base_run: str | None) -> None:
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    output_path = os.environ.get("GITHUB_OUTPUT")
+    if not (summary_path or output_path):
+        return
+    matched = {result["function"] for result in results if result.get("matched") is True}
+    failures = {result["function"] for result in results if result.get("matched") is not True}
+    if len(matched) + len(failures) != len(results) or matched & failures:
+        raise VerificationError("duplicate verification results")
+    report = {
+        "target": target["id"],
+        "base_commit": git_output(ROOT, "rev-parse", "HEAD").strip(),
+        "commit": git_output(candidate, "rev-parse", "HEAD").strip(),
+        "text_bytes": verification_report.text_size(target, rows),
+        "matched_bytes": sum(rows[key]["size"] for key in matched),
+        "matched_functions": len(matched),
+        "failed_functions": len(failures),
+    }
+    verification_report.validate_report(report)
+    if summary_path:
+        baseline = None
+        if base_run:
+            names = set(git_output(ROOT, "ls-files", "-z", "--", "reconstructions/").split("\0"))
+            baseline = {key for key, row in rows.items() if row["source"] in names}
+        with open(summary_path, "a", encoding="utf-8") as summary:
+            summary.write(verification_report.github_summary(report, failures, matched, baseline, base_run, rows))
+    if output_path and not failures:
+        with open(output_path, "a", encoding="utf-8") as output:
+            output.write("report=" + json.dumps(report, separators=(",", ":")) + "\n")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", required=True, type=Path)
     parser.add_argument("--compiler", default="clang++-18")
+    parser.add_argument("--base-run", help="Successful master workflow run for the exact trusted base")
     args = parser.parse_args(argv)
     try:
+        if args.base_run and not re.fullmatch(r"[1-9][0-9]*", args.base_run):
+            raise VerificationError("invalid trusted base run ID")
         candidate = args.candidate.resolve(strict=True)
         cxx = compiler.locate(args.compiler)
         print(json.dumps({"compiler": compiler.version(cxx)}), flush=True)
-        results = verify_candidate(ROOT, candidate, cxx)
+        rows = project.functions(ROOT)
+        target = project.read_json(ROOT / "config/target.json")
+        results = verify_candidate(ROOT, candidate, cxx, rows=rows)
         for result in results:
             print(json.dumps(result, sort_keys=True), flush=True)
         failed = [result for result in results if result.get("matched") is not True]
         print(json.dumps({"status": "failed" if failed else "passed", "checked": len(results),
                           "matched": len(results) - len(failed), "failed": len(failed)}))
+        write_github_report(candidate, rows, target, results, args.base_run)
         return 1 if failed else 0
     except (ValueError, OSError, KeyError, subprocess.SubprocessError) as error:
         print(f"ci: {error}", file=sys.stderr)

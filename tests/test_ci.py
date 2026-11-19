@@ -94,6 +94,40 @@ class CiTests(unittest.TestCase):
         self.write(self.head, "include/botw/actor.h", "struct Actor {};\n")
         self.assertEqual(len(self.inspect()), 1)
 
+    def test_candidate_guide_is_allowed_but_candidate_source_is_maintenance(self):
+        self.write(self.head, "candidates/README.md", "Candidate workflow")
+        self.assertEqual(len(self.inspect()), 1)
+        self.write(self.head, "candidates/fn_03000004.cpp", "void candidate() {}\n")
+        with self.assertRaisesRegex(ci.VerificationError, "Maintainer-only"):
+            self.inspect()
+
+    def test_report_compares_exact_results_with_a_confirmed_base(self):
+        first, second = self.rows
+        self.write(self.head, f"reconstructions/{second}.cpp", "void candidate() {}\n")
+        results = [{"function": first, "matched": False}, {"function": second, "matched": True}]
+        summary = Path(self.temporary.name) / "summary"
+        output = Path(self.temporary.name) / "output"
+        target = {"id": "fixture", "text": [{"address": "0x03000000", "size": 32}]}
+
+        def git_output(root, command, *args):
+            if command == "rev-parse":
+                return "b" * 40 if root == self.head else "a" * 40
+            return f"reconstructions/{first}.cpp\0"
+
+        with patch.object(ci, "git_output", side_effect=git_output), \
+                patch.dict("os.environ", {"GITHUB_STEP_SUMMARY": str(summary), "GITHUB_OUTPUT": str(output)}):
+            ci.write_github_report(self.head, self.rows, target, results, "12")
+            report = summary.read_text()
+            self.assertIn("12.50% exact .text match", report)
+            self.assertIn("Exact byte delta **+0**", report)
+            self.assertIn(f"**Lost exact matches (1)**\n\n`{first}`", report)
+            self.assertIn(f"**New exact matches (1)**\n\n`{second}`", report)
+            self.assertFalse(output.exists())
+            summary.unlink()
+            ci.write_github_report(self.head, self.rows, target, results, None)
+            self.assertIn("no confirmed master verification run", summary.read_text())
+            self.assertNotIn("Exact byte delta", summary.read_text())
+
     def test_symlink_header_is_rejected(self):
         directory = self.head / "include/botw"
         directory.mkdir(parents=True)
