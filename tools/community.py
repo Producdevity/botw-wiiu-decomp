@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import datetime as dt
 import json
 import os
@@ -13,7 +12,6 @@ import re
 import subprocess
 import sys
 import time
-from urllib.parse import quote
 
 
 REPO = "Producdevity/botw-wiiu-decomp"
@@ -98,25 +96,40 @@ def read_functions(path: Path, root: Path | None = None) -> dict[str, dict]:
     return result
 
 
-def remote_tree(api: GitHub, sha: str) -> dict[str, dict]:
-    tree = api.call("GET", api.route(f"git/trees/{sha}"))
-    if not isinstance(tree, dict) or tree.get("truncated") is not False or not isinstance(tree.get("tree"), list):
-        raise QueueError("Remote source tree is incomplete")
-    entries = {}
-    for entry in tree["tree"]:
-        path = entry.get("path") if isinstance(entry, dict) else None
-        if not isinstance(path, str) or path in ("", ".", "..") or "/" in path or path in entries:
-            raise QueueError("Invalid or duplicate remote source tree entry")
-        entries[path] = entry
-    return entries
+def git(root: Path, *args: str, timeout: int = 30) -> bytes:
+    result = subprocess.run(["git", "-C", str(root), *args], capture_output=True,
+                            check=False, timeout=timeout)
+    if result.returncode:
+        raise QueueError(result.stderr.decode(errors="replace").strip() or "git command failed")
+    return result.stdout
 
 
-def remote_subtree(api: GitHub, entry: dict) -> dict[str, dict]:
-    sha = entry.get("sha")
-    if (entry.get("type") != "tree" or entry.get("mode") != "040000"
-            or not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha)):
-        raise QueueError("Invalid remote source directory")
-    return remote_tree(api, sha)
+def git_snapshot(url: str, branch: str, root: Path = ROOT) -> tuple[str, bytes, set[str]]:
+    """Fetch the default branch with git; GitHub's tree API fails on the source directory."""
+    if not re.fullmatch(r"[A-Za-z0-9._/-]+", branch) or branch.startswith("-") or ".." in branch:
+        raise QueueError("Invalid default branch name")
+    shallow = git(root, "rev-parse", "--is-shallow-repository").strip() == b"true"
+    git(root, "fetch", "--quiet", "--no-tags", *(["--depth=1"] if shallow else []),
+        url, f"refs/heads/{branch}", timeout=600)
+    commit = git(root, "rev-parse", "--verify", "FETCH_HEAD^{commit}").decode().strip()
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise QueueError("Invalid default-branch commit")
+    entry = git(root, "ls-tree", "-z", commit, "config/functions.json").rstrip(b"\0")
+    if not entry.startswith((b"100644 blob ", b"100755 blob ")):
+        raise QueueError("Remote manifest must be a regular file")
+    manifest = git(root, "cat-file", "blob", f"{commit}:config/functions.json")
+    if not 0 < len(manifest) <= MAX_REMOTE_MANIFEST_BYTES:
+        raise QueueError("Invalid remote function manifest size")
+    sources = set()
+    for line in git(root, "ls-tree", "-z", commit, "reconstructions/").split(b"\0"):
+        if not line:
+            continue
+        metadata, path = line.split(b"\t", 1)
+        name = path.decode()
+        if not metadata.startswith((b"100644 blob ", b"100755 blob ")) or name.count("/") != 1:
+            raise QueueError("Remote reconstructions must be regular files")
+        sources.add(name)
+    return commit, manifest, sources
 
 
 def remote_functions(api: GitHub) -> dict[str, dict]:
@@ -124,49 +137,12 @@ def remote_functions(api: GitHub) -> dict[str, dict]:
     branch = metadata.get("default_branch") if isinstance(metadata, dict) else None
     if not isinstance(branch, str) or not branch:
         raise QueueError("Repository has no default branch")
-    commit = api.call("GET", api.route(f"commits/{quote(branch, safe='')}"))
-    detail = commit.get("commit") if isinstance(commit, dict) else None
-    tree_detail = detail.get("tree") if isinstance(detail, dict) else None
-    commit_sha = commit.get("sha") if isinstance(commit, dict) else None
-    tree_sha = tree_detail.get("sha") if isinstance(tree_detail, dict) else None
-    if (not isinstance(commit_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", commit_sha)
-            or not isinstance(tree_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", tree_sha)):
-        raise QueueError("Invalid default-branch commit or tree")
-    # Recursive tree responses exceed GitHub's size cap on the published tree.
-    tree = remote_tree(api, tree_sha)
-    config = remote_subtree(api, tree["config"]) if "config" in tree else {}
-    sources = remote_subtree(api, tree["reconstructions"]) if "reconstructions" in tree else {}
-    completed = set()
-    for path, entry in sources.items():
-        if entry.get("type") != "blob" or entry.get("mode") not in ("100644", "100755"):
-            raise QueueError("Remote reconstructions must be regular files")
-        completed.add(f"reconstructions/{path}")
-    manifest_entry = config.get("functions.json")
-    if (manifest_entry is None or manifest_entry.get("type") != "blob"
-            or manifest_entry.get("mode") not in ("100644", "100755")):
-        raise QueueError("Remote manifest must be a regular file")
-    blob_sha = manifest_entry.get("sha")
-    size = manifest_entry.get("size")
-    if (not isinstance(blob_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", blob_sha)
-            or type(size) is not int or not 0 < size <= MAX_REMOTE_MANIFEST_BYTES):
-        raise QueueError("Invalid remote function manifest metadata")
-    # The Contents API omits base64 content for files larger than 1 MB.
-    manifest = api.call("GET", api.route(f"git/blobs/{blob_sha}"))
-    if (not isinstance(manifest, dict) or manifest.get("sha") != blob_sha
-            or manifest.get("encoding") != "base64" or type(manifest.get("size")) is not int
-            or manifest["size"] != size or not isinstance(manifest.get("content"), str)):
-        raise QueueError("Invalid remote function manifest blob")
+    commit, manifest, completed = api.default_snapshot(branch)
     try:
-        encoded = "".join(manifest["content"].splitlines())
-        if len(encoded) != 4 * ((size + 2) // 3):
-            raise QueueError("Invalid remote function manifest length")
-        decoded = base64.b64decode(encoded, validate=True)
-        if len(decoded) != size:
-            raise QueueError("Invalid remote function manifest length")
-        value = json.loads(decoded)
+        value = json.loads(manifest)
     except (ValueError, TypeError) as error:
         raise QueueError("Invalid remote function manifest") from error
-    api.snapshot = {"default_branch": branch, "commit": commit_sha}
+    api.snapshot = {"default_branch": branch, "commit": commit}
     return parse_functions(value, completed)
 
 
@@ -250,6 +226,10 @@ class GitHub:
             if len(batch) < 100:
                 return result
         raise QueueError("Queue exceeds the 10,000-entry safety bound")
+
+    def default_snapshot(self, branch: str) -> tuple[str, bytes, set[str]]:
+        url = os.environ.get("BOTW_UPSTREAM_URL") or f"https://github.com/{self.repository}.git"
+        return git_snapshot(url, branch)
 
     def route(self, suffix: str) -> str:
         return f"repos/{self.repository}/{suffix}".rstrip("/")

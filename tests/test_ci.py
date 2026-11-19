@@ -56,6 +56,29 @@ class CiTests(unittest.TestCase):
     def test_unchanged_seed_is_checked(self):
         self.assertEqual([r["id"] for r in self.inspect()], ["fn_03000000"])
 
+    def changed(self):
+        selected = self.inspect()
+        return [r["id"] for r in ci.changed_functions(self.base, self.head, self.rows, selected)]
+
+    def test_changed_only_selects_new_and_edited_sources(self):
+        self.assertEqual(self.changed(), [])
+        self.write(self.head, "reconstructions/fn_03000004.cpp", 'extern "C" void fn_03000004() {}\n')
+        self.assertEqual(self.changed(), ["fn_03000004"])
+        self.write(self.head, "reconstructions/fn_03000000.cpp", 'extern "C" void fn_03000000() { }\n')
+        self.assertEqual(self.changed(), ["fn_03000000", "fn_03000004"])
+
+    def test_changed_only_rebuilds_everything_after_header_change(self):
+        self.write(self.head, "reconstructions/fn_03000004.cpp", 'extern "C" void fn_03000004() {}\n')
+        self.write(self.head, "include/botw/shared.h", "#pragma once\n")
+        self.assertEqual(self.changed(), ["fn_03000000", "fn_03000004"])
+
+    def test_changed_only_rechecks_supporting_compilation_dependents(self):
+        self.rows["fn_03000000"]["compile_with"] = ["fn_03000004"]
+        self.write(self.base, "reconstructions/fn_03000004.cpp", 'extern "C" void fn_03000004() {}\n')
+        self.stage(self.base)
+        self.write(self.head, "reconstructions/fn_03000004.cpp", 'extern "C" void fn_03000004() { }\n')
+        self.assertEqual(self.changed(), ["fn_03000000", "fn_03000004"])
+
     def test_new_reconstruction_requires_existing_trusted_reference(self):
         self.write(self.head, "reconstructions/fn_03000004.cpp", "void candidate() {}\n")
         self.assertEqual(len(self.inspect()), 2)
