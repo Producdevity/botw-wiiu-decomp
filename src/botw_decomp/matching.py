@@ -181,7 +181,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
                       data_bindings: dict[str, int] | None = None,
                       data_relocations: list | None = None,
                       function_scope: dict | None = None,
-                      import_relocations: list | None = None) -> tuple[dict, bytes | None]:
+                      import_relocations: list | None = None,
+                      unrelocated: list | None = None) -> tuple[dict, bytes | None]:
     result = {"matched": False, "status": "rejected", "reason": ""}
     try:
         if not isinstance(object_bytes, bytes):
@@ -232,6 +233,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
         result["actual_size"] = selected.size
         if selected.size != expected_size:
             result.update(status="mismatch", reason="function size differs")
+            if unrelocated is not None:
+                unrelocated.append(bytes(section.data[selected.value:selected.value + selected.size]))
             return result, None
         _validate_scope(obj, selected, function_scope)
         code = bytearray(section.data[selected.value:selected.value + selected.size])
@@ -291,9 +294,12 @@ def compare_function(object_bytes: bytes, symbol_name: str, expected: bytes,
                      differences: dict[str, tuple[bytes, bytes]] | None = None) -> dict:
     if not isinstance(expected, bytes):
         return {"matched": False, "status": "rejected", "reason": "reference input must be bytes"}
+    unrelocated = [] if differences is not None else None
     result, actual = _resolve_function(object_bytes, symbol_name, len(expected),
                                        original_address, symbol_bindings, data_bindings, data_relocations,
-                                       import_relocations=import_relocations)
+                                       import_relocations=import_relocations, unrelocated=unrelocated)
+    if unrelocated:
+        differences[symbol_name] = (expected, unrelocated[0])
     result["expected_sha256"] = _sha(expected)
     if actual is not None:
         if actual == expected:

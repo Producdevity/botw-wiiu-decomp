@@ -33,7 +33,7 @@ class ReportOutputTests(unittest.TestCase):
                     patch.object(cli, "local_config", return_value={"rpx": str(rpx)}), redirect_stdout(output):
                 self.assertEqual(cli.main(["check", key, "--diff", "--summary"]), 1)
             result = json.loads(output.getvalue())
-            self.assertEqual(result["failures"][0].get("first_difference"), 3, result["failures"][0])
+            self.assertEqual(result["failures"][0]["attempts"][0].get("first_difference"), 3, result["failures"][0])
             self.assertEqual(len(result["diffs"]), 1)
             diff = root / result["diffs"][0]
             self.assertTrue(diff.is_relative_to(root / ".local/diffs" / key))
@@ -42,6 +42,10 @@ class ReportOutputTests(unittest.TestCase):
             self.assertIn("38 60 00 07", diff.read_text())
             self.assertIn("38 60 00 08", diff.read_text())
             self.assertNotIn("38 60 00 07", output.getvalue())
+            with patch.object(cli, "ROOT", root), patch.object(cli, "functions", return_value=rows), \
+                    patch.object(cli, "local_config", return_value={"rpx": str(rpx)}), redirect_stdout(io.StringIO()):
+                cli.main(["check", key, "--diff", "--summary"])
+            self.assertEqual([path.name for path in (root / ".local/diffs" / key).iterdir()], [diff.name])
 
     def test_check_summary_still_checks_every_source_and_retains_failure(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -68,7 +72,7 @@ class ReportOutputTests(unittest.TestCase):
             full = json.loads((root / ".local/last-check.json").read_text())
             self.assertEqual(verify.call_count, 2)
             self.assertEqual(compact["matched_functions"], 1)
-            self.assertEqual(compact["failures"], results[1:])
+            self.assertEqual(compact["failures"], [{"function": results[1]["function"], "attempts": [{"reason": "mismatch"}]}])
             self.assertNotIn("results", compact)
             self.assertEqual(full["results"], results)
 

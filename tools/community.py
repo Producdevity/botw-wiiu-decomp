@@ -490,12 +490,13 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--max-size", type=int, help="Maximum original code bytes")
         command.add_argument("--category", action="append", help="Category to include; repeat for several")
         command.add_argument("--prepared", action="store_true", help="Require a pinned interface and no reported blocker or open submission")
+        command.add_argument("--unprepared", action="store_true", help="Only tasks whose interface you must infer")
     status = commands.add_parser("status", help="Show accepted claims, or one request")
     status.add_argument("issue", type=int, nargs="?")
     for command in (claim, status):
         command.add_argument("--wait", type=int, default=0, help="Poll acceptance for at most 0-600 seconds")
     release = commands.add_parser("release", help="Release your own claim")
-    release.add_argument("issue", type=int)
+    release.add_argument("claim", help="Claim issue number or function id")
     commands.add_parser("reconcile", help="Maintainer workflow: process all open requests")
     args = parser.parse_args(argv)
     try:
@@ -514,11 +515,20 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "status" and args.issue:
             result = wait_for_request(api, args.issue, functions, args.wait)
         elif args.command == "release":
-            issue = api.call("GET", api.route(f"issues/{args.issue}"))
             user = api.call("GET", "user")["login"]
+            if args.claim.isdigit():
+                issue = api.call("GET", api.route(f"issues/{args.claim}"))
+            elif re.fullmatch(r"fn_[0-9a-f]{8}", args.claim):
+                mine = [item for item in api.open_issues() if is_request(item) and item["user"]["login"] == user
+                        and REQUEST.findall(item.get("body") or "") == [args.claim]]
+                if not mine:
+                    raise QueueError(f"No open claim of yours for {args.claim}")
+                issue = mine[0]
+            else:
+                raise QueueError("Release takes a claim issue number or a function id")
             if issue["user"]["login"] != user or not is_request(issue):
                 raise QueueError("You can release only your own claim issues")
-            result = api.call("PATCH", api.route(f"issues/{args.issue}"), {"state": "closed", "state_reason": "not_planned"})
+            result = api.call("PATCH", api.route(f"issues/{issue['number']}"), {"state": "closed", "state_reason": "not_planned"})
             result = {"issue": result["number"], "state": result["state"]}
         else:
             issues = api.open_issues()
@@ -531,8 +541,12 @@ def main(argv: list[str] | None = None) -> int:
                 if args.command == "summary":
                     result = queue_summary(api, functions, claims, blockers, submissions)
                 else:
+                    if args.prepared and args.unprepared:
+                        raise QueueError("Choose --prepared or --unprepared, not both")
                     available = task_list(functions, claims, blockers, args.min_size, args.max_size, args.category,
                                           submissions, prepared=args.prepared)
+                    if args.unprepared:
+                        available = [row for row in available if "source_contract" not in row]
                     if args.command == "list":
                         result = [{("write_to" if key == "source" else key): value for key, value in row.items()}
                                   for row in available[:max(0, args.limit)]]
