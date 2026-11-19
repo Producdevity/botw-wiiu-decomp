@@ -93,7 +93,7 @@ class AutomergeTests(unittest.TestCase):
 
     def test_second_pr_adding_the_same_file_is_skipped(self):
         api = FakeApi()
-        api.open_pulls = lambda: [dict(FakeApi.open_pulls(api), number=7), dict(FakeApi.open_pulls(api), number=8)]
+        api.open_pulls = lambda: [dict(FakeApi.open_pulls(api)[0], number=7), dict(FakeApi.open_pulls(api)[0], number=8)]
         self.assertEqual([p["number"] for p in automerge.candidates(api, self.rows, set())], [7])
 
     def test_merge_stops_when_master_moved(self):
