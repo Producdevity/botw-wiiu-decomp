@@ -74,7 +74,7 @@ def read_blob(api: community.GitHub, repository: str, sha: str) -> bytes:
 
 
 def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]) -> list[dict]:
-    selected = []
+    selected, taken = [], set()
     for pull in api.open_pulls():
         if len(selected) == MAX_PULLS:
             break
@@ -82,7 +82,7 @@ def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]
         if pull.get("draft") or base.get("ref") != "master" or not SHA.fullmatch(head.get("sha", "")):
             continue
         files = api.pages(api.route(f"pulls/{pull['number']}/files"))
-        sources = eligible_sources(files, rows, published)
+        sources = eligible_sources(files, rows, published | taken)
         if sources is None:
             continue
         functions = sorted(SOURCE.fullmatch(name).group(1) for name in sources)
@@ -98,6 +98,7 @@ def candidates(api: community.GitHub, rows: dict[str, dict], published: set[str]
             contents = {name: read_blob(api, repository, sha) for name, sha in sources.items()}
         except (ValueError, community.QueueError):
             continue
+        taken.update(contents)
         selected.append({"number": pull["number"], "head": head["sha"], "functions": functions,
                          "contents": contents})
     return selected
