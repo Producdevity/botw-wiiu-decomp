@@ -3,6 +3,7 @@ import re
 
 
 IMPORT_PROFILE = "cafe-import-rel24-v1"
+MIXED_PROFILE = "cafe-data-import-rel24-v1"
 NAME = re.compile(r"[A-Za-z_][A-Za-z_0-9]*\Z")
 THUNK = re.compile(r"fn_[0-9a-f]{8}\Z")
 

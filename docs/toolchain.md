@@ -129,6 +129,16 @@ The opt-in `ghs-5.3.22-speed-single-exit` profile pins
 wrappers. The switch and emitted function size were verified with the
 pinned GHS archive.
 
+The opt-in `ghs-5.3.22-speed-no-uvfd-info` profile uses `-Ospeed -Xnouvfd_info`
+for native C++ virtual calls. The pinned compiler omits its unused virtual
+function deletion metadata and emits an object the exact verifier can check
+directly. Reference rows select this profile explicitly.
+
+The opt-in `ghs-5.3.22-speed-no-two-predecessor-merge` profile uses
+`-Ospeed -Xnomergeblocks_twopreds` for guarded runtime tag queries.
+The pinned build preserves the shared return block and the byte-width
+result used by the original executable.
+
 ## Intrinsic declarations
 
 `include/botw/ghs_intrinsics.h` centralizes measured PowerPC intrinsic signatures.

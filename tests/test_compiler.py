@@ -21,6 +21,20 @@ class CompilerProfileTests(unittest.TestCase):
                                          "-bigendian", "--no_exceptions", "--no_rtti"])
         self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
 
+    def test_no_uvfd_info_requires_an_explicit_profile(self):
+        profile = "ghs-5.3.22-speed-no-uvfd-info"
+        self.assertEqual(profiles({"compiler_profile": profile}), [profile])
+        self.assertEqual(flags(profile), ["-Ospeed", "-Xnouvfd_info",
+                                         "-bigendian", "--no_exceptions", "--no_rtti"])
+        self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
+
+    def test_no_two_predecessor_merge_requires_an_explicit_profile(self):
+        profile = "ghs-5.3.22-speed-no-two-predecessor-merge"
+        self.assertEqual(profiles({"compiler_profile": profile}), [profile])
+        self.assertEqual(flags(profile), ["-Ospeed", "-Xnomergeblocks_twopreds",
+                                         "-bigendian", "--no_exceptions", "--no_rtti"])
+        self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
+
 
 class SourcePolicyTests(unittest.TestCase):
     def test_normal_source_and_literal_project_header(self):
