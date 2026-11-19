@@ -50,8 +50,7 @@ PowerPC, or how to extract the executable.
 
 ## Claim and investigate
 
-Check the selected ID in [known attempts](known-attempts.md) and the
-[candidate index](../candidates/README.md) before repeating a failed approach.
+Check the selected ID in [known attempts](known-attempts.md) before repeating a failed approach.
 Use a new evidence-backed hypothesis or choose another task.
 
 ```sh

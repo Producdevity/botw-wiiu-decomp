@@ -5,7 +5,7 @@ bindings and verification. A recovered semantic name supplements that identity;
 it does not replace it or require renaming a matching entry point.
 
 Use `config/symbols.json` for public semantic-name evidence and review status.
-The initial catalog is empty. Propose names and evidence in a reconstruction
+Propose names and evidence in a reconstruction
 PR's description or ordinary documentation. Promotion into this catalog requires
 a separate maintainer-reviewed maintenance PR; it is trusted metadata, outside
 the ordinary source acceptance allowlist. Inspect or validate it without an RPX:

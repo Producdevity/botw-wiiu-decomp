@@ -83,4 +83,4 @@ function IDs and redacted diagnostics, never private packet contents.
 There is no model whitelist. Start with an inexpensive coding agent on a bounded
 task with established contracts. Use more reasoning selectively for difficult
 signature, layout or compiler inference. Judge tools by verified results within
-your budget. In our [prepared-function pilot](model-pilot.md), Luna at xhigh matched all four tasks.
+your budget. See the [bounded model pilots](model-pilot.md) for measured results.

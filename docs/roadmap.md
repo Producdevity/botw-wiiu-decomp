@@ -1,10 +1,9 @@
 # Priorities
 
-Aim for 1% byte coverage of the pinned Wii U `.text` section before broad
-outreach, with at least one linked code-and-data component. Build components
-in local batches and review their contracts, references and exact matches
-before opening a component PR. Expand the admitted backlog from those
-components as needed. Raw discovery counts measure candidate boundaries.
+Prioritize components that can link verified code and data. Build them locally
+and review boundaries, interfaces and exact matches before opening a component
+PR. Admit references as needed to resolve dependencies and keep a prepared
+contributor queue.
 
 1. **Build one linked component.** Reproduce the random-state and direct-call
    linker checks, then choose one component with verified code and data. Check
@@ -20,10 +19,10 @@ components as needed. Raw discovery counts measure candidate boundaries.
 4. **Keep prepared tasks available.** Use reviewed interfaces and supported
    dependencies for inexpensive contributor work. Publish matched bytes,
    linked units and evidence gaps alongside function counts.
-5. **Prioritize H700 work using measurements.** Choose resource heaps, asset
-   streaming, lifetimes, renderer submission or update scheduling according
-   to measured costs. Test ARM/GLES adaptation and memory/performance changes
-   in the consuming port. Preserve legibility at 640×480 and verify on device.
+5. **Use port measurements to prioritize shared runtime work.** Resource heaps,
+   asset streaming and renderer submission are candidates when measurements
+   identify them as bottlenecks. ARM/GLES adaptation and device validation
+   belong in the consuming port.
 
 Use GitHub Issues for compiler, type and verifier blockers. Include affected function IDs and the precise missing evidence. One shared fix should unblock a group of tasks before more agents repeat the same investigation.
 

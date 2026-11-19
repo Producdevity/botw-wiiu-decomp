@@ -18,18 +18,23 @@ An exact byte match proves that the checked machine-code span is identical under
 - Opt-in [`cafe-data-address-v1`](data-relocations.md) for original absolute data relocations whose fields already equal their link-address values. Original and compiled relocation provenance must agree field by field.
 - Opt-in `cafe-import-rel24-v1` for prelinked Cafe import branches, and `cafe-data-import-rel24-v1` when one function contains both data and import relocations. The combined profile requires both contracts and checks every field using the same validation as the individual profiles.
 - Opt-in [supporting-function compilation](supporting-compilation.md), verifying every emitted body against a closed trusted reference set.
-- Rebuild of all implemented functions when any shared header changes.
+- Rebuild of all submitted implementations in hosted verification.
 - Private extraction and disassembly from the contributor's own dump.
 
 The default reference profile excludes any original span affected by an RPX relocation. A separately reviewed reference may opt into a supported relocation profile. Compiled references to local `.rodata`, jump tables outside the span, unsupported relocations, malformed ELF and unresolved symbols fail closed. Extending support requires fixtures and a reference update; contributors cannot bypass it by changing expected hashes.
 
-## Inventory
+## Coverage
 
-The initial 100 tasks were selected across integer, floating-point, control-flow, calls and loops. Discovery starts at direct call targets and follows bounded, contiguous control flow, rejecting ambiguous indirect transfers. This is a conservative candidate inventory, not a complete recovered symbol table. Seventeen functions were independently reconstructed and checked against the user's pinned RPX before publication, including loops and an external-call wrapper.
+`python3 tools/decomp.py check --all --hash-only --summary` reports `matched_functions` and
+`matched_bytes` for a rebuilt checkout. Divide `matched_bytes` by the total `text[].size`
+in [the target manifest](../config/target.json) to calculate exact executable-code coverage.
+Use `python3 tools/community.py summary` for the live source and task counts. Those counts
+come from tracked files and the claim queue. Use the full verifier to confirm exact matches.
 
-Unmatched tasks try fixed GHS optimization profiles: speed, general, space, speed with tail recursion and pipeline scheduling disabled, speed without loop unrolling, and speed without constant propagation. Each attempt receives the same exact comparison; a match records the successful profile. No profile may relax comparison or change trusted reference bytes.
-
-`python3 tools/decomp.py progress` rebuilds available implementations and reports pilot counts. It does not calculate a misleading percentage of the whole game.
+The [discovery inventory](inventory.md) proposes function boundaries. The trusted
+[reference catalog](../config/functions.json) contains the functions admitted for matching.
+Compiler options are defined in [the compiler module](../src/botw_decomp/compiler.py).
+Each selected profile uses the same exact comparison.
 
 ## Maintaining the verifier
 

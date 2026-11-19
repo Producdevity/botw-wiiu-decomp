@@ -1,10 +1,9 @@
 # Known unmatched attempts
 
 Check the selected function here before starting another attempt. These records
-cover the fixed GHS 5.3.22 profiles. The [candidate index](../candidates/README.md)
-links readable partial sources; they are not accepted implementations. A retry
-should have new source, layout or compiler evidence; keep the exact check as the acceptance gate. Update or remove
-the record when its blocker is resolved.
+cover the fixed GHS 5.3.22 profiles. [Candidate sources](../candidates/) are
+available for some functions. Bring new source, layout or compiler evidence
+to a retry. Update or remove the record when its blocker is resolved.
 
 | Functions | Evidence already recovered | What remains |
 | --- | --- | --- |
@@ -30,7 +29,7 @@ the record when its blocker is resolved.
 | `fn_022ffa68` | Aggregate, scalar and member forms of three word copies plus a byte flag update. | Scalar forms preserve overlapping-copy order and reach 44 bytes, but differ in allocation. Aggregate assignment is not a substitute for that order. |
 | `fn_02579a1c` | Accessor and address-word forms of nested flag/byte updates and an outer halfword update. | The typed-pointer form incorrectly removes a required pointer reload. The address-word hypothesis restores it but still differs; the alias/layout contract remains open. |
 | `fn_02802f5c` | Direct value, aggregate, member and copied-value operator forms of a word comparison. | They remove the original stack store/load. Neither a by-value aggregate nor an explicit copy establishes the original source contract. |
-| `fn_02470538` | Three null-guarded predicate forms across all six fixed profiles; the closest emits 72 bytes. The helper now has a shared opaque pointer interface. | Final byte normalization and LR-load scheduling differ. More boolean spelling changes need new compiler or source evidence. A readable candidate is available. |
+| `fn_02470538` | Three null-guarded predicate forms across all six fixed profiles; the closest emits 72 bytes. The target null-checks a pointer at offset 44 before calling `fn_0314dbf0`. Its [shared interface](../include/botw/field_accessors.h) takes an opaque pointer and returns bit one of word zero. | Final byte normalization and LR-load scheduling differ. See the [candidate](../candidates/fn_02470538.cpp). |
 | `fn_02a2d984` | Three nonvolatile float-pair copies, including an archived starting source. | All emit 28 bytes instead of 32 by removing an observed float reread. Recover the alias/layout evidence before changing storage qualifiers. |
 | `fn_0272eb1c`, `fn_0272ee28` | Typed 16-byte record traversal preserves the signed initial bound, unsigned live index check, count reload and base fallback. | General emits the original lengths, with different saved-register allocation, stride calculation and return scheduling. |
 | `fn_028675a8` | Two inline arrays of five 28-byte records and the first failing embedded handle are recovered. | Speed emits 264 bytes with different initial register allocation, member address materialization and return scheduling. |
@@ -50,7 +49,13 @@ python3 tools/decomp.py check fn_0234c61c --source candidates/fn_0234c61c.cpp
 python3 tools/decomp.py check fn_0234c61c --source candidates/fn_0234c61c.cpp --hash-only
 ```
 
-## Fresh control-flow cases
+## Register-allocation diagnostic
+
+The [counter candidate](../candidates/fn_03cafe80.cpp) reproduces the observed
+wrap behavior. The [register diagnostic](register-diagnostics.md) agrees under
+four compiler profiles. Exact verification still rejects the candidate.
+
+## Control-flow cases
 
 The following behavior was independently reviewed against original instructions.
 The inferred class identities and historical signatures remain open.
@@ -69,7 +74,3 @@ The inferred class identities and historical signatures remain open.
 Private packets, original bytes, disassembly and compiler output stay local.
 Shared blocker issues can group functions needing the same evidence; search for
 an existing issue before opening another.
-
-`fn_02017840` now matches with the asserted 28-byte stride and an inline entry
-accessor. The internal view method reproduces the original allocation while
-preserving the base-entry fallback. See the [reconstruction](../reconstructions/fn_02017840.cpp) for the accepted form.
