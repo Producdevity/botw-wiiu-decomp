@@ -47,9 +47,7 @@ compiler. `.wua` input also needs zstd headers.
 - Ubuntu 24.04: `sudo apt install python3 clang-18 llvm-18 libclang1-18 lld-18 gh libzstd-dev`
 
 ```sh
-python3 tools/preflight.py --game /path/to/dump-or-game.wua
-python3 tools/toolchain.py
-python3 tools/decomp.py setup --game /path/to/dump-or-game.wua
+python3 tools/start.py --game /path/to/dump-or-game.wua
 python3 tools/community.py list --prepared --max-size 128
 python3 tools/decomp.py packet FUNCTION
 python3 tools/decomp.py check FUNCTION --diff --summary
