@@ -64,7 +64,8 @@ python3 tools/decomp.py packet FUNCTION
 ```
 
 The private packet in `.local/packets/FUNCTION/` has the disassembly, callers,
-callees, data bindings and `task.json`. Write `reconstructions/FUNCTION.cpp`:
+callees, data bindings and `task.json`. Start from `draft.cpp` when the packet has
+one (it is a guess to edit, not a match). Write `reconstructions/FUNCTION.cpp`:
 
 - Define `extern "C"` functions named `fn_XXXXXXXX`. Declare each callee
   `extern "C"` with the signature its other uses support.

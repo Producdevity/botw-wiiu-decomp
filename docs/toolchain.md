@@ -53,6 +53,31 @@ See [toolchain pins](../config/toolchains.json) for release URLs and hashes.
 support. Its [macOS build supports Rosetta](https://github.com/decompals/wibo/blob/1.2.0/README.md).
 Both macOS and Linux builds are verified; the public acceptance workflow rebuilds all submitted implementations on Ubuntu 24.04.
 
+## Optional m2c drafts
+
+`python3 tools/draft.py install` fetches [m2c](https://github.com/matt-kempster/m2c)
+(GPL-3.0) at a pinned commit into `.local/tools/m2c/` and verifies both the
+commit and a SHA-256 over the checkout. Nothing is vendored; m2c runs as a
+separate process on the Python you already use, so there is no venv. Once it is
+installed, `decomp.py packet FUNCTION` also writes
+`.local/packets/FUNCTION/draft.cpp`. Without it, packets are unchanged.
+
+The draft converts the original words to GNU `as` syntax with
+`src/botw_decomp/ppc_gnu.py` (integer, branch and scalar float instructions; a
+function with anything else, such as paired singles, gets no draft). Data
+relocations become `data_XXXXXXXX@ha/@l`, callees keep their `fn_XXXXXXXX`
+names, and a pinned `source_contract` replaces the inferred signature. Callee
+prototypes are known only when the callee row has a contract; otherwise they
+are m2c's guesses. `python3 tools/draft.py status` re-verifies the install and
+`python3 tools/draft.py draft FUNCTION` prints a draft without writing a packet.
+
+In a 30-function sample of matched sources (16–256 bytes), 26 got a draft, 20
+compiled, and 5 matched with no edits, all of them 52 bytes or smaller. Most
+misses are near misses: register choice, store order, element width, return
+narrowing. Compile errors are mostly void-pointer arithmetic and pointer/integer
+mismatches. A draft is a starting point, never evidence for an interface, and
+`check` remains the only acceptance.
+
 ## Reusable research
 
 | Project | Useful material | Matching status |
