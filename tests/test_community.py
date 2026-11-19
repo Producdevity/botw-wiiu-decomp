@@ -1,4 +1,3 @@
-import base64
 from contextlib import redirect_stderr, redirect_stdout
 import copy
 import datetime as dt
@@ -6,6 +5,7 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -86,33 +86,21 @@ class RemoteGitHub(FakeGitHub):
     pages = queue.GitHub.pages
     open_pulls = queue.GitHub.open_pulls
     COMMIT = "a" * 40
-    TREE = "b" * 40
-    BLOB = "c" * 40
-    CONFIG = "d" * 40
-    SOURCES = "e" * 40
 
     def __init__(self, sources=(), issues=(), comments=None):
         super().__init__(issues, comments)
         self.calls = []
         self.rows = {key: {**row, "source": f"reconstructions/{key}.cpp"}
                      for key, row in FUNCTIONS.items()}
+        self.sources = set(sources)
         self.set_manifest({"functions": list(self.rows.values())})
-        self.tree = {"truncated": False, "tree": [
-            {"path": "config", "type": "tree", "mode": "040000", "sha": self.CONFIG},
-            {"path": "reconstructions", "type": "tree", "mode": "040000", "sha": self.SOURCES},
-        ]}
-        self.config_tree = {"truncated": False, "tree": [
-            {"path": "functions.json", "type": "blob", "mode": "100644",
-             "sha": self.BLOB, "size": self.blob["size"]},
-        ]}
-        self.source_tree = {"truncated": False, "tree": [
-            {"path": Path(path).name, "type": "blob", "mode": "100644"} for path in sources
-        ]}
 
     def set_manifest(self, value):
-        manifest = json.dumps(value).encode()
-        self.blob = {"sha": self.BLOB, "encoding": "base64", "size": len(manifest),
-                     "content": base64.b64encode(manifest).decode()}
+        self.manifest = json.dumps(value).encode()
+
+    def default_snapshot(self, branch):
+        self.calls.append(("GIT", branch, None))
+        return self.COMMIT, self.manifest, set(self.sources)
 
     def call(self, method, path, payload=None):
         self.calls.append((method, path, payload))
@@ -121,16 +109,6 @@ class RemoteGitHub(FakeGitHub):
                 return copy.deepcopy(self.pulls)
             if path == "":
                 return {"default_branch": "branch/default"}
-            if path == "commits/branch%2Fdefault":
-                return {"sha": self.COMMIT, "commit": {"tree": {"sha": self.TREE}}}
-            if path == f"git/blobs/{self.BLOB}":
-                return self.blob
-            if path == f"git/trees/{self.TREE}":
-                return self.tree
-            if path == f"git/trees/{self.CONFIG}":
-                return self.config_tree
-            if path == f"git/trees/{self.SOURCES}":
-                return self.source_tree
         if method == "POST" and path == "issues":
             return {"number": 2, "html_url": "https://github.com/example/project/issues/2"}
         return super().call(method, path, payload)
@@ -147,7 +125,6 @@ class QueueTests(unittest.TestCase):
         api = RemoteGitHub()
         api.rows["fn_03000000"]["status"] = "matched"
         api.set_manifest({"functions": list(api.rows.values())})
-        api.config_tree["tree"][-1]["size"] = api.blob["size"]
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -165,8 +142,7 @@ class QueueTests(unittest.TestCase):
         api.rows["fn_03000004"] = {"id": "fn_03000004", "size": 32, "status": "unmatched", "source": "reconstructions/fn_03000004.cpp", "category": "loops"}
         api.rows["fn_03000008"] = {"id": "fn_03000008", "size": 12, "status": "unmatched", "source": "reconstructions/fn_03000008.cpp", "category": "integer"}
         api.set_manifest({"functions": list(api.rows.values())})
-        api.config_tree["tree"][-1]["size"] = api.blob["size"]
-        api.source_tree["tree"].append({"path": "fn_03000008.cpp", "type": "blob", "mode": "100644"})
+        api.sources.add("reconstructions/fn_03000008.cpp")
         code, result, errors = self.run_main(api, ["summary"])
         self.assertEqual((code, errors), (0, ""))
         self.assertEqual(result["snapshot"]["commit"], api.COMMIT)
@@ -212,7 +188,6 @@ class QueueTests(unittest.TestCase):
         api.rows["fn_03000004"] = {"id": "fn_03000004", "size": 256, "status": "unmatched", "source": "reconstructions/fn_03000004.cpp"}
         api.rows["fn_03000008"] = {"id": "fn_03000008", "size": 16, "status": "unmatched", "source": "reconstructions/fn_03000008.cpp"}
         api.set_manifest({"functions": list(api.rows.values())})
-        api.config_tree["tree"][-1]["size"] = api.blob["size"]
         api.pulls = [{"number": 4, "html_url": "https://example/pull/4", "draft": True, "state": "open",
                       "body": "## Functions\nfn_03000000\nfn_03000008\n"}]
         code, result, errors = self.run_main(api, ["summary"])
@@ -287,9 +262,7 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(wait.call_args.args[1::2], (2, 10))
 
     def test_invalid_repository_commit_metadata_fail_with_queue_errors(self):
-        cases = [("", None), ("", []), ("commits/branch%2Fdefault", None),
-                 ("commits/branch%2Fdefault", {"sha": "a" * 40, "commit": {"tree": None}}),
-                 ("commits/branch%2Fdefault", {"sha": 7, "commit": {"tree": {"sha": "b" * 40}}})]
+        cases = [("", None), ("", []), ("", {"default_branch": ""})]
         for path, value in cases:
             with self.subTest(path=path, value=value):
                 api = RemoteGitHub()
@@ -492,91 +465,30 @@ class QueueTests(unittest.TestCase):
         self.assertIn("No available task", errors.getvalue())
         self.assertFalse(any(call[0] == "POST" for call in api.calls))
 
-    def test_remote_reads_pin_manifest_and_sources_to_one_commit(self):
+    def test_remote_reads_pin_manifest_and_sources_to_one_snapshot(self):
         api = RemoteGitHub()
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "unmatched")
-        self.assertEqual([path for _, path, _ in api.calls], [
-            "", "commits/branch%2Fdefault",
-            f"git/trees/{api.TREE}", f"git/trees/{api.CONFIG}",
-            f"git/trees/{api.SOURCES}", f"git/blobs/{api.BLOB}"])
-
-    def test_remote_manifest_larger_than_contents_limit_uses_pinned_blob(self):
         api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
-        api.set_manifest({"functions": list(api.rows.values()), "padding": "x" * 1_100_000})
-        api.config_tree["tree"][-1]["size"] = api.blob["size"]
-        self.assertGreater(api.blob["size"], 1_000_000)
         self.assertEqual(queue.remote_functions(api)["fn_03000000"]["status"], "matched")
-        self.assertEqual([path for _, path, _ in api.calls], [
-            "", "commits/branch%2Fdefault",
-            f"git/trees/{api.TREE}", f"git/trees/{api.CONFIG}",
-            f"git/trees/{api.SOURCES}", f"git/blobs/{api.BLOB}"])
+        self.assertEqual([path for _, path, _ in api.calls], ["", "branch/default"])
+        self.assertEqual(api.snapshot, {"default_branch": "branch/default", "commit": api.COMMIT})
 
-    def test_remote_manifest_metadata_rejects_unsafe_or_oversized_blobs(self):
-        invalid = [{"mode": "120000"}, {"type": "commit"}, {"sha": "main"},
-                   {"sha": None}, {"size": 0}, {"size": True}, {"size": "100"},
-                   {"size": queue.MAX_REMOTE_MANIFEST_BYTES + 1}]
-        for fields in invalid:
-            with self.subTest(fields=fields):
-                api = RemoteGitHub()
-                api.config_tree["tree"][-1].update(fields)
-                with self.assertRaises(queue.QueueError):
-                    queue.remote_functions(api)
-                self.assertFalse(any("git/blobs/" in path for _, path, _ in api.calls))
-
-    def test_remote_manifest_requires_one_tree_entry(self):
-        for entries in ([], ["duplicate"], [None], [{"path": None}]):
-            with self.subTest(entries=entries):
-                api = RemoteGitHub()
-                if entries == ["duplicate"]:
-                    api.config_tree["tree"].append(dict(api.config_tree["tree"][-1]))
-                else:
-                    api.config_tree["tree"] = entries
-                with self.assertRaises(queue.QueueError):
-                    queue.remote_functions(api)
-
-    def test_remote_manifest_blob_rejects_invalid_responses(self):
-        invalid = [None, [], {"sha": "d" * 40}, {"encoding": "none"},
-                   {"size": -1}, {"size": True}, {"content": None}, {"content": 12},
-                   {"content": "!" * 180}, {"content": ""},
-                   {"content": base64.b64encode(b"invalid json").decode(), "size": 12}]
-        for fields in invalid:
-            with self.subTest(fields=fields):
-                api = RemoteGitHub()
-                if isinstance(fields, dict):
-                    api.blob.update(fields)
-                else:
-                    api.blob = fields
-                with self.assertRaises(queue.QueueError):
-                    queue.remote_functions(api)
-
-    def test_remote_manifest_rejects_invalid_base64_and_json_with_matching_sizes(self):
-        for encoded, size in (("!!!!", 3), ("eA==", 2), ("eA==", 1)):
-            with self.subTest(encoded=encoded, size=size):
-                api = RemoteGitHub()
-                api.blob.update(content=encoded, size=size)
-                api.config_tree["tree"][-1]["size"] = size
-                with self.assertRaises(queue.QueueError):
-                    queue.remote_functions(api)
+    def test_remote_manifest_rejects_invalid_json(self):
+        api = RemoteGitHub()
+        api.manifest = b"invalid json"
+        with self.assertRaises(queue.QueueError):
+            queue.remote_functions(api)
 
     def test_remote_manifest_invalid_schema_fails_with_clean_json_output(self):
         for value in ({}, {"functions": None}, [None]):
             with self.subTest(value=value):
                 api = RemoteGitHub()
                 api.set_manifest(value)
-                api.config_tree["tree"][-1]["size"] = api.blob["size"]
                 output, errors = io.StringIO(), io.StringIO()
                 with patch.object(queue, "GitHub", return_value=api), redirect_stdout(output), redirect_stderr(errors):
                     self.assertEqual(queue.main(["list"]), 1)
                 self.assertEqual(output.getvalue(), "")
                 self.assertIn("Function", errors.getvalue())
-
-    def test_incomplete_remote_tree_fails_closed(self):
-        for directory in ("tree", "config_tree", "source_tree"):
-            with self.subTest(directory=directory):
-                api = RemoteGitHub()
-                getattr(api, directory)["truncated"] = True
-                with self.assertRaisesRegex(queue.QueueError, "incomplete"):
-                    queue.remote_functions(api)
 
     def test_prepared_tasks_require_a_pin_and_no_active_work_or_report(self):
         pin = {"return_type": "void", "parameter_types": ["void *"], "variadic": False}
@@ -588,12 +500,6 @@ class QueueTests(unittest.TestCase):
         submissions = {ids[4]: [{"number": 11}]}
         available = queue.task_list(rows, claims, blockers, submissions=submissions, prepared=True)
         self.assertEqual([row["id"] for row in available], [ids[0]])
-
-    def test_remote_symlink_cannot_mark_task_complete(self):
-        api = RemoteGitHub(sources=["reconstructions/fn_03000000.cpp"])
-        api.source_tree["tree"][0]["mode"] = "120000"
-        with self.assertRaisesRegex(queue.QueueError, "regular files"):
-            queue.remote_functions(api)
 
     def test_github_request_timeout_is_bounded_and_handled(self):
         timeout = queue.subprocess.TimeoutExpired(["gh", "api"], 30)
@@ -615,6 +521,52 @@ class QueueTests(unittest.TestCase):
             self.assertEqual(child["TEST_COMMUNITY_ENV"], "preserved")
             self.assertEqual(queue.os.environ["CLICOLOR_FORCE"], "1")
 
+
+
+class GitSnapshotTests(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.upstream = Path(directory.name) / "upstream"
+        self.local = Path(directory.name) / "local"
+        for root in (self.upstream, self.local):
+            root.mkdir()
+            self.git(root, "init", "-q", "-b", "main")
+        (self.upstream / "config").mkdir()
+        (self.upstream / "reconstructions").mkdir()
+        (self.upstream / "config/functions.json").write_text('{"functions": []}')
+        (self.upstream / "reconstructions/fn_03000000.cpp").write_text("void f() {}\n")
+
+    @staticmethod
+    def git(root, *args):
+        subprocess.run(["git", "-C", str(root), "-c", "user.name=t", "-c", "user.email=t@example.invalid",
+                        *args], check=True, capture_output=True)
+
+    def commit(self):
+        self.git(self.upstream, "add", "-A")
+        self.git(self.upstream, "commit", "-q", "-m", "snapshot")
+
+    def test_reads_manifest_and_regular_sources_from_fetched_commit(self):
+        self.commit()
+        commit, manifest, sources = queue.git_snapshot(str(self.upstream), "main", self.local)
+        self.assertRegex(commit, r"^[0-9a-f]{40}$")
+        self.assertEqual(json.loads(manifest), {"functions": []})
+        self.assertEqual(sources, {"reconstructions/fn_03000000.cpp"})
+
+    def test_symlink_cannot_mark_task_complete(self):
+        (self.upstream / "reconstructions/fn_03000004.cpp").symlink_to("fn_03000000.cpp")
+        self.commit()
+        with self.assertRaisesRegex(queue.QueueError, "regular files"):
+            queue.git_snapshot(str(self.upstream), "main", self.local)
+
+    def test_rejects_option_like_branch_and_missing_manifest(self):
+        with self.assertRaises(queue.QueueError):
+            queue.git_snapshot(str(self.upstream), "--upload-pack=x", self.local)
+        (self.upstream / "config/functions.json").unlink()
+        (self.upstream / "config/other.json").write_text("{}")
+        self.commit()
+        with self.assertRaisesRegex(queue.QueueError, "regular file"):
+            queue.git_snapshot(str(self.upstream), "main", self.local)
 
 if __name__ == "__main__":
     unittest.main()

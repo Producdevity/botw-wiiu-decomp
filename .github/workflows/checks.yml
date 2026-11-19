@@ -7,7 +7,7 @@ on:
     branches: [master]
   workflow_dispatch:
   repository_dispatch:
-    types: [getter_merged]
+    types: [automerged]
 
 permissions:
   contents: read
@@ -51,23 +51,12 @@ jobs:
         env:
           PYTHONPATH: src
         run: PATH="/usr/lib/llvm-18/bin:$PATH" python3 -m unittest discover -s tests -v
-      - name: Find a successful build of the exact PR base
-        if: github.event_name == 'pull_request_target'
-        id: baseline
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: |
-          if runs=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/checks.yml/runs?branch=master&head_sha=$BASE_SHA&status=success&per_page=20"); then
-            run_id=$(jq -r '[.workflow_runs[] | select(.event == "push" or .event == "repository_dispatch")][0].id // empty' <<< "$runs")
-            echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          fi
       - name: Match candidate sources against trusted references
         id: match
         working-directory: trusted
         env:
-          BASE_RUN: ${{ steps.baseline.outputs.run_id }}
-        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 --base-run "$BASE_RUN"
+          CHANGED_ONLY: ${{ github.event_name == 'pull_request_target' && '--changed-only' || '' }}
+        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 $CHANGED_ONLY
       - name: Check candidate C++ declarations
         working-directory: trusted
         run: python3 tools/contract_audit.py --root "$GITHUB_WORKSPACE/candidate" --reference-root "$GITHUB_WORKSPACE/trusted" --compiler clang++-18 --strict --summary
@@ -137,47 +126,3 @@ jobs:
           fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Report exact coverage for $GITHUB_SHA"
           git push origin HEAD:refs/heads/progress
-
-  getter-policy:
-    needs: verify
-    if: github.event_name == 'pull_request_target' && github.ref_protected && github.event.pull_request.base.ref == 'master' && !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    outputs:
-      functions: ${{ steps.classify.outputs.functions }}
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          path: trusted
-          persist-credentials: false
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: candidate
-          persist-credentials: false
-      - id: classify
-        run: python3 trusted/tools/getter_automerge.py --candidate candidate >> "$GITHUB_OUTPUT"
-
-  merge-getters:
-    needs: getter-policy
-    if: needs.getter-policy.outputs.functions != ''
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    permissions:
-      contents: write
-      pull-requests: read
-      issues: read
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          persist-credentials: false
-      - name: Merge verified getter additions
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERIFIED_FUNCTIONS: ${{ needs.getter-policy.outputs.functions }}
-        run: |
-          read -r -a functions <<< "$VERIFIED_FUNCTIONS"
-          python3 tools/getter_automerge.py --merge-event "$GITHUB_EVENT_PATH" --functions "${functions[@]}"

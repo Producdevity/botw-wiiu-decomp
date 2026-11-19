@@ -51,7 +51,7 @@ symbols and documented structures. Explain how each source relates to this Wii U
 function. Switch reconstruction names are research leads: establish the Wii U
 mapping and ABI independently. Naming evidence is not permission to copy code;
 record licenses and attribution for imported source in accordance with
-[provenance](provenance.md).
+[contributing](../CONTRIBUTING.md#license-and-provenance).
 
 A name change that asserts a new identity or implies a signature/layout change
 needs maintainer technical review. Include the supporting caller/callee evidence

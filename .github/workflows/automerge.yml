@@ -1,0 +1,66 @@
+name: Auto-merge exact reconstructions
+
+on:
+  workflow_run:
+    workflows: [Verify reconstructions, Check PR model metadata]
+    types: [completed]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: automerge
+  cancel-in-progress: false
+
+jobs:
+  select:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: read
+    outputs:
+      plan: ${{ steps.plan.outputs.plan }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: master
+          persist-credentials: false
+      - name: Install PowerPC compiler
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y clang-18 llvm-18 libclang1-18 libzstd-dev lld-18
+      - name: Install hash-pinned GHS toolchain
+        run: python3 tools/toolchain.py
+      - name: Re-verify eligible PRs on current master
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PATH="/usr/lib/llvm-18/bin:$PATH" python3 tools/automerge.py select --output plan.json --compiler clang++-18
+          echo "plan=$(cat plan.json)" >> "$GITHUB_OUTPUT"
+
+  merge:
+    needs: select
+    if: needs.select.outputs.plan != '' && fromJSON(needs.select.outputs.plan).pulls[0] != null
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: master
+          persist-credentials: false
+      - name: Merge the verified plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLAN: ${{ needs.select.outputs.plan }}
+        run: |
+          printf '%s' "$PLAN" > plan.json
+          python3 tools/automerge.py merge --plan plan.json

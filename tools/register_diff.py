@@ -53,7 +53,7 @@ def main(argv=None):
             "report_only": True, "function": row["id"],
             "rpx_sha256": image.sha256, "original_sha256": row["sha256"],
             "source_sha256": hashlib.sha256(args.source.read_bytes()).hexdigest(),
-            "scope": "Specified register-allocation model only; not an acceptance result. See docs/register-diagnostics.md.",
+            "scope": "Specified register-allocation model only; not an acceptance result. See docs/toolchain.md#register-allocation-diagnostics.",
             "results": results,
         }, indent=2, sort_keys=True))
         return 0

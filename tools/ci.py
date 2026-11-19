@@ -105,9 +105,22 @@ def inspect_candidate(trusted: Path, candidate: Path, rows: dict[str, dict]) -> 
     return selected
 
 
-def verify_candidate(trusted: Path, candidate: Path, cxx: str, *, rows: dict | None = None) -> list[dict]:
+def changed_functions(trusted: Path, candidate: Path, rows: dict[str, dict], selected: list[dict]) -> list[dict]:
+    """Rows whose compiler inputs differ from the trusted base; any header change selects everything."""
+    base_files, head_files = tracked_files(trusted), tracked_files(candidate)
+    changed = {name for name in base_files.keys() | head_files.keys() if base_files.get(name) != head_files.get(name)}
+    if any(name.startswith("include/") for name in changed):
+        return selected
+    return [row for row in selected
+            if any(member["source"] in changed for member in project.compilation_members(row, rows))]
+
+
+def verify_candidate(trusted: Path, candidate: Path, cxx: str, *, rows: dict | None = None,
+                     changed_only: bool = False) -> list[dict]:
     rows = project.functions(trusted) if rows is None else rows
     selected = inspect_candidate(trusted, candidate, rows)
+    if changed_only:
+        selected = changed_functions(trusted, candidate, rows, selected)
     def verify(row):
         return cli.verify(row, cxx, root=candidate, image=None, references=rows)
 
@@ -118,6 +131,24 @@ def verify_candidate(trusted: Path, candidate: Path, cxx: str, *, rows: dict | N
 def git_output(root: Path, *args: str) -> str:
     return subprocess.run(["git", "-C", str(root), *args], check=True, capture_output=True,
                           text=True, timeout=30).stdout
+
+
+def write_changed_summary(results: list[dict], rows: dict) -> None:
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not summary_path:
+        return
+    matched = sorted(result["function"] for result in results if result.get("matched") is True)
+    failed = sorted(result["function"] for result in results if result.get("matched") is not True)
+    lines = ["## Exact PowerPC verification (changed functions)", "",
+             f"{len(matched):,} matched ({sum(rows[key]['size'] for key in matched):,} bytes) · {len(failed):,} failed", ""]
+    for title, keys in (("Failed", failed), ("Matched", matched)):
+        if keys:
+            lines.append(f"**{title}:** " + ", ".join(f"`{key}`" for key in keys[:50])
+                         + (f" and {len(keys) - 50:,} more" if len(keys) > 50 else ""))
+    if not results:
+        lines.append("No reconstruction or header changed; nothing needed compilation.")
+    with open(summary_path, "a", encoding="utf-8") as summary:
+        summary.write("\n".join(lines) + "\n")
 
 
 def write_github_report(candidate: Path, rows: dict, target: dict, results: list[dict],
@@ -157,6 +188,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--candidate", required=True, type=Path)
     parser.add_argument("--compiler", default="clang++-18")
     parser.add_argument("--base-run", help="Successful master workflow run for the exact trusted base")
+    parser.add_argument("--changed-only", action="store_true",
+                        help="compile only functions whose sources changed; headers changes still rebuild everything")
     args = parser.parse_args(argv)
     try:
         if args.base_run and not re.fullmatch(r"[1-9][0-9]*", args.base_run):
@@ -166,13 +199,16 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"compiler": compiler.version(cxx)}), flush=True)
         rows = project.functions(ROOT)
         target = project.read_json(ROOT / "config/target.json")
-        results = verify_candidate(ROOT, candidate, cxx, rows=rows)
+        results = verify_candidate(ROOT, candidate, cxx, rows=rows, changed_only=args.changed_only)
         for result in results:
             print(json.dumps(result, sort_keys=True), flush=True)
         failed = [result for result in results if result.get("matched") is not True]
         print(json.dumps({"status": "failed" if failed else "passed", "checked": len(results),
                           "matched": len(results) - len(failed), "failed": len(failed)}))
-        write_github_report(candidate, rows, target, results, args.base_run)
+        if args.changed_only:
+            write_changed_summary(results, rows)
+        else:
+            write_github_report(candidate, rows, target, results, args.base_run)
         return 1 if failed else 0
     except (ValueError, OSError, KeyError, subprocess.SubprocessError) as error:
         print(f"ci: {error}", file=sys.stderr)
