@@ -32,7 +32,11 @@ bounded, contiguous control flow and no original relocations. Opt-in modes:
 
 - `--short-tails`: straight-line integer adapters that end in a direct branch.
 - `--blr-leaves`: independently called single-`blr` functions.
-- `--vtables`: virtual-table slots, using the GHS table pattern.
+- `--vtables`: virtual-table slots, using the GHS table pattern. A slot counts
+  only when its table is materialized and stored into an object in code. Combined
+  with `--original-relocations` or `--indirect-calls`, slot targets get the same
+  wider bodies as direct-call targets. Other taken addresses are not entries on
+  their own: GHS switches load the address of a branch table that follows `bctr`.
 - `--max-size` (4–256, default 64) bounds the short adapters.
 - `--original-relocations`: bounded functions whose original relocations all fit
   `cafe-data-address-v1`, `cafe-import-rel24-v1` or both. Each row carries the

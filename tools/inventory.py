@@ -40,7 +40,9 @@ def main(argv: list[str] | None = None) -> int:
             original_relocations=args.original_relocations, indirect_calls=args.indirect_calls,
         )
         if args.vtables:
-            additions, vtable_summary = discover_vtables(image, rows, admitted=project.functions().values())
+            additions, vtable_summary = discover_vtables(
+                image, rows, admitted=project.functions().values(),
+                original_relocations=args.original_relocations, indirect_calls=args.indirect_calls)
             rows.extend(additions)
             summary["enabled"] = True
             summary["additions"] += len(additions)
