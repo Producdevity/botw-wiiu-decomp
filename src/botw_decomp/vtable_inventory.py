@@ -240,8 +240,11 @@ def _externally_entered(words, text_start: int, code_starts: list[int], code_end
 
 def discover_vtables(
     image: Rpx, baseline: list[dict], *, admitted: Iterable[dict] = (),
+    original_relocations: bool = False, indirect_calls: bool = False,
 ) -> tuple[list[dict], dict]:
-    """Return supplemental candidate rows and evidence counts from the supplied RPX."""
+    """Return supplemental candidate rows and evidence counts from the supplied RPX.
+    The relocation and indirect-call options widen the bodies admitted from each
+    proven slot target exactly as they do for direct-call targets."""
     text = text_section(image)
     rodata_sections = [s for s in image.sections if s.name == ".rodata" and _allocated_data(s)]
     if len(rodata_sections) != 1:
@@ -267,7 +270,9 @@ def discover_vtables(
         else:
             targets.add(address)
 
-    bounded = discover(image, candidate_entries=targets, entry_fences=fences) if targets else []
+    bounded = discover(image, candidate_entries=targets, entry_fences=fences,
+                       original_relocations=original_relocations,
+                       indirect_calls=indirect_calls) if targets else []
     rejected["incomplete or relocated control flow"] = len(targets) - len(bounded)
     spans = [(int(row["address"], 16), row) for row in bounded
              if not _overlaps(int(row["address"], 16), int(row["address"], 16) + row["size"], protected)]
@@ -283,7 +288,7 @@ def discover_vtables(
     for address, row in spans:
         if address in entered:
             continue
-        row["boundary"] = "stored vtable pattern target; contiguous bounded control flow"
+        row["boundary"] = row["boundary"].replace("supplied entry", "stored vtable pattern target", 1)
         row["discovery_evidence"] = {"mode": "stored-vtable-pattern", "memberships": members[address]}
         additions.append(row)
     return additions, {

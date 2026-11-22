@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from botw_decomp.inventory import discover
+from botw_decomp.inventory import BCTRL, discover
 from botw_decomp.rpx import Section, _RELOCATION_RECORD, parse
 from botw_decomp.vtable_inventory import discover_vtables
 from tests.test_data_relocations import START, make_cafe
@@ -151,6 +151,50 @@ class VtableInventoryTests(unittest.TestCase):
         rows, _ = candidates(image)
         self.assertEqual(rows[SECOND]["category"], "calls")
         self.assertEqual(rows[SECOND]["bindings"], {f"fn_{target:08x}": f"0x{target:08x}"})
+
+    def test_indirect_call_bodies_need_the_indirect_call_option(self):
+        image = fixture(changes={6: BCTRL})
+        rows, summary = candidates(image)
+        self.assertEqual(list(rows), [SECOND])
+        self.assertEqual(summary["rejected"]["incomplete or relocated control flow"], 1)
+        rows, summary = candidates(image, indirect_calls=True)
+        self.assertEqual(list(rows), [FIRST, SECOND])
+        self.assertEqual(rows[FIRST]["category"], "calls")
+        self.assertEqual(rows[FIRST]["bindings"], {})
+        self.assertEqual(rows[FIRST]["boundary"], "stored vtable pattern target; contiguous bounded "
+                                                  "control flow; indirect calls through CTR")
+        self.assertEqual(rows[SECOND]["boundary"], "stored vtable pattern target; contiguous bounded control flow")
+
+    def test_options_reach_the_bounded_walk(self):
+        calls = []
+
+        def recording(*args, **kwargs):
+            calls.append({key: kwargs[key] for key in ("original_relocations", "indirect_calls")})
+            return discover(*args, **kwargs)
+
+        image = fixture()
+        with patch("botw_decomp.vtable_inventory.discover", recording):
+            for options in ({}, {"original_relocations": True}, {"indirect_calls": True}):
+                discover_vtables(image, discover(image), **options)
+        self.assertEqual(calls, [
+            {"original_relocations": False, "indirect_calls": False},
+            {"original_relocations": True, "indirect_calls": False},
+            {"original_relocations": False, "indirect_calls": True},
+        ])
+
+    def test_cli_forwards_indirect_calls_to_vtable_targets(self):
+        image = fixture(changes={6: BCTRL})
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "game.rpx"
+            with (patch.object(inventory_cli, "load", return_value=image),
+                  patch.object(inventory_cli.project, "functions", return_value={})):
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    self.assertEqual(inventory_cli.main(
+                        ["--rpx", str(path), "--vtables", "--indirect-calls"]), 0)
+        report = json.loads(output.getvalue())
+        self.assertEqual([row["address"] for row in report["functions"]],
+                         [f"0x{FIRST:08x}", f"0x{SECOND:08x}"])
 
     def test_cli_opt_in_appends_only_vtable_candidates(self):
         image = fixture(changes={8: branch(32, 48, True)}, extra_words=(NOP, LI, BLR))
