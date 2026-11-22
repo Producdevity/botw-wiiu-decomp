@@ -1,10 +1,5 @@
-struct ProcAccessor {
-    bool acquired;
-    void* proc;
-};
-typedef char ProcAccessorSize[sizeof(ProcAccessor) == 8 ? 1 : -1];
+#include "botw/proc_accessor.h"
 
-extern "C" void fn_031f9d20(ProcAccessor* accessor);
 extern "C" bool fn_0378bddc(void* proc, ProcAccessor* accessor);
 
 extern "C" bool fn_031f9dc0(ProcAccessor* accessor, void* proc) {
