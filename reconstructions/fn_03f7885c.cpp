@@ -1,0 +1,1 @@
+extern "C" unsigned fn_03f7885c(void* p) { return *(unsigned*)((char*)p + 4); }
