@@ -151,6 +151,51 @@ class CiTests(unittest.TestCase):
             self.assertIn("no confirmed master verification run", summary.read_text())
             self.assertNotIn("Exact byte delta", summary.read_text())
 
+    def test_shards_partition_the_selection(self):
+        self.write(self.head, "reconstructions/fn_03000004.cpp", 'extern "C" void fn_03000004() {}\n')
+        self.stage(self.head)
+        with patch.object(ci.cli, "verify", side_effect=lambda row, *a, **k: {"function": row["id"], "matched": True}):
+            shards = [[r["function"] for r in ci.verify_candidate(self.base, self.head, "cxx", rows=self.rows,
+                                                                   shard=(index, 2))] for index in range(2)]
+        self.assertEqual(shards, [["fn_03000000"], ["fn_03000004"]])
+
+    def test_shard_argument_is_validated(self):
+        self.assertEqual(ci.parse_shard("3/4"), (3, 4))
+        for value in ("4/4", "1/0", "-1/2", "1", "a/b"):
+            with self.assertRaises(ci.VerificationError):
+                ci.parse_shard(value)
+
+    def combine(self, files, count=2):
+        directory = Path(self.temporary.name) / "shards"
+        shutil.rmtree(directory, ignore_errors=True)
+        directory.mkdir()
+        for name, value in files.items():
+            (directory / name).write_text(json.dumps(value))
+        self.stage(self.head)
+        with patch.object(ci, "git_output", side_effect=lambda root, *a: "b" * 40 if root == self.head else "a" * 40):
+            return ci.combine_shard_results(directory, self.base, self.head, self.rows, count, False)
+
+    def shard(self, index, functions, commit="b" * 40):
+        return {"shard": index, "shards": 2, "base_commit": "a" * 40, "commit": commit,
+                "results": [{"function": key, "matched": True} for key in functions]}
+
+    def test_combined_shards_must_cover_the_selection_exactly_once(self):
+        self.write(self.head, "reconstructions/fn_03000004.cpp", 'extern "C" void fn_03000004() {}\n')
+        both = {"0.json": self.shard(0, ["fn_03000000"]), "1.json": self.shard(1, ["fn_03000004"])}
+        self.assertEqual(sorted(r["function"] for r in self.combine(both)), ["fn_03000000", "fn_03000004"])
+        failures = {
+            "missing shard": {"0.json": self.shard(0, ["fn_03000000", "fn_03000004"])},
+            "duplicate shard": {"0.json": self.shard(0, ["fn_03000000"]), "1.json": self.shard(0, ["fn_03000004"])},
+            "missing function": {"0.json": self.shard(0, ["fn_03000000"]), "1.json": self.shard(1, [])},
+            "repeated function": {"0.json": self.shard(0, ["fn_03000000", "fn_03000004"]),
+                                  "1.json": self.shard(1, ["fn_03000004"])},
+            "other commit": {"0.json": self.shard(0, ["fn_03000000"]),
+                             "1.json": self.shard(1, ["fn_03000004"], commit="c" * 40)},
+        }
+        for name, files in failures.items():
+            with self.subTest(name), self.assertRaises(ci.VerificationError):
+                self.combine(files)
+
     def test_symlink_header_is_rejected(self):
         directory = self.head / "include/botw"
         directory.mkdir(parents=True)

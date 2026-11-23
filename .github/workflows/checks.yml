@@ -17,15 +17,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
-    name: ${{ github.event_name == 'workflow_dispatch' && 'verify-maintenance' || 'verify' }}
+  # Matching is split into four shards that run in parallel; the verify job
+  # accepts their results only when together they cover the selection exactly.
+  match:
+    name: verify-shard (${{ matrix.shard }})
     permissions:
       contents: read
-      actions: read
-    outputs:
-      report: ${{ steps.match.outputs.report }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 60
     steps:
       # A PR is checked as GitHub's test merge into current master, so files that
       # changed on master after the PR branched do not count as PR changes.
@@ -57,17 +60,60 @@ jobs:
           sudo apt-get install --no-install-recommends -y clang-18 llvm-18 libclang1-18 libzstd-dev lld-18
       - name: Install hash-pinned GHS toolchain
         run: python3 trusted/tools/toolchain.py
+      - name: Match candidate sources against trusted references
+        working-directory: trusted
+        env:
+          CHANGED_ONLY: ${{ github.event_name == 'pull_request_target' && '--changed-only' || '' }}
+        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 $CHANGED_ONLY --shard "${{ matrix.shard }}/4" --results "$RUNNER_TEMP/shard-${{ matrix.shard }}.json"
+      - name: Keep shard results
+        if: success() || failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 3
+
+  checks:
+    name: verify-checks
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      # A PR is checked as GitHub's test merge into current master, so files that
+      # changed on master after the PR branched do not count as PR changes.
+      - name: Check out candidate as data
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.sha }}
+          fetch-depth: 2
+          path: candidate
+          persist-credentials: false
+      - name: Resolve trusted base
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = pull_request_target ]; then
+            echo "sha=$(git -C candidate rev-parse HEAD^1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check out trusted verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ steps.base.outputs.sha }}
+          path: trusted
+          persist-credentials: false
+      - name: Install PowerPC compiler
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y clang-18 llvm-18 libclang1-18 libzstd-dev lld-18
       - name: Test trusted verifier
         working-directory: trusted
         env:
           PYTHONPATH: src
         run: PATH="/usr/lib/llvm-18/bin:$PATH" python3 -m unittest discover -s tests -v
-      - name: Match candidate sources against trusted references
-        id: match
-        working-directory: trusted
-        env:
-          CHANGED_ONLY: ${{ github.event_name == 'pull_request_target' && '--changed-only' || '' }}
-        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 $CHANGED_ONLY
       - name: Check candidate C++ declarations
         working-directory: trusted
         run: python3 tools/contract_audit.py --root "$GITHUB_WORKSPACE/candidate" --reference-root "$GITHUB_WORKSPACE/trusted" --compiler clang++-18 --strict --summary
@@ -77,6 +123,65 @@ jobs:
       - name: Check the linked code and data component
         working-directory: trusted
         run: PATH="/usr/lib/llvm-18/bin:$PATH" python3 tools/check_linked_component.py --root "$GITHUB_WORKSPACE/candidate" --compiler clang++-18
+
+  verify:
+    name: ${{ github.event_name == 'workflow_dispatch' && 'verify-maintenance' || 'verify' }}
+    needs: [match, checks]
+    # Runs even when a shard fails, so the required check reports failure instead of being skipped.
+    if: always()
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      report: ${{ steps.match.outputs.report }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      # A PR is checked as GitHub's test merge into current master, so files that
+      # changed on master after the PR branched do not count as PR changes.
+      - name: Check out candidate as data
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.sha }}
+          fetch-depth: 2
+          path: candidate
+          persist-credentials: false
+      - name: Resolve trusted base
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = pull_request_target ]; then
+            echo "sha=$(git -C candidate rev-parse HEAD^1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check out trusted verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ steps.base.outputs.sha }}
+          path: trusted
+          persist-credentials: false
+      - name: Collect shard results
+        if: needs.match.result == 'success' || needs.match.result == 'failure'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          pattern: shard-*
+          path: ${{ runner.temp }}/shards
+          merge-multiple: true
+      - name: Combine shard results
+        id: match
+        if: needs.match.result == 'success' || needs.match.result == 'failure'
+        working-directory: trusted
+        env:
+          CHANGED_ONLY: ${{ github.event_name == 'pull_request_target' && '--changed-only' || '' }}
+        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" $CHANGED_ONLY --combine "$RUNNER_TEMP/shards" --shards 4
+      - name: Require every job to pass
+        env:
+          MATCH: ${{ needs.match.result }}
+          CHECKS: ${{ needs.checks.result }}
+        run: |
+          echo "match: $MATCH, checks: $CHECKS"
+          [ "$MATCH" = success ] && [ "$CHECKS" = success ]
 
   publish-progress:
     needs: verify
