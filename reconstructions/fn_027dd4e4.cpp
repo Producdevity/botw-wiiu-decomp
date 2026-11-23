@@ -1,0 +1,37 @@
+#include "botw/runtime_tag_query.h"
+
+using runtime_tag_query::Pointer;
+
+extern "C" unsigned data_10487c48;
+extern "C" RuntimeTag data_10487c4c;
+extern "C" const RuntimeVTable data_10134820;
+extern "C" unsigned data_10487c50;
+extern "C" RuntimeTag data_10487c54;
+extern "C" const RuntimeVTable data_101347d0;
+extern "C" unsigned data_10485ecc;
+extern "C" RuntimeTag data_10487120;
+extern "C" const RuntimeVTable data_101346f8;
+
+typedef Pointer<&data_10487c48, &data_10487c4c, &data_10134820> Type0;
+typedef Pointer<&data_10487c50, &data_10487c54, &data_101347d0> Type1;
+typedef Pointer<&data_10485ecc, &data_10487120, &data_101346f8> Type2;
+
+static inline unsigned level2(const RuntimeTag* other) {
+    return (other == Type2::get()) & 0xffu;
+}
+
+static inline unsigned level1(const RuntimeTag* other) {
+    if (other == Type1::get())
+        return true;
+    return level2(other);
+}
+
+static inline bool level0(const RuntimeTag* other) {
+    if (other == Type0::get())
+        return true;
+    return level1(other) != 0;
+}
+
+extern "C" bool fn_027dd4e4(const void*, const RuntimeTag* other) {
+    return level0(other);
+}
