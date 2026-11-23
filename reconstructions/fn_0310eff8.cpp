@@ -1,0 +1,25 @@
+#include "botw/byaml_iter.h"
+
+typedef signed char s8;
+typedef int s32;
+typedef unsigned int u32;
+
+extern "C" unsigned* fn_0396bd98(unsigned *);
+extern "C" bool fn_0396c2bc(const ByamlIter* iter, ByamlData* data, const char* key);
+extern "C" bool fn_0396c450(const ByamlIter *, int *, const char *);
+
+extern "C" s32 data_10280e64;
+extern "C" s8 data_10280e58;
+
+extern "C" s32 fn_0310eff8(void *arg0) {
+    struct { s32 f8; u32 fC; } sp;
+
+    fn_0396bd98(&sp.fC);
+    if (fn_0396c2bc((const ByamlIter *) arg0, (ByamlData *) &sp.fC, (const char *) &data_10280e64) != 0) {
+        sp.f8 = 0;
+        if (fn_0396c450((struct ByamlIter *) &sp.fC, &sp.f8, (const char *)(&data_10280e58)) != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
