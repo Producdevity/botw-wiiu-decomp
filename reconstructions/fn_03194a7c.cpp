@@ -1,0 +1,3 @@
+extern "C" const float data_1028c2c8;
+
+extern "C" float fn_03194a7c(void* p) { return data_1028c2c8; }
