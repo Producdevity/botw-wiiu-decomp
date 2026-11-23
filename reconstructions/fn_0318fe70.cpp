@@ -5,6 +5,7 @@ struct InferredObject {
 };
 }
 
-extern "C" unsigned int fn_0318fe70(const InferredObject* object) {
+extern "C" unsigned int fn_0318fe70(const void* raw) {
+    const InferredObject* object = static_cast<const InferredObject*>(raw);
     return (static_cast<unsigned int>(object->value) & 0x1u);
 }

@@ -18,14 +18,14 @@ struct Storage {
 typedef char StorageSize[sizeof(Storage) == 16 ? 1 : -1];
 }
 
-extern "C" Storage* fn_0314b124(Storage* storage, const Source* source) {
+extern "C" void* fn_0314b124(void* storage, const void* source) {
     if (!storage)
-        storage = static_cast<Storage*>(fn_0308e578(sizeof(Storage)));
+        storage = fn_0308e578(sizeof(Storage));
     if (storage) {
-        storage->vtable = data_102865b8;
-        storage->first = source->first;
-        fn_030eb700(&storage->slot);
-        storage->second = source->second;
+        static_cast<Storage*>(storage)->vtable = data_102865b8;
+        static_cast<Storage*>(storage)->first = static_cast<const Source*>(source)->first;
+        fn_030eb700(&static_cast<Storage*>(storage)->slot);
+        static_cast<Storage*>(storage)->second = static_cast<const Source*>(source)->second;
     }
     return storage;
 }

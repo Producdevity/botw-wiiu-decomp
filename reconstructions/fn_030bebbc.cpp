@@ -8,9 +8,15 @@ struct OutputView {
 };
 }
 
-extern "C" void fn_030bebbc(OutputView* output) {
+namespace {
+inline void impl(OutputView* output) {
     output->field_14 = 0u;
     output->field_18 = 1u;
     output->field_1c = 0u;
     output->field_20 = 1u;
+}
+}
+
+extern "C" void fn_030bebbc(void* output) {
+    impl(static_cast<OutputView*>(output));
 }

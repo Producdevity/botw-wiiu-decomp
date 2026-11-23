@@ -6,7 +6,13 @@ struct Block { unsigned char pad0[8]; Layout* layout; unsigned char pad12[20]; u
 typedef char BlockSize[sizeof(Block) == 36 ? 1 : -1];
 }
 
-extern "C" unsigned char* fn_02e73e54(Block* block) {
+namespace {
+inline unsigned char* impl(Block* block) {
     Extents* extents = block->layout->extents;
     return block->base + block->layout->stride->bytes * (extents->rows * extents->columns);
+}
+}
+
+extern "C" unsigned char* fn_02e73e54(void* block) {
+    return impl(static_cast<Block*>(block));
 }

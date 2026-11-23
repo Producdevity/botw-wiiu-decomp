@@ -34,9 +34,15 @@ inline Derived* cast_derived(Base* object) {
 }
 }
 
-extern "C" unsigned char* fn_0294e3b8(Base* object) {
+namespace {
+inline unsigned char* impl(Base* object) {
     Derived* derived = cast_derived(object);
     if (!derived)
         return 0;
     return derived->component;
+}
+}
+
+extern "C" unsigned char* fn_0294e3b8(void* object) {
+    return impl(static_cast<Base*>(object));
 }

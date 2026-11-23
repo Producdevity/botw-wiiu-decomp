@@ -22,11 +22,11 @@ struct FloatSlotTable {
 typedef char FloatSlotTableSize[sizeof(FloatSlotTable) == 0xf4 ? 1 : -1];
 }
 
-extern "C" bool fn_03713060(FloatSlotTable* table, unsigned index, float value, int unused) {
-    int slot = table->slot(index);
+extern "C" bool fn_03713060(void* table, unsigned index, float value, int unused) {
+    int slot = static_cast<FloatSlotTable*>(table)->slot(index);
     int position = slot;
     if (position >= 0) {
-        table->value(slot) = value;
+        static_cast<FloatSlotTable*>(table)->value(slot) = value;
         return true;
     }
     return false;
