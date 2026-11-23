@@ -6,7 +6,8 @@ struct TimedState {
 };
 }
 
-extern "C" void fn_0344a37c(TimedState* state, float value) {
+extern "C" void fn_0344a37c(void* raw, float value) {
+    TimedState* state = static_cast<TimedState*>(raw);
     state->value = value;
     state->flags |= 0x20;
 }

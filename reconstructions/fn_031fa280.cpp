@@ -5,6 +5,7 @@ struct InferredObject {
 };
 }
 
-extern "C" bool fn_031fa280(const InferredObject* object) {
+extern "C" bool fn_031fa280(const void* raw) {
+    const InferredObject* object = static_cast<const InferredObject*>(raw);
     return object->value == 2u;
 }

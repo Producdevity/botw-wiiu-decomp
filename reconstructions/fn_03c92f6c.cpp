@@ -14,14 +14,14 @@ struct OutputView {
 };
 }
 
-extern "C" void fn_03c92f6c(OutputView* output) {
-    output->field_1c = 0u;
-    output->field_10 = 0u;
-    output->field_24 = 0u;
-    output->field_20 = 0u;
-    output->field_18 = 0u;
-    output->field_8 = 0u;
-    output->field_c = 0u;
-    output->field_0 = 0u;
-    output->field_14 = 0u;
+extern "C" void fn_03c92f6c(void* output) {
+    static_cast<OutputView*>(output)->field_1c = 0u;
+    static_cast<OutputView*>(output)->field_10 = 0u;
+    static_cast<OutputView*>(output)->field_24 = 0u;
+    static_cast<OutputView*>(output)->field_20 = 0u;
+    static_cast<OutputView*>(output)->field_18 = 0u;
+    static_cast<OutputView*>(output)->field_8 = 0u;
+    static_cast<OutputView*>(output)->field_c = 0u;
+    static_cast<OutputView*>(output)->field_0 = 0u;
+    static_cast<OutputView*>(output)->field_14 = 0u;
 }

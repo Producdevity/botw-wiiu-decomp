@@ -7,21 +7,21 @@ struct ByamlView { const ByamlHeader* header; const unsigned char* data; };
 typedef char ByamlViewSize[sizeof(ByamlView) == 8 ? 1 : -1];
 }
 
-extern "C" ByamlView* fn_0396bdd8(ByamlView* storage, const ByamlHeader* header) {
+extern "C" void* fn_0396bdd8(void* storage, const void* header) {
     if (!storage) {
-        storage = static_cast<ByamlView*>(fn_0308e578(sizeof(ByamlView)));
+        storage = fn_0308e578(sizeof(ByamlView));
         if (!storage) return storage;
     }
-    storage->header = header;
-    storage->data = 0;
+    static_cast<ByamlView*>(storage)->header = static_cast<const ByamlHeader*>(header);
+    static_cast<ByamlView*>(storage)->data = 0;
     if (header) {
         if (!fn_0396d5ac(header)) {
-            storage->header = 0;
-            storage->data = 0;
+            static_cast<ByamlView*>(storage)->header = 0;
+            static_cast<ByamlView*>(storage)->data = 0;
         } else {
-            const ByamlHeader*& validated = storage->header;
+            const ByamlHeader*& validated = static_cast<ByamlView*>(storage)->header;
             if (validated->dataOffset)
-                storage->data = reinterpret_cast<const unsigned char*>(validated) + validated->dataOffset;
+                static_cast<ByamlView*>(storage)->data = reinterpret_cast<const unsigned char*>(validated) + validated->dataOffset;
         }
     }
     return storage;

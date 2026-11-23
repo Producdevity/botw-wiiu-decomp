@@ -30,7 +30,8 @@ inline bool is_derived_from(const Base* object) {
     return object != 0 && reinterpret_cast<DerivedQuery>(object->vtable[3])(object, type);
 }
 }
-extern "C" Base* fn_02b62bc8(Owner* owner) {
+extern "C" void* fn_02b62bc8(void* raw) {
+    Owner* owner = static_cast<Owner*>(raw);
     Base* object = reinterpret_cast<ComponentGetter>(owner->vtable[255])(owner);
     Base* result = is_derived_from(object) ? object : 0;
     return result;
