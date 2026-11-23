@@ -20,6 +20,27 @@ struct Token {
     }
 };
 
+// Same guarded initialization as Token, but yields the slot address after the
+// guard check; some queries compare against it in that order.
+template<unsigned* Guard, RuntimeTag* Slot, const RuntimeVTable* VTable>
+struct Pointer {
+    static const RuntimeTag* get() {
+        if (!*Guard) {
+            *Guard = 1;
+            Slot->vtable = VTable;
+        }
+        return Slot;
+    }
+
+    static bool is(const RuntimeTag* other) {
+        if (!*Guard) {
+            *Guard = 1;
+            Slot->vtable = VTable;
+        }
+        return other == Slot;
+    }
+};
+
 }
 
 #endif
