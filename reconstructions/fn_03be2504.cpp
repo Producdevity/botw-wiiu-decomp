@@ -1,0 +1,1 @@
+extern "C" void fn_03be2504(void* p, const void* q) { *(float*)((char*)p + 184) = *(const float*)((const char*)q + 0); *(float*)((char*)p + 188) = *(const float*)((const char*)q + 4); *(float*)((char*)p + 192) = *(const float*)((const char*)q + 8); }

@@ -1,0 +1,1 @@
+extern "C" void fn_030fea58(void* p, const float* q, const float* r) { float* o = (float*)p; o[0] = q[0]; o[1] = q[1]; o[2] = q[2]; *(float*)((char*)p + 12) = r[0]; *(float*)((char*)p + 16) = r[1]; *(float*)((char*)p + 20) = r[2]; }
