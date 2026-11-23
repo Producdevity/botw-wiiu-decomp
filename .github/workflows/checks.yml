@@ -17,8 +17,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Matching is split into four shards that run in parallel; the verify job
-  # accepts their results only when together they cover the selection exactly.
+  # Full verifies split matching into four parallel shards; PR checks, which
+  # compile only changed functions, use one. The verify job accepts shard
+  # results only when together they cover the selection exactly.
   match:
     name: verify-shard (${{ matrix.shard }})
     permissions:
@@ -26,9 +27,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3]
+        shard: ${{ fromJSON(github.event_name == 'pull_request_target' && '[0]' || '[0, 1, 2, 3]') }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       # A PR is checked as GitHub's test merge into current master, so files that
       # changed on master after the PR branched do not count as PR changes.
@@ -64,7 +65,8 @@ jobs:
         working-directory: trusted
         env:
           CHANGED_ONLY: ${{ github.event_name == 'pull_request_target' && '--changed-only' || '' }}
-        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 $CHANGED_ONLY --shard "${{ matrix.shard }}/4" --results "$RUNNER_TEMP/shard-${{ matrix.shard }}.json"
+          SHARDS: ${{ github.event_name == 'pull_request_target' && '1' || '4' }}
+        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" --compiler clang++-18 $CHANGED_ONLY --shard "${{ matrix.shard }}/$SHARDS" --results "$RUNNER_TEMP/shard-${{ matrix.shard }}.json"
       - name: Keep shard results
         if: success() || failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -176,7 +178,8 @@ jobs:
         working-directory: trusted
         env:
           CHANGED_ONLY: ${{ github.event_name == 'pull_request_target' && '--changed-only' || '' }}
-        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" $CHANGED_ONLY --combine "$RUNNER_TEMP/shards" --shards 4
+          SHARDS: ${{ github.event_name == 'pull_request_target' && '1' || '4' }}
+        run: python3 tools/ci.py --candidate "$GITHUB_WORKSPACE/candidate" $CHANGED_ONLY --combine "$RUNNER_TEMP/shards" --shards "$SHARDS"
       - name: Require every job to pass
         env:
           MATCH: ${{ needs.match.result }}
