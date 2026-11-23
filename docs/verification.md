@@ -82,7 +82,10 @@ Candidate scripts never run.
   supporting-compilation partners. It rebuilds everything when a header changes.
   It then runs the strict audit on the whole tree and the symbol catalog and
   linked-component checks. Changes outside `reconstructions/`, `include/botw/`
-  and documentation fail as maintainer-only changes.
+  and documentation fail as maintainer-only changes. Compilation runs in
+  `verify-shard` jobs (one for PR checks, four in parallel for full verifies)
+  and the other checks in `verify-checks`; `verify` passes only when both pass
+  and the shard results cover every selected function exactly once.
 - `pr-metadata` requires the `## Functions` list and a complete model table.
 
 Every master push and every auto-merge rebuilds all implementations and publishes

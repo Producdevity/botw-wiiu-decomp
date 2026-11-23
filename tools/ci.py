@@ -115,12 +115,24 @@ def changed_functions(trusted: Path, candidate: Path, rows: dict[str, dict], sel
             if any(member["source"] in changed for member in project.compilation_members(row, rows))]
 
 
-def verify_candidate(trusted: Path, candidate: Path, cxx: str, *, rows: dict | None = None,
-                     changed_only: bool = False) -> list[dict]:
-    rows = project.functions(trusted) if rows is None else rows
+def select_candidate(trusted: Path, candidate: Path, rows: dict, changed_only: bool) -> list[dict]:
     selected = inspect_candidate(trusted, candidate, rows)
-    if changed_only:
-        selected = changed_functions(trusted, candidate, rows, selected)
+    return changed_functions(trusted, candidate, rows, selected) if changed_only else selected
+
+
+def parse_shard(value: str) -> tuple[int, int]:
+    match = re.fullmatch(r"([0-9]+)/([1-9][0-9]*)", value)
+    if not match or int(match[1]) >= int(match[2]):
+        raise VerificationError(f"invalid shard {value!r}; expected INDEX/COUNT with INDEX < COUNT")
+    return int(match[1]), int(match[2])
+
+
+def verify_candidate(trusted: Path, candidate: Path, cxx: str, *, rows: dict | None = None,
+                     changed_only: bool = False, shard: tuple[int, int] = (0, 1)) -> list[dict]:
+    rows = project.functions(trusted) if rows is None else rows
+    index, count = shard
+    selected = select_candidate(trusted, candidate, rows, changed_only)[index::count]
+
     def verify(row):
         return cli.verify(row, cxx, root=candidate, image=None, references=rows)
 
@@ -183,6 +195,43 @@ def write_github_report(candidate: Path, rows: dict, target: dict, results: list
             output.write("report=" + json.dumps(report, separators=(",", ":")) + "\n")
 
 
+def write_shard_results(path: Path, trusted: Path, candidate: Path, shard: tuple[int, int],
+                        results: list[dict]) -> None:
+    path.write_text(json.dumps({
+        "shard": shard[0],
+        "shards": shard[1],
+        "base_commit": git_output(trusted, "rev-parse", "HEAD").strip(),
+        "commit": git_output(candidate, "rev-parse", "HEAD").strip(),
+        "results": [{"function": result["function"], "matched": result.get("matched") is True}
+                    for result in results],
+    }, separators=(",", ":")), encoding="utf-8")
+
+
+def combine_shard_results(directory: Path, trusted: Path, candidate: Path, rows: dict, count: int,
+                          changed_only: bool) -> list[dict]:
+    """Accept shard results only when they cover this run's selection exactly once."""
+    base_commit = git_output(trusted, "rev-parse", "HEAD").strip()
+    commit = git_output(candidate, "rev-parse", "HEAD").strip()
+    files = sorted(directory.glob("*.json"))
+    if len(files) != count:
+        raise VerificationError(f"expected {count} shard result files, found {len(files)}")
+    seen_shards, results = set(), []
+    for path in files:
+        shard = json.loads(path.read_text(encoding="utf-8"))
+        if (shard.get("shards") != count or shard.get("shard") in seen_shards
+                or shard.get("shard") not in range(count)):
+            raise VerificationError(f"invalid or duplicate shard in {path.name}")
+        if shard.get("base_commit") != base_commit or shard.get("commit") != commit:
+            raise VerificationError(f"{path.name} was produced for a different commit")
+        seen_shards.add(shard["shard"])
+        results.extend(shard["results"])
+    expected = [row["id"] for row in select_candidate(trusted, candidate, rows, changed_only)]
+    functions = [result["function"] for result in results]
+    if len(functions) != len(set(functions)) or set(functions) != set(expected):
+        raise VerificationError("shard results do not cover the selected functions exactly once")
+    return results
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", required=True, type=Path)
@@ -190,25 +239,42 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base-run", help="Successful master workflow run for the exact trusted base")
     parser.add_argument("--changed-only", action="store_true",
                         help="compile only functions whose sources changed; headers changes still rebuild everything")
+    parser.add_argument("--shard", help="verify only every COUNT-th selected function starting at INDEX (INDEX/COUNT)")
+    parser.add_argument("--results", type=Path, help="with --shard, write this shard's results to a file")
+    parser.add_argument("--combine", type=Path,
+                        help="report from the shard result files in this directory instead of compiling")
+    parser.add_argument("--shards", type=int, help="with --combine, the number of shard result files expected")
     args = parser.parse_args(argv)
     try:
         if args.base_run and not re.fullmatch(r"[1-9][0-9]*", args.base_run):
             raise VerificationError("invalid trusted base run ID")
+        if args.combine and (args.shard or args.results or not args.shards or args.shards < 1):
+            raise VerificationError("--combine needs --shards and excludes --shard and --results")
+        if bool(args.shard) != bool(args.results):
+            raise VerificationError("--shard and --results are used together")
         candidate = args.candidate.resolve(strict=True)
-        cxx = compiler.locate(args.compiler)
-        print(json.dumps({"compiler": compiler.version(cxx)}), flush=True)
         rows = project.functions(ROOT)
         target = project.read_json(ROOT / "config/target.json")
-        results = verify_candidate(ROOT, candidate, cxx, rows=rows, changed_only=args.changed_only)
-        for result in results:
-            print(json.dumps(result, sort_keys=True), flush=True)
+        if args.combine:
+            results = combine_shard_results(args.combine, ROOT, candidate, rows, args.shards, args.changed_only)
+        else:
+            shard = parse_shard(args.shard) if args.shard else (0, 1)
+            cxx = compiler.locate(args.compiler)
+            print(json.dumps({"compiler": compiler.version(cxx)}), flush=True)
+            results = verify_candidate(ROOT, candidate, cxx, rows=rows, changed_only=args.changed_only,
+                                       shard=shard)
+            for result in results:
+                print(json.dumps(result, sort_keys=True), flush=True)
+            if args.results:
+                write_shard_results(args.results, ROOT, candidate, shard, results)
         failed = [result for result in results if result.get("matched") is not True]
         print(json.dumps({"status": "failed" if failed else "passed", "checked": len(results),
                           "matched": len(results) - len(failed), "failed": len(failed)}))
-        if args.changed_only:
-            write_changed_summary(results, rows)
-        else:
-            write_github_report(candidate, rows, target, results, args.base_run)
+        if not args.results:
+            if args.changed_only:
+                write_changed_summary(results, rows)
+            else:
+                write_github_report(candidate, rows, target, results, args.base_run)
         return 1 if failed else 0
     except (ValueError, OSError, KeyError, subprocess.SubprocessError) as error:
         print(f"ci: {error}", file=sys.stderr)
