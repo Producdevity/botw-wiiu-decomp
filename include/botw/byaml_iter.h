@@ -15,5 +15,7 @@ extern "C" void* fn_0396cf14(void* context);
 extern "C" bool fn_0396c0c0(const ByamlIter* iter, ByamlData* data, const char* key);
 extern "C" bool fn_0396c5dc(const ByamlIter* iter, float* value, const ByamlData* data);
 extern "C" bool fn_0396c69c(const ByamlIter* iter, bool* value, const ByamlData* data);
+extern "C" ByamlData* fn_0396bf1c(ByamlData* dst, const ByamlData* src);
+extern "C" bool fn_0396bf60(const ByamlData* data);
 
 #endif
