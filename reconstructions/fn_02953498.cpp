@@ -1,0 +1,16 @@
+#include "botw/member_callback.h"
+
+namespace {
+struct Owner {
+    unsigned char unknown_000[0x394];
+    void* dispatcher;
+};
+
+}
+
+extern "C" const MemberCallback data_1016d3a4;
+
+extern "C" bool fn_02953498(Owner* owner, int event, int a, int b, int c) {
+    void* dispatcher = owner->dispatcher;
+    return fn_0370f324(dispatcher, event, a, b, c, data_1016d3a4, 1);
+}
