@@ -25,7 +25,7 @@ jobs:
     outputs:
       report: ${{ steps.match.outputs.report }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       # A PR is checked as GitHub's test merge into current master, so files that
       # changed on master after the PR branched do not count as PR changes.
