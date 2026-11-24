@@ -1,13 +1,13 @@
-struct Opaque_03693c24 {
-    struct Record {
-        unsigned char unknown_00[4];
-        const unsigned short* key;
-    };
-
-    unsigned char unknown_00[20];
-    Record* record;
+struct Opaque_03693c24_Record {
+    unsigned char unknown_00[4];
+    const unsigned short* key;
 };
 
-extern "C" Opaque_03693c24::Record* fn_03693c24(const Opaque_03693c24* holder) {
+struct Opaque_03693c24 {
+    unsigned char unknown_00[20];
+    Opaque_03693c24_Record* record;
+};
+
+extern "C" Opaque_03693c24_Record* fn_03693c24(const Opaque_03693c24* holder) {
     return holder->record;
 }
