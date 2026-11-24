@@ -1,8 +1,8 @@
 typedef int s32;
 
-extern "C" void fn_03b9fc80(void*);
+extern "C" void fn_03b9fc80(void*, unsigned int, int);
 
-extern "C" s32 fn_0359c098(void *arg0) {
+extern "C" s32 fn_0359c098(void *arg0, unsigned int index, int value) {
     void *temp_r12;
     void *temp_r3;
 
@@ -10,7 +10,7 @@ extern "C" s32 fn_0359c098(void *arg0) {
     if (temp_r12 != 0) {
         temp_r3 = (*(void **)((char *)(temp_r12) + (0x44)));
         if (temp_r3 != 0) {
-            fn_03b9fc80(temp_r3);
+            fn_03b9fc80(temp_r3, index, value);
             return 1;
         }
     }
