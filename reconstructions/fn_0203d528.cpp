@@ -1,28 +1,26 @@
-namespace {
-struct Vector3 {
+struct Opaque_0203d528_Vector3 {
     float x;
     float y;
     float z;
 };
 
-struct Quaternion {
+struct Opaque_0203d528_Quaternion {
     float x;
     float y;
     float z;
     float w;
 };
-typedef char QuaternionSize[sizeof(Quaternion) == 16 ? 1 : -1];
+typedef char QuaternionSize[sizeof(Opaque_0203d528_Quaternion) == 16 ? 1 : -1];
 
-struct Matrix33 {
+struct Opaque_0203d528 {
     float m[3][3];
 };
-}
 
-extern "C" void fn_0201766c(Quaternion* rotation, const Vector3* axis, float angle);
-extern "C" void fn_0203d48c(Matrix33* matrix, const Quaternion* rotation);
+extern "C" void fn_0201766c(Opaque_0203d528_Quaternion* rotation, const Opaque_0203d528_Vector3* axis, float angle);
+extern "C" void fn_0203d48c(Opaque_0203d528* matrix, const Opaque_0203d528_Quaternion* rotation);
 
-extern "C" void fn_0203d528(Matrix33* matrix, const Vector3* axis, float angle) {
-    Quaternion rotation;
+extern "C" void fn_0203d528(Opaque_0203d528* matrix, const Opaque_0203d528_Vector3* axis, float angle) {
+    Opaque_0203d528_Quaternion rotation;
     fn_0201766c(&rotation, axis, angle);
     fn_0203d48c(matrix, &rotation);
 }

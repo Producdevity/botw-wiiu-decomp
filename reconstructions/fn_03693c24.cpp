@@ -1,15 +1,13 @@
-namespace {
-struct Record {
+struct Opaque_03693c24_Record {
     unsigned char unknown_00[4];
     const unsigned short* key;
 };
 
-struct RecordHolder {
+struct Opaque_03693c24 {
     unsigned char unknown_00[20];
-    Record* record;
+    Opaque_03693c24_Record* record;
 };
-}
 
-extern "C" Record* fn_03693c24(const RecordHolder* holder) {
+extern "C" Opaque_03693c24_Record* fn_03693c24(const Opaque_03693c24* holder) {
     return holder->record;
 }
