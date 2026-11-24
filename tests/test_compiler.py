@@ -35,6 +35,11 @@ class CompilerProfileTests(unittest.TestCase):
                                          "-bigendian", "--no_exceptions", "--no_rtti"])
         self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
 
+    def test_speed_debug_can_be_pinned(self):
+        profile = "ghs-5.3.22-speed-debug"
+        self.assertEqual(profiles({"compiler_profile": profile}), [profile])
+        self.assertIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
+
 
 class SourcePolicyTests(unittest.TestCase):
     def test_normal_source_and_literal_project_header(self):
