@@ -1,8 +1,7 @@
 extern "C" void* fn_0308e578(unsigned size);
 extern "C" const unsigned char data_1036cb28[];
 
-namespace {
-struct Storage {
+struct Opaque_03ad4ed0 {
     unsigned word_0;
     unsigned word_4;
     unsigned word_8;
@@ -11,10 +10,13 @@ struct Storage {
     unsigned word_14;
     const void* vtable;
 };
+
+namespace {
+typedef Opaque_03ad4ed0 Storage;
 typedef char StorageSize[sizeof(Storage) == 28 ? 1 : -1];
 }
 
-extern "C" Storage* fn_03ad4ed0(Storage* storage) {
+extern "C" Opaque_03ad4ed0* fn_03ad4ed0(Opaque_03ad4ed0* storage) {
     if (!storage)
         storage = static_cast<Storage*>(fn_0308e578(sizeof(Storage)));
     if (storage) {

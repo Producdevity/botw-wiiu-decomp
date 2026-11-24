@@ -3,14 +3,12 @@ extern "C" const unsigned char data_1031ef48[];
 extern "C" const unsigned char data_10263910[];
 extern "C" const unsigned char data_10263a00[];
 
-namespace {
-struct Handle {
-    const void* target;
-    const void* vtable;
-};
-typedef char HandleSize[sizeof(Handle) == 8 ? 1 : -1];
+struct Opaque_037e5bfc {
+    struct Handle {
+        const void* target;
+        const void* vtable;
+    };
 
-struct Storage {
     unsigned char base[0x10];
     const void* vtable;
     bool flag_14;
@@ -34,7 +32,12 @@ struct Storage {
     unsigned word_44;
     Handle handle;
 };
-typedef char StorageSize[sizeof(Storage) == 80 ? 1 : -1];
+typedef char HandleSize[sizeof(Opaque_037e5bfc::Handle) == 8 ? 1 : -1];
+typedef char StorageSize[sizeof(Opaque_037e5bfc) == 80 ? 1 : -1];
+
+namespace {
+typedef Opaque_037e5bfc Storage;
+typedef Opaque_037e5bfc::Handle Handle;
 
 inline Handle* construct_handle(Handle* handle) {
     if (!handle)
