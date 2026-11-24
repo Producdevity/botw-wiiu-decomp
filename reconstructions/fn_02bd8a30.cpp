@@ -1,12 +1,12 @@
 typedef int s32;
 typedef float f32;
 
-extern "C" int fn_02c0378c(void *, void *);
+extern "C" void* fn_02c0378c(void* holder);
 
 extern "C" s32 fn_02bd8a30(void *arg0, void *arg1) {
-    s32 temp_r3;
+    void *temp_r3;
 
-    temp_r3 = fn_02c0378c((char *)arg0 + 0x10, arg1);
+    temp_r3 = fn_02c0378c((char *)arg0 + 0x10);
     if (temp_r3 == 0) {
         return 0;
     }
