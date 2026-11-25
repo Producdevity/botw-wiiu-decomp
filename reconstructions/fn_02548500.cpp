@@ -13,11 +13,12 @@ typedef double f64;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 extern "C" float fn_04210514(float);
-extern "C" float fn_04210d48(void*, float);
+extern "C" float fn_04210d48(float);
 
 extern "C" void fn_02548500(void *arg0, void *arg1) {
     if (arg1 != NULL) {
-        M2C_FIELD(arg1, f32 *, 0) = (f32) ((fn_04210d48(M2C_FIELD(M2C_FIELD(arg0, void **, 0xC), void *(**)(void *, void *), 0x124)(arg0, arg1), M2C_FIELD(arg0, f32 *, 0x6C)) * M2C_FIELD(arg0, f32 *, 0x64)) + M2C_FIELD(arg1, f32 *, 0));
+        M2C_FIELD(M2C_FIELD(arg0, void **, 0xC), void (**)(void *, void *), 0x124)(arg0, arg1);
+        M2C_FIELD(arg1, f32 *, 0) = (f32) ((fn_04210d48(M2C_FIELD(arg0, f32 *, 0x6C)) * M2C_FIELD(arg0, f32 *, 0x64)) + M2C_FIELD(arg1, f32 *, 0));
         M2C_FIELD(arg1, f32 *, 4) = (f32) (M2C_FIELD(arg1, f32 *, 4) + M2C_FIELD(arg0, f32 *, 0x78));
         M2C_FIELD(arg1, f32 *, 8) = (f32) ((fn_04210514(M2C_FIELD(arg0, f32 *, 0x70)) * M2C_FIELD(arg0, f32 *, 0x68)) + M2C_FIELD(arg1, f32 *, 8));
     }
