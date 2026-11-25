@@ -220,7 +220,7 @@ def make_draft(root: Path, row: dict, rows: dict[str, dict], code: bytes) -> str
     directory = verify_install(root)
     names = {int(value, 16): name for name, value in row.get("bindings", {}).items()}
     assembly = to_gnu_asm(code, int(row["address"], 16), row["symbol"], names,
-                          row.get("data_relocations"))
+                          [*row.get("data_relocations", []), *row.get("code_relocations", [])])
     context, declarations = build_context(row, rows)
     return to_cpp(_run(directory, assembly, context, row["symbol"]), row["symbol"],
                   row.get("source_contract"), declarations)

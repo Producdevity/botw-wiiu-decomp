@@ -1,12 +1,14 @@
 """Read a locally supplied Cafe ELF, retaining original section addresses."""
 from collections import defaultdict
 from dataclasses import dataclass, field
+from functools import cached_property
 from bisect import bisect_left
 import hashlib
 from pathlib import Path
 import struct
 import zlib
 
+from .code_relocations import COMPONENT_ORDER, PROFILES, code_contract
 from .data_relocations import DATA_PROFILE, contract
 from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE, NAME, import_contract
 
@@ -77,7 +79,54 @@ class Rpx:
             raise RpxError("relocation destination must lie in allocated non-TLS data")
         return sections[0]
 
-    def data_references(self, address: int, size: int) -> tuple[dict, ...]:
+    @cached_property
+    def _branch_targets(self) -> dict[int, tuple[frozenset[int], frozenset[int]]]:
+        """Per executable section: unrelocated direct-call targets and conditional-branch targets."""
+        result = {}
+        for section in self.sections:
+            if section.kind != 1 or section.flags & 6 != 6 or len(section.data) % 4:
+                continue
+            start, end = section.address, section.address + len(section.data)
+            calls, conditional = set(), set()
+            for index, (word,) in enumerate(struct.iter_unpack(">I", section.data)):
+                op = word >> 26
+                if op not in (16, 18) or not word & 1 and op == 18:
+                    continue
+                site = start + index * 4
+                if self.has_relocation(site, 4):
+                    continue
+                bits = 26 if op == 18 else 16
+                displacement = word & ((1 << bits) - 4)
+                displacement -= (displacement & (1 << (bits - 1))) << 1
+                target = (displacement if word & 2 else site + displacement) & 0xFFFFFFFF
+                if not start <= target < end or target % 4:
+                    continue
+                if word & 1:
+                    if target != site + 4:
+                        calls.add(target)
+                else:
+                    conditional.add(target)
+            result[section.index] = (frozenset(calls), frozenset(conditional))
+        return result
+
+    def _code_target(self, destination: int, section: Section, address: int, size: int) -> None:
+        if destination % 4 or not section.address <= destination < section.address + len(section.data):
+            raise RpxError("code-address destination must be aligned in the function's executable section")
+        if address < destination < address + size:
+            raise RpxError("code-address destination lies inside the referencing function")
+        calls, conditional = self._branch_targets[section.index]
+        if destination == self.entry or destination in calls:
+            return
+        previous = destination - 4
+        if previous >= section.address and destination not in conditional:
+            word = int.from_bytes(section.data[previous - section.address:destination - section.address], "big")
+            terminal = word == 0x4E800020 or word >> 26 == 18 and not word & 3
+            if terminal and (not self.has_relocation(previous, 4) or previous in self.import_branches):
+                return
+        raise RpxError("code-address destination lacks function-entry evidence")
+
+    def _absolute_references(self, address: int, size: int, span: tuple[int, int],
+                             components: frozenset[str]) -> tuple[list[dict], list[dict]]:
         section = self._code_section(address, size)
         if len(self.relocation_records) != len(self.sorted_relocation_sites) * _RELOCATION_RECORD.size:
             raise RpxError("original relocation metadata is unavailable")
@@ -85,25 +134,35 @@ class Rpx:
         if first and self.sorted_relocation_ends[first - 1] > address:
             first -= 1
         last = bisect_left(self.sorted_relocation_sites, address + size)
-        result = []
+        data, code = [], []
         for index in range(first, last):
             site, kind, addend, value, symbol_size, shndx, info, other = _RELOCATION_RECORD.unpack_from(
                 self.relocation_records, index * _RELOCATION_RECORD.size)
             width = _RELOCATION_WIDTHS[kind]
             if site < address or site + width > address + size:
                 raise RpxError("original relocation crosses a function boundary")
-            if kind not in (1, 4, 5, 6):
-                raise RpxError("unsupported original relocation in data-address profile")
+            if kind not in (1, 4, 5, 6) or not components & {"data", "code"}:
+                raise RpxError("unsupported or ambiguous original relocation for this profile")
             if not 0 < shndx < len(self.sections) or info >> 4 not in (0, 1, 2) or info & 15 not in (0, 1, 3):
                 raise RpxError("original relocation requires a defined data symbol")
             anchor = self.sections[shndx]
-            if (self._data_section(value) != anchor or value + symbol_size > anchor.address + anchor.size or
-                    other & ~3):
-                raise RpxError("original data symbol disagrees with its section")
             destination = value + addend
             if not 0 <= destination <= 0xFFFFFFFF:
                 raise RpxError("original relocation address exceeds 32 bits")
-            self._data_section(destination)
+            if "code" in components and anchor.kind == 1 and anchor.flags & 6 == 6:
+                # The pinned GHS link anchors code addresses on executable section symbols.
+                if info & 15 != 3 or value != anchor.address or symbol_size or other & ~3:
+                    raise RpxError("original code symbol disagrees with its section")
+                self._code_target(destination, section, *span)
+                target = code
+            else:
+                if "data" not in components:
+                    raise RpxError("data-address relocation requires a data-address profile")
+                if (self._data_section(value) != anchor or value + symbol_size > anchor.address + anchor.size or
+                        other & ~3):
+                    raise RpxError("original data symbol disagrees with its section")
+                self._data_section(destination)
+                target = data
             expected = (destination if kind == 1 else destination & 0xFFFF if kind == 4
                         else destination >> 16 if kind == 5
                         else ((destination + 0x8000) >> 16) & 0xFFFF)
@@ -111,8 +170,11 @@ class Rpx:
             actual = int.from_bytes(section.data[offset:offset + width], "big")
             if actual != expected:
                 raise RpxError("original relocation field differs from its link-address value")
-            result.append({"site": site, "type": kind, "destination": destination})
-        return tuple(result)
+            target.append({"site": site, "type": kind, "destination": destination})
+        return data, code
+
+    def data_references(self, address: int, size: int) -> tuple[dict, ...]:
+        return tuple(self._absolute_references(address, size, (address, size), frozenset({"data"}))[0])
 
     def import_references(self, address: int, size: int):
         self._code_section(address, size)
@@ -131,39 +193,55 @@ class Rpx:
             result.append((site - address, f"fn_{target:08x}", library, name, target))
         return tuple(result)
 
-    def mixed_references(self, address: int, size: int):
+    def classify_references(self, address: int, size: int,
+                            components: frozenset[str] = frozenset(COMPONENT_ORDER)):
+        """Split a span's original relocations into data, import and code-address fields."""
         self._code_section(address, size)
         end = address + size
         first = bisect_left(self.sorted_relocation_sites, address)
         last = bisect_left(self.sorted_relocation_sites, end)
         sites = [site for site in self.sorted_relocation_sites[first:last]
-                 if site in self.import_branches]
-        data, imports = [], []
+                 if site in self.import_branches] if "import" in components else []
+        data, code, imports = [], [], []
         cursor = address
         for site in sites:
             if site + 4 > end:
                 raise RpxError("original relocation crosses a function boundary")
             if cursor < site:
-                data.extend(self.data_references(cursor, site - cursor))
+                found = self._absolute_references(cursor, site - cursor, (address, size), components)
+                data.extend(found[0])
+                code.extend(found[1])
             (_, symbol, library, name, target), = self.import_references(site, 4)
             imports.append((site - address, symbol, library, name, target))
             cursor = site + 4
         if cursor < end:
-            data.extend(self.data_references(cursor, end - cursor))
-        if not data or not imports:
-            raise RpxError("combined profile requires original data and import relocations")
-        return tuple(data), tuple(imports)
+            found = self._absolute_references(cursor, end - cursor, (address, size), components)
+            data.extend(found[0])
+            code.extend(found[1])
+        return tuple(data), tuple(imports), tuple(code)
+
+    def references(self, address: int, size: int, profile: str):
+        """Original fields of a relocated profile; each listed component must occur."""
+        if profile not in PROFILES or not PROFILES[profile]:
+            raise RpxError("unsupported original reference profile")
+        components = PROFILES[profile]
+        data, imports, code = self.classify_references(address, size, components)
+        present = {"data": data, "import": imports, "code": code}
+        if not all(present[part] for part in components):
+            parts = " and ".join(part for part in COMPONENT_ORDER if part in components)
+            raise RpxError(f"original profile requires original {parts} relocations")
+        return data, imports, code
+
+    def mixed_references(self, address: int, size: int):
+        data, imports, _ = self.references(address, size, MIXED_PROFILE)
+        return data, imports
 
     def read(self, address: int, size: int, *, profile: str = "unrelocated") -> bytes:
-        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE, MIXED_PROFILE):
+        if profile not in PROFILES:
             raise RpxError("unsupported original reference profile")
         section = self._code_section(address, size)
-        if profile == DATA_PROFILE:
-            self.data_references(address, size)
-        elif profile == IMPORT_PROFILE:
-            self.import_references(address, size)
-        elif profile == MIXED_PROFILE:
-            self.mixed_references(address, size)
+        if PROFILES[profile]:
+            self.references(address, size, profile)
         elif self.has_relocation(address, size):
             raise RpxError("original RPX relocations require a verified canonicalisation profile")
         return section.data[address - section.address:address - section.address + size]
@@ -340,35 +418,41 @@ def load(path: Path, expected_sha256: str) -> Rpx:
 def reference_bytes(image: Rpx, row: dict) -> bytes:
     address, size = int(row["address"], 16), row["size"]
     profile = row.get("original_profile", "unrelocated")
-    if "import_relocations" in row and profile not in (IMPORT_PROFILE, MIXED_PROFILE):
-        raise RpxError("import relocations require the import profile")
-    if (("data_bindings" in row or "data_relocations" in row)
-            and profile not in (DATA_PROFILE, MIXED_PROFILE)):
-        raise RpxError("data bindings require the data-address profile")
-    if profile == "unrelocated":
-        return image.read(address, size)
-    if profile == MIXED_PROFILE:
-        original_data, original_imports = image.mixed_references(address, size)
-    elif profile == DATA_PROFILE:
-        original_data = image.data_references(address, size)
-    elif profile == IMPORT_PROFILE:
-        original_imports = image.import_references(address, size)
-    else:
+    if profile not in PROFILES:
         raise RpxError("unsupported original reference profile")
-    if profile in (IMPORT_PROFILE, MIXED_PROFILE):
-        bindings = {name: int(value, 16) for name, value in row.get("bindings", {}).items()}
+    components = PROFILES[profile]
+    if "import_relocations" in row and "import" not in components:
+        raise RpxError("import relocations require the import profile")
+    if ("data_bindings" in row or "data_relocations" in row) and "data" not in components:
+        raise RpxError("data bindings require the data-address profile")
+    if "code_relocations" in row and "code" not in components:
+        raise RpxError("code relocations require a code-address profile")
+    if not components:
+        return image.read(address, size)
+    original_data, original_imports, original_code = image.references(address, size, profile)
+    bindings = {name: int(value, 16) for name, value in row.get("bindings", {}).items()}
+    if "import" in components:
         expected = import_contract(size, bindings, row.get("import_relocations", []))
         if original_imports != expected:
             raise RpxError("trusted import relocation contract disagrees with original fields")
-    if profile in (DATA_PROFILE, MIXED_PROFILE):
-        bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
+    if "data" in components:
+        data_bindings = {name: int(value, 16) for name, value in row.get("data_bindings", {}).items()}
         try:
-            expected = contract(size, bindings, row.get("data_relocations", []))
+            expected = contract(size, data_bindings, row.get("data_relocations", []))
         except ValueError as exc:
             raise RpxError(str(exc)) from exc
         actual = tuple((item["site"] - address, item["type"], f"data_{item['destination']:08x}",
                         item["destination"]) for item in original_data)
         if actual != expected:
             raise RpxError("trusted data relocation contract disagrees with original fields")
+    if "code" in components:
+        try:
+            expected = code_contract(size, bindings, row.get("code_relocations", []))
+        except ValueError as exc:
+            raise RpxError(str(exc)) from exc
+        actual = tuple((item["site"] - address, item["type"], f"fn_{item['destination']:08x}",
+                        item["destination"]) for item in original_code)
+        if actual != expected:
+            raise RpxError("trusted code relocation contract disagrees with original fields")
     section = image._code_section(address, size)
     return section.data[address - section.address:address - section.address + size]

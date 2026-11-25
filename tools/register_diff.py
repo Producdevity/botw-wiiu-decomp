@@ -41,7 +41,8 @@ def main(argv=None):
                 obj = compiler.compile_source(settings["compiler"], args.source,
                                               project.ROOT / "include", profile)
                 resolved, candidate = matching._resolve_function(
-                    obj, row["symbol"], row["size"], address, bindings, data_bindings, row.get("data_relocations", []))
+                    obj, row["symbol"], row["size"], address, bindings, data_bindings, row.get("data_relocations", []),
+                    code_relocations=row.get("code_relocations"))
                 if candidate is None:
                     item.update(equivalent=False, reason=resolved["reason"])
                 else:

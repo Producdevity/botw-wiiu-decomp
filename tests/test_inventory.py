@@ -4,7 +4,7 @@ import tempfile
 import struct
 import unittest
 
-from botw_decomp.inventory import branch_target, discover, select_pilot
+from botw_decomp.inventory import WALK_LIMIT, branch_target, discover, select_pilot
 from botw_decomp.rpx import parse
 from tests.test_rpx import START, make_rpx
 
@@ -106,7 +106,10 @@ class InventoryTests(unittest.TestCase):
             discover(parse(make_rpx(b"abc")))
 
     def test_function_walk_is_bounded(self):
-        self.assertEqual(inventory([NOP] * 1024 + [BLR]), [])
+        self.assertEqual(WALK_LIMIT, 65536)
+        self.assertEqual(inventory([NOP] * (WALK_LIMIT // 4) + [BLR]), [])
+        row, = inventory([NOP] * (WALK_LIMIT // 4 - 1) + [BLR])
+        self.assertEqual(row["size"], WALK_LIMIT)
 
     def test_branch_addresses_follow_32_bit_signed_displacements(self):
         self.assertEqual(branch_target(0x4BFFFFFC, START), START - 4)

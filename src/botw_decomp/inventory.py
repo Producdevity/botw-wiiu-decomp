@@ -5,12 +5,13 @@ from collections.abc import Set
 import hashlib
 import sys
 
+from .code_relocations import profile_name
 from .espresso import decode
-from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE
-from .rpx import DATA_PROFILE, Rpx, RpxError, Section, reference_bytes
+from .rpx import Rpx, RpxError, Section, reference_bytes
 
 
 BCTRL = 0x4E800421
+WALK_LIMIT = 65536
 
 
 def signed(value: int, bits: int) -> int:
@@ -56,13 +57,9 @@ def relocation_contract(image: Rpx, entry: int, size: int, imports: dict[int, in
         return {}
     if set(imports) - set(sites):
         raise RpxError("import call without an original import relocation")
-    if all(site in image.import_branches for site in sites):
-        profile, data, linked = IMPORT_PROFILE, (), image.import_references(entry, size)
-    elif any(site in image.import_branches for site in sites):
-        profile = MIXED_PROFILE
-        data, linked = image.mixed_references(entry, size)
-    else:
-        profile, data, linked = DATA_PROFILE, image.data_references(entry, size), ()
+    data, linked, code = image.classify_references(entry, size)
+    profile = profile_name(part for part, found in (("data", data), ("import", linked), ("code", code))
+                           if found)
     row = {"original_profile": profile}
     if data:
         row["data_bindings"] = {f"data_{item['destination']:08x}": f"0x{item['destination']:08x}"
@@ -76,6 +73,10 @@ def relocation_contract(image: Rpx, entry: int, size: int, imports: dict[int, in
             for offset, symbol, library, name, _target in linked]
         if any(imports.get(entry + offset) != target for offset, _, _, _, target in linked):
             raise RpxError("import call target disagrees with its relocation")
+    if code:
+        row["code_relocations"] = [
+            {"offset": item["site"] - entry, "symbol": f"fn_{item['destination']:08x}",
+             "type": item["type"]} for item in code]
     return row
 
 
@@ -85,8 +86,8 @@ def discover(
     indirect_calls: bool = False,
 ) -> list[dict]:
     """Bounded functions; original_relocations also admits spans whose relocations
-    all fit the data-address or import-REL24 profiles, and indirect_calls admits
-    unconditional `bctrl` calls that return to the next instruction."""
+    all fit the data-address, code-address or import-REL24 profiles, and indirect_calls
+    admits unconditional `bctrl` calls that return to the next instruction."""
     text = text_section(image)
     start, end = text.address, text.address + len(text.data)
     words = text_words(text)
@@ -122,7 +123,7 @@ def discover(
         while pending and valid:
             address = pending.pop()
             while address not in seen:
-                if not entry <= address < min(entry + 4096, end):
+                if not entry <= address < min(entry + WALK_LIMIT, end):
                     valid = False
                     break
                 if address != entry and address in entries:
@@ -196,7 +197,8 @@ def discover(
         category = "calls" if calls or imports or indirect else "loops" if loop else "floating-point" if floats else "control-flow" if branches else "integer"
         boundary = ("RPX entry" if entry == image.entry else
                     "direct-call target" if entry in direct_entries else "supplied entry")
-        targets = calls | set(imports.values())
+        targets = calls | set(imports.values()) | {
+            int(item["symbol"][3:], 16) for item in contract.get("code_relocations", ())}
         row = {
             "id": f"fn_{entry:08x}", "address": f"0x{entry:08x}", "size": size,
             "sha256": hashlib.sha256(original).hexdigest(), "category": category,
