@@ -3,8 +3,11 @@ import json
 from pathlib import Path
 import re
 
-from .data_relocations import DATA_PROFILE, contract
-from .import_relocations import IMPORT_PROFILE, MIXED_PROFILE, import_contract
+from bisect import bisect_right
+
+from .code_relocations import PROFILES, code_contract
+from .data_relocations import contract
+from .import_relocations import import_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 FUNCTION_ID = re.compile(r"fn_[0-9a-f]{8}\Z")
@@ -150,10 +153,11 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
             if not FUNCTION_ID.fullmatch(name) or name != f"fn_{number:08x}" or number % 4:
                 raise ValueError(f"invalid external binding: {key}")
         profile = row.get("original_profile", "unrelocated")
-        if profile not in ("unrelocated", DATA_PROFILE, IMPORT_PROFILE, MIXED_PROFILE):
+        if not isinstance(profile, str) or profile not in PROFILES:
             raise ValueError(f"invalid original profile: {key}")
-        has_data = profile in (DATA_PROFILE, MIXED_PROFILE)
-        has_imports = profile in (IMPORT_PROFILE, MIXED_PROFILE)
+        has_data = "data" in PROFILES[profile]
+        has_imports = "import" in PROFILES[profile]
+        has_code = "code" in PROFILES[profile]
         data_bindings = row.get("data_bindings", {})
         if not isinstance(data_bindings, dict) or (data_bindings and not has_data):
             raise ValueError(f"invalid data bindings: {key}")
@@ -165,8 +169,7 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
         relocations = row.get("data_relocations", [])
         if ("data_bindings" in row or "data_relocations" in row) and not has_data:
             raise ValueError(f"data contract requires the data-address profile: {key}")
-        if (has_data and "data_relocations" not in row
-                or profile == MIXED_PROFILE and not relocations):
+        if has_data and not relocations:
             raise ValueError(f"missing data relocation contract: {key}")
         data_fields = contract(size, {name: int(value, 16) for name, value in data_bindings.items()},
                                relocations)
@@ -175,16 +178,33 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
             raise ValueError(f"import relocations require the import profile: {key}")
         if has_imports and not imports:
             raise ValueError(f"missing import relocation contract: {key}")
-        import_fields = import_contract(
-            size, {name: int(value, 16) for name, value in row.get("bindings", {}).items()}, imports)
-        import_words = {offset for offset, *_ in import_fields}
-        if any(offset // 4 * 4 in import_words for offset, *_ in data_fields):
-            raise ValueError(f"overlapping data and import relocation contracts: {key}")
+        bindings = {name: int(value, 16) for name, value in row.get("bindings", {}).items()}
+        import_fields = import_contract(size, bindings, imports)
+        code_relocations = row.get("code_relocations", [])
+        if "code_relocations" in row and not has_code:
+            raise ValueError(f"code relocations require a code-address profile: {key}")
+        if has_code and not code_relocations:
+            raise ValueError(f"missing code relocation contract: {key}")
+        code_fields = code_contract(size, bindings, code_relocations)
+        occupied = set()
+        for offset, width in [*((offset, 4) for offset, *_ in import_fields),
+                              *((offset, 4 if kind == 1 else 2) for offset, kind, *_ in (*data_fields, *code_fields))]:
+            field = set(range(offset, offset + width))
+            if occupied & field:
+                raise ValueError(f"overlapping data, code and import relocation contracts: {key}")
+            occupied |= field
         result[key] = row
         ranges.append((address, address + size))
     ranges.sort()
     if any(a[1] > b[0] for a, b in zip(ranges, ranges[1:])):
         raise ValueError("overlapping function ranges")
+    starts = [start for start, _ in ranges]
+    for key, row in result.items():
+        for item in row.get("code_relocations", []):
+            destination = int(item["symbol"][3:], 16)
+            index = bisect_right(starts, destination) - 1
+            if index >= 0 and ranges[index][0] < destination < ranges[index][1]:
+                raise ValueError(f"code-address destination lies inside a reference body: {key}")
     for row in result.values():
         compilation_members(row, result)
     return result

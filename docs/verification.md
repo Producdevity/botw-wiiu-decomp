@@ -42,7 +42,24 @@ relocation. A reviewed reference can opt into one of these profiles:
   destination. Numeric pointer literals cannot pass.
 - `cafe-import-rel24-v1`: `REL24` branches to function-import thunks such as
   Coreinit calls. The reference pins library, name, offset and thunk address.
-- `cafe-data-import-rel24-v1`: both of the above in one function.
+- `cafe-code-address-v1`: absolute `ADDR32`/`ADDR16_*` fields that hold the
+  address of a function in `.text`, such as a destructor passed to a
+  registration call. The reference lists `code_relocations` (offset, type,
+  symbol) and binds each `fn_XXXXXXXX` symbol to the address its name encodes.
+  Take the address in source, for example `register(object, &fn_023e75c8);`.
+  The compiled object's absolute relocations against functions must equal the
+  trusted list field by field, with a zero addend. Numeric literals and
+  addresses inside a function cannot pass. Every reference, whatever its
+  profile, rejects compiled function-address fields that its list does not pin.
+  The original destination must be aligned in the referencing function's
+  section, lie outside its body, and have entry evidence: the RPX entry, an
+  unrelocated direct-call target, or the address after an unconditional `blr`
+  or `b` that no conditional branch targets. Addresses after `bctr` start GHS
+  branch tables and need direct-call evidence. No trusted reference may contain
+  a pinned destination inside its body.
+- Combinations, each requiring every listed kind of field:
+  `cafe-data-import-rel24-v1` (data and imports), `cafe-data-code-address-v1`,
+  `cafe-code-import-rel24-v1` and `cafe-data-code-import-rel24-v1`.
 
 ### Supporting compilation
 

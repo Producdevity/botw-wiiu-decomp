@@ -38,20 +38,23 @@ bounded, contiguous control flow and no original relocations. Opt-in modes:
   wider bodies as direct-call targets. Other taken addresses are not entries on
   their own: GHS switches load the address of a branch table that follows `bctr`.
 - `--max-size` (4–256, default 64) bounds the short adapters.
-- `--original-relocations`: bounded functions whose original relocations all fit
-  `cafe-data-address-v1`, `cafe-import-rel24-v1` or both. Each row carries the
-  relocation contract read from the RPX, and discovery re-reads the span through
-  that contract before emitting it. Every address taken into `.text` (vtable
-  slots, function-pointer loads) also fences these spans.
+- `--original-relocations`: bounded functions whose original relocations fit
+  any combination of the data-address, code-address and import profiles. Each
+  row carries the relocation contract read from the RPX, and discovery re-reads
+  the span through that contract before emitting it. Every address taken into
+  `.text` (vtable slots, function-pointer loads) also fences these spans.
+  `admit_references.py` skips rows that would put a pinned code-address
+  destination inside a body.
 - `--indirect-calls`: bounded functions that make unconditional `bctrl` calls
   (virtual calls and function pointers). The call returns to the next
   instruction and emits no binding; the bytes compare like any other
   instruction. Taken `.text` addresses fence these spans too. Conditional
   `bcctrl`, `bctr` and `bclrl` stay excluded.
 
-A new span cannot contain another entry or branch target or overlap a body.
+A new span cannot contain another entry or branch target or overlap a body, and
+the walk stops at 64 KiB (the largest bounded body found is about 36 KiB).
 Outside `--original-relocations` it cannot include an original relocation.
-Other relocation classes (code addresses, jump tables) stay excluded; see
+Other relocation classes (jump tables, `bctr`) stay excluded; see
 [relocation profiles](verification.md#original-relocation-profiles).
 
 ### Pinning interfaces

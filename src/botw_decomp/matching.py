@@ -3,6 +3,7 @@
 import hashlib
 import struct
 
+from .code_relocations import code_contract
 from .data_relocations import contract
 from .import_relocations import import_contract
 from .elf import (ElfError, ElfObject, Relocation, SHF_ALLOC, SHF_EXECINSTR,
@@ -182,7 +183,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
                       data_relocations: list | None = None,
                       function_scope: dict | None = None,
                       import_relocations: list | None = None,
-                      unrelocated: list | None = None) -> tuple[dict, bytes | None]:
+                      unrelocated: list | None = None,
+                      code_relocations: list | None = None) -> tuple[dict, bytes | None]:
     result = {"matched": False, "status": "rejected", "reason": ""}
     try:
         if not isinstance(object_bytes, bytes):
@@ -215,6 +217,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
                                   [] if import_relocations is None else import_relocations)
         import_symbols = {symbol for _, symbol, _, _, _ in imports}
         expected_imports = tuple((offset, symbol, target) for offset, symbol, _, _, target in imports)
+        expected_code = code_contract(expected_size, symbol_bindings,
+                                      [] if code_relocations is None else code_relocations)
         if symbol_name in symbol_bindings and symbol_bindings[symbol_name] != original_address:
             raise ElfError("target binding disagrees with its original address")
         obj = parse_object(object_bytes)
@@ -242,6 +246,7 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
         count = 0
         actual_data = []
         actual_imports = []
+        actual_code = []
         for relocation in obj.relocations:
             if relocation.target_section != selected.section_index:
                 continue
@@ -267,6 +272,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
                                           original_address, symbol_bindings, data_bindings, relocation.type, function_scope)
             if symbol.name in data_bindings:
                 actual_data.append((offset, relocation.type, symbol.name, destination))
+            elif relocation.type in (1, 4, 5, 6):
+                actual_code.append((offset, relocation.type, symbol.name, destination))
             if symbol.name in import_symbols:
                 if (relocation.type != 10 or relocation.addend or symbol.section_index != SHN_UNDEF):
                     raise ElfError("compiled import requires an undefined zero-addend REL24")
@@ -277,6 +284,8 @@ def _resolve_function(object_bytes: bytes, symbol_name: str, expected_size: int,
             raise ElfError("compiled data relocations disagree with trusted original fields")
         if tuple(sorted(actual_imports)) != expected_imports:
             raise ElfError("compiled import relocations disagree with trusted original fields")
+        if tuple(sorted(actual_code)) != expected_code:
+            raise ElfError("compiled code-address relocations disagree with trusted original fields")
         actual = bytes(code)
         result.update(actual_sha256=_sha(actual), relocations=count)
         return result, actual
@@ -291,13 +300,15 @@ def compare_function(object_bytes: bytes, symbol_name: str, expected: bytes,
                      data_bindings: dict[str, int] | None = None,
                      data_relocations: list | None = None,
                      import_relocations: list | None = None,
+                     code_relocations: list | None = None,
                      differences: dict[str, tuple[bytes, bytes]] | None = None) -> dict:
     if not isinstance(expected, bytes):
         return {"matched": False, "status": "rejected", "reason": "reference input must be bytes"}
     unrelocated = [] if differences is not None else None
     result, actual = _resolve_function(object_bytes, symbol_name, len(expected),
                                        original_address, symbol_bindings, data_bindings, data_relocations,
-                                       import_relocations=import_relocations, unrelocated=unrelocated)
+                                       import_relocations=import_relocations, unrelocated=unrelocated,
+                                       code_relocations=code_relocations)
     if unrelocated:
         differences[symbol_name] = (expected, unrelocated[0])
     result["expected_sha256"] = _sha(expected)
@@ -317,13 +328,15 @@ def compare_function_hash(object_bytes: bytes, symbol_name: str, expected_sha256
                           symbol_bindings: dict[str, int], *,
                           data_bindings: dict[str, int] | None = None,
                           data_relocations: list | None = None,
-                          import_relocations: list | None = None) -> dict:
+                          import_relocations: list | None = None,
+                          code_relocations: list | None = None) -> dict:
     if (not isinstance(expected_sha256, str) or len(expected_sha256) != 64 or
             any(char not in "0123456789abcdef" for char in expected_sha256)):
         return {"matched": False, "status": "rejected", "reason": "invalid reference SHA-256"}
     result, actual = _resolve_function(object_bytes, symbol_name, expected_size,
                                        original_address, symbol_bindings, data_bindings, data_relocations,
-                                       import_relocations=import_relocations)
+                                       import_relocations=import_relocations,
+                                       code_relocations=code_relocations)
     result["expected_sha256"] = expected_sha256
     if actual is not None:
         if result["actual_sha256"] == expected_sha256:
@@ -379,7 +392,8 @@ def compare_function_set(object_bytes: bytes, references: list[dict], originals:
                     raise ElfError("original bytes disagree with the supporting reference")
             result, actual = _resolve_function(object_bytes, symbol, row["size"], scope[symbol]["address"],
                                                bindings, data, row.get("data_relocations", []), scope,
-                                               row.get("import_relocations"))
+                                               row.get("import_relocations"),
+                                               code_relocations=row.get("code_relocations"))
             result["expected_sha256"] = row["sha256"]
             if actual is not None:
                 matched = actual == originals[symbol] if originals is not None else _sha(actual) == row["sha256"]

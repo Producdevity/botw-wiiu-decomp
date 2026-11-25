@@ -18,7 +18,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--short-tails", action="store_true", help="include short direct-tail adapters")
     parser.add_argument("--blr-leaves", action="store_true", help="include single-blr leaves without inferring signatures")
     parser.add_argument("--original-relocations", action="store_true",
-                        help="include bounded functions whose original relocations fit the data-address or import profiles")
+                        help="include bounded functions whose original relocations fit the data-address, code-address or import profiles")
     parser.add_argument("--indirect-calls", action="store_true",
                         help="include bounded functions that make unconditional bctrl calls")
     parser.add_argument("--vtables", action="store_true", help="include candidates from a checked GHS vtable pattern")

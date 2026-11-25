@@ -12,8 +12,9 @@ EXTERNAL = ("outside", 0, 0, 0x10, 0, "undef")
 
 
 class MatchingTests(unittest.TestCase):
-    def compare(self, obj, expected=CODE, bindings=None, address=START):
-        return compare_function(obj, "target", expected, address, bindings or {})
+    def compare(self, obj, expected=CODE, bindings=None, address=START, code_relocations=None):
+        return compare_function(obj, "target", expected, address, bindings or {},
+                                code_relocations=code_relocations)
 
     def test_exact_function(self):
         result = self.compare(make_object())
@@ -82,20 +83,27 @@ class MatchingTests(unittest.TestCase):
 
     def test_absolute_high_low_and_adjusted_high(self):
         destination = 0x12348000
+        name = f"fn_{destination:08x}"
         for kind, half in ((4, 0x8000), (5, 0x1234), (6, 0x1235)):
-            obj = make_object(bytes.fromhex("3c6000004e800020"), extra_symbols=[EXTERNAL],
-                              relocations=[(2, kind, "outside", 0)])
+            obj = make_object(bytes.fromhex("3c6000004e800020"),
+                              extra_symbols=[(name, 0, 0, 0x10, 0, "undef")],
+                              relocations=[(2, kind, name, 0)])
             expected = struct.pack(">I", 0x3C600000 | half) + CODE[4:]
+            fields = [{"offset": 2, "type": kind, "symbol": name}]
             with self.subTest(kind=kind):
-                self.assertTrue(self.compare(obj, expected, {"outside": destination})["matched"])
+                self.assertTrue(self.compare(obj, expected, {name: destination}, code_relocations=fields)["matched"])
+                self.assertEqual(self.compare(obj, expected, {name: destination})["status"], "rejected")
 
     def test_addr32_and_rel32(self):
-        for kind, destination, word in ((1, 0x10200000, 0x10200004),
-                                       (26, START - 8, 0xFFFFFFFC)):
-            obj = make_object(bytes(4) + CODE[4:], extra_symbols=[EXTERNAL],
-                              relocations=[(0, kind, "outside", 4)])
-            self.assertTrue(self.compare(obj, struct.pack(">I", word) + CODE[4:],
-                                         {"outside": destination})["matched"])
+        name = "fn_10200004"
+        obj = make_object(bytes(4) + CODE[4:], extra_symbols=[(name, 0, 0, 0x10, 0, "undef")],
+                          relocations=[(0, 1, name, 0)])
+        self.assertTrue(self.compare(obj, struct.pack(">I", 0x10200004) + CODE[4:], {name: 0x10200004},
+                                     code_relocations=[{"offset": 0, "type": 1, "symbol": name}])["matched"])
+        obj = make_object(bytes(4) + CODE[4:], extra_symbols=[EXTERNAL],
+                          relocations=[(0, 26, "outside", 4)])
+        self.assertTrue(self.compare(obj, struct.pack(">I", 0xFFFFFFFC) + CODE[4:],
+                                     {"outside": START - 8})["matched"])
 
     def test_overlapping_relocations_fail_closed(self):
         obj = make_object(extra_symbols=[EXTERNAL],
@@ -165,12 +173,15 @@ class MatchingTests(unittest.TestCase):
         self.assertEqual(self.compare(obj)["status"], "rejected")
 
     def test_absolute_symbol_cannot_override_its_declared_address(self):
+        name = f"fn_{START:08x}"
         obj = make_object(bytes(4) + CODE[4:],
-                          extra_symbols=[("absolute", START, 0, 0x10, 0, "abs")],
-                          relocations=[(0, 1, "absolute", 0)])
+                          extra_symbols=[(name, START, 0, 0x10, 0, "abs")],
+                          relocations=[(0, 1, name, 0)])
         expected = struct.pack(">I", START) + CODE[4:]
-        self.assertTrue(self.compare(obj, expected, {"absolute": START})["matched"])
-        self.assertEqual(self.compare(obj, expected, {"absolute": START + 4})["status"], "rejected")
+        fields = [{"offset": 0, "type": 1, "symbol": name}]
+        self.assertTrue(self.compare(obj, expected, {name: START}, code_relocations=fields)["matched"])
+        self.assertEqual(self.compare(obj, expected, {name: START + 4}, code_relocations=fields)["status"],
+                         "rejected")
 
     def test_local_reference_within_selected_function(self):
         obj = make_object(bytes.fromhex("480000004e800020"),
