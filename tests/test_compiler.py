@@ -35,6 +35,13 @@ class CompilerProfileTests(unittest.TestCase):
                                          "-bigendian", "--no_exceptions", "--no_rtti"])
         self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
 
+    def test_nounroll_debug_requires_an_explicit_profile(self):
+        profile = "ghs-5.3.22-speed-nounroll-debug"
+        self.assertEqual(profiles({"compiler_profile": profile}), [profile])
+        self.assertEqual(flags(profile), ["-Ospeed", "-Onounroll", "-g",
+                                         "-bigendian", "--no_exceptions", "--no_rtti"])
+        self.assertNotIn(profile, profiles({"compiler_profile": "ghs-5.3.22-auto"}))
+
     def test_speed_debug_can_be_pinned(self):
         profile = "ghs-5.3.22-speed-debug"
         self.assertEqual(profiles({"compiler_profile": profile}), [profile])

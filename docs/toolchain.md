@@ -137,6 +137,12 @@ The opt-in `ghs-5.3.22-speed-no-two-predecessor-merge` profile uses
 The pinned build preserves the shared return block and the byte-width
 result used by the original executable.
 
+The opt-in `ghs-5.3.22-speed-nounroll-debug` profile uses
+`-Ospeed -Onounroll -g` for the bounded safe-string comparison loop in
+`fn_0213b3c0`. `-Ospeed` unrolls the loop (428 bytes against the original 232),
+`-Onounroll` alone leaves the debug-ordered prologue and return code different,
+and only the combination matches. It is not part of the automatic set.
+
 ## Intrinsic declarations
 
 `include/botw/ghs_intrinsics.h` centralizes measured PowerPC intrinsic signatures.

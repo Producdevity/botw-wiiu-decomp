@@ -146,7 +146,8 @@ def functions(root: Path = ROOT) -> dict[str, dict]:
                 "ghs-5.3.22-speed-nounroll", "ghs-5.3.22-speed-noconstprop",
                 "ghs-5.3.22-speed-debug",
                 "ghs-5.3.22-speed-nopeephole", "ghs-5.3.22-speed-single-exit",
-                "ghs-5.3.22-speed-no-uvfd-info", "ghs-5.3.22-speed-no-two-predecessor-merge"):
+                "ghs-5.3.22-speed-no-uvfd-info", "ghs-5.3.22-speed-no-two-predecessor-merge",
+                "ghs-5.3.22-speed-nounroll-debug"):
             raise ValueError(f"invalid compiler profile: {key}")
         for name, value in row.get("bindings", {}).items():
             number = int(value, 16)

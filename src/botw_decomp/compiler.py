@@ -26,6 +26,7 @@ GHS_PROFILES = {
     "ghs-5.3.22-speed-single-exit": ["-Ospeed", "-Xsingle_exit_from_routine"],
     "ghs-5.3.22-speed-no-uvfd-info": ["-Ospeed", "-Xnouvfd_info"],
     "ghs-5.3.22-speed-no-two-predecessor-merge": ["-Ospeed", "-Xnomergeblocks_twopreds"],
+    "ghs-5.3.22-speed-nounroll-debug": ["-Ospeed", "-Onounroll", "-g"],
 }
 
 
