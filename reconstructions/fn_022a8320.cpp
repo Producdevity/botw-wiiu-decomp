@@ -17,7 +17,6 @@ extern "C" void fn_02a0cc4c(void*, void*);
 extern "C" s32 fn_022a8320(void *arg0)
 {
   void *temp_r3;
-  ;
   if (((*((void **) (((s8 *) arg0) + 0x14))) != 0) && (((u8) (((*((s32 *) (((s8 *) (*((void **) (((s8 *) arg0) + 0x14)))) + 0x18))) & 1) ^ 1)) != 0))
   {
     fn_02a0cc4c(*((void **) (((s8 *) arg0) + 0x14)), *((void **) (temp_r3 = ((s8 *) arg0) + 0)));

@@ -15,5 +15,5 @@ extern "C" u8 fn_03bad66c(void *arg0, s32 arg1) {
     if ((arg1 < 0) || (arg1 >= (s32) M2C_FIELD(arg0, u16 *, 0xAE))) {
         return 0U;
     }
-    return M2C_FIELD((arg0 + arg1), u8 *, 0xB0);
+    return M2C_FIELD((s8 *) arg0 + arg1, u8 *, 0xB0);
 }
