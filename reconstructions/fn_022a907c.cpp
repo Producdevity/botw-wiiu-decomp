@@ -18,7 +18,7 @@ extern "C" void fn_030ea2e0(void *);
 extern "C" void * fn_030747f8(void *);
 extern "C" void fn_0307cd5c(void *, void *);
 
-inline void *inline_fn(void *arg0, void **arg1)
+inline void *find_entry(void *arg0, void **arg1)
 {
   return fn_0307cd30(arg0, *arg1);
 }
@@ -26,7 +26,7 @@ inline void *inline_fn(void *arg0, void **arg1)
 extern "C" void fn_022a907c(void *arg0)
 {
   void *temp_r3;
-  temp_r3 = inline_fn((char *) arg0 + 0x10, *((void ***) (((s8 *) arg0) + 0x18)));
+  temp_r3 = find_entry((char *) arg0 + 0x10, *((void ***) (((s8 *) arg0) + 0x18)));
   if (temp_r3 == 0)
   {
     fn_0307cda0((char *) arg0 + 0x10);

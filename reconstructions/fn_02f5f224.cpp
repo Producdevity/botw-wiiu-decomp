@@ -20,13 +20,12 @@ extern "C" void fn_02f5f224(void *arg0)
   void *temp_r3_2;
   var_r30 = 0;
   loop_1:
-  temp_r3 = *((void **) (((s8 *) ((arg0 + 0x1B74) + (var_r30 * 4))) + 0xC));
+  temp_r3 = *((void **) (((s8 *) (((s8 *) arg0 + 0x1B74) + (var_r30 * 4))) + 0xC));
 
   (*((M2C_UNK (**)(void *)) (((s8 *) (*((void **) (((s8 *) temp_r3) + 0x14)))) + 0xCC)))(temp_r3);
   var_r30 += 1;
   if (var_r30 < 4)
   {
-    ;
     loop_3:
     if ((var_r30 + 3) >= 0xBU)
     {

@@ -17,7 +17,7 @@ extern "C" void *fn_03c46ffc(void *arg0) {
 
     temp_r3 = M2C_FIELD(arg0, void **, 8);
     if (temp_r3 != NULL) {
-        return temp_r3 + M2C_FIELD(temp_r3, s32 *, 0x10);
+        return (s8 *) temp_r3 + M2C_FIELD(temp_r3, s32 *, 0x10);
     }
     return temp_r3;
 }
