@@ -5,12 +5,22 @@ extern "C" int fn_03677224(void*);
 
 extern "C" void *data_1047be88;
 
-extern "C" s32 fn_022c5b38(void **arg0) {
-    s32 var_r31;
+namespace {
+struct Flags {
+    char padding_0[6];
+    u8 bits;
+};
+struct Owner {
+    char padding_0[0x444];
+    Flags *flags;
+};
+}
 
-    var_r31 = 1;
-    if (!((*(u8 *)((char *)((*(void **)((char *)(*arg0) + (0x444)))) + (6))) & 6) && (fn_03677224(data_1047be88) == 0)) {
-        var_r31 = 0;
+extern "C" s32 fn_022c5b38(void **arg0) {
+    s32 result = 1;
+
+    if (!(((Owner *)*arg0)->flags->bits & 6) && fn_03677224(data_1047be88) == 0) {
+        result = 0;
     }
-    return var_r31 == 0;
+    return result == 0;
 }

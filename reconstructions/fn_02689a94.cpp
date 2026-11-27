@@ -1,16 +1,23 @@
 extern "C" void fn_0370de48(void*, int);
 extern "C" void fn_0370e02c(void*);
 
-extern "C" void fn_02689a94(void **arg0) {
-    void *temp_r12;
-    void *temp_r31;
+namespace {
+struct Owner {
+    char padding_0[0x394];
+    void *component;
+};
+}
 
-    temp_r12 = *arg0;
-    if (temp_r12 != 0) {
-        temp_r31 = (*(void **)((char *)(temp_r12) + (0x394)));
-        if (temp_r31 != 0) {
-            fn_0370e02c(temp_r31);
-            fn_0370de48(temp_r31, 1);
+extern "C" void fn_02689a94(void **arg0) {
+    Owner *owner;
+    void *component;
+
+    owner = (Owner *)*arg0;
+    if (owner != 0) {
+        component = owner->component;
+        if (component != 0) {
+            fn_0370e02c(component);
+            fn_0370de48(component, 1);
         }
     }
 }

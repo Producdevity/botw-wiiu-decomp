@@ -4,12 +4,20 @@ typedef int s32;
 extern "C" void fn_04078480(void *, unsigned char);
 extern "C" unsigned fn_0415a468(void *);
 
-extern "C" void fn_03448be8(void *arg0, s32 arg1) {
-    u8 var_r31;
+namespace {
+struct Object {
+    unsigned char padding_0[8];
+    void *owner;
+};
+}
 
-    var_r31 = 1;
-    if (arg1 != 0) {
-        var_r31 = 2;
+extern "C" void fn_03448be8(void *arg0, s32 enabled) {
+    u8 mode;
+    Object *object = (Object *)arg0;
+
+    mode = 1;
+    if (enabled != 0) {
+        mode = 2;
     }
-    fn_04078480((void *)(fn_0415a468((*(void **)((char *)(arg0) + (8)))) + 0xE0), var_r31);
+    fn_04078480((void *)(fn_0415a468(object->owner) + 0xE0), mode);
 }

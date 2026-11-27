@@ -3,13 +3,20 @@ typedef int s32;
 extern "C" void* fn_0308e5a0(unsigned, void *, int);
 extern "C" int fn_037e5ec0(void*);
 
-extern "C" void fn_02ef7a20(void *arg0, s32 arg1, void *arg2) {
-    void *var_r3;
+namespace {
+struct Holder {
+    void *object;
+    s32 value;
+};
+}
 
-    var_r3 = fn_0308e5a0(0x30U, arg2, 4);
-    if (var_r3 != 0) {
-        var_r3 = (void *)(fn_037e5ec0(var_r3));
+extern "C" void fn_02ef7a20(void *holder, s32 value, void *heap) {
+    void *object;
+
+    object = fn_0308e5a0(0x30U, heap, 4);
+    if (object != 0) {
+        object = (void *)(fn_037e5ec0(object));
     }
-    (*(void **)((char *)(arg0) + (0))) = var_r3;
-    (*(s32 *)((char *)(arg0) + (4))) = arg1;
+    ((Holder *)holder)->object = object;
+    ((Holder *)holder)->value = value;
 }

@@ -4,12 +4,17 @@ extern "C" void* fn_0308e578(unsigned);
 
 extern "C" s32 data_1031dad4;
 
-extern "C" void fn_037d7f24(void *arg0) {
-    void *var_r3;
+namespace {
+struct VtableHolder {
+    s32 value;
+    s32 *vtable;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(8U), ((var_r3 == 0) == 0))) {
-        (*(s32 *)((char *)(var_r3) + (0))) = 0;
-        (*(s32 **)((char *)(var_r3) + (4))) = &data_1031dad4;
+extern "C" void fn_037d7f24(void *storage) {
+    VtableHolder *object = (VtableHolder *)storage;
+    if (object != 0 || (object = (VtableHolder *)fn_0308e578(8U), object != 0)) {
+        object->value = 0;
+        object->vtable = &data_1031dad4;
     }
 }

@@ -3,13 +3,22 @@ typedef int s32;
 extern "C" void fn_034ebca0(void*, void*);
 extern "C" void fn_03984eec(void*);
 
-extern "C" void fn_033c8608(void *arg0, s32 arg1) {
-    void *temp_r3;
+namespace {
+struct Object {
+    void *child;
+    char list[0x1C];
+    s32 state;
+};
+}
 
-    fn_034ebca0((char *)arg0 + 4, (void *) arg1);
-    temp_r3 = (*(void **)((char *)(arg0) + (0)));
-    if (temp_r3 != 0) {
-        fn_03984eec(temp_r3);
+extern "C" void fn_033c8608(void *arg0, s32 arg1) {
+    Object *object = (Object *)arg0;
+    void *child;
+
+    fn_034ebca0(object->list, (void *)arg1);
+    child = object->child;
+    if (child != 0) {
+        fn_03984eec(child);
     }
-    (*(s32 *)((char *)(arg0) + (0x20))) = 1;
+    object->state = 1;
 }

@@ -4,12 +4,22 @@ struct ThreadAllocatorContext;
 extern "C" ThreadAllocatorContext** fn_0434d168(void *);
 extern "C" unsigned char data_1045cc14[];
 
+namespace {
+struct Allocator {
+    void* const* vtable;
+};
+
+struct Context {
+    unsigned char padding_0[0x2C];
+    Allocator *allocator;
+};
+}
+
 extern "C" void fn_03ee3790(s32 arg0) {
-    void* const* vt1;
-    void **temp_r3;
+    Allocator *allocator;
 
     if (arg0 == 0) {
-        temp_r3 = (*(void ***)((char *)(*fn_0434d168(data_1045cc14)) + (0x2C)));
-        ((s32 (*)(void **, s32))(vt1 = *(void* const**)&(*temp_r3))[5])(temp_r3, 0x18);
+        allocator = ((Context *)*fn_0434d168(data_1045cc14))->allocator;
+        ((s32 (*)(Allocator *, s32))allocator->vtable[5])(allocator, 0x18);
     }
 }

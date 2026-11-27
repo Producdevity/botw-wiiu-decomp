@@ -5,12 +5,19 @@ extern "C" int fn_0258afd4(void);
 
 extern "C" f32 data_100e6adc;
 
-extern "C" f32 fn_0258b0cc(void) {
-    s32 temp_r3;
+namespace {
+struct Entry {
+    char padding_0[0x4C];
+    f32 value;
+};
+}
 
-    temp_r3 = fn_0258afd4();
-    if (temp_r3 != 0) {
-        return (*(f32 *)((char *)(temp_r3) + (0x4C)));
+extern "C" f32 fn_0258b0cc(void) {
+    Entry *entry;
+
+    entry = (Entry *)fn_0258afd4();
+    if (entry != 0) {
+        return entry->value;
     }
     return data_100e6adc;
 }

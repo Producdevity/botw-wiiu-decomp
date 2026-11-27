@@ -1,15 +1,32 @@
 extern "C" void fn_0398a8b0(void*, int);
 
-extern "C" void fn_03711eb0(void *arg0) {
-    void *temp_r12;
-    void *temp_r31;
+namespace {
+struct Child {
+    unsigned char padding_0[0x54];
+    void *owner;
+};
 
-    temp_r12 = (*(void **)((char *)(arg0) + (4)));
-    if (temp_r12 != 0) {
-        temp_r31 = (*(void **)((char *)(temp_r12) + (0xA4)));
-        if (temp_r31 != 0) {
-            fn_0398a8b0(temp_r31, 1);
-            (*(void **)((char *)(temp_r31) + (0x54))) = arg0;
+struct Parent {
+    unsigned char padding_0[0xA4];
+    Child *child;
+};
+
+struct Object {
+    unsigned char padding_0[4];
+    Parent *parent;
+};
+}
+
+extern "C" void fn_03711eb0(void *object) {
+    Parent *parent;
+    Child *child;
+
+    parent = ((Object *)object)->parent;
+    if (parent != 0) {
+        child = parent->child;
+        if (child != 0) {
+            fn_0398a8b0(child, 1);
+            child->owner = object;
         }
     }
 }
