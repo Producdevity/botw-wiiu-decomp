@@ -1,34 +1,24 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
-typedef s32 M2C_UNK;
-
-extern "C" s32 fn_0294d674(s32, s32);
+extern "C" int fn_0294d674(int, int);
 extern "C" void fn_037b8284(void *, const void *, void *);
-extern "C" M2C_UNK data_10171378;
-extern "C" M2C_UNK data_10171380;
+extern "C" int data_10171378;
+extern "C" int data_10171380;
 
-inline s32 matches_id(s32 arg0, s32 arg1)
-{
-  return fn_0294d674(arg0, arg1);
+namespace {
+struct Owner {
+    int id;
+    unsigned char padding_4[0x1C];
+    int* otherId;
+};
+inline int matchesId(int a, int b) {
+    return fn_0294d674(a, b);
+}
 }
 
 extern "C" void fn_02971a18(void *arg0, void *arg1)
 {
-  M2C_UNK *var_r30;
-  var_r30 = &data_10171380;
-  if (matches_id(*((s32 *) (((s8 *) arg0) + 0)), *(*((s32 **) (((s8 *) arg0) + 0x20)))) != 0)
-  {
-    var_r30 = &data_10171378;
-  }
-  fn_037b8284(arg0, var_r30, arg1);
+    int* table = &data_10171380;
+    if (matchesId(((Owner*) arg0)->id, *((Owner*) arg0)->otherId) != 0) {
+        table = &data_10171378;
+    }
+    fn_037b8284(arg0, table, arg1);
 }
