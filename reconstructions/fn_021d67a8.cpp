@@ -1,18 +1,15 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
+namespace {
+struct Object {
+    unsigned char padding_0[0x98];
+    unsigned char *source;
+    unsigned char padding_9c[0xC];
+    signed char flag;
+};
+}
 
 extern "C" void fn_021d67a8(void *arg0) {
-    if ((s32) *M2C_FIELD(arg0, u8 **, 0x98) != 0) {
-        M2C_FIELD(arg0, s8 *, 0xA8) = 1;
+    Object *object = static_cast<Object *>(arg0);
+    if (*object->source != 0) {
+        object->flag = 1;
     }
 }
