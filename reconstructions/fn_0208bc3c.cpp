@@ -4,13 +4,22 @@ extern "C" void fn_0211bd20(void*);
 extern "C" void fn_0344bac4(void *);
 extern "C" void* fn_037966a8(void *);
 
-extern "C" void fn_0208bc3c(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    void *handle;
+    char padding_4[0xD0];
+    s8 flag;
+};
+}
 
-    fn_0211bd20(arg0);
-    (*(s8 *)((char *)(arg0) + (0xD4))) = 0;
-    temp_r3 = fn_037966a8((*(void **)((char *)(arg0) + (0))));
-    if (temp_r3 != 0) {
-        fn_0344bac4(temp_r3);
+extern "C" void fn_0208bc3c(void *arg0) {
+    Object *object = (Object *)arg0;
+    void *target;
+
+    fn_0211bd20(object);
+    object->flag = 0;
+    target = fn_037966a8(object->handle);
+    if (target != 0) {
+        fn_0344bac4(target);
     }
 }

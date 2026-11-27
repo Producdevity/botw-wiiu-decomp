@@ -4,12 +4,19 @@ extern "C" void* fn_0308e578(unsigned);
 
 extern "C" s32 data_10353c34;
 
-extern "C" void fn_039e4054(void *arg0) {
-    void *var_r3;
+namespace {
+struct Object {
+    s32 value;
+    char padding_4[0x100];
+    s32 * table;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(0x108U), ((var_r3 == 0) == 0))) {
-        (*(s32 *)((char *)(var_r3) + (0))) = 0;
-        (*(s32 **)((char *)(var_r3) + (0x104))) = &data_10353c34;
+extern "C" void fn_039e4054(void *arg0) {
+    Object *object = (Object *)arg0;
+
+    if (object != 0 || (object = (Object *)fn_0308e578(0x108U), object != 0)) {
+        object->value = 0;
+        object->table = &data_10353c34;
     }
 }

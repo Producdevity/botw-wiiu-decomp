@@ -4,12 +4,19 @@ typedef int s32;
 struct SignedStateBytes;
 extern "C" bool fn_03a3e4dc(const SignedStateBytes *);
 
-extern "C" u8 fn_036066a4(struct SignedStateBytes *arg0) {
-    s32 var_r31;
+namespace {
+struct StateView {
+    unsigned char padding_0[0x180];
+    u8 valid;
+};
+}
 
-    var_r31 = 0;
-    if (((s32) (*(u8 *)((char *)(arg0) + (0x180))) != 0) && (fn_03a3e4dc(arg0) != 0)) {
-        var_r31 = 1;
+extern "C" u8 fn_036066a4(struct SignedStateBytes *arg0) {
+    s32 result;
+
+    result = 0;
+    if ((((StateView *)arg0)->valid != 0) && (fn_03a3e4dc(arg0) != 0)) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

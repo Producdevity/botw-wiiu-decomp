@@ -2,15 +2,22 @@ extern "C" void* fn_0355ef40(void *);
 extern "C" void fn_0356fc30(void *, int);
 extern "C" char* data_1047c390;
 
-extern "C" void fn_023ed42c(void) {
-    void *temp_r3;
-    void *temp_r3_2;
+namespace {
+struct Root {
+    unsigned char padding_0[0x1C];
+    void *child;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(data_1047c390) + (0x1C)));
-    if (temp_r3 != 0) {
-        temp_r3_2 = fn_0355ef40(temp_r3);
-        if (temp_r3_2 != 0) {
-            fn_0356fc30(temp_r3_2, 0);
+extern "C" void fn_023ed42c(void) {
+    void *child;
+    void *resource;
+
+    child = ((Root *)data_1047c390)->child;
+    if (child != 0) {
+        resource = fn_0355ef40(child);
+        if (resource != 0) {
+            fn_0356fc30(resource, 0);
         }
     }
 }

@@ -3,14 +3,26 @@ typedef int s32;
 
 extern "C" bool fn_0370e3bc(void *, int, int);
 
-extern "C" u8 fn_025f67ec(void *arg0) {
-    s32 var_r31;
-    void *temp_r0;
+namespace {
+struct Owner {
+    char padding_0[0x394];
+    void *component;
+};
+struct Object {
+    Owner *owner;
+    char padding_4[0x20];
+    s32 *key;
+};
+}
 
-    temp_r0 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x394)));
-    var_r31 = 0;
-    if ((temp_r0 != 0) && (fn_0370e3bc(temp_r0, *(*(s32 **)((char *)(arg0) + (0x24))), 0) != 0)) {
-        var_r31 = 1;
+extern "C" u8 fn_025f67ec(void *arg0) {
+    void *component;
+    s32 result;
+
+    component = ((Object *)arg0)->owner->component;
+    result = 0;
+    if (component != 0 && fn_0370e3bc(component, *((Object *)arg0)->key, 0) != 0) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

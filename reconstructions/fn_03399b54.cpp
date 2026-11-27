@@ -5,11 +5,11 @@ extern "C" int fn_03399724(void*);
 extern "C" int fn_03399a80(void*);
 
 extern "C" u8 fn_03399b54(void *arg0) {
-    s32 var_r31;
+    s32 result;
 
-    var_r31 = 1;
+    result = 1;
     if ((fn_03399724(arg0) == 0) && (fn_03399a80(arg0) == 0)) {
-        var_r31 = 0;
+        result = 0;
     }
-    return var_r31;
+    return result;
 }

@@ -4,12 +4,20 @@ typedef int s32;
 struct InferredObject;
 extern "C" unsigned int fn_02d82148(const void*);
 
-extern "C" u8 fn_02ca2a68(void *arg0) {
-    s32 var_r30;
+namespace {
+struct Object {
+    InferredObject *target;
+    char padding_4[0x50];
+    u8 flag;
+};
+}
 
-    var_r30 = 1;
-    if ((fn_02d82148((*(struct InferredObject **)((char *)(arg0) + (0)))) == 0) && ((s32) (*(u8 *)((char *)(arg0) + (0x54))) == 0)) {
-        var_r30 = 0;
+extern "C" u8 fn_02ca2a68(void *arg0) {
+    Object *object = (Object *)arg0;
+    s32 result = 1;
+
+    if (fn_02d82148(object->target) == 0 && object->flag == 0) {
+        result = 0;
     }
-    return var_r30;
+    return result;
 }
