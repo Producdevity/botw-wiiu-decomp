@@ -1,23 +1,19 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define NULL 0
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
+namespace {
+struct Node {
+    char padding_0[0x10];
+    int offset;
+};
 
-extern "C" void *fn_03c46ffc(void *arg0) {
-    void *temp_r3;
+struct Owner {
+    char padding_0[8];
+    Node* node;
+};
+}
 
-    temp_r3 = M2C_FIELD(arg0, void **, 8);
-    if (temp_r3 != NULL) {
-        return (s8 *) temp_r3 + M2C_FIELD(temp_r3, s32 *, 0x10);
+extern "C" void* fn_03c46ffc(void* arg0) {
+    Node* node = ((Owner*)arg0)->node;
+    if (node != 0) {
+        return (char*)node + node->offset;
     }
-    return temp_r3;
+    return node;
 }

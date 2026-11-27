@@ -1,25 +1,35 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define NULL 0
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
+namespace {
+struct Vec3 {
+    float x;
+    float y;
+    float z;
+};
+struct Object;
+struct Provider {
+    char padding_0[0x124];
+    void (*adjust)(Object *, Vec3 *);
+};
+struct Object {
+    char padding_0[0xC];
+    Provider *provider;
+    char padding_10[0x54];
+    float scale_x;
+    float scale_z;
+    float angle_x;
+    float angle_z;
+    char padding_74[4];
+    float offset_y;
+};
+}
 
 extern "C" float fn_04210514(float);
 extern "C" float fn_04210d48(float);
 
 extern "C" void fn_02548500(void *arg0, void *arg1) {
-    if (arg1 != NULL) {
-        M2C_FIELD(M2C_FIELD(arg0, void **, 0xC), void (**)(void *, void *), 0x124)(arg0, arg1);
-        M2C_FIELD(arg1, f32 *, 0) = (f32) ((fn_04210d48(M2C_FIELD(arg0, f32 *, 0x6C)) * M2C_FIELD(arg0, f32 *, 0x64)) + M2C_FIELD(arg1, f32 *, 0));
-        M2C_FIELD(arg1, f32 *, 4) = (f32) (M2C_FIELD(arg1, f32 *, 4) + M2C_FIELD(arg0, f32 *, 0x78));
-        M2C_FIELD(arg1, f32 *, 8) = (f32) ((fn_04210514(M2C_FIELD(arg0, f32 *, 0x70)) * M2C_FIELD(arg0, f32 *, 0x68)) + M2C_FIELD(arg1, f32 *, 8));
+    if (arg1 != 0) {
+        ((Object *) arg0)->provider->adjust((Object *) arg0, (Vec3 *) arg1);
+        ((Vec3 *) arg1)->x = fn_04210d48(((Object *) arg0)->angle_x) * ((Object *) arg0)->scale_x + ((Vec3 *) arg1)->x;
+        ((Vec3 *) arg1)->y = ((Vec3 *) arg1)->y + ((Object *) arg0)->offset_y;
+        ((Vec3 *) arg1)->z = fn_04210514(((Object *) arg0)->angle_z) * ((Object *) arg0)->scale_z + ((Vec3 *) arg1)->z;
     }
 }

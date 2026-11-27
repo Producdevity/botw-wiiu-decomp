@@ -1,26 +1,20 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define NULL 0
+namespace {
+struct Item {
+    char padding_0[0x34];
+    char member[1];
+};
+}
 
 extern "C" void* fn_02c19904(void *, int);
 extern "C" int fn_02c19940(void *);
 extern "C" int fn_02c1998c(void *);
 extern "C" int fn_03396390(void *);
 
-extern "C" s32 fn_021fc0c0(void **arg0)
+extern "C" int fn_021fc0c0(void **arg0)
 {
-  s32 index;
-  s32 count;
-  void *item;
+  int index;
+  int count;
+  Item *item;
   if (fn_02c19940(*arg0) != 0)
   {
     count = fn_02c1998c(*arg0);
@@ -29,8 +23,8 @@ extern "C" s32 fn_021fc0c0(void **arg0)
     {
       do
       {
-        item = fn_02c19904(*arg0, index);
-        int found = (item != 0) && (fn_03396390((char *) item + 0x34) != 0);
+        item = (Item *) fn_02c19904(*arg0, index);
+        int found = (item != 0) && (fn_03396390(item->member) != 0);
         if (found)
         {
           return 1;
