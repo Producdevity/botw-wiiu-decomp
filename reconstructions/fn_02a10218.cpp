@@ -5,12 +5,17 @@ struct InferredObject;
 extern "C" unsigned int fn_02a10068(const void*);
 extern "C" bool fn_0378da88(void *);
 
-extern "C" u8 fn_02a10218(struct InferredObject *arg0) {
-    s32 var_r31;
+namespace {
+struct ObjectView {
+    unsigned char padding_0[0x284];
+    unsigned char handle[4];
+};
+}
 
-    var_r31 = 0;
-    if ((fn_0378da88((char *)arg0 + 0x284) != 0) && (fn_02a10068(arg0) == 0)) {
-        var_r31 = 1;
+extern "C" u8 fn_02a10218(struct InferredObject *object) {
+    s32 result = 0;
+    if ((fn_0378da88(((ObjectView *)object)->handle) != 0) && (fn_02a10068(object) == 0)) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

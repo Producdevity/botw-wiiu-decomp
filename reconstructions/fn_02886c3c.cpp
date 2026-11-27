@@ -3,13 +3,20 @@ extern "C" void fn_02885a2c(void*);
 extern "C" void* fn_0294f338(void *);
 extern "C" void fn_0378da14(void* handle);
 
-extern "C" void fn_02886c3c(void **arg0, void *arg1) {
-    void *temp_r3;
+namespace {
+struct Object {
+    void *owner;
+    unsigned char padding_4[0x64];
+    unsigned char handle[4];
+};
+}
 
-    fn_0378da14((char *)arg0 + 0x68);
-    fn_02885a2c(arg0);
-    temp_r3 = fn_0294f338(*arg0);
-    if (temp_r3 != 0) {
-        fn_0249901c(temp_r3, (void *)4);
+extern "C" void fn_02886c3c(void **object_slot, void *unused) {
+    Object *object = (Object *)object_slot;
+    fn_0378da14(object->handle);
+    fn_02885a2c(object_slot);
+    void *target = fn_0294f338(*object_slot);
+    if (target != 0) {
+        fn_0249901c(target, (void *)4);
     }
 }

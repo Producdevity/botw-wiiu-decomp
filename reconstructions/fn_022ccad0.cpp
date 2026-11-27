@@ -1,15 +1,18 @@
-typedef unsigned char u8;
-typedef int s32;
-
 extern "C" int fn_022cc4a0(void*, void*);
 extern "C" int fn_03191c58(void*);
 
-extern "C" u8 fn_022ccad0(void *arg0) {
-    s32 var_r31;
+namespace {
+struct Object {
+    char padding_0[0x58];
+    char member[1];
+};
+}
 
-    var_r31 = 1;
-    if ((fn_03191c58((char *)arg0 + 0x58) != 0) && (fn_022cc4a0(arg0, (char *)arg0 + 0x58) == 0)) {
-        var_r31 = 0;
+extern "C" unsigned char fn_022ccad0(void *object) {
+    int result = 1;
+
+    if (fn_03191c58(((Object *)object)->member) != 0 && fn_022cc4a0(object, ((Object *)object)->member) == 0) {
+        result = 0;
     }
-    return var_r31;
+    return result;
 }

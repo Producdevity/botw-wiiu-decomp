@@ -5,11 +5,9 @@ extern "C" int fn_02e17644(void*);
 extern "C" int fn_02e17654(void*);
 
 extern "C" u8 fn_02b71a48(void) {
-    s32 var_r31;
-
-    var_r31 = 0;
+    s32 result = 0;
     if ((fn_02e17644(0) != 0) && (fn_02e17654(0) == 0)) {
-        var_r31 = 1;
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

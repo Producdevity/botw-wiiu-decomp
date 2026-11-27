@@ -1,14 +1,27 @@
 typedef int s32;
 typedef unsigned int u32;
 
-extern "C" s32 fn_02a995fc(void **arg0) {
-    void* const* vt1;
-    void *temp_r3;
-    void *temp_r3_2;
+namespace {
+struct OwnerVtable {
+    void *padding_0[195];
+    void *(*getInfo)(void *);
+};
 
-    temp_r3 = *arg0;
-    temp_r3_2 = ((void * (*)(void *))(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[195])(temp_r3);
-    if ((temp_r3_2 != 0) && (((u32) (*(u32 *)((char *)(temp_r3_2) + (8))) >> 0x16U) & 1)) {
+struct Owner {
+    unsigned char padding_0[0xE8];
+    const OwnerVtable *vtable;
+};
+
+struct Info {
+    unsigned char padding_0[8];
+    u32 flags;
+};
+}
+
+extern "C" s32 fn_02a995fc(void **object_slot) {
+    Owner *owner = (Owner *)*object_slot;
+    Info *info = (Info *)owner->vtable->getInfo(owner);
+    if ((info != 0) && ((info->flags >> 0x16U) & 1)) {
         return 1;
     }
     return 0;

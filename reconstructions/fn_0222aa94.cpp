@@ -1,15 +1,20 @@
-typedef int s32;
-
 extern "C" void fn_0344a898(void*, void*);
 extern "C" void* fn_037966a8(void *);
 
-extern "C" void fn_0222aa94(void *arg0) {
-    s32 sp8;
-    void *temp_r3;
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0x70 - 4];
+    int value;
+};
+}
 
-    temp_r3 = fn_037966a8((*(void **)((char *)(arg0) + (0))));
-    if (temp_r3 != 0) {
-        sp8 = (*(s32 *)((char *)(arg0) + (0x70)));
-        fn_0344a898(temp_r3, &sp8);
+extern "C" void fn_0222aa94(void *object) {
+    Object *self = (Object *)object;
+    void *target = fn_037966a8(self->owner);
+
+    if (target != 0) {
+        int value = self->value;
+        fn_0344a898(target, &value);
     }
 }

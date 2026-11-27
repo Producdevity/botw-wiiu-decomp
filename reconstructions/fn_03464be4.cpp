@@ -2,13 +2,12 @@ extern "C" void* fn_0308e5a0(unsigned size, void* heap, int alignment);
 extern "C" void* fn_03464660(void*);
 extern "C" void fn_03464780(void*, int, void*);
 
-extern "C" void* fn_03464be4(int arg0, void* arg1) {
-    void* var_r31;
+extern "C" void* fn_03464be4(int id, void* heap) {
+    void* object = fn_0308e5a0(0xC8U, heap, 4);
 
-    var_r31 = fn_0308e5a0(0xC8U, arg1, 4);
-    if (var_r31 != 0) {
-        var_r31 = fn_03464660(var_r31);
+    if (object != 0) {
+        object = fn_03464660(object);
     }
-    fn_03464780(var_r31, arg0, arg1);
-    return var_r31;
+    fn_03464780(object, id, heap);
+    return object;
 }

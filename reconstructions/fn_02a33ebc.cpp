@@ -5,12 +5,10 @@ struct HandleSlot;
 struct HandleTarget;
 extern "C" bool fn_0378da58(const HandleSlot *, const HandleTarget *);
 
-extern "C" u8 fn_02a33ebc(s32 arg0, struct HandleTarget *arg1) {
-    s32 var_r31;
-
-    var_r31 = 0;
-    if ((arg1 != 0) && (fn_0378da58((const HandleSlot *)(arg0 + 0x14), arg1) != 0)) {
-        var_r31 = 1;
+extern "C" u8 fn_02a33ebc(s32 owner_address, struct HandleTarget *target) {
+    s32 result = 0;
+    if ((target != 0) && (fn_0378da58((const HandleSlot *)(owner_address + 0x14), target) != 0)) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

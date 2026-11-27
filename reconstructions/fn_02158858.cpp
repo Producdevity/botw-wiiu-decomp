@@ -1,15 +1,18 @@
-typedef int s32;
-
 extern "C" int fn_0339eae8(void*);
 extern "C" void fn_03486cd4(void*, void*, int);
 
-extern "C" void fn_02158858(void **arg0) {
-    s32 temp_r3;
-    void *temp_r31;
+namespace {
+struct Object {
+    char padding_0[0x1F8];
+    char member[1];
+};
+}
 
-    temp_r31 = *arg0;
-    temp_r3 = fn_0339eae8(temp_r31);
-    if (temp_r3 != 0) {
-        fn_03486cd4((void *) temp_r3, (char *)temp_r31 + 0x1F8, 1);
+extern "C" void fn_02158858(void **holder) {
+    void *object = *holder;
+    int found = fn_0339eae8(object);
+
+    if (found != 0) {
+        fn_03486cd4((void *)found, ((Object *)object)->member, 1);
     }
 }

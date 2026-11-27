@@ -3,13 +3,25 @@ typedef signed char s8;
 extern "C" void fn_026a82ac(void*);
 extern "C" void fn_0317be7c(void*);
 
-extern "C" void fn_0264dd54(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    unsigned char padding_0[0x38C];
+    void *component;
+};
 
-    fn_026a82ac(arg0);
-    temp_r3 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x38C)));
-    if (temp_r3 != 0) {
-        fn_0317be7c(temp_r3);
+struct Object {
+    Owner *owner;
+    unsigned char padding_4[0x68];
+    s8 active;
+};
+}
+
+extern "C" void fn_0264dd54(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    fn_026a82ac(object);
+    void *component = object->owner->component;
+    if (component != 0) {
+        fn_0317be7c(component);
     }
-    (*(s8 *)((char *)(arg0) + (0x6C))) = 0;
+    object->active = 0;
 }

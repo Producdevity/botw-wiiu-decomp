@@ -5,12 +5,24 @@ extern "C" void fn_0348e490(void*, float);
 
 extern "C" f32 data_1016bfb4;
 
-extern "C" void fn_0293f9b8(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    unsigned char padding_0[0xF4];
+    void *component;
+};
 
-    temp_r3 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0xF4)));
-    if (temp_r3 != 0) {
-        fn_0348e490(temp_r3, data_1016bfb4);
+struct Object {
+    Owner *owner;
+    unsigned char padding_4[7];
+    u8 flags;
+};
+}
+
+extern "C" void fn_0293f9b8(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    void *component = object->owner->component;
+    if (component != 0) {
+        fn_0348e490(component, data_1016bfb4);
     }
-    (*(u8 *)((char *)(arg0) + (0xB))) = (u8) ((*(u8 *)((char *)(arg0) + (0xB))) | 4);
+    object->flags = (u8) (object->flags | 4);
 }

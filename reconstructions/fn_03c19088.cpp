@@ -1,13 +1,16 @@
-typedef int s32;
-
-struct InferredObject;
 extern "C" bool fn_03c124c0(const void*);
 
-extern "C" s32 fn_03c19088(void *arg0) {
-    struct InferredObject *temp_r3;
+namespace {
+struct Object {
+    char padding_0[4];
+    void *target;
+};
+}
 
-    temp_r3 = (*(struct InferredObject **)((char *)(arg0) + (4)));
-    if ((temp_r3 == 0) || (fn_03c124c0(temp_r3) == 0)) {
+extern "C" int fn_03c19088(void *object) {
+    void *target = ((Object *)object)->target;
+
+    if (target == 0 || fn_03c124c0(target) == 0) {
         return 0;
     }
     return 1;

@@ -4,13 +4,26 @@ typedef int s32;
 extern "C" int fn_02a279dc(void *, void *);
 extern "C" void* data_1046378c;
 
-extern "C" void fn_02b828b0(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Singleton {
+    unsigned char padding_0[0x5C0];
+    unsigned char registry[4];
+};
 
-    temp_r3 = (char *)data_1046378c + 0x5C0;
-    if (temp_r3 != 0) {
-        fn_02a279dc(temp_r3, (*(void **)((char *)(arg0) + (0xB0))));
+struct Object {
+    unsigned char padding_0[8];
+    s32 state;
+    s8 flag;
+    unsigned char padding_d[0xA3];
+    void *handle;
+};
+}
+
+extern "C" void fn_02b828b0(void *object_ptr) {
+    void *registry = ((Singleton *)data_1046378c)->registry;
+    if (registry != 0) {
+        fn_02a279dc(registry, ((Object *)object_ptr)->handle);
     }
-    (*(s32 *)((char *)(arg0) + (8))) = 2;
-    (*(s8 *)((char *)(arg0) + (0xC))) = 0;
+    ((Object *)object_ptr)->state = 2;
+    ((Object *)object_ptr)->flag = 0;
 }

@@ -1,15 +1,19 @@
-typedef int s32;
-
 extern "C" void fn_021aad10(int);
 extern "C" void fn_02b616bc(void *, void *);
 extern "C" void fn_02b616f0(void*, void*);
 extern "C" void* fn_037966a8(void *);
 
-extern "C" void fn_021a7418(void **arg0) {
-    void *temp_r31;
+namespace {
+struct Object {
+    char padding_0[0x28];
+    char member[1];
+};
+}
 
-    temp_r31 = *arg0;
-    fn_02b616f0((char *)arg0 + 0x28, temp_r31);
-    fn_02b616bc((char *)arg0 + 0x28, fn_037966a8(temp_r31));
-    fn_021aad10((s32) arg0);
+extern "C" void fn_021a7418(void **holder) {
+    void *key = *holder;
+
+    fn_02b616f0(((Object *)holder)->member, key);
+    fn_02b616bc(((Object *)holder)->member, fn_037966a8(key));
+    fn_021aad10((int)holder);
 }

@@ -5,11 +5,18 @@ extern "C" void fn_030bb69c(void *);
 
 extern "C" f32 data_101abd38;
 
-extern "C" void fn_02b1c518(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Object {
+    unsigned char padding_0[0x24];
+    unsigned char lock[0xB8];
+    f32 value;
+};
+}
 
-    temp_r31 = (char *)arg0 + 0x24;
-    fn_030bb668(temp_r31);
-    (*(f32 *)((char *)(arg0) + (0xDC))) = (f32) data_101abd38;
-    fn_030bb69c(temp_r31);
+extern "C" void fn_02b1c518(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    void *lock = object->lock;
+    fn_030bb668(lock);
+    object->value = data_101abd38;
+    fn_030bb69c(lock);
 }

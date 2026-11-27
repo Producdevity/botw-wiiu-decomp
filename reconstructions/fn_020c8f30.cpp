@@ -1,15 +1,17 @@
-typedef int s32;
-
 extern "C" void fn_032d44a4(void*);
 extern "C" void fn_032e1448(void);
 
-extern "C" void fn_020c8f30(void **arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0xE8];
+    void *const *vtable;
+};
+}
 
-    fn_032d44a4(arg0);
-    temp_r3 = *arg0;
-    if (((s32 (*)(void *))(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[265])(temp_r3) != 0) {
+extern "C" void fn_020c8f30(void **holder) {
+    fn_032d44a4(holder);
+    void *object = *holder;
+    if (((int (*)(void *))((Object *)object)->vtable[265])(object) != 0) {
         fn_032e1448();
     }
 }

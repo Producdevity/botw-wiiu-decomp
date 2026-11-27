@@ -4,12 +4,17 @@ extern "C" void* fn_0308e578(unsigned);
 
 extern "C" s32 data_101ae840;
 
-extern "C" void fn_02b46d10(void *arg0) {
-    void *var_r3;
+namespace {
+struct Object {
+    s32 *vtable;
+    s32 value;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(8U), ((var_r3 == 0) == 0))) {
-        (*(s32 *)((char *)(var_r3) + (4))) = 0;
-        (*(s32 **)((char *)(var_r3) + (0))) = &data_101ae840;
+extern "C" void fn_02b46d10(void *storage) {
+    Object *object = (Object *)storage;
+    if ((object != 0) || ((object = (Object *)fn_0308e578(8U)) != 0)) {
+        object->value = 0;
+        object->vtable = &data_101ae840;
     }
 }

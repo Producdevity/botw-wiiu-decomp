@@ -1,14 +1,20 @@
-typedef unsigned char u8;
-typedef int s32;
-
 extern "C" bool fn_0378da88(void *);
 
-extern "C" u8 fn_0360ab8c(void *arg0) {
-    s32 var_r31;
+namespace {
+struct Object {
+    char padding_0[0x18];
+    char member[1];
+    char padding_19[0xB];
+    int state;
+};
+}
 
-    var_r31 = 1;
-    if (((s32) (*(s32 *)((char *)(arg0) + (0x24))) == 6) && (fn_0378da88((char *)arg0 + 0x18) == 0)) {
-        var_r31 = 0;
+extern "C" unsigned char fn_0360ab8c(void *object) {
+    Object *self = (Object *)object;
+    int result = 1;
+
+    if (self->state == 6 && fn_0378da88(self->member) == 0) {
+        result = 0;
     }
-    return var_r31;
+    return result;
 }
