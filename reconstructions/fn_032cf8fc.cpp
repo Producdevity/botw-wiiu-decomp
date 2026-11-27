@@ -1,22 +1,16 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
-typedef s32 M2C_UNK;
+namespace {
+struct Owner {
+    char padding_0[0x123C];
+    unsigned char* flag;
+};
+}
 
-extern "C" M2C_UNK data_1054d368;
-extern "C" M2C_UNK data_1054d390;
+extern "C" int data_1054d368;
+extern "C" int data_1054d390;
 
-extern "C" M2C_UNK *fn_032cf8fc(void *arg0) {
-    if ((s32) *M2C_FIELD(arg0, u8 **, 0x123C) != 0) {
+extern "C" int* fn_032cf8fc(void* arg0) {
+    Owner* owner = (Owner*)arg0;
+    if (*owner->flag != 0) {
         return &data_1054d368;
     }
     return &data_1054d390;

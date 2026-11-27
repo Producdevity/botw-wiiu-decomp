@@ -1,23 +1,25 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
+namespace {
+struct Block {
+    float v0;
+    float v1;
+    float v2;
+    float v3;
+    float v4;
+    float v5;
+    float v6;
+    int tail;
+};
+}
 
-extern "C" void fn_033a60f8(void *arg0, void *arg1) {
-    M2C_FIELD(arg0, f32 *, 0x18) = (f32) M2C_FIELD(arg1, f32 *, 0x18);
-    M2C_FIELD(arg0, s32 *, 0x1C) = (s32) M2C_FIELD(arg1, s32 *, 0x1C);
-    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);
-    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, f32 *, 4);
-    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 8);
-    M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg1, f32 *, 0xC);
-    M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
-    M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg1, f32 *, 0x14);
+extern "C" void fn_033a60f8(void* arg0, void* arg1) {
+    Block* dst = (Block*)arg0;
+    Block* src = (Block*)arg1;
+    dst->v6 = src->v6;
+    dst->tail = src->tail;
+    dst->v0 = src->v0;
+    dst->v1 = src->v1;
+    dst->v2 = src->v2;
+    dst->v3 = src->v3;
+    dst->v4 = src->v4;
+    dst->v5 = src->v5;
 }

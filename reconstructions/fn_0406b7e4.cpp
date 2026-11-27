@@ -1,23 +1,22 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define NULL 0
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
+namespace {
+struct Linked {
+    char padding_0[0x13];
+    signed char value;
+};
 
-extern "C" void fn_0406b7e4(void *arg0, s8 arg1) {
-    void *temp_r12;
+struct Owner {
+    char padding_0[0x1C];
+    signed char value;
+    char padding_1d[0x13];
+    Linked* linked;
+};
+}
 
-    temp_r12 = M2C_FIELD(arg0, void **, 0x30);
-    M2C_FIELD(arg0, s8 *, 0x1C) = arg1;
-    if (temp_r12 != NULL) {
-        M2C_FIELD(temp_r12, s8 *, 0x13) = arg1;
+extern "C" void fn_0406b7e4(void* arg0, signed char arg1) {
+    Owner* owner = (Owner*)arg0;
+    Linked* linked = owner->linked;
+    owner->value = arg1;
+    if (linked != 0) {
+        linked->value = arg1;
     }
 }

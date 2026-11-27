@@ -1,34 +1,24 @@
-// First-pass m2c draft from the local original. A guess to edit until `check` matches; not evidence of types or intent.
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
-typedef long long s64;
-typedef unsigned long long u64;
-typedef float f32;
-typedef double f64;
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
+namespace {
+struct Owner {
+    char padding_0[0x42C];
+    unsigned char a;
+    unsigned char b;
+    unsigned char c;
+};
+}
 
-extern "C" void fn_03ca2a78(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 var_r4;
-    s32 var_r5;
-    s32 var_r6;
-
-    var_r4 = arg1;
-    var_r5 = arg2;
-    var_r6 = arg3;
-    if (var_r4 != 0) {
-        var_r4 = (s32) M2C_FIELD(arg0, u8 *, 0x42C);
+extern "C" void fn_03ca2a78(void* arg0, int arg1, int arg2, int arg3) {
+    Owner* owner = (Owner*)arg0;
+    if (arg1 != 0) {
+        arg1 = owner->a;
     }
-    M2C_FIELD(arg0, u8 *, 0x42C) = (u8) var_r4;
-    if (var_r5 != 0) {
-        var_r5 = (s32) M2C_FIELD(arg0, u8 *, 0x42D);
+    owner->a = arg1;
+    if (arg2 != 0) {
+        arg2 = owner->b;
     }
-    M2C_FIELD(arg0, u8 *, 0x42D) = (u8) var_r5;
-    if (var_r6 != 0) {
-        var_r6 = (s32) M2C_FIELD(arg0, u8 *, 0x42E);
+    owner->b = arg2;
+    if (arg3 != 0) {
+        arg3 = owner->c;
     }
-    M2C_FIELD(arg0, u8 *, 0x42E) = (u8) var_r6;
+    owner->c = arg3;
 }
