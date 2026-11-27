@@ -1,11 +1,23 @@
 extern "C" void fn_03177734(void*, void*);
 
-extern "C" void fn_0273305c(void **arg0) {
-    void *temp_r31;
+namespace {
+struct Owner {
+    unsigned char padding_0[0x388];
+    void *registry;
+};
 
-    temp_r31 = (*(void **)((char *)(*arg0) + (0x388)));
-    if (temp_r31 != 0) {
-        fn_03177734(temp_r31, (char *)arg0 + 0x84);
-        fn_03177734(temp_r31, (char *)arg0 + 0x10C);
+struct Holder {
+    Owner *owner;
+    unsigned char padding_4[0x80];
+    unsigned char first[0x88];
+    unsigned char second[1];
+};
+}
+
+extern "C" void fn_0273305c(void **arg0) {
+    void *registry = ((Holder *)arg0)->owner->registry;
+    if (registry != 0) {
+        fn_03177734(registry, ((Holder *)arg0)->first);
+        fn_03177734(registry, ((Holder *)arg0)->second);
     }
 }

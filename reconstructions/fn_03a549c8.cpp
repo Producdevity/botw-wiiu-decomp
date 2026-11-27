@@ -1,12 +1,19 @@
 extern "C" void* fn_0308e5a0(unsigned, void *, int);
 extern "C" void* fn_03a74684(void*);
 
-extern "C" void fn_03a549c8(void *arg0, void *arg1) {
-    void *var_r3;
+namespace {
+struct Owner {
+    char padding_0[0x14];
+    void *instance;
+};
+}
 
-    var_r3 = fn_0308e5a0(0x20U, arg1, 4);
-    if (var_r3 != 0) {
-        var_r3 = fn_03a74684(var_r3);
+extern "C" void fn_03a549c8(void *object, void *heap) {
+    void *instance;
+
+    instance = fn_0308e5a0(0x20U, heap, 4);
+    if (instance != 0) {
+        instance = fn_03a74684(instance);
     }
-    (*(void **)((char *)(arg0) + (0x14))) = var_r3;
+    ((Owner *)object)->instance = instance;
 }

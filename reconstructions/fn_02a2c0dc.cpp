@@ -1,13 +1,17 @@
+namespace {
+struct Object {
+    unsigned char padding_0[480];
+    int value;
+};
+}
+
 extern "C" int fn_030b0964(void*, int);
 
 extern "C" int fn_02a2c0dc(void* arg0) {
-    int sp8;
-    int temp_r0;
-
-    temp_r0 = (*(int*)((char*)arg0 + 480));
-    sp8 = temp_r0;
-    if ((temp_r0 == 0) || (fn_030b0964(&sp8, 4) == 2)) {
+    Object *self = (Object *)arg0;
+    int snapshot = self->value;
+    if ((snapshot == 0) || (fn_030b0964(&snapshot, 4) == 2)) {
         return 0;
     }
-    return (*(int*)((char*)arg0 + 480));
+    return self->value;
 }

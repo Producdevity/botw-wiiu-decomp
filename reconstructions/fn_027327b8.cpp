@@ -2,9 +2,9 @@ typedef int s32;
 
 extern "C" int fn_03177824(void*, void*);
 
-extern "C" s32 fn_027327b8(s32 arg0, void *arg1) {
-    s32 temp_r31;
+extern "C" s32 fn_027327b8(s32 object, void *context) {
+    s32 firstResult;
 
-    temp_r31 = fn_03177824((void *)(arg0 + 0x84), arg1) & 1;
-    return temp_r31 & fn_03177824((void *)(arg0 + 0x10C), arg1);
+    firstResult = fn_03177824((void *)(object + 0x84), context) & 1;
+    return firstResult & fn_03177824((void *)(object + 0x10C), context);
 }

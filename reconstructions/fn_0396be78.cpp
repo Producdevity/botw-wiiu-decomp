@@ -2,12 +2,19 @@ typedef int s32;
 
 extern "C" void* fn_0308e578(unsigned);
 
-extern "C" void fn_0396be78(void *arg0, void *arg1) {
-    void *var_r3;
+namespace {
+struct Pair {
+    s32 first;
+    s32 second;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(8U), ((var_r3 == 0) == 0))) {
-        (*(s32 *)((char *)(var_r3) + (0))) = (s32) (*(s32 *)((char *)(arg1) + (0)));
-        (*(s32 *)((char *)(var_r3) + (4))) = (s32) (*(s32 *)((char *)(arg1) + (4)));
+extern "C" void fn_0396be78(void *storage, void *source) {
+    void *target;
+
+    target = storage;
+    if ((target != 0) || (target = fn_0308e578(8U), ((target == 0) == 0))) {
+        ((Pair *)target)->first = (s32) ((Pair *)source)->first;
+        ((Pair *)target)->second = (s32) ((Pair *)source)->second;
     }
 }

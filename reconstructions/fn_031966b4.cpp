@@ -1,11 +1,20 @@
 extern "C" void fn_031925fc(void*, int);
 
-extern "C" void fn_031966b4(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x1B8];
+    void *resource;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x1B8)));
-    if (temp_r3 != 0) {
-        fn_031925fc(temp_r3, 1);
-        (*(void **)((char *)(arg0) + (0x1B8))) = 0;
+extern "C" void fn_031966b4(void *object) {
+    Object *self;
+    void *resource;
+
+    self = (Object *)object;
+    resource = self->resource;
+    if (resource != 0) {
+        fn_031925fc(resource, 1);
+        self->resource = 0;
     }
 }

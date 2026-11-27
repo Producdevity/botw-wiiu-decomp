@@ -1,11 +1,17 @@
 extern "C" void fn_0389ffe8(void*, int);
 
-extern "C" void fn_0379ccf0(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    unsigned char padding_0[0x44C];
+    void *child;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x44C)));
-    if (temp_r3 != 0) {
-        fn_0389ffe8(temp_r3, 3);
-        (*(void **)((char *)(arg0) + (0x44C))) = 0;
+extern "C" void fn_0379ccf0(void *arg0) {
+    Owner *self = (Owner *)arg0;
+    void *child = self->child;
+    if (child != 0) {
+        fn_0389ffe8(child, 3);
+        self->child = 0;
     }
 }

@@ -1,12 +1,22 @@
 extern "C" void fn_02195824(void*);
 extern "C" void fn_03177734(void*, void*);
 
-extern "C" void fn_0227e5ac(void **arg0) {
-    void *temp_r3;
+namespace {
+struct Target {
+    char padding_0[0x388];
+    void *component;
+};
+struct Holder {
+    Target *target;
+};
+}
 
-    fn_02195824(arg0);
-    temp_r3 = (*(void **)((char *)(*arg0) + (0x388)));
-    if (temp_r3 != 0) {
-        fn_03177734(temp_r3, (char *)arg0 + 0x98);
+extern "C" void fn_0227e5ac(void **object) {
+    void *component;
+
+    fn_02195824(object);
+    component = ((Holder *)object)->target->component;
+    if (component != 0) {
+        fn_03177734(component, (char *)object + 0x98);
     }
 }

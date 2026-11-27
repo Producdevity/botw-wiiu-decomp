@@ -3,11 +3,21 @@ typedef int s32;
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
-extern "C" void fn_035963a4(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Object {
+    char padding_0[0x564];
+    s32 count;
+    char lock;
+};
+}
 
-    temp_r31 = (char *)arg0 + 0x568;
-    fn_030bb668(temp_r31);
-    (*(s32 *)((char *)(arg0) + (0x564))) = 0;
-    fn_030bb69c(temp_r31);
+extern "C" void fn_035963a4(void *object) {
+    Object *self;
+    void *lock;
+
+    self = (Object *)object;
+    lock = &self->lock;
+    fn_030bb668(lock);
+    self->count = 0;
+    fn_030bb69c(lock);
 }

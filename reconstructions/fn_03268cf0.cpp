@@ -2,12 +2,30 @@ typedef float f32;
 
 extern "C" void fn_0326182c(void*);
 
-extern "C" void fn_03268cf0(void *arg0) {
-    void *temp_r12;
+namespace {
+struct Target {
+    char padding_0[0x274];
+    f32 x;
+    f32 y;
+    f32 z;
+};
+struct Object {
+    Target *target;
+    char padding_4[0x8C];
+    f32 x;
+    f32 y;
+    f32 z;
+};
+}
 
-    fn_0326182c(arg0);
-    temp_r12 = (*(void **)((char *)(arg0) + (0)));
-    (*(f32 *)((char *)(temp_r12) + (0x274))) = (f32) (*(f32 *)((char *)(arg0) + (0x90)));
-    (*(f32 *)((char *)(temp_r12) + (0x278))) = (f32) (*(f32 *)((char *)(arg0) + (0x94)));
-    (*(f32 *)((char *)(temp_r12) + (0x27C))) = (f32) (*(f32 *)((char *)(arg0) + (0x98)));
+extern "C" void fn_03268cf0(void *object) {
+    Object *self;
+    Target *target;
+
+    self = (Object *)object;
+    fn_0326182c(object);
+    target = self->target;
+    target->x = (f32) self->x;
+    target->y = (f32) self->y;
+    target->z = (f32) self->z;
 }

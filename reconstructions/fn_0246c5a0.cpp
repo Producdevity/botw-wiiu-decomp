@@ -1,13 +1,19 @@
 typedef unsigned char u8;
 typedef int s32;
 
-extern "C" u8 fn_0246c5a0(void *arg0) {
-    void* const* vt1;
-    s32 var_r31;
+namespace {
+struct Object {
+    unsigned char padding_0[0xB];
+    u8 flags;
+    void *const *vtable;
+};
+}
 
-    var_r31 = 1;
-    if (!((*(u8 *)((char *)(arg0) + (0xB))) & 1) && (((s32 (*)())(vt1 = *(void* const**)((char *)(arg0) + (0xC)))[73])() == 0)) {
-        var_r31 = 0;
+extern "C" u8 fn_0246c5a0(void *arg0) {
+    Object *self = (Object *)arg0;
+    s32 result = 1;
+    if (!(self->flags & 1) && (((s32 (*)())self->vtable[73])() == 0)) {
+        result = 0;
     }
-    return var_r31;
+    return result;
 }

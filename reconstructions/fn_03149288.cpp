@@ -1,12 +1,18 @@
 extern "C" void fn_0378f91c(void*, void*);
 extern "C" void* data_1047c244;
 
-extern "C" void fn_03149288(void *arg0) {
-    void *temp_r4;
+namespace {
+struct Owner {
+    unsigned char padding_0[0x6A8];
+    void *child;
+};
+}
 
-    temp_r4 = (*(void **)((char *)(arg0) + (0x6A8)));
-    if (temp_r4 != 0) {
-        fn_0378f91c(data_1047c244, temp_r4);
-        (*(void **)((char *)(arg0) + (0x6A8))) = 0;
+extern "C" void fn_03149288(void *arg0) {
+    Owner *self = (Owner *)arg0;
+    void *child = self->child;
+    if (child != 0) {
+        fn_0378f91c(data_1047c244, child);
+        self->child = 0;
     }
 }

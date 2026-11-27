@@ -1,12 +1,18 @@
 typedef int s32;
 
-extern "C" s32 fn_02a517dc(void *arg0) {
-    void* const* vt1;
-    s32 var_r31;
+namespace {
+struct Object {
+    char padding_0[0xC];
+    void* const* vtable;
+};
+}
 
-    var_r31 = 0;
-    if (((s32 (*)())(vt1 = *(void* const**)((char *)(arg0) + (0xC)))[27])() != 0) {
-        var_r31 = 1;
+extern "C" s32 fn_02a517dc(void *object) {
+    s32 result;
+
+    result = 0;
+    if (((s32 (*)())((Object *)object)->vtable[27])() != 0) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }
