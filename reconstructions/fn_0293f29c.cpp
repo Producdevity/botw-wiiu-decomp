@@ -1,11 +1,11 @@
 extern "C" void fn_02551418(void*);
 extern "C" void fn_0339bd38(void*, void*);
 
-extern "C" void fn_0293f29c(void **arg0) {
-    void *temp_r31;
+extern "C" void fn_0293f29c(void **object) {
+    void *owner;
 
-    temp_r31 = *arg0;
-    fn_0339bd38(temp_r31, (char *)arg0 + 0x28);
-    fn_0339bd38(temp_r31, (char *)arg0 + 0x88);
-    fn_02551418(arg0);
+    owner = *object;
+    fn_0339bd38(owner, (char *)object + 0x28);
+    fn_0339bd38(owner, (char *)object + 0x88);
+    fn_02551418(object);
 }

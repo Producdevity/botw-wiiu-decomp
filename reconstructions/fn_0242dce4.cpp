@@ -1,12 +1,18 @@
 extern "C" bool fn_03485c18(const void *);
 extern "C" void fn_03485f68(void*);
 
-extern "C" void fn_0242dce4(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    unsigned char padding_0[0x84];
+    void *resource;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x84)));
-    if ((temp_r3 != 0) && (fn_03485c18(temp_r3) != 0)) {
-        fn_03485f68((*(void **)((char *)(arg0) + (0x84))));
-        (*(void **)((char *)(arg0) + (0x84))) = 0;
+extern "C" void fn_0242dce4(void *arg0) {
+    Owner *self = (Owner *)arg0;
+    void *resource = self->resource;
+    if ((resource != 0) && (fn_03485c18(resource) != 0)) {
+        fn_03485f68(self->resource);
+        self->resource = 0;
     }
 }

@@ -1,12 +1,19 @@
 extern "C" void fn_03138640(void*, void*);
 extern "C" void fn_0378a70c(void*, void*);
 
-extern "C" void fn_03121400(void *arg0, void *arg1) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x140];
+    void *listener;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x140)));
-    if (temp_r3 != 0) {
-        fn_03138640(temp_r3, arg0);
+extern "C" void fn_03121400(void *object, void *arg) {
+    void *listener;
+
+    listener = ((Object *)object)->listener;
+    if (listener != 0) {
+        fn_03138640(listener, object);
     }
-    fn_0378a70c(arg0, arg1);
+    fn_0378a70c(object, arg);
 }

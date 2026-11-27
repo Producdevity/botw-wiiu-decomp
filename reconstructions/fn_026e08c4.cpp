@@ -1,11 +1,21 @@
 extern "C" void fn_0317f700(void*, int);
 
-extern "C" void fn_026e08c4(void **arg0) {
-    void *temp_r31;
+namespace {
+struct Target {
+    char padding_0[0x38C];
+    void *handle;
+};
+struct Holder {
+    Target *target;
+};
+}
 
-    temp_r31 = (*(void **)((char *)(*arg0) + (0x38C)));
-    if (temp_r31 != 0) {
-        fn_0317f700(temp_r31, 1);
-        fn_0317f700(temp_r31, 0);
+extern "C" void fn_026e08c4(void **object) {
+    void *handle;
+
+    handle = ((Holder *)object)->target->handle;
+    if (handle != 0) {
+        fn_0317f700(handle, 1);
+        fn_0317f700(handle, 0);
     }
 }

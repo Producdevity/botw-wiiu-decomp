@@ -2,12 +2,21 @@ extern "C" void fn_03479bd8(void*, void*);
 
 extern "C" void *data_1046fe50;
 
-extern "C" void fn_034666c4(void *arg0) {
-    void *temp_r4;
+namespace {
+struct Object {
+    char padding_0[0x294];
+    void *resource;
+};
+}
 
-    temp_r4 = (*(void **)((char *)(arg0) + (0x294)));
-    if (temp_r4 != 0) {
-        fn_03479bd8(data_1046fe50, temp_r4);
-        (*(void **)((char *)(arg0) + (0x294))) = 0;
+extern "C" void fn_034666c4(void *object) {
+    Object *self;
+    void *resource;
+
+    self = (Object *)object;
+    resource = self->resource;
+    if (resource != 0) {
+        fn_03479bd8(data_1046fe50, resource);
+        self->resource = 0;
     }
 }

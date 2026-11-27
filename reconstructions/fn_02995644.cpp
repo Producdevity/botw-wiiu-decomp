@@ -4,10 +4,21 @@ extern "C" void fn_02b83104(void*, void*, void*, float);
 
 extern "C" f32 data_10176024;
 
-extern "C" void fn_02995644(void **arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct Target {
+    unsigned char padding_0[0xE8];
+    void *const *vtable;
+};
 
-    temp_r3 = *arg0;
-    fn_02b83104(0, ((void * (*)(void *))(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[91])(temp_r3), (char *)arg0 + 0x104, data_10176024);
+struct Holder {
+    Target *target;
+    unsigned char padding_4[0x100];
+    unsigned char member[1];
+};
+}
+
+extern "C" void fn_02995644(void **arg0) {
+    Holder *self = (Holder *)arg0;
+    Target *target = self->target;
+    fn_02b83104(0, ((void * (*)(void *))target->vtable[91])(target), self->member, data_10176024);
 }

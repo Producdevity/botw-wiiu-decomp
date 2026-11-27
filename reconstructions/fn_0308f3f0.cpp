@@ -1,12 +1,17 @@
 extern "C" unsigned char data_10549628[];
 extern "C" void fn_0308f090(void*);
+namespace {
+struct DelegateVtable { char padding_0[44]; int (*notify)(void*, int); };
+struct DelegateBase { char padding_0[12]; DelegateVtable *vtable; };
+struct Object { char padding_0[32]; DelegateBase *delegate; unsigned char enabled; };
+}
 
-extern "C" void fn_0308f3f0(void* arg0, int arg1) {
-    void* temp_r3;
+extern "C" void fn_0308f3f0(void* object, int value) {
+    DelegateBase *delegate;
 
-    if (((int) (*(unsigned char*)((char*)arg0 + 36)) != 0) && ((void* ) (*(void**)((char*)arg0 + 32)) != 0)) {
+    if (((Object *)object)->enabled && ((Object *)object)->delegate) {
         fn_0308f090(data_10549628);
-        temp_r3 = (*(void**)((char*)arg0 + 32));
-        (*(int (**)(void*, int))((char*)((*(void**)((char*)temp_r3 + 12))) + 44))(temp_r3, arg1);
+        delegate = ((Object *)object)->delegate;
+        delegate->vtable->notify(delegate, value);
     }
 }

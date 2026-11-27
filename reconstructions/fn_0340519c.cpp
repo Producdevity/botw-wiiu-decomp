@@ -3,11 +3,21 @@ typedef signed char s8;
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
-extern "C" void fn_0340519c(void *arg0, s8 arg1) {
-    void *temp_r31;
+namespace {
+struct Object {
+    char padding_0[0xBDC];
+    char lock[67];
+    s8 flag;
+};
+}
 
-    temp_r31 = (char *)arg0 + 0xBDC;
-    fn_030bb668(temp_r31);
-    (*(s8 *)((char *)(arg0) + (0xC1F))) = arg1;
-    fn_030bb69c(temp_r31);
+extern "C" void fn_0340519c(void *object, s8 value) {
+    Object *self;
+    void *lock;
+
+    self = (Object *)object;
+    lock = self->lock;
+    fn_030bb668(lock);
+    self->flag = value;
+    fn_030bb69c(lock);
 }

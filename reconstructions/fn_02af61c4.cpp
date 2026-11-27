@@ -1,13 +1,22 @@
 extern "C" void fn_02b0b098(void*);
 extern "C" void fn_0308e6d0(void *);
 
-extern "C" void fn_02af61c4(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x550];
+    void *resource;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x550)));
-    if (temp_r3 != 0) {
-        fn_02b0b098(temp_r3);
-        fn_0308e6d0((*(void **)((char *)(arg0) + (0x550))));
-        (*(void **)((char *)(arg0) + (0x550))) = 0;
+extern "C" void fn_02af61c4(void *object) {
+    Object *self;
+    void *resource;
+
+    self = (Object *)object;
+    resource = self->resource;
+    if (resource != 0) {
+        fn_02b0b098(resource);
+        fn_0308e6d0(self->resource);
+        self->resource = 0;
     }
 }

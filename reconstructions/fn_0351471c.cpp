@@ -2,12 +2,23 @@ typedef unsigned char u8;
 
 extern "C" void fn_0351eeec(void*);
 
-extern "C" void fn_0351471c(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x74];
+    void *resource;
+    char padding_78[8];
+    u8 flags;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x74)));
-    if (temp_r3 != 0) {
-        fn_0351eeec(temp_r3);
-        (*(u8 *)((char *)(arg0) + (0x80))) = (u8) ((*(u8 *)((char *)(arg0) + (0x80))) | 2);
+extern "C" void fn_0351471c(void *object) {
+    Object *self;
+    void *resource;
+
+    self = (Object *)object;
+    resource = self->resource;
+    if (resource != 0) {
+        fn_0351eeec(resource);
+        self->flags = (u8) (self->flags | 2);
     }
 }

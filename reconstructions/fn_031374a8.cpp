@@ -2,12 +2,21 @@ typedef unsigned int u32;
 
 extern "C" void fn_0313d928(void*, void*, void*);
 
-extern "C" void fn_031374a8(void *arg0, u32 arg1) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x28];
+    void *child;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x28)));
-    if (temp_r3 != 0) {
-        fn_0313d928(temp_r3, arg0, (void *) arg1);
-        (*(void **)((char *)(arg0) + (0x28))) = 0;
+extern "C" void fn_031374a8(void *object, u32 flags) {
+    Object *self;
+    void *child;
+
+    self = (Object *)object;
+    child = self->child;
+    if (child != 0) {
+        fn_0313d928(child, object, (void *) flags);
+        self->child = 0;
     }
 }

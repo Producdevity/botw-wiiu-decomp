@@ -2,12 +2,22 @@ typedef int s32;
 
 extern "C" int fn_035fd628(void*);
 
-extern "C" s32 fn_035ff1f8(void *arg0) {
-    s32 temp_r3;
+namespace {
+struct Other {
+    unsigned char padding_0[0x43C];
+    s32 value;
+};
 
-    temp_r3 = fn_035fd628(arg0);
-    if (temp_r3 != 0) {
-        return (*(s32 *)((char *)(temp_r3) + (0x43C)));
+struct Object {
+    unsigned char padding_0[0x6C];
+    s32 value;
+};
+}
+
+extern "C" s32 fn_035ff1f8(void *arg0) {
+    Other *other = (Other *)fn_035fd628(arg0);
+    if (other != 0) {
+        return other->value;
     }
-    return (*(s32 *)((char *)(arg0) + (0x6C)));
+    return ((Object *)arg0)->value;
 }

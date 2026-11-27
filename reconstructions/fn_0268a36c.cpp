@@ -2,11 +2,22 @@ typedef int s32;
 
 extern "C" void fn_0294f720(void *, int, void *);
 
-extern "C" void fn_0268a36c(void **arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct Target {
+    unsigned char padding_0[0xE8];
+    void *const *vtable;
+};
 
-    temp_r3 = *arg0;
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[255])(temp_r3);
-    fn_0294f720(*arg0, 5, (char *)arg0 + 0x94);
+struct Holder {
+    Target *target;
+    unsigned char padding_4[0x90];
+    unsigned char member[1];
+};
+}
+
+extern "C" void fn_0268a36c(void **arg0) {
+    Holder *self = (Holder *)arg0;
+    Target *target = self->target;
+    ((s32 (*)(void *))target->vtable[255])(target);
+    fn_0294f720(self->target, 5, self->member);
 }
