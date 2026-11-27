@@ -3,12 +3,25 @@ typedef int s32;
 
 extern "C" int fn_02de42bc(void*, int);
 
-extern "C" u8 fn_02cd4b68(void *arg0) {
-    s32 var_r31;
+namespace {
+struct Context {
+    char padding_0[0x1298];
+    void *manager;
+};
 
-    var_r31 = 1;
-    if (((s32) (*(u8 *)((char *)(arg0) + (0x10))) == 0) && (fn_02de42bc((*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x1298))), 2) == 0)) {
-        var_r31 = 0;
+struct Object {
+    Context *context;
+    char padding_4[0xC];
+    u8 forced;
+};
+}
+
+extern "C" u8 fn_02cd4b68(void *object) {
+    Object *self = (Object *)object;
+    s32 result = 1;
+
+    if (self->forced == 0 && fn_02de42bc(self->context->manager, 2) == 0) {
+        result = 0;
     }
-    return var_r31;
+    return result;
 }

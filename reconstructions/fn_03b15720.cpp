@@ -2,12 +2,19 @@ extern "C" void fn_03ac4e2c(void*, void*);
 
 extern "C" void *data_1047eb9c;
 
-extern "C" void fn_03b15720(void *arg0) {
-    void *temp_r4;
+namespace {
+struct Owner {
+    char padding_0[0x448];
+    void *resource;
+};
+}
 
-    temp_r4 = (*(void **)((char *)(arg0) + (0x448)));
-    if (temp_r4 != 0) {
-        fn_03ac4e2c(data_1047eb9c, temp_r4);
-        (*(void **)((char *)(arg0) + (0x448))) = 0;
+extern "C" void fn_03b15720(void *owner) {
+    Owner *self = (Owner *)owner;
+    void *resource = self->resource;
+
+    if (resource != 0) {
+        fn_03ac4e2c(data_1047eb9c, resource);
+        self->resource = 0;
     }
 }

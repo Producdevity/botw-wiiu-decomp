@@ -1,14 +1,18 @@
-typedef unsigned char u8;
 typedef int s32;
+
+namespace {
+struct Node {
+    unsigned char padding_0[0xB];
+    unsigned char flags;
+};
+}
 
 extern "C" int fn_02bd5618(void*);
 
 extern "C" s32 fn_02bd5804(void *arg0) {
-    s32 var_r31;
-
-    var_r31 = 1;
+    s32 result = 1;
     if (fn_02bd5618(arg0) == 0) {
-        var_r31 = (*(u8 *)((char *)(arg0) + (0xB))) & 1;
+        result = ((Node *)arg0)->flags & 1;
     }
-    return var_r31;
+    return result;
 }

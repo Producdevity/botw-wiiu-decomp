@@ -2,13 +2,35 @@ typedef float f32;
 
 extern "C" void fn_03191d34(void*, float);
 
-extern "C" void fn_026ab86c(void *arg0) {
-    struct { f32 f8; f32 fC; f32 f10; } sp;
-    void *temp_r12;
+namespace {
+struct Source {
+    char padding_0[0x204];
+    f32 x;
+    char padding_208[0xC];
+    f32 y;
+    char padding_218[0xC];
+    f32 z;
+};
 
-    temp_r12 = (*(void **)((char *)(arg0) + (0)));
-    sp.f8 = (*(f32 *)((char *)(temp_r12) + (0x204)));
-    sp.fC = (*(f32 *)((char *)(temp_r12) + (0x214)));
-    sp.f10 = (*(f32 *)((char *)(temp_r12) + (0x224)));
-    fn_03191d34(&sp.f8, *(*(f32 **)((char *)(arg0) + (0x2C))));
+struct Owner {
+    Source *source;
+    char padding_4[0x28];
+    f32 *scale;
+};
+
+struct Vec3 {
+    f32 x;
+    f32 y;
+    f32 z;
+};
+}
+
+extern "C" void fn_026ab86c(void *owner) {
+    Vec3 position;
+    Source *source = ((Owner *)owner)->source;
+
+    position.x = source->x;
+    position.y = source->y;
+    position.z = source->z;
+    fn_03191d34(&position, *((Owner *)owner)->scale);
 }

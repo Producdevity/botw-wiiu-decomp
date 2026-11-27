@@ -2,12 +2,22 @@ typedef signed char s8;
 
 extern "C" void fn_03bb4e28(void*, void*);
 
-extern "C" void fn_03bb80b4(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Node {
+    char padding_0[8];
+    char link[0x15];
+    s8 linked;
+    char padding_1E[0xF8 - 0x1E];
+    void *list;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0xF8)));
-    if (temp_r3 != 0) {
-        fn_03bb4e28(temp_r3, (char *)arg0 + 8);
+extern "C" void fn_03bb80b4(void *node) {
+    Node *self = (Node *)node;
+    void *list = self->list;
+
+    if (list != 0) {
+        fn_03bb4e28(list, self->link);
     }
-    (*(s8 *)((char *)(arg0) + (0x1D))) = 0;
+    self->linked = 0;
 }
