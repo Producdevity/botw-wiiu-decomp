@@ -1,16 +1,26 @@
 typedef int s32;
 
+namespace {
+struct Entry {
+    char padding_0[8];
+    char link[4];
+    void *owner;
+    char padding_10[0x14];
+    s32 state;
+    char padding_28[4];
+    s32 index;
+};
+}
+
 extern "C" void fn_03ef84ac(void*, void*);
 extern "C" void fn_03ef8510(void*, void*);
 
-extern "C" void fn_03edfcf8(void *arg0) {
-    void *temp_r3;
-
-    temp_r3 = (*(void **)((char *)(arg0) + (0xC)));
-    if (temp_r3 != 0) {
-        fn_03ef84ac(temp_r3, (char *)arg0 + 8);
-        fn_03ef8510((*(void **)((char *)(arg0) + (0xC))), (char *)arg0 + 8);
+extern "C" void fn_03edfcf8(void *object) {
+    void *owner = ((Entry *)object)->owner;
+    if (owner != 0) {
+        fn_03ef84ac(owner, ((Entry *)object)->link);
+        fn_03ef8510(((Entry *)object)->owner, ((Entry *)object)->link);
     }
-    (*(s32 *)((char *)(arg0) + (0x24))) = 0;
-    (*(s32 *)((char *)(arg0) + (0x2C))) = -1;
+    ((Entry *)object)->state = 0;
+    ((Entry *)object)->index = -1;
 }

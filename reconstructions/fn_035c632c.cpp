@@ -4,13 +4,20 @@ extern "C" void* fn_0308e578(unsigned);
 
 extern "C" s32 data_102e9be8;
 
-extern "C" void fn_035c632c(void *arg0, s32 arg1, s32 arg2) {
-    void *var_r3;
+namespace {
+struct Object {
+    s32 *vtable;
+    s32 first;
+    s32 second;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(0xCU), ((var_r3 == 0) == 0))) {
-        (*(s32 *)((char *)(var_r3) + (8))) = arg2;
-        (*(s32 *)((char *)(var_r3) + (4))) = arg1;
-        (*(s32 **)((char *)(var_r3) + (0))) = &data_102e9be8;
+extern "C" void fn_035c632c(void *memory, s32 first, s32 second) {
+    Object *object = (Object *)memory;
+
+    if ((object != 0) || (object = (Object *)fn_0308e578(0xCU), ((object == 0) == 0))) {
+        object->second = second;
+        object->first = first;
+        object->vtable = &data_102e9be8;
     }
 }

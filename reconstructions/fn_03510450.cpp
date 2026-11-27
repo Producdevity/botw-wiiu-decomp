@@ -5,12 +5,22 @@ extern "C" void* fn_03510f04(void *, void *);
 struct LinearRamp;
 extern "C" void fn_03bb5814(LinearRamp *);
 
-extern "C" void fn_03510450(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0xC];
+    char anchor[0x134];
+    f32 ramp;
+    char padding_144[0x10];
+    void *target;
+};
+}
 
-    fn_03bb5814((LinearRamp *)((char *)arg0 + 0x140));
-    temp_r3 = (*(void **)((char *)(arg0) + (0x154)));
-    if ((temp_r3 != 0) && (fn_03510f04(temp_r3, (char *)arg0 + 0xC) != 0)) {
-        fn_03510d48((*(void **)((char *)(arg0) + (0x154))), 1, (*(f32 *)((char *)(arg0) + (0x140))));
+extern "C" void fn_03510450(void *owner) {
+    void *target;
+
+    fn_03bb5814((LinearRamp *)&((Owner *)owner)->ramp);
+    target = ((Owner *)owner)->target;
+    if ((target != 0) && (fn_03510f04(target, ((Owner *)owner)->anchor) != 0)) {
+        fn_03510d48(((Owner *)owner)->target, 1, ((Owner *)owner)->ramp);
     }
 }

@@ -1,16 +1,23 @@
 extern "C" void fn_033ec8c8(int, void*, int, int);
 
-extern "C" void fn_033ecac0(int arg0, void* arg1, int arg2) {
-    int var_r27;
-    int var_r28;
+namespace {
+struct Node {
+    char padding_0[116];
+    char *vtable;
+};
+}
 
-    var_r27 = 0;
-    var_r28 = (*(int (**)(void*))((char*)((*(void**)((char*)arg1 + 116))) + 188))(arg1);
-    if (var_r28 > 0) {
+extern "C" void fn_033ecac0(int sourceId, void* node, int mode) {
+    int index;
+    int count;
+
+    index = 0;
+    count = (*(int (**)(void*))(((Node *)node)->vtable + 188))(node);
+    if (count > 0) {
         do {
-            fn_033ec8c8(arg0, arg1, var_r27, arg2);
-            var_r28 -= 1;
-            var_r27 += 1;
-        } while (var_r28 != 0);
+            fn_033ec8c8(sourceId, node, index, mode);
+            count -= 1;
+            index += 1;
+        } while (count != 0);
     }
 }

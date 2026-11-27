@@ -4,13 +4,21 @@ extern "C" void* fn_0308e578(unsigned);
 struct FastMutexSection;
 extern "C" FastMutexSection* fn_030bb49c(FastMutexSection *);
 
-extern "C" void *fn_03618044(void *arg0) {
-    void *var_r31;
+namespace {
+struct Object {
+    char padding_0[0x10];
+    s8 enabled;
+    char padding_11[3];
+    char mutex[0x3C];
+};
+}
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0x50U), ((var_r31 == 0) == 0))) {
-        (*(s8 *)((char *)(var_r31) + (0x10))) = 1;
-        fn_030bb49c((FastMutexSection *)((char *)var_r31 + 0x14));
+extern "C" void *fn_03618044(void *memory) {
+    Object *object = (Object *)memory;
+
+    if ((object != 0) || (object = (Object *)fn_0308e578(0x50U), ((object == 0) == 0))) {
+        object->enabled = 1;
+        fn_030bb49c((FastMutexSection *)object->mutex);
     }
-    return var_r31;
+    return object;
 }

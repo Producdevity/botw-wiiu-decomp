@@ -2,15 +2,24 @@ typedef int s32;
 
 extern "C" void fn_03449d44(void*);
 
-extern "C" void fn_034bd40c(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0x50];
+    void *resource;
+    s32 flag;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x50)));
-    if (temp_r3 != 0) {
-        fn_03449d44(temp_r3);
-        (*(void **)((char *)(arg0) + (0x50))) = 0;
+extern "C" void fn_034bd40c(void *object) {
+    Owner *owner = (Owner *)object;
+    void *resource;
+
+    resource = owner->resource;
+    if (resource != 0) {
+        fn_03449d44(resource);
+        owner->resource = 0;
     }
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x54))) != 0) {
-        (*(s32 *)((char *)(arg0) + (0x54))) = 0;
+    if ((s32) owner->flag != 0) {
+        owner->flag = 0;
     }
 }

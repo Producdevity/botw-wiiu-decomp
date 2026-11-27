@@ -3,14 +3,22 @@ typedef int s32;
 
 extern "C" bool fn_03485c18(const void *);
 
-extern "C" u8 fn_0332d350(void *arg0) {
-    s32 var_r31;
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0x50];
+    void *child;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x50)));
-    var_r31 = 1;
-    if ((temp_r3 != 0) && (fn_03485c18(temp_r3) != 0)) {
-        var_r31 = 0;
+extern "C" u8 fn_0332d350(void *object) {
+    Owner *owner = (Owner *)object;
+    s32 result;
+    void *child;
+
+    child = owner->child;
+    result = 1;
+    if ((child != 0) && (fn_03485c18(child) != 0)) {
+        result = 0;
     }
-    return var_r31;
+    return result;
 }
