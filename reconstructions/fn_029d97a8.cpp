@@ -3,14 +3,32 @@ typedef int s32;
 
 extern "C" void fn_034c44a4(void*, int);
 
-extern "C" void fn_029d97a8(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Component {
+    unsigned char padding_0[0xD0];
+    s32 first;
+    s32 second;
+};
 
-    if ((s32) *(*(u8 **)((char *)(arg0) + (0x18))) != 0) {
-        temp_r31 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x3A0)));
-        if (temp_r31 != 0) {
-            fn_034c44a4(temp_r31, (*(s32 *)((char *)(temp_r31) + (0xD0))));
-            fn_034c44a4(temp_r31, (*(s32 *)((char *)(temp_r31) + (0xD4))));
+struct Owner {
+    unsigned char padding_0[0x3A0];
+    Component *component;
+};
+
+struct Object {
+    Owner *owner;
+    unsigned char padding_4[0x14];
+    u8 *enabled;
+};
+}
+
+extern "C" void fn_029d97a8(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    if (*object->enabled != 0) {
+        Component *component = object->owner->component;
+        if (component != 0) {
+            fn_034c44a4(component, component->first);
+            fn_034c44a4(component, component->second);
         }
     }
 }

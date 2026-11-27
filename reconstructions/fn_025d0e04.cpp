@@ -5,11 +5,20 @@ extern "C" void fn_025cf2b0(void *);
 
 extern "C" f32 data_100eede4;
 
-extern "C" void fn_025d0e04(void **arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct OwnerVtable {
+    void *padding_0[187];
+    s32 (*setValue)(void *, s32, f32);
+};
 
-    fn_025cf2b0(arg0);
-    temp_r3 = *arg0;
-    ((s32 (*)(void *, s32, f32))(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[187])(temp_r3, 0, data_100eede4);
+struct Owner {
+    unsigned char padding_0[0xE8];
+    const OwnerVtable *vtable;
+};
+}
+
+extern "C" void fn_025d0e04(void **object_slot) {
+    fn_025cf2b0(object_slot);
+    Owner *owner = (Owner *)*object_slot;
+    owner->vtable->setValue(owner, 0, data_100eede4);
 }

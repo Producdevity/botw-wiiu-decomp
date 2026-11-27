@@ -2,13 +2,26 @@ typedef int s32;
 
 extern "C" void* fn_02c1974c(void *, int);
 
-extern "C" void *fn_0247c7bc(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Entry {
+    unsigned char padding_0[0x1C];
+    unsigned char payload[4];
+};
 
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x40))) == 0) {
-        temp_r3 = fn_02c1974c((*(void **)((char *)(arg0) + (8))), 0);
-        if (temp_r3 != 0) {
-            return (char *)temp_r3 + 0x1C;
+struct Object {
+    unsigned char padding_0[8];
+    void *owner;
+    unsigned char padding_c[0x34];
+    s32 kind;
+};
+}
+
+extern "C" void *fn_0247c7bc(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    if (object->kind == 0) {
+        Entry *entry = (Entry *)fn_02c1974c(object->owner, 0);
+        if (entry != 0) {
+            return entry->payload;
         }
     }
     return 0;

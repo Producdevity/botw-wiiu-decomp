@@ -1,14 +1,23 @@
 extern "C" void fn_03b5b6b8(void*, void*);
 extern "C" void fn_03b65500(void*);
 
-extern "C" void fn_03b56a0c(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x174];
+    void *child;
+    char padding_178[0x2C0 - 0x178];
+    char first[0x5C];
+    char second[1];
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x174)));
-    if (temp_r3 != 0) {
-        fn_03b5b6b8(temp_r3, 0);
-        (*(void **)((char *)(arg0) + (0x174))) = 0;
+extern "C" void fn_03b56a0c(void *object) {
+    void *child = ((Object *)object)->child;
+
+    if (child != 0) {
+        fn_03b5b6b8(child, 0);
+        ((Object *)object)->child = 0;
     }
-    fn_03b65500((char *)arg0 + 0x2C0);
-    fn_03b65500((char *)arg0 + 0x31C);
+    fn_03b65500(((Object *)object)->first);
+    fn_03b65500(((Object *)object)->second);
 }

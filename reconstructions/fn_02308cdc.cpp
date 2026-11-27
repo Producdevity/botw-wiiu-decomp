@@ -4,12 +4,18 @@ extern "C" void fn_023067f8(void*);
 extern "C" void fn_02b61634(void*, void*, void*);
 extern "C" void* fn_037966a8(void *);
 
-extern "C" void fn_02308cdc(void **arg0) {
-    struct { s32 f8; } sp;
-    void *temp_r4;
+namespace {
+struct Component {
+    void *owner;
+    unsigned char padding_4[0x80];
+    unsigned char listener[4];
+};
+}
 
-    fn_023067f8(arg0);
-    temp_r4 = fn_037966a8(*arg0);
-    sp.f8 = 3;
-    fn_02b61634((char *)arg0 + 0x84, temp_r4, &sp.f8);
+extern "C" void fn_02308cdc(void **object_slot) {
+    Component *component = (Component *)object_slot;
+    fn_023067f8(object_slot);
+    void *target = fn_037966a8(*object_slot);
+    s32 mode = 3;
+    fn_02b61634(component->listener, target, &mode);
 }

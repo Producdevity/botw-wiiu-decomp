@@ -1,15 +1,34 @@
 extern "C" void* fn_02e5b564();
 
-extern "C" void fn_02befe5c(void* arg0) {
-    void* temp_r3;
+namespace {
+struct Source {
+    unsigned char padding_0[0x204];
+    float a0;
+    unsigned char padding_208[0xC];
+    float a1;
+    unsigned char padding_218[0xC];
+    float a2;
+    unsigned char padding_228[0x2BC - 0x228];
+    float b0;
+    float b1;
+    float b2;
+};
 
-    temp_r3 = fn_02e5b564();
-    if (temp_r3 != 0) {
-        (*(float*)((char*)arg0 + 40)) = (float) (*(float*)((char*)temp_r3 + 516));
-        (*(float*)((char*)arg0 + 44)) = (float) (*(float*)((char*)temp_r3 + 532));
-        (*(float*)((char*)arg0 + 48)) = (float) (*(float*)((char*)temp_r3 + 548));
-        (*(float*)((char*)arg0 + 52)) = (float) (*(float*)((char*)temp_r3 + 700));
-        (*(float*)((char*)arg0 + 56)) = (float) (*(float*)((char*)temp_r3 + 704));
-        (*(float*)((char*)arg0 + 60)) = (float) (*(float*)((char*)temp_r3 + 708));
+struct Object {
+    unsigned char padding_0[0x28];
+    float values[6];
+};
+}
+
+extern "C" void fn_02befe5c(void* object_ptr) {
+    Object *object = (Object *)object_ptr;
+    Source *source = (Source *)fn_02e5b564();
+    if (source != 0) {
+        object->values[0] = source->a0;
+        object->values[1] = source->a1;
+        object->values[2] = source->a2;
+        object->values[3] = source->b0;
+        object->values[4] = source->b1;
+        object->values[5] = source->b2;
     }
 }

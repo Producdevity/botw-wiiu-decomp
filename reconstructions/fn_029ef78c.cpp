@@ -3,13 +3,20 @@ typedef int s32;
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
-extern "C" void fn_029ef78c(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Object {
+    s32 active;
+    unsigned char padding_4[0x54];
+    unsigned char lock[0x3C];
+    s32 state;
+};
+}
 
-    temp_r31 = (char *)arg0 + 0x58;
-    fn_030bb668(temp_r31);
-    if ((s32) (*(s32 *)((char *)(arg0) + (0))) != 0) {
-        (*(s32 *)((char *)(arg0) + (0x94))) = 5;
+extern "C" void fn_029ef78c(void *object_ptr) {
+    void *lock = ((Object *)object_ptr)->lock;
+    fn_030bb668(lock);
+    if (((Object *)object_ptr)->active != 0) {
+        ((Object *)object_ptr)->state = 5;
     }
-    fn_030bb69c(temp_r31);
+    fn_030bb69c(lock);
 }

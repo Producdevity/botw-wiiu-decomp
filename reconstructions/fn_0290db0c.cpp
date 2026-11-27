@@ -4,12 +4,21 @@ struct Base;
 struct Owner;
 extern "C" void* fn_02b62bc8(void*);
 
-extern "C" s32 fn_0290db0c(struct Owner **arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct TargetVtable {
+    void *padding_0[17];
+    s32 (*getId)();
+};
 
-    temp_r3 = fn_02b62bc8(*arg0);
-    if ((temp_r3 != 0) && (((s32 (*)())(vt1 = *(void* const**)((char *)(temp_r3) + (0x1C)))[17])() != -1)) {
+struct Target {
+    unsigned char padding_0[0x1C];
+    const TargetVtable *vtable;
+};
+}
+
+extern "C" s32 fn_0290db0c(struct Owner **object_slot) {
+    Target *target = (Target *)fn_02b62bc8(*object_slot);
+    if ((target != 0) && (target->vtable->getId() != -1)) {
         return 1;
     }
     return 0;

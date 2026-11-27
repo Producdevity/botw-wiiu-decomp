@@ -5,11 +5,18 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_10149678;
 
-extern "C" void fn_02868914(void **arg0) {
-    void *temp_r12;
+namespace {
+const s32 kFlagMask = 0x10000;
 
-    fn_02868880(arg0);
-    temp_r12 = *arg0;
-    (*(s32 *)((char *)(temp_r12) + (0x364))) = (s32) ((*(s32 *)((char *)(temp_r12) + (0x364))) & 0xFFFEFFFF);
-    fn_037b8284(arg0, &data_10149678, 0);
+struct Owner {
+    unsigned char padding_0[0x364];
+    s32 flags;
+};
+}
+
+extern "C" void fn_02868914(void **object_slot) {
+    fn_02868880(object_slot);
+    Owner *owner = (Owner *)*object_slot;
+    owner->flags = (s32) (owner->flags & ~kFlagMask);
+    fn_037b8284(object_slot, &data_10149678, 0);
 }

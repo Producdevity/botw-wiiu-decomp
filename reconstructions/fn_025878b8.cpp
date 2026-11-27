@@ -5,11 +5,18 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_100e5bac;
 
-extern "C" void fn_025878b8(void *arg0) {
-    void *temp_r4;
+namespace {
+struct Object {
+    unsigned char padding_0[0x2C];
+    void *current;
+    void *next;
+};
+}
 
-    temp_r4 = (*(void **)((char *)(arg0) + (0x30)));
-    (*(void **)((char *)(arg0) + (0x2C))) = temp_r4;
-    fn_025877f0(arg0, temp_r4);
-    fn_037b8284(arg0, &data_100e5bac, 0);
+extern "C" void fn_025878b8(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    void *next = object->next;
+    object->current = next;
+    fn_025877f0(object, next);
+    fn_037b8284(object, &data_100e5bac, 0);
 }

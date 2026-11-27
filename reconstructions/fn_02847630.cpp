@@ -4,12 +4,20 @@ struct FieldOwner;
 extern "C" void* fn_0314dae8(const FieldOwner *);
 extern "C" int fn_033aafe8(void*, void*);
 
-extern "C" void fn_02847630(void *arg0) {
-    s32 temp_r3;
+namespace {
+struct Object {
+    void *owner;
+    unsigned char padding_4[0x2C];
+    s32 fieldOwner;
+    void *fields;
+};
+}
 
-    temp_r3 = fn_033aafe8((*(void **)((char *)(arg0) + (0))), 0);
-    (*(s32 *)((char *)(arg0) + (0x30))) = temp_r3;
-    if (temp_r3 != 0) {
-        (*(void **)((char *)(arg0) + (0x34))) = fn_0314dae8((struct FieldOwner *) temp_r3);
+extern "C" void fn_02847630(void *object_ptr) {
+    Object *object = (Object *)object_ptr;
+    s32 fieldOwner = fn_033aafe8(object->owner, 0);
+    object->fieldOwner = fieldOwner;
+    if (fieldOwner != 0) {
+        object->fields = fn_0314dae8((struct FieldOwner *) fieldOwner);
     }
 }

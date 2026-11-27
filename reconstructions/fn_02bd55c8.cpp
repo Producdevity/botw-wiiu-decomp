@@ -3,13 +3,31 @@ typedef float f32;
 
 extern "C" void* fn_02c0378c(void* holder);
 
-extern "C" void fn_02bd55c8(void *arg0, void *arg1) {
-    void *temp_r3;
+namespace {
+struct Source {
+    unsigned char padding_0[0x798];
+    f32 x;
+    unsigned char padding_79c[0xC];
+    f32 y;
+    unsigned char padding_7ac[0xC];
+    f32 z;
+};
 
-    temp_r3 = fn_02c0378c((char *)arg0 + 0x10);
-    if (temp_r3 != 0) {
-        (*(f32 *)((char *)(arg0) + (0x28))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x798)));
-        (*(f32 *)((char *)(arg0) + (0x2C))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x7A8)));
-        (*(f32 *)((char *)(arg0) + (0x30))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x7B8)));
+struct Object {
+    unsigned char padding_0[0x10];
+    unsigned char holder[0x18];
+    f32 x;
+    f32 y;
+    f32 z;
+};
+}
+
+extern "C" void fn_02bd55c8(void *object_ptr, void *unused) {
+    Object *object = (Object *)object_ptr;
+    Source *source = (Source *)fn_02c0378c(object->holder);
+    if (source != 0) {
+        object->x = source->x;
+        object->y = source->y;
+        object->z = source->z;
     }
 }

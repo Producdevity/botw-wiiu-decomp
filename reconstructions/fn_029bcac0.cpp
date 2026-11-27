@@ -1,15 +1,24 @@
 typedef unsigned char u8;
 typedef int s32;
 
-extern "C" void fn_029bcac0(void *arg0) {
-    s32 *temp_r11;
+namespace {
+struct Object {
+    unsigned char padding_0[0x24];
+    u8 *enabled;
+    unsigned char padding_28[0x20];
+    s32 *counter;
+    unsigned char padding_4c[0x10];
+    s32 state;
+    u8 counted;
+};
+}
 
-    if (((s32) *(*(u8 **)((char *)(arg0) + (0x24))) != 0) && ((s32) (*(s32 *)((char *)(arg0) + (0x5C))) >= 2)) {
-        (*(s32 *)((char *)(arg0) + (0x5C))) = 5;
+extern "C" void fn_029bcac0(void *object_ptr) {
+    if ((*((Object *)object_ptr)->enabled != 0) && (((Object *)object_ptr)->state >= 2)) {
+        ((Object *)object_ptr)->state = 5;
     }
-    if (((s32) (*(u8 *)((char *)(arg0) + (0x60))) != 0) && ((s32) (*(s32 *)((char *)(arg0) + (0x5C))) <= 4)) {
-        temp_r11 = (*(s32 **)((char *)(arg0) + (0x48)));
-        *temp_r11 -= 1;
-        (*(u8 *)((char *)(arg0) + (0x60))) = 0U;
+    if ((((Object *)object_ptr)->counted != 0) && (((Object *)object_ptr)->state <= 4)) {
+        *((Object *)object_ptr)->counter -= 1;
+        ((Object *)object_ptr)->counted = 0;
     }
 }

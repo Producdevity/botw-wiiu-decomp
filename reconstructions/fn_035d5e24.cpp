@@ -3,12 +3,18 @@ struct ByamlHeader;
 struct ByamlView;
 extern "C" void* fn_0396bdd8(void*, const void*);
 
-extern "C" void fn_035d5e24(void *arg0, struct ByamlHeader *arg1, void *arg2) {
-    struct ByamlView *var_r3;
+namespace {
+struct Owner {
+    char padding_0[0x10];
+    ByamlView *view;
+};
+}
 
-    var_r3 = (ByamlView *)(fn_0308e5a0(8U, arg2, 4));
-    if (var_r3 != 0) {
-        var_r3 = (ByamlView *)(fn_0396bdd8(var_r3, arg1));
+extern "C" void fn_035d5e24(void *owner, struct ByamlHeader *header, void *heap) {
+    ByamlView *view = (ByamlView *)fn_0308e5a0(8U, heap, 4);
+
+    if (view != 0) {
+        view = (ByamlView *)fn_0396bdd8(view, header);
     }
-    (*(struct ByamlView **)((char *)(arg0) + (0x10))) = var_r3;
+    ((Owner *)owner)->view = view;
 }

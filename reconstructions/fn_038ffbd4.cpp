@@ -1,14 +1,22 @@
-typedef int s32;
-
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 extern "C" void fn_0390112c(void*, void*);
 
-extern "C" void fn_038ffbd4(s32 arg0, void *arg1) {
-    void *temp_r31;
+namespace {
+struct Object {
+    char padding_0[1372];
+    char member[1];
+    char padding_55d[1392 - 1372 - 1];
+    char mutex[1];
+};
+}
 
-    temp_r31 = (void *)(arg0 + 0x570);
-    fn_030bb668(temp_r31);
-    fn_0390112c((void *)(arg0 + 0x55C), arg1);
-    fn_030bb69c(temp_r31);
+extern "C" void fn_038ffbd4(int address, void *arg) {
+    Object *object = (Object *)address;
+
+    void *mutex = object->mutex;
+
+    fn_030bb668(mutex);
+    fn_0390112c(object->member, arg);
+    fn_030bb69c(mutex);
 }

@@ -1,14 +1,19 @@
-typedef int s32;
-
 extern "C" int fn_03c95914(void*);
 
-extern "C" s32 fn_03c93c3c(s32 *arg0) {
-    s32 var_r3;
+namespace {
+struct Object {
+    int status;
+    char padding_4[4];
+    char member[1];
+};
+}
 
-    var_r3 = fn_03c95914((char *)arg0 + 8);
-    if (var_r3 == 0) {
-        var_r3 = 0;
-        *arg0 = -1;
+extern "C" int fn_03c93c3c(int *slot) {
+    int result = fn_03c95914(((Object *)slot)->member);
+
+    if (result == 0) {
+        result = 0;
+        *slot = -1;
     }
-    return var_r3;
+    return result;
 }
