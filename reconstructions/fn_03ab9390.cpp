@@ -1,13 +1,18 @@
-extern "C" void fn_03ac4e2c(void*, void*);
+namespace {
+struct Owner {
+    unsigned char padding_0[0x4A4];
+    void *buffer;
+};
+}
 
+extern "C" void fn_03ac4e2c(void*, void*);
 extern "C" void *data_1047eb9c;
 
 extern "C" void fn_03ab9390(void *arg0) {
-    void *temp_r4;
-
-    temp_r4 = (*(void **)((char *)(arg0) + (0x4A4)));
-    if (temp_r4 != 0) {
-        fn_03ac4e2c(data_1047eb9c, temp_r4);
+    Owner *owner = (Owner *)arg0;
+    void *buffer = owner->buffer;
+    if (buffer != 0) {
+        fn_03ac4e2c(data_1047eb9c, buffer);
     }
-    (*(void **)((char *)(arg0) + (0x4A4))) = 0;
+    ((Owner *)arg0)->buffer = 0;
 }

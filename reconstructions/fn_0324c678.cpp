@@ -1,14 +1,19 @@
 typedef int s32;
 
+namespace {
+struct Object {
+    unsigned char padding_0[0x20];
+    unsigned char member[1];
+};
+}
+
 extern "C" int fn_0324d56c(void *);
 extern "C" int fn_0324d61c(void*, void*);
 
 extern "C" s32 fn_0324c678(void *arg0) {
-    s32 var_r31;
-
-    var_r31 = 0;
+    s32 result = 0;
     if (fn_0324d56c(arg0) != 0) {
-        var_r31 = fn_0324d61c(arg0, (char *)arg0 + 0x20);
+        result = fn_0324d61c(arg0, ((Object *)arg0)->member);
     }
-    return var_r31;
+    return result;
 }

@@ -3,12 +3,20 @@ typedef int s32;
 
 extern "C" bool fn_0378da88(void *);
 
-extern "C" u8 fn_02a3ff00(void *arg0) {
-    s32 var_r31;
+namespace {
+struct Object {
+    char padding_0[0x14];
+    char member[0x2C];
+    s32 state;
+};
+}
 
-    var_r31 = 0;
-    if (((s32) (*(s32 *)((char *)(arg0) + (0x40))) != 1) && (fn_0378da88((char *)arg0 + 0x14) != 0)) {
-        var_r31 = 1;
+extern "C" u8 fn_02a3ff00(void *object) {
+    Object *self = (Object *)object;
+    s32 result = 0;
+
+    if (self->state != 1 && fn_0378da88(self->member) != 0) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

@@ -1,14 +1,23 @@
 typedef unsigned char u8;
 typedef int s32;
 
-extern "C" s32 fn_0224c80c(void *arg0) {
-    s32 var_r0;
+namespace {
+struct Object {
+    char padding_0[0x1C];
+    s32 *bitIndex;
+    char padding_20[0x1C];
+    u8 *flagA;
+    u8 *flagB;
+};
+}
 
-    var_r0 = 1 << *(*(s32 **)((char *)(arg0) + (0x1C)));
-    if ((s32) *(*(u8 **)((char *)(arg0) + (0x3C))) != 0) {
-        var_r0 |= 8;
-    } else if ((s32) *(*(u8 **)((char *)(arg0) + (0x40))) != 0) {
-        var_r0 |= 0x100;
+extern "C" s32 fn_0224c80c(void *object) {
+    s32 mask = 1 << *((Object *)object)->bitIndex;
+
+    if (*((Object *)object)->flagA != 0) {
+        mask |= 8;
+    } else if (*((Object *)object)->flagB != 0) {
+        mask |= 0x100;
     }
-    return var_r0;
+    return mask;
 }

@@ -3,12 +3,16 @@ typedef int s32;
 extern "C" int fn_0307a22c(void*);
 extern "C" void fn_0307a4cc(void*);
 
-extern "C" s32 fn_0307a924(void *arg0) {
-    s32 temp_r3;
+extern "C" s32 fn_0307a924(void *handle) {
+    s32 id;
 
-    if ((arg0 == (void *)-1) || (temp_r3 = fn_0307a22c(arg0), ((temp_r3 == -1) != 0))) {
+    if (handle == (void *)-1) {
         return 0;
     }
-    fn_0307a4cc((void *) temp_r3);
+    id = fn_0307a22c(handle);
+    if (id == -1) {
+        return 0;
+    }
+    fn_0307a4cc((void *) id);
     return 1;
 }

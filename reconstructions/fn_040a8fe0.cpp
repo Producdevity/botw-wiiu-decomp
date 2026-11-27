@@ -1,13 +1,22 @@
 typedef int s32;
 
+namespace {
+struct Allocator {
+    void *const *vtable;
+};
+
+struct Context {
+    unsigned char padding_0[0x2C];
+    Allocator *allocator;
+};
+}
+
 struct ThreadAllocatorContext;
 extern "C" ThreadAllocatorContext** fn_0434d168(void *);
 extern "C" unsigned char data_1045cc14[];
 
-extern "C" void fn_040a8fe0(s32 arg0, s32 arg1) {
-    void* const* vt1;
-    void **temp_r3;
-
-    temp_r3 = (*(void ***)((char *)(*fn_0434d168(data_1045cc14)) + (0x2C)));
-    ((s32 (*)(void **, s32, s32))(vt1 = *(void* const**)&(*temp_r3))[7])(temp_r3, arg0, arg1 * 0x10);
+extern "C" void fn_040a8fe0(s32 pool, s32 count) {
+    Context *context = (Context *)*fn_0434d168(data_1045cc14);
+    Allocator *allocator = context->allocator;
+    ((s32 (*)(Allocator *, s32, s32))allocator->vtable[7])(allocator, pool, count * 0x10);
 }

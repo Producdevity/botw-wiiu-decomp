@@ -1,14 +1,20 @@
-typedef unsigned char u8;
 typedef int s32;
+typedef unsigned char u8;
+
+namespace {
+struct Node {
+    unsigned char padding_0[0x40];
+    int *state;
+};
+}
 
 extern "C" int fn_02b83f20(void*, void*);
 
 extern "C" u8 fn_029a0d18(void *arg0, void *arg1) {
-    s32 var_r31;
-
-    var_r31 = 0;
-    if (((s32) *(*(s32 **)((char *)(arg0) + (0x40))) != 4) && (fn_02b83f20(arg0, arg1) != 0)) {
-        var_r31 = 1;
+    Node *node = (Node *)arg0;
+    s32 result = 0;
+    if (*node->state != 4 && fn_02b83f20(arg0, arg1) != 0) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

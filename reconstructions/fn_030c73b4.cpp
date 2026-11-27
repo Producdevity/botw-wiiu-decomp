@@ -3,12 +3,19 @@ typedef int s32;
 
 extern "C" int fn_030c65f0(void*);
 
-extern "C" u8 fn_030c73b4(void *arg0) {
-    s32 var_r31;
+namespace {
+struct Object {
+    char padding_0[8];
+    s32 count;
+};
+}
 
-    var_r31 = 1;
-    if (((s32) (*(s32 *)((char *)(arg0) + (8))) == 0) && (fn_030c65f0(arg0) == 0)) {
-        var_r31 = 0;
+extern "C" u8 fn_030c73b4(void *object) {
+    Object *self = (Object *)object;
+    s32 result = 1;
+
+    if (self->count == 0 && fn_030c65f0(self) == 0) {
+        result = 0;
     }
-    return var_r31;
+    return result;
 }

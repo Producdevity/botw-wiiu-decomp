@@ -4,11 +4,24 @@ typedef float f32;
 extern "C" void* fn_02c0378c(void* holder);
 extern "C" void fn_02c0f270(void*, float);
 
-extern "C" void fn_02bc090c(void *arg0, void *arg1) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0x10];
+    char holder[8];
+    f32 *value;
+};
 
-    temp_r3 = fn_02c0378c((char *)arg0 + 0x10);
-    if (temp_r3 != 0) {
-        fn_02c0f270((void *)((char *)temp_r3 + 0x550), *(*(f32 **)((char *)(arg0) + (0x18))));
+struct Target {
+    char padding_0[0x550];
+    char state[1];
+};
+}
+
+extern "C" void fn_02bc090c(void *owner, void *arg1) {
+    Owner *self = (Owner *)owner;
+    Target *target = (Target *)fn_02c0378c(self->holder);
+
+    if (target != 0) {
+        fn_02c0f270(target->state, *self->value);
     }
 }

@@ -1,14 +1,23 @@
-typedef int s32;
-typedef float f32;
+namespace {
+struct Source {
+    unsigned char padding_0[0x10];
+    unsigned char holder[8];
+    const float *amount;
+};
+
+struct Target {
+    unsigned char padding_0[0x550];
+    unsigned char gauge[1];
+};
+}
 
 extern "C" void* fn_02c0378c(void* holder);
 extern "C" void fn_02c0f3e0(void*, float);
 
-extern "C" void fn_02bc02c8(void *arg0, void *arg1) {
-    void *temp_r3;
-
-    temp_r3 = fn_02c0378c((char *)arg0 + 0x10);
-    if (temp_r3 != 0) {
-        fn_02c0f3e0((void *)((char *)temp_r3 + 0x550), *(*(f32 **)((char *)(arg0) + (0x18))));
+extern "C" void fn_02bc02c8(void *arg0, void *unused) {
+    Source *source = (Source *)arg0;
+    Target *target = (Target *)fn_02c0378c(source->holder);
+    if (target != 0) {
+        fn_02c0f3e0(target->gauge, *source->amount);
     }
 }
