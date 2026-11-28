@@ -7,7 +7,7 @@ struct Values {
 };
 }
 
-extern "C" int fn_03f6d76c(void *arg0)
+extern "C" int fn_03f6d76c(void *object)
 {
     float second;
     float fourth;
@@ -15,15 +15,15 @@ extern "C" int fn_03f6d76c(void *arg0)
     int lowIndex;
     float lowValue;
     int highIndex;
-    second = ((Values*) arg0)->v1;
-    lowValue = ((Values*) arg0)->v0;
+    second = ((Values *) object)->v1;
+    lowValue = ((Values *) object)->v0;
     lowIndex = 0;
     if (!(lowValue > second)) {
         lowValue = second;
         lowIndex = 1;
     }
-    highValue = ((Values*) arg0)->v2;
-    fourth = ((Values*) arg0)->v3;
+    highValue = ((Values *) object)->v2;
+    fourth = ((Values *) object)->v3;
     highIndex = 2;
     if (!(highValue > fourth)) {
         highValue = fourth;

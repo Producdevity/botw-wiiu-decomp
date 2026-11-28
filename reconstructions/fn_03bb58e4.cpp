@@ -1,6 +1,5 @@
 struct LinearRamp;
 extern "C" void fn_03bb572c(LinearRamp *, float);
-struct LinearRamp;
 extern "C" float fn_03bb57ac(LinearRamp *);
 extern "C" const float data_103cbab4;
 
@@ -13,22 +12,22 @@ struct Ramp {
 };
 }
 
-extern "C" void fn_03bb58e4(int arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1)
+extern "C" void fn_03bb58e4(int ramp_address, void *unused1, void *unused2, void *unused3, float new_target, float new_rate)
 {
     float current;
     float rate;
-    rate = farg1;
+    rate = new_rate;
     if (!(data_103cbab4 > rate)) {
-        current = ((Ramp*) arg0)->current;
-        ((Ramp*) arg0)->target = farg0;
-        if (farg0 == ((Ramp*) arg0)->current || rate == data_103cbab4) {
-            fn_03bb572c((LinearRamp*) arg0, farg0);
+        current = ((Ramp*) ramp_address)->current;
+        ((Ramp*) ramp_address)->target = new_target;
+        if (new_target == ((Ramp*) ramp_address)->current || rate == data_103cbab4) {
+            fn_03bb572c((LinearRamp*) ramp_address, new_target);
             return;
         }
-        if (!((farg0 - current) > data_103cbab4)) {
+        if (!((new_target - current) > data_103cbab4)) {
             rate = -rate;
         }
-        ((Ramp*) arg0)->rate = rate;
-        ((Ramp*) arg0)->step = fn_03bb57ac((LinearRamp*) arg0);
+        ((Ramp*) ramp_address)->rate = rate;
+        ((Ramp*) ramp_address)->step = fn_03bb57ac((LinearRamp*) ramp_address);
     }
 }

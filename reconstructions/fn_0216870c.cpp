@@ -13,12 +13,12 @@ extern "C" void * fn_02c1a1fc(void *, void *);
 extern "C" void * fn_02c19cc4(void *);
 extern "C" void * fn_031983c8(void *, void *);
 
-extern "C" void fn_0216870c(void **arg0)
+extern "C" void fn_0216870c(void **owner_slot)
 {
-  Owner *owner = (Owner *) *arg0;
+  Owner *owner = (Owner *) *owner_slot;
   fn_02c1a1fc(owner, 0);
   fn_02c19cc4(owner);
-  owner = (Owner *) *arg0;
+  owner = (Owner *) *owner_slot;
   void *target = owner->info->get_target(owner);
   if (target != 0)
   {

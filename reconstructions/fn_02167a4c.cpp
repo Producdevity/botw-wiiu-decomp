@@ -1,14 +1,23 @@
 extern "C" int fn_037a4ed8(void*);
 
-extern "C" void fn_02167a4c(void** arg0)
+namespace {
+struct Target {
+    unsigned char padding_0[0x60];
+    unsigned short flags_60;
+    unsigned char padding_62[0x46];
+    unsigned int flags_a8;
+};
+}
+
+extern "C" void fn_02167a4c(void** owner_slot)
 {
-    char* obj = (char*)fn_037a4ed8(*arg0);
-    if (obj != 0) {
-        unsigned int b = *(unsigned int*)(obj + 0xA8);
-        unsigned int a = *(unsigned short*)(obj + 0x60);
-        a &= 0xFFFFFFCF;
-        b &= 0xFFFFFFBF;
-        *(unsigned short*)(obj + 0x60) = a;
-        *(unsigned int*)(obj + 0xA8) = b;
+    Target* target = (Target*) fn_037a4ed8(*owner_slot);
+    if (target != 0) {
+        unsigned int high_flags = target->flags_a8;
+        unsigned int low_flags = target->flags_60;
+        low_flags &= 0xFFFFFFCF;
+        high_flags &= 0xFFFFFFBF;
+        target->flags_60 = low_flags;
+        target->flags_a8 = high_flags;
     }
 }

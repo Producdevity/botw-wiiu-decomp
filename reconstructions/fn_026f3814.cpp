@@ -1,14 +1,24 @@
 extern "C" void fn_029509ac(void*);
 extern "C" int fn_03185930(void*, void*);
 
-extern "C" void fn_026f3814(void** arg0, void* arg1)
+namespace {
+struct Owner {
+    unsigned char padding_0[0x3B4];
+    void* slot;
+};
+struct Target {
+    unsigned char padding_0[0x60];
+    unsigned short flags;
+};
+}
+
+extern "C" void fn_026f3814(void** owner_slot, void* key)
 {
-    void** slot = (void**)((char*)*arg0 + 0x3B4);
-    char* obj = (char*)fn_03185930(*slot, arg1);
-    if (obj != 0) {
-        unsigned int flags = *(unsigned short*)(obj + 0x60);
+    Target* target = (Target*) fn_03185930(((Owner*) *owner_slot)->slot, key);
+    if (target != 0) {
+        unsigned int flags = target->flags;
         flags &= 0xFFFFFFCF;
-        *(unsigned short*)(obj + 0x60) = flags;
+        target->flags = flags;
     }
-    fn_029509ac(*arg0);
+    fn_029509ac(*owner_slot);
 }

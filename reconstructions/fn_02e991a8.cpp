@@ -12,9 +12,9 @@ struct Object {
 };
 }
 
-extern "C" void *fn_02e991a8(void *arg0)
+extern "C" void *fn_02e991a8(void *memory)
 {
-    Object* self = (Object*) arg0;
+    Object* self = (Object*) memory;
     if (self == 0) {
         self = (Object*) fn_0308e578(0x48);
     }

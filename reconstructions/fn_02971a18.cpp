@@ -14,11 +14,11 @@ inline int matchesId(int a, int b) {
 }
 }
 
-extern "C" void fn_02971a18(void *arg0, void *arg1)
+extern "C" void fn_02971a18(void *object, void *output)
 {
     int* table = &data_10171380;
-    if (matchesId(((Owner*) arg0)->id, *((Owner*) arg0)->otherId) != 0) {
+    if (matchesId(((Owner*) object)->id, *((Owner*) object)->otherId) != 0) {
         table = &data_10171378;
     }
-    fn_037b8284(arg0, table, arg1);
+    fn_037b8284(object, table, output);
 }
