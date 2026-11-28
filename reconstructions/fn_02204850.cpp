@@ -16,13 +16,13 @@ struct Object {
 };
 }
 
-extern "C" void fn_02204850(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_02204850(void *object) {
+    Object *self = (Object *)object;
     f32 scale;
 
-    fn_0223174c(object);
-    scale = fn_03c6fcf0((const float *)(object->base + 0x25C));
-    object->scale_x = scale;
-    object->scale_y = scale;
-    object->flags = object->flags | 4;
+    fn_0223174c(self);
+    scale = fn_03c6fcf0((const float *)(self->base + 0x25C));
+    self->scale_x = scale;
+    self->scale_y = scale;
+    self->flags |= 4;
 }

@@ -7,9 +7,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_02228270(void* arg0) {
-    Object* object = (Object*)arg0;
-    if (*object->source != 0) {
-        object->flags |= 4;
+extern "C" void fn_02228270(void* object) {
+    Object *self = (Object *)object;
+    if (*self->source != 0) {
+        self->flags |= 4;
     }
 }

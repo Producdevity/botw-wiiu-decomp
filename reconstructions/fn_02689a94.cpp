@@ -8,11 +8,11 @@ struct Owner {
 };
 }
 
-extern "C" void fn_02689a94(void **arg0) {
+extern "C" void fn_02689a94(void **object) {
     Owner *owner;
     void *component;
 
-    owner = (Owner *)*arg0;
+    owner = static_cast<Owner *>(*object);
     if (owner != 0) {
         component = owner->component;
         if (component != 0) {

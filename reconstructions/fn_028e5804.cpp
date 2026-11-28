@@ -10,10 +10,10 @@ struct Node {
 
 extern "C" int fn_0253e718(void*);
 
-extern "C" u8 fn_028e5804(void *arg0) {
-    Node *node = (Node *)arg0;
+extern "C" u8 fn_028e5804(void *object) {
+    Node *node = (Node *)object;
     s32 result = 0;
-    if (node->enabled != 0 && fn_0253e718(arg0) != 0) {
+    if (node->enabled != 0 && fn_0253e718(object) != 0) {
         result = 1;
     }
     return result;

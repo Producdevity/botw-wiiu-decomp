@@ -20,12 +20,11 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_028a1f68(void *arg0) {
-    Owner *owner;
-    Object *object = (Object *)arg0;
+extern "C" s32 fn_028a1f68(void *object) {
+    Object *self = (Object *)object;
+    Owner *owner = self->owner;
 
-    owner = object->owner;
-    object->value = owner->value;
-    object->handle = fn_037a7f44(owner, &data_1015332c, (const char *)(&data_10153324));
+    self->value = owner->value;
+    self->handle = fn_037a7f44(owner, &data_1015332c, (const char *)&data_10153324);
     return 1;
 }

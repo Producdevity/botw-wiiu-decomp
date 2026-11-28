@@ -6,8 +6,8 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_100d3ff4;
 
-extern "C" void fn_0250f500(void **arg0) {
-    fn_02b610fc(*arg0);
-    fn_02b62e04(*arg0);
-    fn_037b8284(arg0, &data_100d3ff4, 0);
+extern "C" void fn_0250f500(void **object) {
+    fn_02b610fc(*object);
+    fn_02b62e04(*object);
+    fn_037b8284(object, &data_100d3ff4, 0);
 }

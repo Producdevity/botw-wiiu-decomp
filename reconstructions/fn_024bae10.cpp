@@ -6,11 +6,11 @@ extern "C" void* fn_037966a8(void *);
 
 extern "C" f32 data_100c60ac;
 
-extern "C" void fn_024bae10(void *arg0) {
+extern "C" void fn_024bae10(void *object) {
     void *owner;
 
-    owner = fn_037966a8(arg0);
+    owner = fn_037966a8(object);
     if (owner != 0) {
-        fn_0294e104(arg0, 1, 0, 2.0f * (fn_0344a2c0(owner) / data_100c60ac));
+        fn_0294e104(object, 1, 0, 2.0f * (fn_0344a2c0(owner) / data_100c60ac));
     }
 }

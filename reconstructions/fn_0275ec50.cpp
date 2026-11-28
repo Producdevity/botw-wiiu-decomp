@@ -19,11 +19,11 @@ extern "C" void fn_0378da14(void *);
 extern "C" void fn_037b8284(void *, const void *, void *);
 extern "C" int data_101267d8;
 
-extern "C" void fn_0275ec50(void *arg0) {
-    fn_0339bd58(((Object *) arg0)->child);
-    ((Object *) arg0)->flag_40 = 0;
-    fn_0378da14(((Object *) arg0)->member);
-    ((Object *) arg0)->callbacks->reset(((Object *) arg0)->member);
+extern "C" void fn_0275ec50(void *object) {
+    fn_0339bd58(((Object *)object)->child);
+    ((Object *)object)->flag_40 = 0;
+    fn_0378da14(((Object *)object)->member);
+    ((Object *)object)->callbacks->reset(((Object *)object)->member);
     fn_02e14da8(0, 0);
-    fn_037b8284(arg0, &data_101267d8, 0);
+    fn_037b8284(object, &data_101267d8, 0);
 }

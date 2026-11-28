@@ -7,10 +7,10 @@ struct Object {
 };
 }
 
-extern "C" int fn_0293df90(void* arg0) {
-    Object* object = (Object*)arg0;
-    if (*object->source != 0) {
-        object->flag = 0;
+extern "C" int fn_0293df90(void* object) {
+    Object* self = (Object*)object;
+    if (*self->source != 0) {
+        self->flag = 0;
     }
     return 1;
 }

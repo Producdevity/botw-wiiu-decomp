@@ -13,10 +13,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_027df698(void **arg0) {
-    Object *object;
-
-    object = (Object *)*arg0;
-    ((s32 (*)(Object *, s32, f32))object->vtable[187])(object, 0, data_10134e98);
-    fn_037b8284(arg0, &data_10134f1c, 0);
+extern "C" void fn_027df698(void **object) {
+    Object *owner = (Object *)*object;
+    ((s32 (*)(Object *, s32, f32))owner->vtable[187])(owner, 0, data_10134e98);
+    fn_037b8284(object, &data_10134f1c, 0);
 }

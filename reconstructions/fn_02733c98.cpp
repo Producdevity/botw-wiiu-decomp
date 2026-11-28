@@ -10,8 +10,8 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_02733c98(s32 arg0) {
-    Object *self = (Object *)arg0;
+extern "C" s32 fn_02733c98(s32 address) {
+    Object *self = (Object *)address;
     s32 first_ok = fn_0317780c(self->first) & 1;
     return first_ok & fn_0317780c(self->second);
 }

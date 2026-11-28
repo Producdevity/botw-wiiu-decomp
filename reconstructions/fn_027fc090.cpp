@@ -14,14 +14,11 @@ struct Entity {
 };
 }
 
-extern "C" void fn_027fc090(void **arg0) {
-    Component *component;
-    Entity *entity;
-
-    entity = (Entity *)*arg0;
-    component = (Component *)((void * (*)(void *))entity->vtable[271])(entity);
+extern "C" void fn_027fc090(void **object) {
+    Entity *entity = (Entity *)*object;
+    Component *component = (Component *)((void * (*)(void *))entity->vtable[271])(entity);
     if (component != 0) {
         component->state = 0;
     }
-    fn_03797a04(*arg0, 4, 0, 0);
+    fn_03797a04(*object, 4, 0, 0);
 }

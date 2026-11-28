@@ -14,9 +14,9 @@ struct Object {
 };
 }
 
-extern "C" int fn_026e3ac0(void *arg0, int arg1, void *arg2, int arg3) {
-    if ((arg3 == 0 && fn_0294f588(static_cast<Object *>(arg0)->id) != 0) ||
-        (fn_0378db34(arg2) != 0 && static_cast<Object *>(arg0)->vtable->handle(arg0, arg1, arg2) == 0)) {
+extern "C" int fn_026e3ac0(void *object, int command, void *message, int force) {
+    if ((force == 0 && fn_0294f588(static_cast<Object *>(object)->id) != 0) ||
+        (fn_0378db34(message) != 0 && static_cast<Object *>(object)->vtable->handle(object, command, message) == 0)) {
         return 1;
     }
     return 0;

@@ -5,9 +5,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_029f2b40(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
-    if (object->count >= 0) {
-        object->count++;
+extern "C" void fn_029f2b40(void *object) {
+    Object *self = static_cast<Object *>(object);
+    if (self->count >= 0) {
+        self->count++;
     }
 }

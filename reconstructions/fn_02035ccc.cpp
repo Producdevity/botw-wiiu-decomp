@@ -17,10 +17,10 @@ struct Actor {
 
 extern "C" const float data_10006b9c;
 
-extern "C" int fn_02035ccc(void* * arg0) {
-    Actor *actor = (Actor *)*arg0;
+extern "C" int fn_02035ccc(void **handle) {
+    Actor *actor = (Actor *)*handle;
     Target *target = actor->vtable->getTarget(actor);
-    if ((target != 0) && (target->value > data_10006b9c)) {
+    if (target != 0 && target->value > data_10006b9c) {
         return 1;
     }
     return 0;

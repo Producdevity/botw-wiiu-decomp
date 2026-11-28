@@ -13,10 +13,10 @@ extern "C" void * data_10467c80;
 
 extern "C" s32 data_1003c1cc;
 
-extern "C" void fn_02199e4c(s32 arg0) {
+extern "C" void fn_02199e4c(s32 base) {
     struct { const void* f8; const void* fC; } sp;
 
-    fn_02e1cb18((void *)1, (void *)(arg0 + 0x14), (void *)1);
+    fn_02e1cb18((void *)1, (void *)(base + 0x14), (void *)1);
     fn_0306b6b8();
     sp.fC = &data_10263910;
     sp.f8 = &data_1003c1cc;
@@ -25,7 +25,7 @@ extern "C" void fn_02199e4c(s32 arg0) {
         fn_02e17784((void *)(fn_02e17774(0) - 1), 0);
         fn_02e19684(0, 0);
     }
-    if ((void *) data_10467c80 != 0) {
-        fn_02e40f54(data_10467c80, (void *)(arg0 + 0x14));
+    if (data_10467c80 != 0) {
+        fn_02e40f54(data_10467c80, (void *)(base + 0x14));
     }
 }

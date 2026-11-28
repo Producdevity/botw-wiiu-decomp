@@ -17,8 +17,8 @@ struct Holder {
 };
 }
 
-extern "C" void fn_02995644(void **arg0) {
-    Holder *self = (Holder *)arg0;
+extern "C" void fn_02995644(void **object) {
+    Holder *self = (Holder *)object;
     Target *target = self->target;
     fn_02b83104(0, ((void * (*)(void *))target->vtable[91])(target), self->member, data_10176024);
 }

@@ -10,9 +10,9 @@ struct Node {
 
 extern "C" int fn_03794838(void*, void*, void*);
 
-extern "C" u8 fn_0224dbd4(void *arg0) {
+extern "C" u8 fn_0224dbd4(void *object) {
     s32 result = 1;
-    if (fn_03794838(arg0, 0, 0) == 0 && !(((Node *)arg0)->flags & 1)) {
+    if (fn_03794838(object, 0, 0) == 0 && !(((Node *)object)->flags & 1)) {
         result = 0;
     }
     return result;

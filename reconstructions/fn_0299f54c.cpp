@@ -12,11 +12,11 @@ struct Owner {
 extern "C" void fn_030ea2e0(void *);
 extern "C" void fn_03471628(void *);
 
-extern "C" void fn_0299f54c(void **arg0) {
-    Owner *owner = (Owner *) *arg0;
+extern "C" void fn_0299f54c(void **object) {
+    Owner *owner = (Owner *)*object;
     void *target = owner->info->get_target(owner);
     if (target == 0) {
-        fn_030ea2e0(arg0);
+        fn_030ea2e0(object);
         return;
     }
     fn_03471628(target);

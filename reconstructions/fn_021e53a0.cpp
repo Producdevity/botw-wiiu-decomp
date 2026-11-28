@@ -11,11 +11,11 @@ struct Holder {
 };
 }
 
-extern "C" void fn_021e53a0(void **arg0) {
-    Holder *self = (Holder *)arg0;
+extern "C" void fn_021e53a0(void **handle) {
+    Holder *self = (Holder *)handle;
     void *target;
 
-    fn_021e709c(arg0);
+    fn_021e709c(handle);
     target = self->target;
     fn_02b616f0(self->member, target);
     fn_02b616bc(self->member, (void *)(fn_02b61950(self->member, target)));

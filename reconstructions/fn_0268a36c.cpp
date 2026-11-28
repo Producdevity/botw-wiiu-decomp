@@ -1,11 +1,14 @@
-typedef int s32;
-
 extern "C" void fn_0294f720(void *, int, void *);
 
 namespace {
+struct Vtable {
+    void *slots[255];
+    int (*call)(void *);
+};
+
 struct Target {
     unsigned char padding_0[0xE8];
-    void *const *vtable;
+    Vtable *vtable;
 };
 
 struct Holder {
@@ -15,9 +18,9 @@ struct Holder {
 };
 }
 
-extern "C" void fn_0268a36c(void **arg0) {
-    Holder *self = (Holder *)arg0;
+extern "C" void fn_0268a36c(void **object) {
+    Holder *self = reinterpret_cast<Holder *>(object);
     Target *target = self->target;
-    ((s32 (*)(void *))target->vtable[255])(target);
+    target->vtable->call(target);
     fn_0294f720(self->target, 5, self->member);
 }

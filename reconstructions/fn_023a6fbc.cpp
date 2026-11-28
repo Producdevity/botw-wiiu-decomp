@@ -1,14 +1,14 @@
 namespace {
-struct Object {
+struct Owner {
     char padding_0[0x364];
     int flags;
 };
 }
 
-extern "C" int fn_023a6fbc(void **arg0) {
-    Object *object = (Object *) *arg0;
-    if (object != 0) {
-        object->flags |= 8;
+extern "C" int fn_023a6fbc(void **object) {
+    Owner *owner = static_cast<Owner *>(*object);
+    if (owner != 0) {
+        owner->flags |= 8;
     }
     return 0;
 }

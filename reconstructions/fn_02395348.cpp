@@ -9,8 +9,8 @@ struct Holder {
 };
 }
 
-extern "C" void fn_02395348(void **arg0) {
-    Holder *self = (Holder *)arg0;
+extern "C" void fn_02395348(void **object) {
+    Holder *self = reinterpret_cast<Holder *>(object);
     void *target = self->target;
     fn_02b540a8(target, self->member);
     fn_02b541ac(target, 1, 8);

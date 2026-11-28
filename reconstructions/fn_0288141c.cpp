@@ -15,9 +15,9 @@ struct Slot {
 extern "C" void* fn_02880238(void*, void*);
 extern "C" f32 data_1014cd48;
 
-extern "C" void fn_0288141c(void *arg0) {
-    if (!(((Timer *)arg0)->value > data_1014cd48)) {
-        Slot *slot = (Slot *)fn_02880238(arg0, 0);
+extern "C" void fn_0288141c(void *object) {
+    if (!(((Timer *)object)->value > data_1014cd48)) {
+        Slot *slot = (Slot *)fn_02880238(object, 0);
         slot->scale = -slot->scale;
     }
 }

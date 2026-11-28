@@ -14,10 +14,10 @@ struct Holder {
 };
 }
 
-extern "C" void fn_0273305c(void **arg0) {
-    void *registry = ((Holder *)arg0)->owner->registry;
+extern "C" void fn_0273305c(void **object) {
+    void *registry = ((Holder *)object)->owner->registry;
     if (registry != 0) {
-        fn_03177734(registry, ((Holder *)arg0)->first);
-        fn_03177734(registry, ((Holder *)arg0)->second);
+        fn_03177734(registry, ((Holder *)object)->first);
+        fn_03177734(registry, ((Holder *)object)->second);
     }
 }
