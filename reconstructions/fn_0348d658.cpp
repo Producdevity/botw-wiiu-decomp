@@ -4,13 +4,22 @@ typedef unsigned int u32;
 extern "C" int fn_0348d5d0(void*);
 extern "C" unsigned fn_034a3ffc(void *);
 
-extern "C" u32 fn_0348d658(void *arg0) {
-    s32 temp_r3;
+namespace {
+struct Object {
+    unsigned char padding_0[0x50];
+    s32 flags;
+    unsigned char padding_54[0x2C];
+    s32 handle;
+};
+}
 
-    if (((*(s32 *)((char *)(arg0) + (0x50))) & 1) && ((s32) (*(s32 *)((char *)(arg0) + (0x80))) != 0)) {
-        temp_r3 = fn_0348d5d0(arg0);
-        if (temp_r3 != 0) {
-            return fn_034a3ffc((void *) temp_r3);
+extern "C" u32 fn_0348d658(void *object) {
+    s32 target;
+
+    if ((((Object *)object)->flags & 1) && (((Object *)object)->handle != 0)) {
+        target = fn_0348d5d0(object);
+        if (target != 0) {
+            return fn_034a3ffc((void *) target);
         }
     }
     return 0U;

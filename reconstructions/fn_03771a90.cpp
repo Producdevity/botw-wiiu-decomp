@@ -5,13 +5,20 @@ extern "C" void fn_03acfe58(void*);
 
 extern "C" s32 data_1030ee78;
 
-extern "C" void *fn_03771a90(void *arg0) {
-    void *var_r31;
+namespace {
+struct Object {
+    unsigned char padding_0[0x8];
+    s32 *vtable;
+};
+}
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0x10U), ((var_r31 == 0) == 0))) {
-        fn_03acfe58(var_r31);
-        (*(s32 **)((char *)(var_r31) + (8))) = &data_1030ee78;
+extern "C" void *fn_03771a90(void *object) {
+    void *result;
+
+    result = object;
+    if ((result != 0) || (result = fn_0308e578(0x10U), ((result == 0) == 0))) {
+        fn_03acfe58(result);
+        ((Object *)result)->vtable = &data_1030ee78;
     }
-    return var_r31;
+    return result;
 }

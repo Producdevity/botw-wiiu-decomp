@@ -6,12 +6,22 @@ extern "C" void* fn_0308e578(unsigned);
 extern "C" s32 data_10336abc;
 extern "C" f32 data_10336b6c;
 
-extern "C" void fn_038fe598(void *arg0) {
-    void *var_r3;
+namespace {
+struct Instance {
+    s32 *vtable;
+    f32 value;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(8U), ((var_r3 == 0) == 0))) {
-        (*(s32 **)((char *)(var_r3) + (0))) = &data_10336abc;
-        (*(f32 *)((char *)(var_r3) + (4))) = (f32) data_10336b6c;
+extern "C" void fn_038fe598(void *object) {
+    Instance *instance;
+
+    instance = (Instance *)object;
+    if (instance == 0) {
+        instance = (Instance *)fn_0308e578(8U);
+    }
+    if (instance != 0) {
+        instance->vtable = &data_10336abc;
+        instance->value = data_10336b6c;
     }
 }

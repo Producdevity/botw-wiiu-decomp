@@ -5,14 +5,23 @@ extern "C" const float data_10012ad8;
 
 extern "C" f32 data_1001344c;
 
-extern "C" void fn_0209bb5c(void *arg0, f32 farg0) {
-    f32 temp_f12;
+namespace {
+struct Object {
+    char padding_0[0xA38];
+    f32 input;
+    char padding_A3C[0x1F8];
+    s32 state;
+};
+}
 
-    temp_f12 = (*(f32 *)((char *)(arg0) + (0xA38)));
-    if ((temp_f12 == data_10012ad8) && (farg0 > data_10012ad8)) {
-        (*(s32 *)((char *)(arg0) + (0xC34))) = 1;
-    } else if ((temp_f12 == data_1001344c) && (farg0 == data_10012ad8)) {
-        (*(s32 *)((char *)(arg0) + (0xC34))) = 2;
+extern "C" void fn_0209bb5c(void *object, f32 newInput) {
+    f32 previous;
+
+    previous = ((Object *)object)->input;
+    if ((previous == data_10012ad8) && (newInput > data_10012ad8)) {
+        ((Object *)object)->state = 1;
+    } else if ((previous == data_1001344c) && (newInput == data_10012ad8)) {
+        ((Object *)object)->state = 2;
     }
-    (*(f32 *)((char *)(arg0) + (0xA38))) = farg0;
+    ((Object *)object)->input = newInput;
 }

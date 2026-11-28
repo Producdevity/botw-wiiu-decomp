@@ -1,17 +1,28 @@
 typedef signed char s8;
 typedef int s32;
 
-extern "C" void fn_0428e428(void *arg0) {
-    s32 (*temp_r0)();
-    s32 *temp_r11;
+namespace {
+struct Task {
+    char padding_0[8];
+    s32 (*callback)();
+    s32 *resultTarget;
+    s32 result;
+    char padding_14[1];
+    s8 finished;
+};
+}
 
-    temp_r0 = (*(s32 (**)())((char *)(arg0) + (8)));
-    (*(s8 *)((char *)(arg0) + (0x15))) = 1;
-    if (temp_r0 != 0) {
-        temp_r0();
+extern "C" void fn_0428e428(void *object) {
+    s32 (*callback)();
+    s32 *resultTarget;
+
+    callback = ((Task *)object)->callback;
+    ((Task *)object)->finished = 1;
+    if (callback != 0) {
+        callback();
     }
-    temp_r11 = (*(s32 **)((char *)(arg0) + (0xC)));
-    if (temp_r11 != 0) {
-        *temp_r11 = (*(s32 *)((char *)(arg0) + (0x10)));
+    resultTarget = ((Task *)object)->resultTarget;
+    if (resultTarget != 0) {
+        *resultTarget = ((Task *)object)->result;
     }
 }

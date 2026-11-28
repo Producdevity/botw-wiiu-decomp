@@ -1,15 +1,22 @@
 extern "C" void* fn_02c19904(void* context, int index);
 extern "C" int fn_02c19940(void *);
 
-extern "C" int fn_0274d12c(int* arg0) {
-    unsigned int temp_r12;
-    void* temp_r3;
+namespace {
+struct Entry {
+    char padding_0[24];
+    unsigned int flags;
+};
+}
 
-    if (fn_02c19940((void *)(*arg0)) != 0) {
-        temp_r3 = fn_02c19904((void*)(*arg0), 0);
-        if (temp_r3 != 0) {
-            temp_r12 = (*(unsigned int*)((char*)temp_r3 + 24));
-            if (!(temp_r12 & 1) && !((temp_r12 >> 1U) & 1)) {
+extern "C" int fn_0274d12c(int* object) {
+    unsigned int flags;
+    void* entry;
+
+    if (fn_02c19940((void *)(*object)) != 0) {
+        entry = fn_02c19904((void*)(*object), 0);
+        if (entry != 0) {
+            flags = ((Entry *)entry)->flags;
+            if (!(flags & 1) && !((flags >> 1U) & 1)) {
                 return 1;
             }
         }

@@ -6,12 +6,22 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_103467b0;
 
-extern "C" void fn_0396ded8(void *arg0) {
-    void *var_r3;
+namespace {
+struct Instance {
+    s32 *vtable;
+    const u8 *table;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(8U), ((var_r3 == 0) == 0))) {
-        (*(u8 **)((char *)(var_r3) + (4))) = (u8 *)(&data_10263910);
-        (*(s32 **)((char *)(var_r3) + (0))) = &data_103467b0;
+extern "C" void fn_0396ded8(void *object) {
+    Instance *instance;
+
+    instance = (Instance *)object;
+    if (instance == 0) {
+        instance = (Instance *)fn_0308e578(8U);
+    }
+    if (instance != 0) {
+        instance->table = &data_10263910;
+        instance->vtable = &data_103467b0;
     }
 }

@@ -4,14 +4,26 @@ extern "C" void fn_02e9a1d8(void*);
 extern "C" void fn_02ea3e20(void*);
 extern "C" void* data_1046bdd8;
 
-extern "C" void fn_02ea3ea0(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    unsigned char padding_0[0x348];
+    void *child;
+};
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x348)));
-    if (temp_r3 != 0) {
-        fn_02e9a1d8(temp_r3);
+struct Globals {
+    unsigned char padding_0[0x40818];
+    s32 state;
+};
+}
+
+extern "C" void fn_02ea3ea0(void *owner) {
+    void *child;
+
+    child = ((Owner *)owner)->child;
+    if (child != 0) {
+        fn_02e9a1d8(child);
     }
-    if ((s32) (*(s32 *)((char *)(data_1046bdd8) + (0x40818))) == 5) {
-        fn_02ea3e20(arg0);
+    if (((Globals *)data_1046bdd8)->state == 5) {
+        fn_02ea3e20(owner);
     }
 }

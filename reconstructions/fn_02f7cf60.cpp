@@ -5,13 +5,27 @@ extern "C" void fn_02f7cce8(void*, int, int, int);
 
 extern "C" f32 data_10232c94;
 
-extern "C" void fn_02f7cf60(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct Target {
+    unsigned char padding_0[0x14];
+    void* const* vtable;
+};
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x1B6C)));
-    ((s32 (*)(void *, f32))(vt1 = *(void* const**)((char *)(temp_r3) + (0x14)))[47])(temp_r3, data_10232c94);
-    fn_02f7cce8(arg0, 2, arg1, 1);
-    fn_02f7cce8(arg0, 1, arg2, 1);
-    fn_02f7cce8(arg0, 0, arg3, 1);
+struct Owner {
+    unsigned char padding_0[0x1B6C];
+    Target *target;
+    void* const* vtable;
+};
+}
+
+extern "C" void fn_02f7cf60(void *owner, s32 first, s32 second, s32 third) {
+    Target *target;
+    void* const* vtable;
+
+    target = ((Owner *)owner)->target;
+    vtable = target->vtable;
+    ((s32 (*)(void *, f32))vtable[47])(target, data_10232c94);
+    fn_02f7cce8(owner, 2, first, 1);
+    fn_02f7cce8(owner, 1, second, 1);
+    fn_02f7cce8(owner, 0, third, 1);
 }

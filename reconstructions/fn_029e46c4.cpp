@@ -1,18 +1,46 @@
 typedef float f32;
 
-extern "C" void fn_029e46c4(void **arg0, void *arg1) {
-    void *temp_r11;
-    void *temp_r12;
+namespace {
+struct Vec3 {
+    f32 x;
+    f32 y;
+    f32 z;
+};
 
-    temp_r11 = *arg0;
-    temp_r12 = (*(void **)((char *)(temp_r11) + (0x330)));
-    if (temp_r12 == 0) {
-        (*(f32 *)((char *)(arg1) + (0))) = (f32) (*(f32 *)((char *)(temp_r11) + (0x204)));
-        (*(f32 *)((char *)(arg1) + (4))) = (f32) (*(f32 *)((char *)(temp_r11) + (0x214)));
-        (*(f32 *)((char *)(arg1) + (8))) = (f32) (*(f32 *)((char *)(temp_r11) + (0x224)));
+struct Source {
+    char padding_0[0x40];
+    f32 x;
+    char padding_44[0xC];
+    f32 y;
+    char padding_54[0xC];
+    f32 z;
+};
+
+struct Owner {
+    char padding_0[0x204];
+    f32 x;
+    char padding_208[0xC];
+    f32 y;
+    char padding_218[0xC];
+    f32 z;
+    char padding_228[0x108];
+    Source *source;
+};
+}
+
+extern "C" void fn_029e46c4(void **object, void *out) {
+    Owner *owner;
+    Source *source;
+
+    owner = (Owner *)*object;
+    source = owner->source;
+    if (source == 0) {
+        ((f32 *)out)[0] = owner->x;
+        ((f32 *)out)[1] = owner->y;
+        ((f32 *)out)[2] = owner->z;
         return;
     }
-    (*(f32 *)((char *)(arg1) + (0))) = (f32) (*(f32 *)((char *)(temp_r12) + (0x40)));
-    (*(f32 *)((char *)(arg1) + (4))) = (f32) (*(f32 *)((char *)(temp_r12) + (0x50)));
-    (*(f32 *)((char *)(arg1) + (8))) = (f32) (*(f32 *)((char *)(temp_r12) + (0x60)));
+    ((f32 *)out)[0] = source->x;
+    ((f32 *)out)[1] = source->y;
+    ((f32 *)out)[2] = source->z;
 }

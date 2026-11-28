@@ -3,11 +3,18 @@ typedef unsigned int u32;
 
 extern "C" char* fn_0204151c(void *);
 
-extern "C" s32 fn_02041b24(void *arg0) {
-    u32 temp_r0;
+namespace {
+struct Data {
+    char padding_0[0x3C];
+    u32 mode;
+};
+}
 
-    temp_r0 = (*(u32 *)((char *)(fn_0204151c(arg0)) + (0x3C)));
-    switch (temp_r0) {
+extern "C" s32 fn_02041b24(void *object) {
+    u32 mode;
+
+    mode = ((Data *)fn_0204151c(object))->mode;
+    switch (mode) {
     case 1:
         return 6;
     case 2:

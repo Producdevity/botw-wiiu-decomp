@@ -5,14 +5,28 @@ extern "C" void fn_02b616bc(void *, void *);
 extern "C" int fn_02b61950(void*, void*);
 extern "C" void fn_0370e02c(void*);
 
-extern "C" void fn_02351034(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0x394];
+    void *handle;
+};
 
-    if ((s32) (*(u8 *)((char *)(arg0) + (0x44))) != 0) {
-        fn_02b616bc((char *)arg0 + 0x34, (void *)(fn_02b61950((char *)arg0 + 0x34, (*(void **)((char *)(arg0) + (0))))));
+struct Object {
+    Owner *owner;
+    char padding_4[0x30];
+    char member[0x10];
+    u8 enabled;
+};
+}
+
+extern "C" void fn_02351034(void *object) {
+    void *handle;
+
+    if ((s32) ((Object *)object)->enabled != 0) {
+        fn_02b616bc(((Object *)object)->member, (void *)(fn_02b61950(((Object *)object)->member, ((Object *)object)->owner)));
     }
-    temp_r3 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x394)));
-    if (temp_r3 != 0) {
-        fn_0370e02c(temp_r3);
+    handle = ((Object *)object)->owner->handle;
+    if (handle != 0) {
+        fn_0370e02c(handle);
     }
 }

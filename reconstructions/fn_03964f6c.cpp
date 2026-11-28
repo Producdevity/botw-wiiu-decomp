@@ -5,13 +5,16 @@ extern "C" void fn_03961f08(void*, void*, void*, void*);
 
 extern "C" s32 data_103441c4;
 
-extern "C" s32 **fn_03964f6c(s32 **arg0, void *arg1, void *arg2, void *arg3) {
-    s32 **var_r31;
+extern "C" s32 **fn_03964f6c(s32 **object, void *param1, void *param2, void *param3) {
+    s32 **result;
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = (s32 **)(fn_0308e578(0xcU)), ((var_r31 == 0) == 0))) {
-        fn_03961f08(var_r31, arg1, arg2, arg3);
-        *var_r31 = &data_103441c4;
+    result = object;
+    if (result == 0) {
+        result = (s32 **)fn_0308e578(0xcU);
     }
-    return var_r31;
+    if (result != 0) {
+        fn_03961f08(result, param1, param2, param3);
+        *result = &data_103441c4;
+    }
+    return result;
 }

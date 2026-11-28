@@ -5,13 +5,20 @@ extern "C" void fn_030be630(void*, void*);
 extern "C" int fn_03a40780(void);
 extern "C" void* data_1046bdd8;
 
-extern "C" s32 fn_0300ba84(void) {
-    s32 temp_r3;
+namespace {
+struct Globals {
+    unsigned char padding_0[0x40688];
+    void *context;
+};
+}
 
-    temp_r3 = fn_03a40780();
-    if (temp_r3 != 0) {
-        fn_030be630((void *) temp_r3, (*(void **)((char *)(data_1046bdd8) + (0x40688))));
-        fn_0304aca8(data_1046bdd8, (void *) temp_r3);
+extern "C" s32 fn_0300ba84(void) {
+    s32 created;
+
+    created = fn_03a40780();
+    if (created != 0) {
+        fn_030be630((void *) created, ((Globals *)data_1046bdd8)->context);
+        fn_0304aca8(data_1046bdd8, (void *) created);
     }
-    return temp_r3;
+    return created;
 }
