@@ -6,11 +6,23 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_10127b38;
 
-extern "C" void fn_02764760(void *arg0) {
-    struct { const void* f8; const void* fC; } sp;
+namespace {
+struct Object {
+    unsigned char padding_0[0x140];
+    unsigned char member[1];
+};
 
-    fn_0254d338(arg0);
-    sp.fC = &data_10263910;
-    sp.f8 = &data_10127b38;
-    fn_030e9be0(arg0, (char *)arg0 + 0x140, &sp.f8);
+struct Registration {
+    const void *first;
+    const void *second;
+};
+}
+
+extern "C" void fn_02764760(void *object) {
+    Registration registration;
+
+    fn_0254d338(object);
+    registration.second = &data_10263910;
+    registration.first = &data_10127b38;
+    fn_030e9be0(object, ((Object *) object)->member, &registration.first);
 }

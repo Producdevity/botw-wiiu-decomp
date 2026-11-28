@@ -1,16 +1,24 @@
-typedef int s32;
-
 extern "C" void fn_03593430(void*, void*, void*, void*, void*);
 extern "C" void fn_035935b8(void*);
 extern "C" const unsigned char data_10263910;
+extern "C" int data_102e70a4;
 
-extern "C" s32 data_102e70a4;
+namespace {
+struct Object {
+    char padding_0[0xe2c];
+    char member_e2c[1];
+};
 
-extern "C" void fn_03593684(void *arg0) {
-    struct { const void* f8; const void* fC; } sp;
+struct Pair {
+    const void *first;
+    const void *second;
+};
+}
 
-    fn_035935b8(arg0);
-    sp.fC = &data_10263910;
-    sp.f8 = &data_102e70a4;
-    fn_03593430(arg0, (char *)arg0 + 0xE2C, &sp.f8, 0, 0);
+extern "C" void fn_03593684(void *object) {
+    Pair pair;
+    fn_035935b8(object);
+    pair.second = &data_10263910;
+    pair.first = &data_102e70a4;
+    fn_03593430(object, static_cast<Object *>(object)->member_e2c, &pair, 0, 0);
 }
