@@ -6,13 +6,23 @@ extern "C" void* fn_0354ed84(void *, const void *);
 extern "C" s32 data_10555e7c;
 extern "C" s32 data_10555e84;
 
-extern "C" void fn_03529428(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[4];
+    char member[0x13C];
+    u8 alternate;
+    char padding_141[3];
+    void *result;
+};
+}
 
-    temp_r3 = (char *)arg0 + 4;
-    if ((s32) (*(u8 *)((char *)(arg0) + (0x140))) != 0) {
-        (*(void **)((char *)(arg0) + (0x144))) = fn_0354ed84(temp_r3, &data_10555e84);
+extern "C" void fn_03529428(void *object) {
+    Object *self = (Object *)object;
+
+    void *member = self->member;
+    if (self->alternate != 0) {
+        self->result = fn_0354ed84(member, &data_10555e84);
         return;
     }
-    (*(void **)((char *)(arg0) + (0x144))) = fn_0354ed84(temp_r3, &data_10555e7c);
+    self->result = fn_0354ed84(member, &data_10555e7c);
 }

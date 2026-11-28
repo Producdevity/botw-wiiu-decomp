@@ -5,15 +5,11 @@ extern "C" int fn_02e17694(void*);
 extern "C" int fn_02e176a4(void*);
 
 extern "C" u8 fn_0256df9c(void) {
-    s32 temp_r31;
-    s32 temp_r3;
-    s32 var_r0;
-
-    temp_r31 = fn_02e17694(0);
-    temp_r3 = fn_02e176a4(0);
-    var_r0 = 0;
-    if ((temp_r31 != 0) && (temp_r3 == 0)) {
-        var_r0 = 1;
+    s32 first = fn_02e17694(0);
+    s32 second = fn_02e176a4(0);
+    s32 result = 0;
+    if ((first != 0) && (second == 0)) {
+        result = 1;
     }
-    return var_r0;
+    return result;
 }

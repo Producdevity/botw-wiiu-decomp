@@ -1,19 +1,29 @@
 typedef int s32;
 typedef float f32;
 
+namespace {
+struct Range {
+    unsigned char padding_0[0x10];
+    f32 start;
+    f32 end;
+    unsigned char padding_18[4];
+    f32 alt;
+};
+}
+
 extern "C" f32 data_1033f4a8;
 extern "C" f32 data_1033f4ac;
 
-extern "C" f32 fn_03945190(void *arg0, s32 arg1, f32 farg0) {
-    f32 temp_f8;
-    f32 temp_f9;
+extern "C" f32 fn_03945190(void *object, s32 useAlt, f32 weight) {
+    f32 start;
+    f32 alt;
 
-    if (arg1 != 0) {
-        temp_f9 = (*(f32 *)((char *)(arg0) + (0x1C)));
-        if (!(temp_f9 < data_1033f4a8)) {
-            return (farg0 * temp_f9) + ((data_1033f4ac - farg0) * (*(f32 *)((char *)(arg0) + (0x10))));
+    if (useAlt != 0) {
+        alt = ((Range *)object)->alt;
+        if (!(alt < data_1033f4a8)) {
+            return (weight * alt) + ((data_1033f4ac - weight) * ((Range *)object)->start);
         }
     }
-    temp_f8 = (*(f32 *)((char *)(arg0) + (0x10)));
-    return (farg0 * ((*(f32 *)((char *)(arg0) + (0x14))) - temp_f8)) + temp_f8;
+    start = ((Range *)object)->start;
+    return (weight * (((Range *)object)->end - start)) + start;
 }

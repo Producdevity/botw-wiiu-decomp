@@ -1,18 +1,30 @@
+namespace {
+struct Target {
+    unsigned char padding_0[12];
+    unsigned int id;
+};
+
+struct Slot {
+    Target *target;
+    unsigned int id;
+};
+}
+
 extern "C" void* fn_03530688();
 extern "C" int fn_03b8f1e0(void*);
 
 extern "C" int fn_035306a4() {
-    int temp_r3;
-    void* temp_r12;
-    void* temp_r3_2;
+    int entry;
+    Target* target;
+    Slot* slot;
 
-    temp_r3_2 = fn_03530688();
-    if (temp_r3_2 != 0) {
-        temp_r12 = (*(void**)temp_r3_2);
-        if ((temp_r12 != 0) && ((unsigned int) (*(unsigned int*)((char*)temp_r12 + 12)) == (unsigned int) (*(unsigned int*)((char*)temp_r3_2 + 4)))) {
-            temp_r3 = fn_03b8f1e0(temp_r12);
-            if (temp_r3 != 0) {
-                return temp_r3 + 52;
+    slot = (Slot *)fn_03530688();
+    if (slot != 0) {
+        target = slot->target;
+        if ((target != 0) && (target->id == slot->id)) {
+            entry = fn_03b8f1e0(target);
+            if (entry != 0) {
+                return entry + 52;
             }
         }
     }

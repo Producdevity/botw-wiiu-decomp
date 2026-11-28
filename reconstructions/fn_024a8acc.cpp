@@ -1,20 +1,29 @@
 extern "C" void fn_03485f68(void*);
 
-extern "C" void fn_024a8acc(void *arg0) {
-    void *temp_r3;
-    void *temp_r3_2;
-    void *temp_r3_3;
+namespace {
+struct Object {
+    unsigned char padding_0[0x9A0];
+    void *first;
+    void *second;
+    void *third;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x9A0)));
-    if (temp_r3 != 0) {
-        fn_03485f68(temp_r3);
+extern "C" void fn_024a8acc(void *object) {
+    void *first;
+    void *second;
+    void *third;
+
+    first = ((Object *)object)->first;
+    if (first != 0) {
+        fn_03485f68(first);
     }
-    temp_r3_2 = (*(void **)((char *)(arg0) + (0x9A4)));
-    if (temp_r3_2 != 0) {
-        fn_03485f68(temp_r3_2);
+    second = ((Object *)object)->second;
+    if (second != 0) {
+        fn_03485f68(second);
     }
-    temp_r3_3 = (*(void **)((char *)(arg0) + (0x9A8)));
-    if (temp_r3_3 != 0) {
-        fn_03485f68(temp_r3_3);
+    third = ((Object *)object)->third;
+    if (third != 0) {
+        fn_03485f68(third);
     }
 }

@@ -2,15 +2,25 @@ typedef int s32;
 
 extern "C" void fn_03b9fc80(void*, unsigned int, int);
 
-extern "C" s32 fn_0359c098(void *arg0, unsigned int index, int value) {
-    void *temp_r12;
-    void *temp_r3;
+namespace {
+struct Slots {
+    char padding_0[0x44];
+    void *target;
+};
 
-    temp_r12 = (*(void **)((char *)(arg0) + (0x398)));
-    if (temp_r12 != 0) {
-        temp_r3 = (*(void **)((char *)(temp_r12) + (0x44)));
-        if (temp_r3 != 0) {
-            fn_03b9fc80(temp_r3, index, value);
+struct Object {
+    char padding_0[0x398];
+    Slots *slots;
+};
+}
+
+extern "C" s32 fn_0359c098(void *object, unsigned int index, int value) {
+    Slots *slots = ((Object *)object)->slots;
+
+    if (slots != 0) {
+        void *target = slots->target;
+        if (target != 0) {
+            fn_03b9fc80(target, index, value);
             return 1;
         }
     }

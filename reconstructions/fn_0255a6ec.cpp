@@ -5,15 +5,29 @@ extern "C" void fn_02b3f3b8(void*, void*);
 extern "C" void fn_02b3f858(void*);
 extern "C" void fn_0317be7c(void*);
 
-extern "C" void fn_0255a6ec(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Type {
+    char padding_0[0x38C];
+    void *resource;
+};
 
-    fn_02b3f858((char *)arg0 + 0x74);
-    fn_02b3f3b8((char *)arg0 + 0x74, 0);
-    (*(s8 *)((char *)(arg0) + (0x7D))) = 1;
-    temp_r3 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x38C)));
-    if (temp_r3 != 0) {
-        fn_0317be7c(temp_r3);
+struct Object {
+    Type *type;
+    char padding_4[0x74 - 4];
+    char member[9];
+    s8 ready;
+};
+}
+
+extern "C" void fn_0255a6ec(void *object) {
+    void *resource;
+
+    fn_02b3f858((char *)object + 0x74);
+    fn_02b3f3b8((char *)object + 0x74, 0);
+    ((Object *)object)->ready = 1;
+    resource = ((Object *)object)->type->resource;
+    if (resource != 0) {
+        fn_0317be7c(resource);
     }
-    fn_026dc1ec(arg0);
+    fn_026dc1ec(object);
 }

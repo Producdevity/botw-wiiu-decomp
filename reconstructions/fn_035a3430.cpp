@@ -3,16 +3,26 @@ typedef int s32;
 extern "C" void fn_0308e6d0(void *);
 extern "C" void fn_03a4d6dc(void *);
 
-extern "C" void fn_035a3430(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[4];
+    s32 count;
+    s32 list;
+    char padding_c[8];
+    void *buffer;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x14)));
-    if (temp_r3 != 0) {
-        fn_0308e6d0(temp_r3);
-        (*(void **)((char *)(arg0) + (0x14))) = 0;
+extern "C" void fn_035a3430(void *object) {
+    Object *self = (Object *)object;
+
+    void *buffer = self->buffer;
+    if (buffer != 0) {
+        fn_0308e6d0(buffer);
+        self->buffer = 0;
     }
-    if ((s32) (*(s32 *)((char *)(arg0) + (8))) != 0) {
-        fn_03a4d6dc((char *)arg0 + 8);
+    if (self->list != 0) {
+        fn_03a4d6dc(&self->list);
     }
-    (*(s32 *)((char *)(arg0) + (4))) = 0;
+    self->count = 0;
 }

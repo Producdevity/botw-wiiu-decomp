@@ -1,19 +1,28 @@
 typedef int s32;
 
+namespace {
+struct ObjectView {
+    unsigned char padding_0[0x130];
+    s32 *firstVtable;
+    unsigned char padding_134[0xC];
+    s32 *secondVtable;
+};
+}
+
 extern "C" void* fn_0308e578(unsigned);
 extern "C" void fn_030be71c(void*);
 
 extern "C" s32 data_1035df40;
 extern "C" s32 data_1035df78;
 
-extern "C" void *fn_03a43648(void *arg0) {
-    void *var_r31;
+extern "C" void *fn_03a43648(void *object) {
+    ObjectView *view;
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0x1F4U), ((var_r31 == 0) == 0))) {
-        fn_030be71c(var_r31);
-        (*(s32 **)((char *)(var_r31) + (0x130))) = &data_1035df40;
-        (*(s32 **)((char *)(var_r31) + (0x140))) = &data_1035df78;
+    view = (ObjectView *)object;
+    if ((view != 0) || (view = (ObjectView *)fn_0308e578(0x1F4U), ((view == 0) == 0))) {
+        fn_030be71c(view);
+        view->firstVtable = &data_1035df40;
+        view->secondVtable = &data_1035df78;
     }
-    return var_r31;
+    return view;
 }

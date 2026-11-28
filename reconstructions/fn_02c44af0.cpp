@@ -7,13 +7,33 @@ extern "C" void fn_0364b890(void*);
 extern "C" void *data_1046f428;
 extern "C" void *data_1047be88;
 
-extern "C" void fn_02c44af0(void *arg0) {
-    void *var_r3;
+namespace {
+struct Slot {
+    char padding_0[0x18];
+    void *resource;
+};
 
-    fn_0340afac(data_1046f428, (*(s32 *)((char *)(arg0) + (0x128))), (*(s32 *)((char *)(arg0) + (0x12C))));
-    var_r3 = 0;
-    if ((u32) (*(u32 *)((char *)(data_1047be88) + (0x45C))) > 6U) {
-        var_r3 = (*(void **)((char *)((*(void **)((char *)(data_1047be88) + (0x464)))) + (0x18)));
+struct Manager {
+    char padding_0[0x45C];
+    u32 count;
+    char padding_460[4];
+    Slot *slots;
+};
+
+struct Object {
+    char padding_0[0x128];
+    s32 width;
+    s32 height;
+};
+}
+
+extern "C" void fn_02c44af0(void *object) {
+    void *resource;
+
+    fn_0340afac(data_1046f428, ((Object *)object)->width, ((Object *)object)->height);
+    resource = 0;
+    if (((Manager *)data_1047be88)->count > 6U) {
+        resource = ((Manager *)data_1047be88)->slots->resource;
     }
-    fn_0364b890(var_r3);
+    fn_0364b890(resource);
 }

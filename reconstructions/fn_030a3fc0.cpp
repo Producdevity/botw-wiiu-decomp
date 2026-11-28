@@ -4,15 +4,29 @@ extern "C" void fn_04348578(void*);
 extern "C" void fn_04348580(void*, int);
 extern "C" void fn_043486c0(void*);
 
-extern "C" void fn_030a3fc0(void* arg0) {
-    int temp_r30;
-    int temp_r31;
+namespace {
+struct Object {
+    char padding_0[20];
+    int left;
+    int right;
+    char padding_1c[12];
+    int count;
+    char padding_2c[4];
+    char first[32];
+    char second[156];
+    char third[1];
+};
+}
 
-    temp_r30 = (*(int*)((char*)arg0 + 20));
-    temp_r31 = (*(int*)((char*)arg0 + 24));
-    fn_043484e0((char*)arg0 + 48);
-    fn_043486c0((void*)(temp_r30));
-    fn_04348578((void*)(temp_r31));
-    fn_04348580((char*)arg0 + 80, (*(int*)((char*)arg0 + 40)));
-    fn_04348568((char*)arg0 + 236, (*(int*)((char*)arg0 + 40)));
+extern "C" void fn_030a3fc0(void* object) {
+    int left;
+    int right;
+
+    left = ((Object *)object)->left;
+    right = ((Object *)object)->right;
+    fn_043484e0(((Object *)object)->first);
+    fn_043486c0((void *)left);
+    fn_04348578((void *)right);
+    fn_04348580(((Object *)object)->second, ((Object *)object)->count);
+    fn_04348568(((Object *)object)->third, ((Object *)object)->count);
 }

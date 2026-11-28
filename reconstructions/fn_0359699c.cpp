@@ -5,15 +5,29 @@ extern "C" void fn_0308e808(ListLink *);
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
-extern "C" void fn_0359699c(void *arg0, void *arg1) {
-    void *temp_r12;
-    void *temp_r29;
+namespace {
+struct List {
+    unsigned char padding_0[0xC];
+    s32 count;
+    s32 linkOffset;
+    unsigned char lock[4];
+};
 
-    if ((arg1 != 0) && ((temp_r12 = (char *)arg1 + (*(s32 *)((char *)(arg0) + (0x10))), (((s32) (*(s32 *)((char *)(temp_r12) + (4))) == 0) == 0)) || ((s32) (*(s32 *)((char *)(temp_r12) + (0))) != 0))) {
-        temp_r29 = (char *)arg0 + 0x14;
-        fn_030bb668(temp_r29);
-        fn_0308e808((ListLink *)((char *)arg1 + (*(s32 *)((char *)(arg0) + (0x10)))));
-        (*(s32 *)((char *)(arg0) + (0xC))) = (s32) ((*(s32 *)((char *)(arg0) + (0xC))) - 1);
-        fn_030bb69c(temp_r29);
+struct Link {
+    s32 prev;
+    s32 next;
+};
+}
+
+extern "C" void fn_0359699c(void *list, void *item) {
+    void *link;
+    void *lock;
+
+    if ((item != 0) && ((link = (char *)item + ((List *)list)->linkOffset, ((Link *)link)->next != 0) || (((Link *)link)->prev != 0))) {
+        lock = ((List *)list)->lock;
+        fn_030bb668(lock);
+        fn_0308e808((ListLink *)((char *)item + ((List *)list)->linkOffset));
+        ((List *)list)->count = ((List *)list)->count - 1;
+        fn_030bb69c(lock);
     }
 }

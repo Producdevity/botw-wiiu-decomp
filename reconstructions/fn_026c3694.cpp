@@ -3,17 +3,25 @@ typedef int s32;
 
 extern "C" int fn_02b7a6d4(void*);
 
-extern "C" u8 fn_026c3694(void **arg0) {
-    s32 temp_r3;
-    u8 var_r0;
+namespace {
+struct Entry {
+    char padding_0[0xD];
+    u8 fallback;
+    char padding_e;
+    u8 primary;
+};
+}
 
-    temp_r3 = fn_02b7a6d4(*arg0);
-    if (temp_r3 == 0) {
+extern "C" u8 fn_026c3694(void **object) {
+    Entry *entry = (Entry *)fn_02b7a6d4(*object);
+    u8 result;
+
+    if (entry == 0) {
         return 0U;
     }
-    var_r0 = (*(u8 *)((char *)(temp_r3) + (0xF)));
-    if ((s32) var_r0 == 0) {
-        var_r0 = (*(u8 *)((char *)(temp_r3) + (0xD)));
+    result = entry->primary;
+    if (result == 0) {
+        result = entry->fallback;
     }
-    return var_r0;
+    return result;
 }

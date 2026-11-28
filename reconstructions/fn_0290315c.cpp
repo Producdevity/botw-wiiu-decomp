@@ -3,18 +3,31 @@ typedef int s32;
 extern "C" void fn_034c44a4(void*, int);
 extern "C" void* data_10463748;
 
-extern "C" void fn_0290315c(void *arg0) {
-    void *temp_r11;
-    void *temp_r3;
+namespace {
+struct Inner {
+    unsigned char padding_0[0x3A0];
+    void *target;
+};
 
-    if ((void *) data_10463748 != 0) {
-        temp_r11 = (*(void **)((char *)(arg0) + (0)));
-        if (temp_r11 != 0) {
-            temp_r3 = (*(void **)((char *)(temp_r11) + (0x3A0)));
-            if (temp_r3 != 0) {
-                fn_034c44a4(temp_r3, 0);
+struct Object {
+    Inner *inner;
+    unsigned char padding_4[0x28 - 4];
+    s32 state;
+};
+}
+
+extern "C" void fn_0290315c(void *object) {
+    Inner *inner;
+    void *target;
+
+    if ((void *)data_10463748 != 0) {
+        inner = ((Object *)object)->inner;
+        if (inner != 0) {
+            target = inner->target;
+            if (target != 0) {
+                fn_034c44a4(target, 0);
             }
         }
-        (*(s32 *)((char *)(arg0) + (0x28))) = 0;
+        ((Object *)object)->state = 0;
     }
 }

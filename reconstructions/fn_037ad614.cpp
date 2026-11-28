@@ -5,14 +5,21 @@ extern "C" void fn_03712a24(void *);
 extern "C" int fn_03798754(void*);
 extern "C" void fn_03985370(void*);
 
-extern "C" void fn_037ad614(void *arg0) {
-    s32 temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x60];
+    u32 flags;
+    char padding_64[0x330 - 0x64];
+    void *child;
+};
+}
 
-    if (!(((u32) (*(u32 *)((char *)(arg0) + (0x60))) >> 1U) & 1)) {
-        temp_r3 = fn_03798754(arg0);
-        if (temp_r3 != 0) {
-            fn_03712a24((void *) temp_r3);
+extern "C" void fn_037ad614(void *object) {
+    if (!((((Object *)object)->flags >> 1U) & 1)) {
+        s32 entry = fn_03798754(object);
+        if (entry != 0) {
+            fn_03712a24((void *)entry);
         }
-        fn_03985370((*(void **)((char *)(arg0) + (0x330))));
+        fn_03985370(((Object *)object)->child);
     }
 }

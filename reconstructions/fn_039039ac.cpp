@@ -3,18 +3,35 @@ extern "C" char* data_1047c390;
 extern "C" void fn_03ba9d2c(int, float);
 extern "C" void* fn_03baa330(int);
 
-extern "C" void fn_039039ac(int arg0, int arg1) {
-    float var_f0;
-    void* temp_r3;
+namespace {
+struct Settings {
+    unsigned char padding_0[44];
+    float scale;
+};
 
-    if (arg1 != 0) {
-        temp_r3 = fn_03baa330(arg1);
-        if (temp_r3 != 0) {
-            var_f0 = data_103375c0;
+struct Globals {
+    unsigned char padding_0[32];
+    Settings *settings;
+};
+
+struct Entry {
+    unsigned char padding_0[104];
+    float value;
+};
+}
+
+extern "C" void fn_039039ac(int owner, int handle) {
+    float scale;
+    Entry* entry;
+
+    if (handle != 0) {
+        entry = (Entry *)fn_03baa330(handle);
+        if (entry != 0) {
+            scale = data_103375c0;
             if ((void* ) data_1047c390 != 0) {
-                var_f0 = (*(float*)((char*)((*(void**)((char*)data_1047c390 + 32))) + 44));
+                scale = ((Globals *)data_1047c390)->settings->scale;
             }
-            fn_03ba9d2c(arg1, (*(float*)((char*)temp_r3 + 104)) * var_f0);
+            fn_03ba9d2c(handle, entry->value * scale);
         }
     }
 }

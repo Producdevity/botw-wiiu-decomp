@@ -3,16 +3,24 @@ typedef int s32;
 extern "C" void fn_031c438c(void*);
 extern "C" void fn_0388bb4c(int);
 
-extern "C" void fn_031c8dfc(void *arg0) {
-    s32 temp_r3;
-    void *temp_r3_2;
+namespace {
+struct Object {
+    char padding_0[0x174A8];
+    s32 resource;
+    char padding_174ac[4];
+    void *child;
+};
+}
 
-    temp_r3 = (*(s32 *)((char *)(arg0) + (0x174A8)));
-    if (temp_r3 != 0) {
-        fn_0388bb4c(temp_r3);
+extern "C" void fn_031c8dfc(void *object) {
+    Object *self = (Object *)object;
+
+    s32 resource = self->resource;
+    if (resource != 0) {
+        fn_0388bb4c(resource);
     }
-    temp_r3_2 = (*(void **)((char *)(((char *)arg0 + 0x10000 + 0x74A8)) + (8)));
-    if (temp_r3_2 != 0) {
-        fn_031c438c(temp_r3_2);
+    void *child = self->child;
+    if (child != 0) {
+        fn_031c438c(child);
     }
 }

@@ -1,19 +1,28 @@
 typedef int s32;
 
+typedef s32 (*VirtualFn)(void *);
+
+namespace {
+struct VTable {
+    VirtualFn slots[8];
+};
+
+struct Object {
+    void *key;
+    VTable *vtable;
+};
+}
+
 extern "C" int fn_024b60f8(void);
 extern "C" int fn_0310d4b4(void*, void*);
 extern "C" void* data_1046ca84;
 
-extern "C" s32 fn_0308812c(void *arg0) {
-    void* const* vt1;
-    s32 temp_r31;
-    void *temp_r31_2;
-
-    temp_r31_2 = data_1046ca84;
-    if (temp_r31_2 == 0) {
+extern "C" s32 fn_0308812c(void *object) {
+    void *manager = data_1046ca84;
+    if (manager == 0) {
         return 0;
     }
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg0) + (4)))[7])(arg0);
-    temp_r31 = fn_0310d4b4(temp_r31_2, (*(void **)((char *)(arg0) + (0))));
-    return temp_r31 * fn_024b60f8();
+    ((Object *)object)->vtable->slots[7](object);
+    s32 result = fn_0310d4b4(manager, ((Object *)object)->key);
+    return result * fn_024b60f8();
 }
