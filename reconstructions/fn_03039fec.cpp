@@ -1,6 +1,6 @@
 typedef unsigned char u8;
 
-extern "C" int fn_0308060c(void*);
+extern "C" unsigned char fn_0308060c(void*);
 extern "C" int fn_03080658(void);
 
 extern "C" u8 data_1046bd31;

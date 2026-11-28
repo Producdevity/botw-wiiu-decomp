@@ -1,6 +1,6 @@
 typedef int s32;
 
-extern "C" int fn_0308060c(void*);
+extern "C" unsigned char fn_0308060c(void*);
 extern "C" int fn_03080658(void);
 
 extern "C" s32 data_1046bd28;

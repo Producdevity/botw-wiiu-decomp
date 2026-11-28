@@ -1,5 +1,5 @@
 extern "C" void *fn_0308e578(unsigned);
-extern "C" void fn_03a36144(void *, void *, void *, void *);
+extern "C" void* fn_03a36144(void *, void *, void *, void *);
 extern "C" unsigned char data_1035e9b4[];
 
 namespace {
