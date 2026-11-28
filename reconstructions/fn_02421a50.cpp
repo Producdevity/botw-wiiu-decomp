@@ -1,12 +1,31 @@
 extern "C" void fn_02b63234(void*, void*, int);
 
+namespace {
+struct Child {
+    char padding_0[0x26];
+    unsigned short flags;
+};
+struct Owner {
+    char padding_0[0x3B0];
+    Child *child;
+};
+struct Object {
+    Owner *owner;
+    char padding_4[0x18];
+    unsigned char *mode;
+    char padding_20[0x18];
+    char member[1];
+};
+}
+
 extern "C" void fn_02421a50(void* object)
 {
-    fn_02b63234(*(void**)object, (char*)object + 0x38, **(unsigned char**)((char*)object + 0x1C));
-    void* child = *(void**)((char*)*(void**)object + 0x3B0);
+    Object *view = (Object *) object;
+    fn_02b63234(view->owner, view->member, *view->mode);
+    Child *child = view->owner->child;
     if (child != 0) {
-        unsigned int flags = *(unsigned short*)((char*)child + 0x26);
+        unsigned int flags = child->flags;
         flags &= ~1;
-        *(unsigned short*)((char*)child + 0x26) = flags;
+        child->flags = flags;
     }
 }

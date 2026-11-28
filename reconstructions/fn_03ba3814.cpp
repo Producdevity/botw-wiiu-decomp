@@ -1,12 +1,32 @@
+namespace {
+struct Node;
+struct NodeClass {
+    char padding_0[0x44];
+    void (*visit)(Node *);
+};
+struct Node {
+    char padding_0[0xC];
+    Node *next;
+    char padding_10[4];
+    NodeClass *node_class;
+};
+struct Owner {
+    char padding_0[8];
+    Node *first;
+    char padding_c[4];
+    int count;
+};
+}
+
 extern "C" void fn_03ba3814(void *self)
 {
-  void *node = *(void **)((char *)self + 8);
-  if (node != 0) {
-    do {
-      (*(void (**)(void *))((char *)*(void **)((char *)node + 0x14) + 0x44))(node);
-      int nextOffset = 0xC;
-      node = *(void **)((char *)node + nextOffset);
-    } while (node != 0);
-  }
-  *(int *)((char *)self + 0x10) = 0;
+    Node *node = ((Owner *) self)->first;
+    if (node != 0) {
+        do {
+            Node *current = node;
+            current->node_class->visit(current);
+            node = current->next;
+        } while (node != 0);
+    }
+    ((Owner *) self)->count = 0;
 }

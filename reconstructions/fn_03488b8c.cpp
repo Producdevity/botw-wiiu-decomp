@@ -1,13 +1,23 @@
-typedef int s32;
-
 extern "C" unsigned fn_03488464(void *);
 extern "C" void fn_034aaafc(void*, void*);
 
-extern "C" void fn_03488b8c(void *arg0, void *arg1) {
-    void* const* vt1;
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x80))) == 0) {
-        fn_034aaafc((char *)arg0 + 0x70, arg1);
+namespace {
+struct Object {
+    char padding_0[0x70];
+    char member_70[0x10];
+    int value_80;
+};
+struct Target {
+    char padding_0[0xC];
+    void *const *vtable;
+};
+}
+
+extern "C" void fn_03488b8c(void *object, void *argument) {
+    Object *view = (Object *) object;
+    if (view->value_80 == 0) {
+        fn_034aaafc(view->member_70, argument);
         return;
     }
-    ((s32 (*)())(vt1 = *(void* const**)((char *)(fn_03488464(arg0)) + (0xC)))[31])();
+    ((int (*)()) ((Target *) fn_03488464(object))->vtable[31])();
 }

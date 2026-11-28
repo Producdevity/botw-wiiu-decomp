@@ -2,11 +2,16 @@ typedef int s32;
 
 extern "C" void* fn_03605df8(void*);
 
-extern "C" s32 fn_03605e98(void* arg0) {
-    void* actor;
+namespace {
+struct Actor {
+    char padding_0[0xC];
+    s32 flags;
+};
+}
 
-    actor = fn_03605df8(arg0);
-    if ((actor != 0) && ((*(s32 *)((char *)actor + 0xC)) & 1)) {
+extern "C" s32 fn_03605e98(void* object) {
+    Actor *actor = (Actor *) fn_03605df8(object);
+    if (actor != 0 && (actor->flags & 1)) {
         return 1;
     }
     return 0;

@@ -1,13 +1,20 @@
 typedef unsigned char u8;
-typedef int s32;
 
 extern "C" void fn_023d7618(void*);
 struct ProcLink;
 extern "C" void fn_0378c734(ProcLink *);
 
-extern "C" void fn_023d8638(void *arg0) {
-    fn_023d7618(arg0);
-    if (((s32) (*(s32 *)((char *)(arg0) + (0x90))) != 0) || ((s32) (*(u8 *)((char *)(arg0) + (0x94))) != 0)) {
-        fn_0378c734((ProcLink *)((char *)arg0 + 0x90));
+namespace {
+struct Object {
+    char padding_0[0x90];
+    int value_90;
+    u8 flag_94;
+};
+}
+
+extern "C" void fn_023d8638(void *object) {
+    fn_023d7618(object);
+    if (((Object *) object)->value_90 != 0 || ((Object *) object)->flag_94 != 0) {
+        fn_0378c734((ProcLink *) &((Object *) object)->value_90);
     }
 }

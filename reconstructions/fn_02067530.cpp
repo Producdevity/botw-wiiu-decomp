@@ -1,14 +1,20 @@
-typedef unsigned char u8;
-typedef float f32;
-
 extern "C" void fn_037924b4(void*, float);
 extern "C" int fn_0379253c(void*, float);
 
-extern "C" f32 data_1000a720;
+extern "C" float data_1000a720;
 
-extern "C" void fn_02067530(void *arg0, f32 farg0) {
-    fn_037924b4((char *)arg0 + 0x3C, farg0);
-    if (fn_0379253c((char *)arg0 + 0x3C, data_1000a720) != 0) {
-        (*(u8 *)((char *)(arg0) + (0xB))) = (u8) ((*(u8 *)((char *)(arg0) + (0xB))) | 4);
+namespace {
+struct Object {
+    char padding_0[0xB];
+    unsigned char flags;
+    char padding_c[0x30];
+    char block_3c[1];
+};
+}
+
+extern "C" void fn_02067530(void *object, float value) {
+    fn_037924b4(((Object *)object)->block_3c, value);
+    if (fn_0379253c(((Object *)object)->block_3c, data_1000a720) != 0) {
+        ((Object *)object)->flags |= 4;
     }
 }
