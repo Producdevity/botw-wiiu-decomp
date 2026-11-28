@@ -3,13 +3,18 @@
 extern "C" void fn_0308e6d0(void *);
 extern "C" void fn_039323e0(void*, int);
 
-extern "C" void fn_0392dafc(void *arg0, unsigned arg1) {
-    const unsigned flags = arg1;
+namespace {
+inline void destroy(void *object, int flags) {
     __schedule_barrier();
-    if (arg0 != 0) {
-        fn_039323e0((char *)arg0 + 0x28, 2);
+    if (object != 0) {
+        fn_039323e0((char *)object + 0x28, 2);
         if (flags & 1) {
-            fn_0308e6d0(arg0);
+            fn_0308e6d0(object);
         }
     }
+}
+}
+
+extern "C" void fn_0392dafc(void *object, unsigned flags) {
+    destroy(object, flags);
 }
