@@ -3,10 +3,19 @@ typedef int s32;
 
 extern "C" void fn_028c3be0(void*);
 
-extern "C" void fn_028a9c10(void *arg0) {
-    void* const* vt1;
-    fn_028c3be0(arg0);
-    if ((s32) (*(u8 *)((char *)(arg0) + (0x391))) == 0) {
-        ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg0) + (0xC)))[85])(arg0);
+namespace {
+struct Object {
+    char padding_0[0xC];
+    void *const *vtable;
+    char padding_10[0x381];
+    u8 flag;
+};
+}
+
+extern "C" void fn_028a9c10(void *object) {
+    Object *self = (Object *) object;
+    fn_028c3be0(object);
+    if (self->flag == 0) {
+        ((s32 (*)(void *)) self->vtable[85])(object);
     }
 }

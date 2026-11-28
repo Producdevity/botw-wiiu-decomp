@@ -1,7 +1,17 @@
 typedef int s32;
 
-extern "C" void fn_03a7fc84(void *arg0, void *arg1) {
-    void* const* vt1;
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg1) + (4)))[7])(arg1);
-    (*(s32 *)((char *)(arg0) + (0x9C))) = (s32) (*(s32 *)((char *)(arg1) + (0)));
+namespace {
+struct Source {
+    s32 value;
+    void *const *vtable;
+};
+struct Object {
+    char padding_0[0x9C];
+    s32 value_9c;
+};
+}
+
+extern "C" void fn_03a7fc84(void *object, void *source) {
+    ((s32 (*)(void *)) ((Source *) source)->vtable[7])(source);
+    ((Object *) object)->value_9c = ((Source *) source)->value;
 }

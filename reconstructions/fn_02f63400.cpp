@@ -2,9 +2,21 @@ typedef int s32;
 
 extern "C" void fn_02f63160(void*, void*);
 
-extern "C" void fn_02f63400(void *arg0, void *arg1) {
-    void* const* vt1;
-    if ((arg1 == 0) || (((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg1) + (0x3C)))[21])(arg1) != -1)) {
-        fn_02f63160(arg0, arg1);
+namespace {
+struct Other {
+    char padding_0[0x3C];
+    void *const *vtable;
+};
+}
+
+extern "C" void fn_02f63400(void *object, void *other) {
+    void *const *vtable;
+    if (other == 0) {
+        fn_02f63160(object, other);
+        return;
+    }
+    vtable = ((Other *) other)->vtable;
+    if (((s32 (*)(void *)) vtable[21])(other) != -1) {
+        fn_02f63160(object, other);
     }
 }

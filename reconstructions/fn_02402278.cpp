@@ -2,9 +2,19 @@ typedef int s32;
 
 extern "C" void fn_023fea2c(void*);
 
-extern "C" void fn_02402278(void *arg0) {
-    void* const* vt1;
-    void* const* vt2;
-    fn_023fea2c(arg0);
-    ((s32 (*)())(vt2 = *(void* const**)((char *)(((void * (*)(void *))(vt1 = *(void* const**)((char *)(arg0) + (0xC)))[65])(arg0)) + (8)))[23])();
+namespace {
+struct Target {
+    char padding_0[8];
+    void *const *vtable;
+};
+struct Object {
+    char padding_0[0xC];
+    void *const *vtable;
+};
+}
+
+extern "C" void fn_02402278(void *object) {
+    fn_023fea2c(object);
+    void *target = ((void *(*)(void *)) ((Object *) object)->vtable[65])(object);
+    ((s32 (*)()) ((Target *) target)->vtable[23])();
 }

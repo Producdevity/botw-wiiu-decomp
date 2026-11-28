@@ -1,8 +1,15 @@
 extern "C" void fn_03b68354(void*, void*);
 extern "C" void fn_04348048(void*, void*, int);
 
-extern "C" void fn_03b683a8(void *arg0, void *arg1) {
-    (*(void **)((char *)(arg0) + (0xC))) = arg1;
-    fn_04348048(arg0, 0, 1);
-    fn_03b68354(arg0, (*(void **)((char *)(arg0) + (0xC))));
+namespace {
+struct Object {
+    char padding_0[0xC];
+    void *target;
+};
+}
+
+extern "C" void fn_03b683a8(void *object, void *target) {
+    ((Object *) object)->target = target;
+    fn_04348048(object, 0, 1);
+    fn_03b68354(object, ((Object *) object)->target);
 }

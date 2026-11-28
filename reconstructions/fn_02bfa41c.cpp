@@ -4,9 +4,16 @@ extern "C" void fn_02bf9c8c(void*);
 extern "C" void fn_02bf9d18(void*);
 extern "C" void fn_02bfa158(void*);
 
-extern "C" void fn_02bfa41c(void *arg0) {
-    fn_02bf9c8c(arg0);
-    fn_02bf9d18(arg0);
-    fn_02bfa158(arg0);
-    (*(s8 *)((char *)(arg0) + (0xC0))) = 0;
+namespace {
+struct Object {
+    char padding_0[0xC0];
+    s8 flag;
+};
+}
+
+extern "C" void fn_02bfa41c(void *object) {
+    fn_02bf9c8c(object);
+    fn_02bf9d18(object);
+    fn_02bfa158(object);
+    ((Object *) object)->flag = 0;
 }

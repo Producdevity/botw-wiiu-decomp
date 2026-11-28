@@ -1,10 +1,16 @@
 typedef int s32;
-
 extern "C" void fn_03babf48(void*);
 
-extern "C" void fn_03bade8c(void *arg0) {
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x15C))) != 0) {
-        fn_03babf48(arg0);
+namespace {
+struct Object {
+    char padding_0[0x15C];
+    s32 value_15c;
+};
+}
+
+extern "C" void fn_03bade8c(void *object) {
+    if (((Object *) object)->value_15c != 0) {
+        fn_03babf48(object);
     }
-    (*(s32 *)((char *)(arg0) + (0x15C))) = 0;
+    ((Object *) object)->value_15c = 0;
 }
