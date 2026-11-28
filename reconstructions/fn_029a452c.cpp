@@ -1,16 +1,20 @@
 #include "botw/ghs_intrinsics.h"
-typedef int s32;
 
 extern "C" void fn_0308e6d0(void *);
 extern "C" void fn_0378da14(void* handle);
 
-extern "C" void fn_029a452c(void *arg0, unsigned arg1) {
-    const unsigned flags = arg1;
+namespace {
+inline void destroy(void *object, int flags) {
     __schedule_barrier();
-    if (arg0 != 0) {
-        fn_0378da14((char *)arg0 + 0x10);
-        if ((s32) flags & 1) {
-            fn_0308e6d0(arg0);
+    if (object != 0) {
+        fn_0378da14((char *)object + 0x10);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
+}
+}
+
+extern "C" void fn_029a452c(void *object, unsigned flags) {
+    destroy(object, flags);
 }
