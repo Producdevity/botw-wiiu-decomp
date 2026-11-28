@@ -3,23 +3,47 @@ typedef float f32;
 
 extern "C" f32 data_102412b8;
 
-extern "C" void fn_02fb2e00(void *arg0) {
-    void* const* vt1;
-    void* const* vt2;
-    void* const* vt3;
-    void *temp_r3;
-    void *temp_r3_2;
-    void *temp_r3_3;
+namespace {
+typedef s32 (*SetFlagFn)(void *, s32);
+typedef s32 (*ResetFn)(void *);
+typedef s32 (*SetValueFn)(void *, f32);
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x2280)));
-    ((s32 (*)(void *, s32))(vt1 = *(void* const**)((char *)(temp_r3) + (0x10)))[13])(temp_r3, 1);
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x228C))) != 0) {
-        temp_r3_2 = (*(void **)((char *)(arg0) + (0x2284)));
-        ((s32 (*)(void *))(vt2 = *(void* const**)((char *)(temp_r3_2) + (0x14)))[49])(temp_r3_2);
-        temp_r3_3 = (*(void **)((char *)(arg0) + (0x2288)));
-        ((s32 (*)(void *, f32))(vt3 = *(void* const**)((char *)(temp_r3_3) + (0x14)))[43])(temp_r3_3, data_102412b8);
-        (*(s32 *)((char *)(arg0) + (0x228C))) = 0;
+struct Primary {
+    char padding_0[0x10];
+    void *const *vtable;
+};
+
+struct Secondary {
+    char padding_0[0x14];
+    void *const *vtable;
+};
+
+struct Object {
+    char padding_0[0x2280];
+    Primary *primary;
+    Secondary *reset;
+    Secondary *value;
+    s32 active;
+    char padding_2290[0xC];
+    s32 modeA;
+    char padding_22A0[0x1C];
+    s32 modeB;
+};
+}
+
+extern "C" void fn_02fb2e00(void *object) {
+    Primary *primary = ((Object *)object)->primary;
+    void *const *primaryVtable = primary->vtable;
+    ((SetFlagFn)primaryVtable[13])(primary, 1);
+    if (((Object *)object)->active != 0) {
+        Secondary *reset = ((Object *)object)->reset;
+        void *const *resetVtable = reset->vtable;
+        ((ResetFn)resetVtable[49])(reset);
+        Secondary *value = ((Object *)object)->value;
+        void *const *valueVtable = value->vtable;
+        ((SetValueFn)valueVtable[43])(value, data_102412b8);
+        ((Object *)object)->active = 0;
     }
-    (*(s32 *)((char *)(arg0) + (0x22BC))) = -1;
-    (*(s32 *)((char *)(arg0) + (0x229C))) = -1;
+    ((Object *)object)->modeB = -1;
+    ((Object *)object)->modeA = -1;
 }

@@ -2,21 +2,30 @@ extern "C" void fn_02f67500(void*);
 extern "C" unsigned int fn_0307bfa0();
 extern "C" unsigned int fn_0307bfdc();
 
-extern "C" void fn_02f67508(void* arg0) {
-    unsigned int temp_r3;
-    unsigned int temp_r3_2;
+namespace {
+struct Owner {
+    char padding_0[0x2184];
+    unsigned int first;
+    unsigned int second;
+    char padding_218c[4];
+    signed char firstChanged;
+    signed char secondChanged;
+};
+}
 
-    (*(signed char*)((char*)arg0 + 0x2190)) = 0;
-    temp_r3 = fn_0307bfa0();
-    if (temp_r3 != (unsigned int) (*(unsigned int*)((char*)arg0 + 0x2184))) {
-        (*(unsigned int*)((char*)arg0 + 0x2184)) = temp_r3;
-        (*(signed char*)((char*)arg0 + 0x2190)) = 1;
+extern "C" void fn_02f67508(void* object) {
+    Owner *owner = (Owner*)object;
+    owner->firstChanged = 0;
+    unsigned int first = fn_0307bfa0();
+    if (first != owner->first) {
+        owner->first = first;
+        owner->firstChanged = 1;
     }
-    (*(signed char*)((char*)arg0 + 0x2191)) = 0;
-    temp_r3_2 = fn_0307bfdc();
-    if (temp_r3_2 != (unsigned int) (*(unsigned int*)((char*)arg0 + 0x2188))) {
-        (*(unsigned int*)((char*)arg0 + 0x2188)) = temp_r3_2;
-        (*(signed char*)((char*)arg0 + 0x2191)) = 1;
+    owner->secondChanged = 0;
+    unsigned int second = fn_0307bfdc();
+    if (second != owner->second) {
+        owner->second = second;
+        owner->secondChanged = 1;
     }
-    fn_02f67500(arg0);
+    fn_02f67500(object);
 }

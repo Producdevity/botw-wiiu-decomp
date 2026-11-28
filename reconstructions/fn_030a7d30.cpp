@@ -7,19 +7,28 @@ extern "C" void fn_030a9714(void*, void*, void*);
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
-extern "C" void fn_030a7d30(void *arg0) {
-    void *var_r31;
+namespace {
+struct Object {
+    char padding_0[0x54];
+    char lock[0x3C];
+    u16 flags;
+    char padding_92[6];
+    char outerList[0x10];
+    char innerList[0x10];
+};
+}
 
-    var_r31 = 0;
-    if ((*(u16 *)((char *)(arg0) + (0x90))) & 1) {
-        var_r31 = (char *)arg0 + 0x54;
-        fn_030bb668(var_r31);
+extern "C" void fn_030a7d30(void *object) {
+    void *lock = 0;
+    if (((Object *)object)->flags & 1) {
+        lock = ((Object *)object)->lock;
+        fn_030bb668(lock);
     }
-    fn_030a9714(arg0, 0, 0);
-    fn_0308e9e8((IntrusiveList *)((char *)arg0 + 0xA8));
-    fn_0308e9e8((IntrusiveList *)((char *)arg0 + 0x98));
-    fn_030a5c78(arg0);
-    if (var_r31 != 0) {
-        fn_030bb69c(var_r31);
+    fn_030a9714(object, 0, 0);
+    fn_0308e9e8((IntrusiveList *)((Object *)object)->innerList);
+    fn_0308e9e8((IntrusiveList *)((Object *)object)->outerList);
+    fn_030a5c78(object);
+    if (lock != 0) {
+        fn_030bb69c(lock);
     }
 }

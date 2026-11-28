@@ -4,23 +4,31 @@ typedef int s32;
 extern "C" void fn_02e84e80(int);
 extern "C" void fn_02e858cc(int);
 
-extern "C" s32 fn_023a1cb0(void *arg0) {
-    u8 *temp_r11;
-    u8 *temp_r12;
-    u8 var_r3;
-    u8 var_r3_2;
+namespace {
+struct Object {
+    char padding_0[0x10];
+    u8 *first;
+    u8 *second;
+};
+}
 
-    temp_r11 = (*(u8 **)((char *)(arg0) + (0x10)));
-    var_r3 = 0;
-    if (temp_r11 != 0) {
-        var_r3 = *temp_r11;
+extern "C" s32 fn_023a1cb0(void *object) {
+    u8 *firstSource;
+    u8 *secondSource;
+    u8 first;
+    u8 second;
+
+    firstSource = ((Object *)object)->first;
+    first = 0;
+    if (firstSource != 0) {
+        first = *firstSource;
     }
-    fn_02e84e80((s32) var_r3);
-    temp_r12 = (*(u8 **)((char *)(arg0) + (0x14)));
-    var_r3_2 = 0;
-    if (temp_r12 != 0) {
-        var_r3_2 = *temp_r12;
+    fn_02e84e80((s32)first);
+    secondSource = ((Object *)object)->second;
+    second = 0;
+    if (secondSource != 0) {
+        second = *secondSource;
     }
-    fn_02e858cc((s32) var_r3_2);
+    fn_02e858cc((s32)second);
     return 1;
 }

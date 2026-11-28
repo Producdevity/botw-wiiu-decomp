@@ -1,23 +1,39 @@
-typedef unsigned char u8;
-typedef int s32;
-typedef float f32;
-
 extern "C" void* fn_02c0378c(void* holder);
 extern "C" int fn_02c10888(void*);
 extern "C" bool fn_02c10cd8(void *, unsigned);
 
-extern "C" f32 data_101bcab4;
+extern "C" float data_101bcab4;
 
-extern "C" void fn_02bf392c(void *arg0, void *arg1) {
-    void *temp_r3;
-    void *temp_r31;
+namespace {
+struct Rider {
+    char padding_0[0x748];
+    float value;
+    char padding_74c[0x27];
+    char flag;
+};
+struct Target {
+    char padding_0[0x550];
+    Rider rider;
+};
+struct Owner {
+    char padding_0[0x10];
+    char holder;
+    char padding_11[0x47];
+    float value;
+    char padding_5c[0x18E];
+    unsigned char mode;
+};
+}
 
-    (*(f32 *)((char *)(arg0) + (0x58))) = (f32) data_101bcab4;
-    temp_r3 = fn_02c0378c((char *)arg0 + 0x10);
-    if (temp_r3 != 0) {
-        temp_r31 = (void *)((char *)temp_r3 + 0x550);
-        if (((s32) (*(u8 *)((char *)(arg0) + (0x1ea))) == 1) && (fn_02c10cd8((char *)temp_r31 + 0x773, 1U) != 0) && (fn_02c10888(temp_r31) != 0)) {
-            (*(f32 *)((char *)(arg0) + (0x58))) = (f32) (*(f32 *)((char *)(temp_r31) + (0x748)));
+extern "C" void fn_02bf392c(void *object, void *context) {
+    ((Owner*)object)->value = data_101bcab4;
+    Target *target;
+    Rider *rider;
+    target = (Target*)fn_02c0378c(&((Owner*)object)->holder);
+    if (target != 0) {
+        rider = &target->rider;
+        if ((((Owner*)object)->mode == 1) && (fn_02c10cd8(&rider->flag, 1U) != 0) && (fn_02c10888(rider) != 0)) {
+            ((Owner*)object)->value = rider->value;
         }
     }
 }

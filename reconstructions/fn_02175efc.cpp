@@ -6,25 +6,33 @@ extern "C" void fn_030eb73c(void *, unsigned);
 
 extern "C" s32 data_10036318;
 
-extern "C" void fn_02175efc(void *arg0, u32 arg1) {
-    void *temp_r3;
-    void *temp_r3_2;
+namespace {
+struct Object {
+    char padding_0[4];
+    char base[8];
+    s32 *vtable;
+    char padding_10[0x50];
+    void *first;
+    void *second;
+};
+}
 
-    if (arg0 != 0) {
-        temp_r3 = (*(void **)((char *)(arg0) + (0x60)));
-        (*(s32 **)((char *)(arg0) + (0xC))) = &data_10036318;
-        if (temp_r3 != 0) {
-            fn_0308e6d0(temp_r3);
-            (*(void **)((char *)(arg0) + (0x60))) = 0;
+extern "C" void fn_02175efc(void *object, u32 flags) {
+    if (object != 0) {
+        void *first = ((Object *)object)->first;
+        ((Object *)object)->vtable = &data_10036318;
+        if (first != 0) {
+            fn_0308e6d0(first);
+            ((Object *)object)->first = 0;
         }
-        temp_r3_2 = (*(void **)((char *)(arg0) + (0x64)));
-        if (temp_r3_2 != 0) {
-            fn_0308e6d0(temp_r3_2);
-            (*(void **)((char *)(arg0) + (0x64))) = 0;
+        void *second = ((Object *)object)->second;
+        if (second != 0) {
+            fn_0308e6d0(second);
+            ((Object *)object)->second = 0;
         }
-        fn_030eb73c((char *)arg0 + 4, 2U);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+        fn_030eb73c(((Object *)object)->base, 2U);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

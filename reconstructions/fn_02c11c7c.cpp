@@ -2,21 +2,26 @@ extern "C" void fn_02c156c4(void*);
 extern "C" void fn_02c15cbc(void *);
 extern "C" void fn_02c1c560(void *);
 
-extern "C" void fn_02c11c7c(void *arg0) {
-    void *temp_r3;
-    void *temp_r3_2;
-    void *temp_r3_3;
+namespace {
+struct Owner {
+    char padding_0[8];
+    void* first;
+    void* second;
+    void* third;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (8)));
-    if (temp_r3 != 0) {
-        fn_02c1c560(temp_r3);
+extern "C" void fn_02c11c7c(void *object) {
+    void *first = ((Owner*)object)->first;
+    if (first != 0) {
+        fn_02c1c560(first);
     }
-    temp_r3_2 = (*(void **)((char *)(arg0) + (0xC)));
-    if (temp_r3_2 != 0) {
-        fn_02c15cbc(temp_r3_2);
+    void *second = ((Owner*)object)->second;
+    if (second != 0) {
+        fn_02c15cbc(second);
     }
-    temp_r3_3 = (*(void **)((char *)(arg0) + (0x10)));
-    if (temp_r3_3 != 0) {
-        fn_02c156c4(temp_r3_3);
+    void *third = ((Owner*)object)->third;
+    if (third != 0) {
+        fn_02c156c4(third);
     }
 }

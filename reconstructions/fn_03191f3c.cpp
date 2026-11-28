@@ -1,22 +1,29 @@
-typedef int s32;
-typedef float f32;
-
 extern "C" int fn_03191b70(void *);
 extern "C" void * data_1046cf88;
 extern "C" const unsigned char data_10549dd0[];
 
-extern "C" s32 fn_03191f3c(void *arg0) {
-    s32 temp_r3;
+namespace {
+struct Vec3 {
+    float x;
+    float y;
+    float z;
+};
+struct Source {
+    char padding_0[0x40];
+    Vec3 value;
+};
+}
 
-    temp_r3 = fn_03191b70(data_1046cf88);
-    if (temp_r3 == 0) {
-        (*(f32 *)((char *)(arg0) + (0))) = (f32) (*(f32 *)((char *)(data_10549dd0) + (0)));
-        (*(f32 *)((char *)(arg0) + (4))) = (f32) (*(f32 *)((char *)(data_10549dd0) + (4)));
-        (*(f32 *)((char *)(arg0) + (8))) = (f32) (*(f32 *)((char *)(data_10549dd0) + (8)));
+extern "C" int fn_03191f3c(void *result) {
+    int found = fn_03191b70(data_1046cf88);
+    if (found == 0) {
+        ((Vec3*)result)->x = ((const Vec3*)data_10549dd0)->x;
+        ((Vec3*)result)->y = ((const Vec3*)data_10549dd0)->y;
+        ((Vec3*)result)->z = ((const Vec3*)data_10549dd0)->z;
         return 0;
     }
-    (*(f32 *)((char *)(arg0) + (0))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x40)));
-    (*(f32 *)((char *)(arg0) + (4))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x44)));
-    (*(f32 *)((char *)(arg0) + (8))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x48)));
+    ((Vec3*)result)->x = ((Source*)found)->value.x;
+    ((Vec3*)result)->y = ((Source*)found)->value.y;
+    ((Vec3*)result)->z = ((Source*)found)->value.z;
     return 1;
 }

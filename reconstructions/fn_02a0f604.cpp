@@ -5,21 +5,30 @@ extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 extern "C" bool fn_0378da88(void *);
 
-extern "C" s32 fn_02a0f604(void *arg0, void *arg1) {
-    s32 temp_r31;
-    void *temp_r30;
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x1C];
+    char lock[0x268];
+    char state[0xC];
+    void *target;
+};
+}
 
-    temp_r30 = (char *)arg0 + 0x1C;
-    fn_030bb668(temp_r30);
-    if (fn_0378da88((char *)arg0 + 0x284) != 0) {
-        temp_r3 = (*(void **)((char *)(arg0) + (0x290)));
-        if (temp_r3 != 0) {
-            temp_r31 = fn_02a0855c(temp_r3, arg1);
-            fn_030bb69c(temp_r30);
-            return temp_r31;
+extern "C" s32 fn_02a0f604(void *object, void *argument) {
+    s32 result;
+    void *lock;
+    void *target;
+
+    lock = ((Object *)object)->lock;
+    fn_030bb668(lock);
+    if (fn_0378da88(((Object *)object)->state) != 0) {
+        target = ((Object *)object)->target;
+        if (target != 0) {
+            result = fn_02a0855c(target, argument);
+            fn_030bb69c(lock);
+            return result;
         }
     }
-    fn_030bb69c(temp_r30);
+    fn_030bb69c(lock);
     return 0;
 }

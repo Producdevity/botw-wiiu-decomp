@@ -5,7 +5,7 @@ extern "C" int fn_02e1adbc(int);
 extern "C" int fn_02e1adcc(int);
 
 extern "C" int fn_02da6180() {
-    int var_r31;
+    int level;
 
     if (fn_02e1adcc(0) != 0) {
         return 5;
@@ -16,9 +16,9 @@ extern "C" int fn_02da6180() {
     if (fn_02e1adac(0) != 0) {
         return 3;
     }
-    var_r31 = 2;
+    level = 2;
     if (fn_02e1ad9c(0) == 0) {
-        var_r31 = fn_02e1ad8c(0);
+        level = fn_02e1ad8c(0);
     }
-    return var_r31;
+    return level;
 }

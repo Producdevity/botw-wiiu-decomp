@@ -1,21 +1,28 @@
-typedef signed char s8;
-typedef unsigned char u8;
-typedef int s32;
+namespace {
+struct Target {
+    char padding_0[0x90];
+    int flags;
+};
+struct Owner {
+    char padding_0[0x398];
+    Target* target;
+    char padding_39c[0x544 - 0x39C];
+    signed char state;
+    unsigned char enabled;
+};
+}
 
-extern "C" void fn_0355b530(void *arg0, s8 arg1) {
-    void *temp_r12;
-
-    temp_r12 = (*(void **)((char *)(arg0) + (0x398)));
-    if (temp_r12 != 0) {
-        if ((arg1 == 0) && ((s32) (*(u8 *)((char *)(arg0) + (0x545))) != 0)) {
-            (*(s32 *)((char *)(temp_r12) + (0x90))) = (s32) ((*(s32 *)((char *)(temp_r12) + (0x90))) | 0x200);
-            (*(s8 *)((char *)(arg0) + (0x544))) = arg1;
+extern "C" void fn_0355b530(void *object, signed char value) {
+    Target *target = ((Owner*)object)->target;
+    if (target != 0) {
+        if ((value == 0) && (((Owner*)object)->enabled != 0)) {
+            target->flags |= 0x200;
+            ((Owner*)object)->state = value;
             return;
         }
-        (*(s32 *)((char *)(temp_r12) + (0x90))) = (s32) ((*(s32 *)((char *)(temp_r12) + (0x90))) & 0xFFFFFDFF);
-        
-        (*(s8 *)((char *)(arg0) + (0x544))) = arg1;
+        target->flags &= ~0x200;
+        ((Owner*)object)->state = value;
         return;
     }
-    (*(s8 *)((char *)(arg0) + (0x544))) = arg1;
+    ((Owner*)object)->state = value;
 }

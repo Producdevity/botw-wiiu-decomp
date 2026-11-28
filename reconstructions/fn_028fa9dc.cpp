@@ -10,22 +10,29 @@ extern "C" void fn_0317f94c(void *, float);
 
 extern "C" f32 data_1015e4d8;
 
-extern "C" void fn_028fa9dc(void *arg0) {
-    void *temp_r30;
+namespace {
+struct Owner {
+    char padding_0[0x38C];
+    void *component;
+};
 
-    temp_r30 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x38C)));
-    if (temp_r30 != 0) {
-        if ((s32) (*(u8 *)((char *)(arg0) + (0x70))) == 0) {
-            fn_0317f94c(temp_r30, data_1015e4d8);
-            fn_0317be7c(temp_r30);
-            fn_028fa8f8(arg0);
-            fn_02b7b744((*(void **)((char *)(arg0) + (0))));
-            return;
+struct Object {
+    Owner *owner;
+    char padding_4[0x6C];
+    u8 hidden;
+};
+}
+
+extern "C" void fn_028fa9dc(void *object) {
+    void *component = ((Object *)object)->owner->component;
+    if (component != 0) {
+        if (((Object *)object)->hidden == 0) {
+            fn_0317f94c(component, data_1015e4d8);
+            fn_0317be7c(component);
+        } else {
+            fn_0317f700(component, 0);
         }
-        fn_0317f700(temp_r30, 0);
-        goto block_4;
     }
-block_4:
-    fn_028fa8f8(arg0);
-    fn_02b7b744((*(void **)((char *)(arg0) + (0))));
+    fn_028fa8f8(object);
+    fn_02b7b744(((Object *)object)->owner);
 }
