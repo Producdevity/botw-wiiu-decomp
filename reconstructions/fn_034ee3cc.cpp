@@ -2,15 +2,25 @@ typedef int s32;
 
 extern "C" int fn_037fbff0(void);
 
-extern "C" void fn_034ee3cc(void *arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0x50];
+    void *object;
+};
+struct Object {
+    char padding_0[0xC];
+    void* const* vtable;
+};
+}
 
-    if ((void *) (*(void **)((char *)(arg0) + (0x50))) != 0) {
+extern "C" void fn_034ee3cc(void *owner) {
+    Object *object;
+
+    if ((void *) ((Owner *)owner)->object != 0) {
         fn_037fbff0();
-        temp_r3 = (*(void **)((char *)(arg0) + (0x50)));
-        ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(temp_r3) + (0xC)))[9])(temp_r3);
-        (*(void **)((char *)(arg0) + (0x50))) = 0;
+        object = (Object *)((Owner *)owner)->object;
+        ((s32 (*)(void *))(object->vtable)[9])(object);
+        ((Owner *)owner)->object = 0;
         fn_037fbff0();
     }
 }

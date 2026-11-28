@@ -5,12 +5,18 @@ extern "C" void* fn_0308e578(unsigned);
 
 extern "C" s32 data_10213790;
 
-extern "C" void fn_02e336f4(void *arg0) {
-    void *var_r3;
+namespace {
+struct FlaggedObject {
+    s32* vtable;
+    s8 enabled;
+};
+}
 
-    var_r3 = arg0;
-    if ((var_r3 != 0) || (var_r3 = fn_0308e578(8U), ((var_r3 == 0) == 0))) {
-        (*(s8 *)((char *)(var_r3) + (4))) = 1;
-        (*(s32 **)((char *)(var_r3) + (0))) = &data_10213790;
+extern "C" void fn_02e336f4(void *memory) {
+    FlaggedObject *object = (FlaggedObject *)memory;
+
+    if ((object != 0) || (object = (FlaggedObject *)fn_0308e578(8U), ((object == 0) == 0))) {
+        object->enabled = 1;
+        object->vtable = &data_10213790;
     }
 }

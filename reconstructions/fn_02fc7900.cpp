@@ -3,14 +3,21 @@ typedef int s32;
 extern "C" void fn_02f27760(void*);
 extern "C" void* fn_0308e578(unsigned);
 
-extern "C" void *fn_02fc7900(void *arg0) {
-    void *var_r31;
+namespace {
+struct Object {
+    char padding_0[0x54];
+    s32 first;
+    s32 second;
+};
+}
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0x5CU), ((var_r31 == 0) == 0))) {
-        fn_02f27760(var_r31);
-        (*(s32 *)((char *)(var_r31) + (0x54))) = 0;
-        (*(s32 *)((char *)(var_r31) + (0x58))) = -1;
+extern "C" void *fn_02fc7900(void *memory) {
+    Object *object = (Object *)memory;
+
+    if ((object != 0) || (object = (Object *)fn_0308e578(0x5CU), ((object == 0) == 0))) {
+        fn_02f27760(object);
+        object->first = 0;
+        object->second = -1;
     }
-    return var_r31;
+    return object;
 }

@@ -3,14 +3,23 @@ typedef unsigned short u16;
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
-extern "C" void fn_030a8fa0(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Owner {
+    char padding_0[0x54];
+    char lock[0x3C];
+    u16 flags;
+};
+}
 
-    if ((*(u16 *)((char *)(arg0) + (0x90))) & 1) {
-        temp_r31 = (char *)arg0 + 0x54;
-        fn_030bb668(temp_r31);
-        if (temp_r31 != 0) {
-            fn_030bb69c(temp_r31);
+extern "C" void fn_030a8fa0(void *object) {
+    Owner *owner = (Owner *)object;
+    void *lock;
+
+    if (owner->flags & 1) {
+        lock = owner->lock;
+        fn_030bb668(lock);
+        if (lock != 0) {
+            fn_030bb69c(lock);
         }
     }
 }

@@ -5,12 +5,12 @@ typedef int s32;
 
 extern "C" int fn_037e71a0(void*);
 
-extern "C" u8 fn_0305dcc4(ByteFlags *arg0) {
-    s32 var_r31;
+extern "C" u8 fn_0305dcc4(ByteFlags *flags) {
+    s32 result;
 
-    var_r31 = 0;
-    if ((arg0 != 0) && (fn_037e5f50(arg0) != 0) && (fn_037e71a0(arg0) != 0)) {
-        var_r31 = 1;
+    result = 0;
+    if ((flags != 0) && (fn_037e5f50(flags) != 0) && (fn_037e71a0(flags) != 0)) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

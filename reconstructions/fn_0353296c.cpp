@@ -5,12 +5,21 @@ extern "C" void* fn_0354ed84(void *, const void *);
 
 extern "C" s32 data_10555f40;
 
-extern "C" void fn_0353296c(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0xC];
+    char anchor[0x170];
+    void *target;
+};
+}
 
-    temp_r3 = fn_0354ed84((char *)arg0 + 0xC, &data_10555f40);
-    (*(void **)((char *)(arg0) + (0x17C))) = temp_r3;
-    if (temp_r3 != 0) {
-        fn_03510f04(temp_r3, (char *)arg0 + 0xC);
+extern "C" void fn_0353296c(void *object) {
+    Owner *owner = (Owner *)object;
+    void *target;
+
+    target = fn_0354ed84(owner->anchor, &data_10555f40);
+    owner->target = target;
+    if (target != 0) {
+        fn_03510f04(target, owner->anchor);
     }
 }

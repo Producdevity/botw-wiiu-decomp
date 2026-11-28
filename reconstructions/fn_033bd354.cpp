@@ -3,14 +3,20 @@ typedef int s32;
 extern "C" int fn_033bccd8(void*, void*);
 extern "C" void fn_033bcd9c(void*, void*);
 
-extern "C" s32 fn_033bd354(void *arg0, void *arg1) {
-    void* const* vt1;
-    s32 temp_r3;
+namespace {
+struct Target {
+    char padding_0[0xE8];
+    void* const* vtable;
+};
+}
 
-    temp_r3 = fn_033bccd8(arg0, arg1);
-    if (temp_r3 != 0) {
-        ((s32 (*)())(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[359])();
-        fn_033bcd9c(arg0, arg1);
+extern "C" s32 fn_033bd354(void *object, void *arg1) {
+    Target *target;
+
+    target = (Target *)fn_033bccd8(object, arg1);
+    if (target != 0) {
+        ((s32 (*)())(target->vtable)[359])();
+        fn_033bcd9c(object, arg1);
     }
     return 1;
 }

@@ -1,17 +1,24 @@
 typedef signed char s8;
 
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0xA0];
+    s8 flag;
+};
+}
+
 extern "C" void fn_022d11f8(void*);
 extern "C" void fn_0344afc8(void*, void*);
 extern "C" void* fn_037966a8(void *);
 extern "C" const unsigned char data_10549dd0[];
 
-extern "C" void fn_022d1c14(void *arg0) {
-    void *temp_r3;
-
-    fn_022d11f8(arg0);
-    temp_r3 = fn_037966a8((*(void **)((char *)(arg0) + (0))));
-    if (temp_r3 != 0) {
-        fn_0344afc8(temp_r3, (void *)(data_10549dd0));
+extern "C" void fn_022d1c14(void *self) {
+    Object *object = (Object *)self;
+    fn_022d11f8(self);
+    void *target = fn_037966a8(object->owner);
+    if (target != 0) {
+        fn_0344afc8(target, (void *)data_10549dd0);
     }
-    (*(s8 *)((char *)(arg0) + (0xA4))) = 0;
+    object->flag = 0;
 }

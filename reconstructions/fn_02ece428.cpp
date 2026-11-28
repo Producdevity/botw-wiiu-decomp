@@ -3,14 +3,14 @@ typedef int s32;
 
 extern "C" int fn_03a268f0(void*);
 
-extern "C" u8 fn_02ece428(void **arg0) {
-    s32 var_r31;
-    void *temp_r3;
+extern "C" u8 fn_02ece428(void **objectSlot) {
+    s32 result;
+    void *object;
 
-    temp_r3 = *arg0;
-    var_r31 = 0;
-    if ((temp_r3 != 0) && (fn_03a268f0(temp_r3) != 0)) {
-        var_r31 = 1;
+    object = *objectSlot;
+    result = 0;
+    if ((object != 0) && (fn_03a268f0(object) != 0)) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }

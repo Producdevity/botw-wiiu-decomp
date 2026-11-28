@@ -2,15 +2,29 @@ extern "C" void fn_02eb5bbc(void*, int, void*);
 extern "C" void fn_030bb668(void* state);
 extern "C" void fn_030bb69c(void* state);
 
-extern "C" void fn_02eb5d38(void* arg0) {
-    void* temp_r12;
-    void* temp_r29;
+namespace {
+struct ActiveEntry {
+    char padding_0[8];
+    int state;
+};
+struct Manager {
+    char padding_0[16];
+    char lock[60];
+    char padding_4C[0x37E98 - 0x4C];
+    ActiveEntry* active;
+};
+}
 
-    temp_r12 = (*(void**)((char*)arg0 + 0x37E98));
-    if ((temp_r12 != 0) && ((int) (*(int*)((char*)temp_r12 + 8)) < 7)) {
-        temp_r29 = (char*)arg0 + 16;
-        fn_030bb668(temp_r29);
-        fn_02eb5bbc(arg0, (*(int*)((char*)(((char*)arg0 + 0x30000)) + 0x7E98)), (char*)temp_r29 + 60);
-        fn_030bb69c(temp_r29);
+extern "C" void fn_02eb5d38(void* object) {
+    Manager* manager = (Manager*)object;
+    ActiveEntry* active;
+    void* lock;
+
+    active = manager->active;
+    if ((active != 0) && ((int) active->state < 7)) {
+        lock = manager->lock;
+        fn_030bb668(lock);
+        fn_02eb5bbc(manager, (int)manager->active, (char*)lock + 60);
+        fn_030bb69c(lock);
     }
 }

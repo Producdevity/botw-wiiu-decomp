@@ -1,17 +1,27 @@
 typedef signed char s8;
 typedef int s32;
 
-struct Base;
+namespace {
+struct VirtualObject {
+    char padding_0[0x1C];
+    void **vtable;
+};
+
+struct Object {
+    void *owner;
+    char padding_4[0x88];
+    s8 flag;
+};
+}
+
 struct Owner;
 extern "C" void* fn_02b62bc8(void*);
 
-extern "C" void fn_026f2360(void *arg0) {
-    void* const* vt1;
-    s32 temp_r3_2;
-    void *temp_r3;
-
-    temp_r3 = fn_02b62bc8((*(struct Owner **)((char *)(arg0) + (0))));
-    if ((temp_r3 != 0) && ((temp_r3_2 = ((s32 (*)())(vt1 = *(void* const**)((char *)(temp_r3) + (0x1C)))[17])(), ((temp_r3_2 == 0x1F) != 0)) || (temp_r3_2 == 0x1E))) {
-        (*(s8 *)((char *)(arg0) + (0x8C))) = 1;
+extern "C" void fn_026f2360(void *self) {
+    Object *object = (Object *)self;
+    VirtualObject *target = (VirtualObject *)fn_02b62bc8((struct Owner *)object->owner);
+    s32 kind;
+    if (target != 0 && ((kind = ((s32 (*)())target->vtable[17])(), kind == 0x1F) || kind == 0x1E)) {
+        object->flag = 1;
     }
 }

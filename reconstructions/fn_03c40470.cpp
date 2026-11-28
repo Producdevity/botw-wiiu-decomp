@@ -1,16 +1,30 @@
 extern "C" void fn_03c1ea3c(int, int);
 
-extern "C" void fn_03c40470(void* arg0, unsigned char arg1) {
-    void* var_r30;
+namespace {
+struct Node {
+    char padding_0[176];
+    unsigned char enabled;
+    unsigned char active;
+    char padding_B2[0x238 - 0xB2];
+    int handle;
+    Node *next;
+};
 
-    var_r30 = (*(void**)((char*)arg0 + 536));
-    if (var_r30 != 0) {
+struct List {
+    char padding_0[536];
+    Node *head;
+};
+}
+
+extern "C" void fn_03c40470(void* object, unsigned char active) {
+    Node *node = ((List *)object)->head;
+    if (node != 0) {
         do {
-            if (((int) (*(unsigned char*)((char*)var_r30 + 177)) != 0) && ((unsigned int) ((*(unsigned char*)((char*)var_r30 + 176)) != 0) != arg1)) {
-                (*(unsigned char*)((char*)var_r30 + 176)) = arg1;
-                fn_03c1ea3c((*(int*)((char*)var_r30 + 568)), arg1);
+            if (node->active != 0 && (unsigned int)(node->enabled != 0) != active) {
+                node->enabled = active;
+                fn_03c1ea3c(node->handle, active);
             }
-            var_r30 = (*(void**)((char*)var_r30 + 572));
-        } while (var_r30 != 0);
+            node = node->next;
+        } while (node != 0);
     }
 }

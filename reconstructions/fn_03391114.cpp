@@ -3,14 +3,14 @@ typedef int s32;
 struct InferredObject;
 extern "C" unsigned int fn_037e655c(const void*);
 
-extern "C" struct InferredObject *fn_03391114(s32 arg0) {
-    struct InferredObject *temp_r30;
-    struct InferredObject *var_r31;
+extern "C" struct InferredObject *fn_03391114(s32 base) {
+    struct InferredObject *member;
+    struct InferredObject *result;
 
-    temp_r30 = (InferredObject *)(arg0 + 0x130);
-    var_r31 = 0;
-    if (fn_037e655c(temp_r30) != 0) {
-        var_r31 = temp_r30;
+    member = (InferredObject *)(base + 0x130);
+    result = 0;
+    if (fn_037e655c(member) != 0) {
+        result = member;
     }
-    return var_r31;
+    return result;
 }
