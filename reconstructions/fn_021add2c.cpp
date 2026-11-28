@@ -1,16 +1,23 @@
-typedef int s32;
-
 extern "C" void fn_0308e6d0(void *);
 extern "C" void fn_030eb73c(void *, unsigned);
 struct ProcLink;
 extern "C" void fn_0378c734(ProcLink *);
 
-extern "C" void fn_021add2c(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_0378c734((ProcLink *)((char *)arg0 + 0x18));
-        fn_030eb73c((char *)arg0 + 4, 2U);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+namespace {
+struct Object {
+    char padding_0[4];
+    char member_4[1];
+    char padding_5[0x18 - 5];
+    char link[1];
+};
+}
+
+extern "C" void fn_021add2c(void *object, int flags) {
+    if (object != 0) {
+        fn_0378c734(reinterpret_cast<ProcLink *>(static_cast<Object *>(object)->link));
+        fn_030eb73c(static_cast<Object *>(object)->member_4, 2U);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

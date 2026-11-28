@@ -6,11 +6,14 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_10010bbc;
 
-extern "C" void fn_02089ca8(void *arg0) {
-    struct { const void* f8; const void* fC; } sp;
+extern "C" void fn_02089ca8(void *object) {
+    struct Pair {
+        const void *data;
+        const void *shared;
+    } pair;
 
-    fn_02088e78(arg0);
-    sp.fC = &data_10263910;
-    sp.f8 = &data_10010bbc;
-    fn_030e9aa8(arg0, (char *)arg0 + 0xF8, &sp.f8);
+    fn_02088e78(object);
+    pair.shared = &data_10263910;
+    pair.data = &data_10010bbc;
+    fn_030e9aa8(object, (char *)object + 0xF8, &pair.data);
 }
