@@ -7,11 +7,21 @@ extern "C" void fn_03cb00fc(void*);
 extern "C" s32 data_103e4380;
 extern "C" s32 data_103e54bc;
 
-extern "C" struct OutputView *fn_03cb0190(struct OutputView *arg0, s32 arg1) {
-    (*(s32 **)((char *)(arg0) + (0x28))) = &data_103e4380;
-    fn_03c92f6c(arg0);
-    (*(s32 **)((char *)(arg0) + (0x28))) = &data_103e54bc;
-    fn_03cb00fc(arg0);
-    (*(s32 *)((char *)(arg0) + (0x38))) = arg1;
-    return arg0;
+namespace {
+struct OutputViewFields {
+    char padding_0[0x28];
+    s32 *vtable;
+    char padding_2c[0xC];
+    s32 value_38;
+};
+}
+
+extern "C" struct OutputView *fn_03cb0190(struct OutputView *object, s32 value) {
+    OutputViewFields *view = reinterpret_cast<OutputViewFields *>(object);
+    view->vtable = &data_103e4380;
+    fn_03c92f6c(object);
+    view->vtable = &data_103e54bc;
+    fn_03cb00fc(object);
+    view->value_38 = value;
+    return object;
 }

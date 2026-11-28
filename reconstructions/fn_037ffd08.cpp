@@ -5,13 +5,20 @@ extern "C" void fn_037ffc50(void*);
 extern "C" void fn_037ffcc0(void*, int);
 extern "C" void fn_037ffce4(void*, int);
 
-extern "C" void fn_037ffd08(void* arg0) {
-    if ((int) (*(unsigned char*)((char*)arg0 + 65)) == 0) {
-        fn_037ffcc0(arg0, 0);
-        fn_037ff9c0(arg0);
-        fn_037ffab0(arg0);
-        fn_037ffce4(arg0, 0);
-        fn_037ffc50(arg0);
-        fn_037ffb7c(arg0);
+namespace {
+struct Object {
+    char padding_0[0x41];
+    unsigned char flag;
+};
+}
+
+extern "C" void fn_037ffd08(void* object) {
+    if (reinterpret_cast<Object *>(object)->flag == 0) {
+        fn_037ffcc0(object, 0);
+        fn_037ff9c0(object);
+        fn_037ffab0(object);
+        fn_037ffce4(object, 0);
+        fn_037ffc50(object);
+        fn_037ffb7c(object);
     }
 }

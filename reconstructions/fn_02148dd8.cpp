@@ -7,14 +7,23 @@ extern "C" void fn_030ea2cc(void *);
 
 extern "C" void *data_10463fe8;
 
-extern "C" void fn_02148dd8(void *arg0) {
-    s32 sp8;
+namespace {
+struct Object {
+    char padding_0[0x18];
+    s32 value;
+    void *argument;
+};
+}
 
-    fn_030ea2cc(arg0);
-    fn_02148dac(arg0);
+extern "C" void fn_02148dd8(void *object) {
+    s32 value;
+    Object *self = reinterpret_cast<Object *>(object);
+
+    fn_030ea2cc(object);
+    fn_02148dac(object);
     fn_02148dbc();
-    if ((void *) data_10463fe8 != 0) {
-        sp8 = (*(s32 *)((char *)(arg0) + (0x18)));
-        fn_02daa580(data_10463fe8, &sp8, (*(void **)((char *)(arg0) + (0x1C))));
+    if (data_10463fe8 != 0) {
+        value = self->value;
+        fn_02daa580(data_10463fe8, &value, self->argument);
     }
 }

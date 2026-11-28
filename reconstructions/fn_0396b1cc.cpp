@@ -8,16 +8,28 @@ extern "C" void fn_034868c0(void*, void*);
 extern "C" s32 data_10346370;
 extern "C" s32 data_103463e8;
 
-extern "C" void fn_0396b1cc(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        (*(s32 **)((char *)(arg0) + (0xC))) = &data_10346370;
-        (*(s32 **)((char *)(arg0) + (0x10))) = &data_103463e8;
-        if (fn_03485c18(arg0) != 0) {
-            fn_034868c0(arg0, 0);
+namespace {
+struct Object {
+    char padding_0[0xC];
+    s32 *first_table;
+    s32 *second_table;
+};
+
+inline Object *fields(void *object) {
+    return reinterpret_cast<Object *>(object);
+}
+}
+
+extern "C" void fn_0396b1cc(void *object, s32 flags) {
+    if (object != 0) {
+        fields(object)->first_table = &data_10346370;
+        fields(object)->second_table = &data_103463e8;
+        if (fn_03485c18(object) != 0) {
+            fn_034868c0(object, 0);
         }
-        fn_03485a50(arg0, 0);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+        fn_03485a50(object, 0);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

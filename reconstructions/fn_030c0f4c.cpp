@@ -1,15 +1,38 @@
+namespace {
+struct Table {
+    char padding_0[0x5C];
+    int (*prepare)(void *, void *);
+    char padding_60[4];
+    int (*run)(void *, void *, void *, int);
+};
 
-extern "C" void fn_030c0f4c(void* arg0) {
-    if ((int) (*(unsigned char*)arg0) != 0) {
-        (*(int (**)(void*, void*))((char*)((*(void**)((char*)arg0 + 144))) + 92))(arg0, (char*)arg0 + 4);
-        (*(unsigned char*)arg0) = 0U;
-        (*(unsigned char*)((char*)arg0 + 1)) = 1U;
-        (*(int (**)(void*, void*, void*, int))((char*)((*(void**)((char*)arg0 + 144))) + 100))(arg0, (char*)arg0 + 68, (char*)arg0 + 4, (*(int*)((char*)arg0 + 132)));
-        (*(unsigned char*)((char*)arg0 + 1)) = 0U;
+struct Object {
+    unsigned char pending;
+    unsigned char running;
+    char padding_2[2];
+    char first_region[0x40];
+    char second_region[0x40];
+    int value_84;
+    char padding_88[8];
+    Table *table;
+};
+
+inline Object *fields(void *object) {
+    return reinterpret_cast<Object *>(object);
+}
+}
+
+extern "C" void fn_030c0f4c(void* object) {
+    if (fields(object)->pending != 0) {
+        fields(object)->table->prepare(object, fields(object)->first_region);
+        fields(object)->pending = 0;
+        fields(object)->running = 1;
+        fields(object)->table->run(object, fields(object)->second_region, fields(object)->first_region, fields(object)->value_84);
+        fields(object)->running = 0;
         return;
     }
-    if ((int) (*(unsigned char*)((char*)arg0 + 1)) != 0) {
-        (*(int (**)(void*, void*, void*, int))((char*)((*(void**)((char*)arg0 + 144))) + 100))(arg0, (char*)arg0 + 68, (char*)arg0 + 4, (*(int*)((char*)arg0 + 132)));
-        (*(unsigned char*)((char*)arg0 + 1)) = 0U;
+    if (fields(object)->running != 0) {
+        fields(object)->table->run(object, fields(object)->second_region, fields(object)->first_region, fields(object)->value_84);
+        fields(object)->running = 0;
     }
 }

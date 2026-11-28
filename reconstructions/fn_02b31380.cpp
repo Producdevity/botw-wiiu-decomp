@@ -1,14 +1,22 @@
 typedef unsigned char u8;
-typedef int s32;
 
 extern "C" void fn_02b30fbc(void*, void*);
 extern "C" void fn_02b31208(void*);
 
-extern "C" void fn_02b31380(void *arg0, u8 arg1) {
-    if (((s32) (*(u8 *)((char *)(arg0) + (0x30))) == 0) || ((u8) (*(u8 *)((char *)(arg0) + (0x50))) != arg1)) {
-        (*(u8 *)((char *)(arg0) + (0x50))) = arg1;
-        (*(u8 *)((char *)(arg0) + (0x30))) = 1U;
-        fn_02b30fbc(arg0, (void *) arg1);
-        fn_02b31208(arg0);
+namespace {
+struct Object {
+    char padding_0[0x30];
+    u8 initialised;
+    char padding_31[0x1F];
+    u8 value;
+};
+}
+
+extern "C" void fn_02b31380(void *object, u8 value) {
+    if (((Object *) object)->initialised == 0 || ((Object *) object)->value != value) {
+        ((Object *) object)->value = value;
+        ((Object *) object)->initialised = 1;
+        fn_02b30fbc(object, (void *) value);
+        fn_02b31208(object);
     }
 }

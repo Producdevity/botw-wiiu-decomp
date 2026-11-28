@@ -7,12 +7,19 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_1046f448;
 
-extern "C" void fn_034086d4(void *arg0, s32 arg1, f32 farg0) {
-    struct { s32 f8; const void* fC; } sp;
+namespace {
+struct Object {
+    char padding_0[0xC1A];
+    u8 mode;
+};
+}
 
-    if ((arg1 != 0) || ((s32) (*(u8 *)((char *)(arg0) + (0xC1A))) != 4)) {
-        sp.fC = &data_10263910;
-        sp.f8 = data_1046f448;
-        fn_034085e8(arg0, &sp.f8, farg0);
+extern "C" void fn_034086d4(void *object, s32 force, f32 scale) {
+    struct { s32 value; const void *table; } args;
+
+    if (force != 0 || reinterpret_cast<Object *>(object)->mode != 4) {
+        args.table = &data_10263910;
+        args.value = data_1046f448;
+        fn_034085e8(object, &args.value, scale);
     }
 }

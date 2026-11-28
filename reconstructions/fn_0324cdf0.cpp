@@ -1,15 +1,25 @@
+typedef float f32;
 
-extern "C" void fn_0324cdf0(void* arg0, void* arg1) {
-    (*(float*)((char*)arg0 + 8)) = (float) (*(float*)arg1);
-    (*(float*)((char*)arg0 + 12)) = (float) (*(float*)((char*)arg1 + 4));
-    (*(float*)((char*)arg0 + 16)) = (float) (*(float*)((char*)arg1 + 8));
-    (*(float*)((char*)arg0 + 20)) = (float) (*(float*)((char*)arg1 + 12));
-    (*(float*)((char*)arg0 + 24)) = (float) (*(float*)((char*)arg1 + 16));
-    (*(float*)((char*)arg0 + 28)) = (float) (*(float*)((char*)arg1 + 20));
-    (*(float*)((char*)arg0 + 32)) = (float) (*(float*)((char*)arg1 + 24));
-    (*(float*)((char*)arg0 + 36)) = (float) (*(float*)((char*)arg1 + 28));
-    (*(float*)((char*)arg0 + 40)) = (float) (*(float*)((char*)arg1 + 32));
-    (*(float*)((char*)arg0 + 44)) = (float) (*(float*)((char*)arg1 + 36));
-    (*(float*)((char*)arg0 + 48)) = (float) (*(float*)((char*)arg1 + 40));
-    (*(float*)((char*)arg0 + 52)) = (float) (*(float*)((char*)arg1 + 44));
+namespace {
+struct Target {
+    char padding_0[8];
+    f32 values[12];
+};
+}
+
+extern "C" void fn_0324cdf0(void *object, void *source) {
+    const f32 *input = reinterpret_cast<const f32 *>(source);
+    Target *target = reinterpret_cast<Target *>(object);
+    target->values[0] = input[0];
+    target->values[1] = input[1];
+    target->values[2] = input[2];
+    target->values[3] = input[3];
+    target->values[4] = input[4];
+    target->values[5] = input[5];
+    target->values[6] = input[6];
+    target->values[7] = input[7];
+    target->values[8] = input[8];
+    target->values[9] = input[9];
+    target->values[10] = input[10];
+    target->values[11] = input[11];
 }

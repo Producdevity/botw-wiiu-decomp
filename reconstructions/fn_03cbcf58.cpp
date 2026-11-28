@@ -1,17 +1,29 @@
 typedef int s32;
 
-extern "C" s32 fn_03cbcf58(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
-    if (arg1 != 0) {
-        *arg1 = (*(s32 *)((char *)(arg0) + (0x3C)));
+namespace {
+struct Object {
+    char padding_0[0x34];
+    s32 result;
+    char padding_38[4];
+    s32 value_3c;
+    s32 value_40;
+    s32 value_44;
+    s32 value_48;
+};
+}
+
+extern "C" s32 fn_03cbcf58(void *object, s32 *first, s32 *second, s32 *third, s32 *fourth) {
+    if (first != 0) {
+        *first = ((Object *) object)->value_3c;
     }
-    if (arg2 != 0) {
-        *arg2 = (*(s32 *)((char *)(arg0) + (0x40)));
+    if (second != 0) {
+        *second = ((Object *) object)->value_40;
     }
-    if (arg3 != 0) {
-        *arg3 = (*(s32 *)((char *)(arg0) + (0x44)));
+    if (third != 0) {
+        *third = ((Object *) object)->value_44;
     }
-    if (arg4 != 0) {
-        *arg4 = (*(s32 *)((char *)(arg0) + (0x48)));
+    if (fourth != 0) {
+        *fourth = ((Object *) object)->value_48;
     }
-    return (*(s32 *)((char *)(arg0) + (0x34)));
+    return ((Object *) object)->result;
 }
