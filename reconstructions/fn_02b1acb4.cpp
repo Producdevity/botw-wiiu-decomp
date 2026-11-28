@@ -1,9 +1,20 @@
 extern "C" void fn_02b18140(void *, void *);
 
-extern "C" void fn_02b1acb4(void *self)
+namespace {
+struct Object {
+    char padding_0[4];
+    char field_4;
+    char padding_5[0xF];
+    char flag_14;
+    char padding_15[0x8B];
+    char flag_a0;
+};
+}
+
+extern "C" void fn_02b1acb4(void* object)
 {
-  *((char *)self + 0xA0) = 0;
-  fn_02b18140(self, (char *)self + 4);
-  long offset = 0x14;
-  *((char *)self + offset) = 0;
+    Object* self = (Object*)object;
+    self->flag_a0 = 0;
+    fn_02b18140(object, &self->field_4);
+    self->flag_14 = 0;
 }

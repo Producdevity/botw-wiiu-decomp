@@ -1,6 +1,16 @@
 extern "C" float fn_02b6bce4(void *, void *);
 
-extern "C" float fn_02744f20(void *self)
+namespace {
+struct Object {
+    void* owner;
+    char padding_4[0x1C];
+    void** key;
+    float* base;
+};
+}
+
+extern "C" float fn_02744f20(void* object)
 {
-  return **(float **)((char *)self + 0x24) + fn_02b6bce4(*(void **)self, **(void ***)((char *)self + 0x20));
+    
+    return *((Object*)object)->base + fn_02b6bce4(((Object*)object)->owner, *((Object*)object)->key);
 }

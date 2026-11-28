@@ -1,7 +1,15 @@
 extern "C" void fn_020372e8(void*, void*);
 extern "C" void fn_02af63ec(void*, void*);
 
-extern "C" void fn_02037fb8(void *arg0, void *arg1) {
-    fn_02af63ec(arg0, arg1);
-    fn_020372e8((char *)arg0 + 0xE8C, arg1);
+namespace {
+struct Object {
+    char padding_0[0xE8C];
+    char sub_object;
+};
+}
+
+extern "C" void fn_02037fb8(void* object, void* context)
+{
+    fn_02af63ec(object, context);
+    fn_020372e8(&((Object*)object)->sub_object, context);
 }

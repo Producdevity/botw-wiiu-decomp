@@ -1,8 +1,20 @@
 extern "C" void fn_030ea2e0(void *);
 
-extern "C" void fn_02118a10(void *self)
+namespace {
+struct VTable {
+    char padding_0[0x10C];
+    int (*method_10c)(void*);
+};
+
+struct Object {
+    char padding_0[0xC];
+    VTable* vtable;
+};
+}
+
+extern "C" void fn_02118a10(void* object)
 {
-  if ((*(int (**)(void *))((char *)*(void **)((char *)self + 0xC) + 0x10C))(self) == 0) {
-    fn_030ea2e0(self);
-  }
+    if (((Object*)object)->vtable->method_10c(object) == 0) {
+        fn_030ea2e0(object);
+    }
 }

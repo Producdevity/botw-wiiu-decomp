@@ -1,9 +1,18 @@
-typedef int s32;
+namespace {
+struct Object {
+    char padding_0[0x74];
+    char member_74[1];
+    char padding_75[0xBF];
+    int value_134;
+    char padding_138[0x70];
+    int value_1a8;
+};
+}
 
 extern "C" int fn_0397cf88(void*);
 
-extern "C" s32 fn_0397dcd8(void *arg0) {
-    if (((s32) (*(s32 *)((char *)(arg0) + (0x134))) != 0) && ((s32) (*(s32 *)((char *)(arg0) + (0x1A8))) != 0) && (fn_0397cf88((char *)arg0 + 0x74) != 0)) {
+extern "C" int fn_0397dcd8(void *object) {
+    if (((Object *)object)->value_134 != 0 && ((Object *)object)->value_1a8 != 0 && fn_0397cf88(((Object *)object)->member_74) != 0) {
         return 1;
     }
     return 0;

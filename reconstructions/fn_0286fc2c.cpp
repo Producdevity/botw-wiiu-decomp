@@ -1,10 +1,19 @@
+namespace {
+struct Object {
+    char padding_0[0x20];
+    int state;
+    char padding_24[4];
+    char flag;
+};
+}
+
 extern "C" void fn_037b8284(void *, const void *, void *);
 extern "C" int data_1014a264;
 
 extern "C" void fn_0286fc2c(void *self)
 {
-  fn_037b8284(self, &data_1014a264, 0);
-  char *flag = (char *)self + 0x28;
-  *(int *)((char *)self + 0x20) = 1;
-  *flag = 0;
+    Object *object = (Object *)self;
+    fn_037b8284(self, &data_1014a264, 0);
+    object->state = 1;
+    object->flag = 0;
 }

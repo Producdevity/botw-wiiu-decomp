@@ -1,8 +1,27 @@
+namespace {
+struct VTable {
+    char padding_0[0x5C];
+    void (*method_5c)(void*);
+};
+
+struct Target {
+    char padding_0[0xC];
+    VTable* vtable;
+    char padding_10[0x80];
+    unsigned short flags;
+};
+
+struct Object {
+    char padding_0[0x120];
+    Target* target;
+};
+}
+
 extern "C" void fn_037ffe74(void* object)
 {
-    void* owner = *(void**)((char*)object + 0x120);
-    (*(void (**)(void*))((char*)*(void**)((char*)owner + 0xC) + 0x5C))(owner);
-    void* target = *(void**)((char*)object + 0x120);
-    unsigned int flags = *(unsigned short*)((char*)target + 0x90) | 2;
-    *(unsigned short*)((char*)target + 0x90) = flags;
+    Target* owner = ((Object*)object)->target;
+    owner->vtable->method_5c(owner);
+    Target* target = ((Object*)object)->target;
+    unsigned int flags = target->flags | 2;
+    target->flags = flags;
 }
