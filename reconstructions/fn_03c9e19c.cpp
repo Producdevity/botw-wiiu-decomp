@@ -3,7 +3,7 @@ typedef int s32;
 struct OutputView;
 extern "C" void fn_03c92f6c(void*);
 extern "C" void fn_03c9e15c(void*);
-extern "C" void fn_03c9ec04(void*);
+extern "C" void* fn_03c9ec04(void*);
 extern "C" void fn_03caffe0(void*);
 
 extern "C" s32 data_103e4380;
