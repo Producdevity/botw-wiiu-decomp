@@ -2,16 +2,24 @@ extern "C" unsigned char data_1035cbec[];
 extern "C" void* fn_0308e578(unsigned size);
 extern "C" void fn_03c4952c(void*, int, int);
 
-extern "C" void* fn_03a34a08(void* arg0, int arg1, int arg2) {
-    void* var_r31;
+namespace {
+struct Instance {
+    char padding_0[8];
+    const void *table;
+};
+}
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0xA4U), ((var_r31 == 0) == 0))) {
-        fn_03c4952c(var_r31, arg1, arg2);
-        {
-            const void* const table = data_1035cbec;
-            (*(const void**)((char*)var_r31 + 8)) = table;
-        }
+extern "C" void* fn_03a34a08(void* object, int param1, int param2) {
+    Instance *instance;
+
+    instance = (Instance *)object;
+    if (instance == 0) {
+        instance = (Instance *)fn_0308e578(0xA4U);
     }
-    return var_r31;
+    if (instance != 0) {
+        fn_03c4952c(instance, param1, param2);
+        const void *vtable = data_1035cbec;
+        instance->table = vtable;
+    }
+    return instance;
 }

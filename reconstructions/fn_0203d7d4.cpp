@@ -3,16 +3,23 @@ typedef int s32;
 extern "C" void fn_0308e6d0(void *);
 extern "C" void fn_03464014(void*, int);
 
-extern "C" void fn_0203d7d4(void *arg0, s32 arg1) {
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[4];
+    void *child;
+};
+}
 
-    if (arg0 != 0) {
-        temp_r3 = (*(void **)((char *)(arg0) + (4)));
-        if (temp_r3 != 0) {
-            fn_03464014(temp_r3, 3);
+extern "C" void fn_0203d7d4(void *object, s32 flags) {
+    void *child;
+
+    if (object != 0) {
+        child = ((Object *)object)->child;
+        if (child != 0) {
+            fn_03464014(child, 3);
         }
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

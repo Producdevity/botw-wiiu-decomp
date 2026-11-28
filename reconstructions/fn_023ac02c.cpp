@@ -6,13 +6,13 @@ extern "C" int fn_037a4ed8(void*);
 
 extern "C" f32 data_1009cea0;
 
-extern "C" void fn_023ac02c(void **arg0) {
-    struct { f32 f8; } sp;
-    s32 temp_r3;
+extern "C" void fn_023ac02c(void **object) {
+    struct { f32 value; } args;
+    s32 target;
 
-    temp_r3 = fn_037a4ed8(*arg0);
-    if (temp_r3 != 0) {
-        sp.f8 = data_1009cea0;
-        fn_0318f2f4((void *) temp_r3, &sp.f8, 0);
+    target = fn_037a4ed8(*object);
+    if (target != 0) {
+        args.value = data_1009cea0;
+        fn_0318f2f4((void *) target, &args.value, 0);
     }
 }

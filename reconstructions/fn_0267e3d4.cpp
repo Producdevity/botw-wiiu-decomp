@@ -3,16 +3,25 @@ typedef int s32;
 extern "C" void fn_0370de48(void*, int);
 extern "C" void fn_0370e02c(void*);
 
-extern "C" void fn_0267e3d4(void **arg0) {
-    void *temp_r31;
-    void *temp_r3;
+namespace {
+struct Owner {
+    char padding_0[0x330];
+    s32 active;
+    char padding_334[0x60];
+    void *handle;
+};
+}
 
-    temp_r31 = *arg0;
-    if ((temp_r31 != 0) && ((s32) (*(s32 *)((char *)(temp_r31) + (0x330))) != 0)) {
-        temp_r3 = (*(void **)((char *)(temp_r31) + (0x394)));
-        if (temp_r3 != 0) {
-            fn_0370e02c(temp_r3);
-            fn_0370de48((*(void **)((char *)(temp_r31) + (0x394))), 1);
+extern "C" void fn_0267e3d4(void **object) {
+    Owner *owner;
+    void *handle;
+
+    owner = (Owner *)*object;
+    if ((owner != 0) && ((s32) owner->active != 0)) {
+        handle = owner->handle;
+        if (handle != 0) {
+            fn_0370e02c(handle);
+            fn_0370de48(owner->handle, 1);
         }
     }
 }

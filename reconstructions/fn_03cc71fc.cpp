@@ -4,14 +4,23 @@ extern "C" void fn_03c92f98(void*);
 extern "C" void fn_03cc6cec(void*);
 extern "C" void fn_0434bda8(void*, void*);
 
-extern "C" s32 fn_03cc71fc(void *arg0) {
-    void *temp_r4;
+namespace {
+struct Object {
+    char padding_0[4];
+    void *owner;
+    char padding_8[0x2C];
+    void *handle;
+};
+}
 
-    temp_r4 = (*(void **)((char *)(arg0) + (0x34)));
-    if (temp_r4 != 0) {
-        fn_0434bda8((*(void **)((char *)(arg0) + (4))), temp_r4);
+extern "C" s32 fn_03cc71fc(void *object) {
+    void *handle;
+
+    handle = ((Object *)object)->handle;
+    if (handle != 0) {
+        fn_0434bda8(((Object *)object)->owner, handle);
     }
-    fn_03c92f98(arg0);
-    fn_03cc6cec(arg0);
+    fn_03c92f98(object);
+    fn_03cc6cec(object);
     return 0;
 }

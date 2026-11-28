@@ -7,11 +7,11 @@ extern "C" int fn_03798e3c(void*);
 extern "C" const float data_1031a78c;
 
 extern "C" f32 fn_037998fc(void* actor) {
-    s32 temp_r3;
+    s32 owner;
 
-    temp_r3 = fn_03798e3c(actor);
-    if (temp_r3 != 0) {
-        return fn_0348cd20((struct BodyOwner *) temp_r3);
+    owner = fn_03798e3c(actor);
+    if (owner != 0) {
+        return fn_0348cd20((struct BodyOwner *) owner);
     }
     return data_1031a78c;
 }

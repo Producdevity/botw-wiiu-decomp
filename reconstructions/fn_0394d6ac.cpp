@@ -5,13 +5,23 @@ extern "C" void fn_0394d0e0(void*);
 
 extern "C" s32 data_10340350;
 
-extern "C" void *fn_0394d6ac(void *arg0) {
-    void *var_r31;
+namespace {
+struct Instance {
+    char padding_0[0x18];
+    s32 *vtable;
+};
+}
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0xBCU), ((var_r31 == 0) == 0))) {
-        fn_0394d0e0(var_r31);
-        (*(s32 **)((char *)(var_r31) + (0x18))) = &data_10340350;
+extern "C" void *fn_0394d6ac(void *object) {
+    void *result;
+
+    result = object;
+    if (result == 0) {
+        result = fn_0308e578(0xBCU);
     }
-    return var_r31;
+    if (result != 0) {
+        fn_0394d0e0(result);
+        ((Instance *)result)->vtable = &data_10340350;
+    }
+    return result;
 }

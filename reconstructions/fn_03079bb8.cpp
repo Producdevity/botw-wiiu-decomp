@@ -5,13 +5,13 @@ extern "C" int fn_03079b80(void);
 extern "C" char* data_10463798;
 
 extern "C" s32 fn_03079bb8(void) {
-    s32 temp_r3;
-    s32 var_r3;
+    s32 expected;
+    s32 result;
 
-    temp_r3 = fn_03079b80();
-    var_r3 = 0;
-    if (temp_r3 != -1) {
-        var_r3 = (fn_02a2d71c(data_10463798) ^ temp_r3) == 0;
+    expected = fn_03079b80();
+    result = 0;
+    if (expected != -1) {
+        result = (fn_02a2d71c(data_10463798) ^ expected) == 0;
     }
-    return var_r3;
+    return result;
 }

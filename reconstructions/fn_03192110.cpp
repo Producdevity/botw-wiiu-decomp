@@ -6,12 +6,19 @@ extern "C" int fn_03191b70(void*);
 extern "C" f32 data_1028c09c;
 extern "C" void *data_1046cf88;
 
-extern "C" f32 fn_03192110(void) {
-    s32 temp_r3;
+namespace {
+struct Entry {
+    unsigned char padding_0[0x68];
+    f32 value;
+};
+}
 
-    temp_r3 = fn_03191b70(data_1046cf88);
-    if (temp_r3 == 0) {
+extern "C" f32 fn_03192110(void) {
+    s32 entry;
+
+    entry = fn_03191b70(data_1046cf88);
+    if (entry == 0) {
         return data_1028c09c;
     }
-    return (*(f32 *)((char *)(temp_r3) + (0x68)));
+    return ((Entry *)entry)->value;
 }

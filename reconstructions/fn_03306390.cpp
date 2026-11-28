@@ -5,13 +5,22 @@ extern "C" int fn_03317670(void*, void*);
 
 extern "C" void *data_1046d780;
 
-extern "C" void fn_03306390(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Owner {
+    unsigned char padding_0[4];
+    void *key;
+    unsigned char padding_8[0xFC];
+    s32 state;
+};
+}
 
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x104))) == 1) {
-        temp_r31 = data_1046d780;
-        if ((temp_r31 != 0) && (fn_03317670(temp_r31, (*(void **)((char *)(arg0) + (4)))) != 0)) {
-            fn_03317400(temp_r31, 0);
+extern "C" void fn_03306390(void *owner) {
+    void *manager;
+
+    if (((Owner *)owner)->state == 1) {
+        manager = data_1046d780;
+        if ((manager != 0) && (fn_03317670(manager, ((Owner *)owner)->key) != 0)) {
+            fn_03317400(manager, 0);
         }
     }
 }

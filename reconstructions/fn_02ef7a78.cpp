@@ -4,14 +4,14 @@ typedef int s32;
 struct LinkedHolder;
 extern "C" void* fn_037e61a8(LinkedHolder *);
 
-extern "C" u8 fn_02ef7a78(struct LinkedHolder **arg0) {
-    struct LinkedHolder *temp_r3;
-    s32 var_r31;
+extern "C" u8 fn_02ef7a78(struct LinkedHolder **holder) {
+    struct LinkedHolder *linked;
+    s32 result;
 
-    temp_r3 = *arg0;
-    var_r31 = 0;
-    if ((temp_r3 != 0) && (fn_037e61a8(temp_r3) != 0)) {
-        var_r31 = 1;
+    linked = *holder;
+    result = 0;
+    if ((linked != 0) && (fn_037e61a8(linked) != 0)) {
+        result = 1;
     }
-    return var_r31;
+    return result;
 }
