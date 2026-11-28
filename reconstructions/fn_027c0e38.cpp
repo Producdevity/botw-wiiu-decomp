@@ -5,7 +5,7 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_10131580;
 
-extern "C" void fn_027c0e38(void **arg0) {
-    fn_02b41780(*arg0, 0);
-    fn_037b8284(arg0, &data_10131580, 0);
+extern "C" void fn_027c0e38(void **object) {
+    fn_02b41780(*object, 0);
+    fn_037b8284(object, &data_10131580, 0);
 }

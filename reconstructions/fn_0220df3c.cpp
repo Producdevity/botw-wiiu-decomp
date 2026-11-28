@@ -12,10 +12,10 @@ struct Node {
 
 extern "C" int fn_0220de2c(void*);
 
-extern "C" u8 fn_0220df3c(void *arg0) {
-    Node *node = (Node *)arg0;
+extern "C" u8 fn_0220df3c(void *object) {
+    Node *node = (Node *)object;
     s32 result = 1;
-    if (!((node->flags >> 2) & 1) && (*node->state != 2 || fn_0220de2c(arg0) == 0)) {
+    if (!((node->flags >> 2) & 1) && (*node->state != 2 || fn_0220de2c(object) == 0)) {
         result = 0;
     }
     return result;

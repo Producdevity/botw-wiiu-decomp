@@ -12,12 +12,12 @@ struct Owner {
 };
 }
 
-extern "C" void fn_02657aec(void **arg0) {
+extern "C" void fn_02657aec(void **object) {
     void *effect;
 
-    effect = ((Owner *)*arg0)->effect;
+    effect = (static_cast<Owner *>(*object))->effect;
     if (effect != 0) {
         fn_0317f700(effect, 0);
     }
-    fn_037b8284(arg0, &data_101015f8, 0);
+    fn_037b8284(object, &data_101015f8, 0);
 }

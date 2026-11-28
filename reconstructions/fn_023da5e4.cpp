@@ -11,9 +11,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_023da5e4(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
-    if (object->active != 0) {
-        object->owner->flags &= ~0x20u;
+extern "C" void fn_023da5e4(void *object) {
+    Object *self = static_cast<Object *>(object);
+    if (self->active != 0) {
+        self->owner->flags &= ~0x20u;
     }
 }

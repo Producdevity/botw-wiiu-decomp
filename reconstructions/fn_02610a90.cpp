@@ -3,9 +3,9 @@ extern "C" void fn_0260e940(void*);
 extern "C" void fn_0260ebc0(void*);
 extern "C" void fn_0260fb00(void*);
 
-extern "C" void fn_02610a90(void *arg0) {
-    fn_0260e940(arg0);
-    fn_025348c4(arg0);
-    fn_0260ebc0(arg0);
-    fn_0260fb00(arg0);
+extern "C" void fn_02610a90(void *object) {
+    fn_0260e940(object);
+    fn_025348c4(object);
+    fn_0260ebc0(object);
+    fn_0260fb00(object);
 }

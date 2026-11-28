@@ -14,11 +14,11 @@ struct Owner {
 };
 }
 
-extern "C" void fn_02051510(void *owner, void *arg1) {
+extern "C" void fn_02051510(void *owner, void *context) {
     s32 object = ((Owner *)owner)->object;
 
     if (object != 0) {
-        fn_0378dce8(object, arg1, 0);
+        fn_0378dce8(object, context, 0);
         ((void (*)(s32, s32))((Object *)object)->vtable[21])(object, object);
     }
 }

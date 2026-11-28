@@ -15,12 +15,11 @@ struct Listener {
 };
 }
 
-extern "C" void fn_026dc18c(void **arg0) {
-    void *owner;
-    Listener *listener = (Listener *)arg0;
+extern "C" void fn_026dc18c(void **object) {
+    Listener *listener = (Listener *)object;
+    void *owner = listener->owner;
 
-    owner = listener->owner;
     fn_0339bd18(owner, listener->first);
     fn_0339bd38(owner, listener->second);
-    fn_037b8284(arg0, &data_101154d8, 0);
+    fn_037b8284(object, &data_101154d8, 0);
 }

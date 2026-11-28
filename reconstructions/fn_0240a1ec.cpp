@@ -6,17 +6,17 @@ struct Source {
     int z;
 };
 
-struct Destination {
+struct Vec3i {
     int x;
     int y;
     int z;
 };
 }
 
-extern "C" void fn_0240a1ec(void* arg0, void* arg1) {
-    if (arg1 != 0) {
-        ((Destination*)arg1)->x = ((Source*)arg0)->x;
-        ((Destination*)arg1)->y = ((Source*)arg0)->y;
-        ((Destination*)arg1)->z = ((Source*)arg0)->z;
+extern "C" void fn_0240a1ec(void *object, void *result) {
+    if (result != 0) {
+        static_cast<Vec3i *>(result)->x = static_cast<Source *>(object)->x;
+        static_cast<Vec3i *>(result)->y = static_cast<Source *>(object)->y;
+        static_cast<Vec3i *>(result)->z = static_cast<Source *>(object)->z;
     }
 }

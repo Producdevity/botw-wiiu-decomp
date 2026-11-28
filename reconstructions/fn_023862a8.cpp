@@ -10,12 +10,11 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_023862a8(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" s32 fn_023862a8(void *object) {
     void **slot;
     s32 index;
 
-    slot = object->slot;
+    slot = static_cast<Object *>(object)->slot;
     if (slot == 0 || (index = fn_02386274(*slot), index == -1)) {
         return 0;
     }

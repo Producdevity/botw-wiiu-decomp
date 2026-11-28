@@ -15,13 +15,13 @@ struct Object {
 
 extern "C" void* fn_02c19904(void* context, int index);
 
-extern "C" int fn_024b66cc(void* arg0, void* arg1) {
+extern "C" int fn_024b66cc(void* object, void* result) {
     Vec3 *position;
-    Vec3 *output = (Vec3 *)arg1;
-    Object *object = (Object *)arg0;
+    Vec3 *output = static_cast<Vec3 *>(result);
+    Object *self = static_cast<Object *>(object);
 
-    if (object->state == 1) {
-        position = (Vec3 *)fn_02c19904(object->context, 0);
+    if (self->state == 1) {
+        position = static_cast<Vec3 *>(fn_02c19904(self->context, 0));
         if (position != 0) {
             output->x = position->x;
             output->y = position->y;

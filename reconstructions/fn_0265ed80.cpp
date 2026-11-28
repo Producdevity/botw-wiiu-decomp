@@ -15,9 +15,9 @@ extern "C" bool fn_0378dacc(void*, void*);
 
 extern "C" f32 data_10102f9c;
 
-extern "C" u8 fn_0265ed80(void *object, void *arg1) {
+extern "C" u8 fn_0265ed80(void *object, void *other) {
     s32 result = 0;
-    if (fn_0378dacc(((Object *)object)->target, arg1) != 0 && ((Object *)object)->value > data_10102f9c) {
+    if (fn_0378dacc(static_cast<Object *>(object)->target, other) != 0 && static_cast<Object *>(object)->value > data_10102f9c) {
         result = 1;
     }
     return result;

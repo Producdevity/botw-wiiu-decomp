@@ -20,14 +20,14 @@ struct Object {
 };
 }
 
-extern "C" void fn_021e2ca0(void *arg0) {
+extern "C" void fn_021e2ca0(void *object) {
     Source *source;
-    Object *object = (Object *)arg0;
+    Object *self = (Object *)object;
 
-    object->dirty = 0;
-    source = (Source *)fn_037966a8(object->owner);
+    self->dirty = 0;
+    source = (Source *)fn_037966a8(self->owner);
     if (source != 0) {
-        object->scale = source->scale;
+        self->scale = source->scale;
     }
-    object->flags = (u8) (object->flags | 4);
+    self->flags |= 4;
 }

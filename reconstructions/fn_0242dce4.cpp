@@ -8,8 +8,8 @@ struct Owner {
 };
 }
 
-extern "C" void fn_0242dce4(void *arg0) {
-    Owner *self = (Owner *)arg0;
+extern "C" void fn_0242dce4(void *object) {
+    Owner *self = static_cast<Owner *>(object);
     void *resource = self->resource;
     if ((resource != 0) && (fn_03485c18(resource) != 0)) {
         fn_03485f68(self->resource);

@@ -25,11 +25,11 @@ struct Object {
 extern "C" float fn_04210514(float);
 extern "C" float fn_04210d48(float);
 
-extern "C" void fn_02548500(void *arg0, void *arg1) {
-    if (arg1 != 0) {
-        ((Object *) arg0)->provider->adjust((Object *) arg0, (Vec3 *) arg1);
-        ((Vec3 *) arg1)->x = fn_04210d48(((Object *) arg0)->angle_x) * ((Object *) arg0)->scale_x + ((Vec3 *) arg1)->x;
-        ((Vec3 *) arg1)->y = ((Vec3 *) arg1)->y + ((Object *) arg0)->offset_y;
-        ((Vec3 *) arg1)->z = fn_04210514(((Object *) arg0)->angle_z) * ((Object *) arg0)->scale_z + ((Vec3 *) arg1)->z;
+extern "C" void fn_02548500(void *object, void *value) {
+    if (value != 0) {
+        static_cast<Object *>(object)->provider->adjust(static_cast<Object *>(object), static_cast<Vec3 *>(value));
+        static_cast<Vec3 *>(value)->x = fn_04210d48(static_cast<Object *>(object)->angle_x) * static_cast<Object *>(object)->scale_x + static_cast<Vec3 *>(value)->x;
+        static_cast<Vec3 *>(value)->y = static_cast<Vec3 *>(value)->y + static_cast<Object *>(object)->offset_y;
+        static_cast<Vec3 *>(value)->z = fn_04210514(static_cast<Object *>(object)->angle_z) * static_cast<Object *>(object)->scale_z + static_cast<Vec3 *>(value)->z;
     }
 }

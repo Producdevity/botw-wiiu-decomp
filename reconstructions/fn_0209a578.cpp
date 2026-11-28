@@ -19,10 +19,10 @@ struct Destination {
 };
 }
 
-extern "C" void fn_0209a578(void *arg0, void *arg1, void *arg2) {
-    Source *source = static_cast<Source *>(arg0);
-    Destination *destination = static_cast<Destination *>(arg1);
-    fn_03c6fe5c(source->matrix, reinterpret_cast<int>(arg1));
+extern "C" void fn_0209a578(void *sourceObject, void *destinationObject, void *unused) {
+    Source *source = static_cast<Source *>(sourceObject);
+    Destination *destination = static_cast<Destination *>(destinationObject);
+    fn_03c6fe5c(source->matrix, reinterpret_cast<int>(destinationObject));
     destination->x = source->x;
     destination->y = source->y;
     destination->z = source->z;

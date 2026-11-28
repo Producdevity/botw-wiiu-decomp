@@ -5,10 +5,10 @@ extern "C" void* data_1047b054;
 
 extern "C" void *data_1046407c;
 
-extern "C" void fn_023bab74(void **arg0) {
+extern "C" void fn_023bab74(void **object) {
     void *instance;
 
-    fn_02dc8934(data_1046407c, *arg0);
+    fn_02dc8934(data_1046407c, *object);
     instance = data_1047b054;
     if (instance != 0 && fn_035fd7c8(instance) != 0) {
         fn_035fede0(instance, 0);

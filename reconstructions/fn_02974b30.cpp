@@ -10,10 +10,10 @@ struct Node {
 
 extern "C" int fn_037b7e30(void*);
 
-extern "C" u8 fn_02974b30(void *arg0) {
-    Node *node = (Node *)arg0;
+extern "C" u8 fn_02974b30(void *object) {
+    Node *node = (Node *)object;
     s32 result = 1;
-    if (*node->active == 0 && fn_037b7e30(arg0) == 0) {
+    if (*node->active == 0 && fn_037b7e30(object) == 0) {
         result = 0;
     }
     return result;

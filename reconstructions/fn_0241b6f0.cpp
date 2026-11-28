@@ -17,11 +17,11 @@ struct Object {
 };
 }
 
-extern "C" void fn_0241b6f0(void *arg0) {
-    fn_0241be5c(arg0);
-    if (static_cast<Object *>(arg0)->vtable->second(arg0) == 0 &&
-        static_cast<Object *>(arg0)->vtable->first(arg0) == 0 &&
-        static_cast<Object *>(arg0)->vtable->third(arg0) != 0) {
-        fn_030ea2cc(arg0);
+extern "C" void fn_0241b6f0(void *object) {
+    fn_0241be5c(object);
+    if (static_cast<Object *>(object)->vtable->second(object) == 0 &&
+        static_cast<Object *>(object)->vtable->first(object) == 0 &&
+        static_cast<Object *>(object)->vtable->third(object) != 0) {
+        fn_030ea2cc(object);
     }
 }

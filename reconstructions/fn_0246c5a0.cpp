@@ -9,10 +9,10 @@ struct Object {
 };
 }
 
-extern "C" u8 fn_0246c5a0(void *arg0) {
-    Object *self = (Object *)arg0;
+extern "C" u8 fn_0246c5a0(void *object) {
+    Object *self = static_cast<Object *>(object);
     s32 result = 1;
-    if (!(self->flags & 1) && (((s32 (*)())self->vtable[73])() == 0)) {
+    if (!(self->flags & 1) && (reinterpret_cast<s32 (*)()>(self->vtable[73])() == 0)) {
         result = 0;
     }
     return result;

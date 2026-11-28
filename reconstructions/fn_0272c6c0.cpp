@@ -20,19 +20,19 @@ extern "C" void fn_02b27414(void *);
 extern "C" void fn_037b8284(void *, const void *, void *);
 extern "C" int data_1011f0d0;
 
-extern "C" void fn_0272c6c0(void *arg0, void *arg1) {
+extern "C" void fn_0272c6c0(void *object, void *context) {
     int *source;
     int value;
     Owner *owner;
-    if (((Object *) arg0)->skip_init == 0) {
-        fn_02b27414(((Object *) arg0)->member);
+    if (((Object *)object)->skip_init == 0) {
+        fn_02b27414(((Object *)object)->member);
     }
-    owner = ((Object *) arg0)->owner;
+    owner = ((Object *)object)->owner;
     source = owner->info->get_value(owner);
     value = 1;
     if (source != 0) {
         value = *source;
     }
-    ((Object *) arg0)->value = value;
-    fn_037b8284(arg0, &data_1011f0d0, arg1);
+    ((Object *)object)->value = value;
+    fn_037b8284(object, &data_1011f0d0, context);
 }

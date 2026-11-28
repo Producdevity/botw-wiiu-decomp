@@ -7,10 +7,10 @@ struct Object {
 };
 }
 
-extern "C" unsigned char fn_022ddbe4(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
-    if (object->disabled == 0) {
-        return *object->source;
+extern "C" unsigned char fn_022ddbe4(void *object) {
+    Object *self = static_cast<Object *>(object);
+    if (self->disabled == 0) {
+        return *self->source;
     }
     return 0;
 }

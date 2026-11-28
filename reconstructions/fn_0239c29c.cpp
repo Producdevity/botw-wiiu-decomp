@@ -11,12 +11,12 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_0239c29c(void *arg0) {
+extern "C" s32 fn_0239c29c(void *object) {
     void *target;
-    Object *object = (Object *)arg0;
+    Object *self = static_cast<Object *>(object);
 
-    target = object->target;
-    if (*object->flag == 0) {
+    target = self->target;
+    if (*self->flag == 0) {
         fn_0339a0c4(target);
         return 1;
     }

@@ -15,13 +15,13 @@ extern "C" void fn_0281b80c(void*);
 extern "C" void fn_0344ba94(void*, const unsigned*);
 extern "C" void* fn_037966a8(void*);
 
-extern "C" void fn_0281055c(void* arg0) {
+extern "C" void fn_0281055c(void* object) {
     unsigned int mode;
-    fn_0281b80c(arg0);
-    void* target = fn_037966a8(((Owner*)arg0)->handle);
+    fn_0281b80c(object);
+    void* target = fn_037966a8(((Owner*)object)->handle);
     if (target != 0) {
         mode = 4;
         fn_0344ba94(target, &mode);
     }
-    ((Owner*)arg0)->vtable->onReady(arg0);
+    ((Owner*)object)->vtable->onReady(object);
 }

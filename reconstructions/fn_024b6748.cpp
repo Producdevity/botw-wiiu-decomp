@@ -18,13 +18,13 @@ struct Object {
 };
 }
 
-extern "C" int fn_024b6748(void* arg0, void* arg1) {
-    Object *object = (Object *)arg0;
-    Vec3 *out = (Vec3 *)arg1;
+extern "C" int fn_024b6748(void* object, void* result) {
+    Object *self = static_cast<Object *>(object);
+    Vec3 *out = static_cast<Vec3 *>(result);
     Source *source;
 
-    if (object->mode == 1) {
-        source = (Source *)fn_02c19904(object->context, 0);
+    if (self->mode == 1) {
+        source = static_cast<Source *>(fn_02c19904(self->context, 0));
         if (source != 0) {
             out->x = source->position.x;
             out->y = source->position.y;

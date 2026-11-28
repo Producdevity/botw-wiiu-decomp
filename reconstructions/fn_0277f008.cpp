@@ -10,8 +10,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_0277f008(void* arg0) {
-    Child* child = ((Object*)arg0)->child;
+extern "C" void fn_0277f008(void* object) {
+    Child* child = ((Object*)object)->child;
     if (child != 0) {
         child->id = -1;
     }

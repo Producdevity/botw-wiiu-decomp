@@ -9,7 +9,7 @@ struct Object {
 };
 }
 
-extern "C" void fn_021d06a0(void *arg0) {
-    void *const *vtable = ((Object *)arg0)->vtable;
-    ((s32 (*)(void *, s32))vtable[65])(arg0, fn_021d0590(arg0));
+extern "C" void fn_021d06a0(void *object) {
+    void *const *vtable = ((Object *)object)->vtable;
+    ((s32 (*)(void *, s32))vtable[65])(object, fn_021d0590(object));
 }

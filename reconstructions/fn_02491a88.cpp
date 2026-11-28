@@ -12,13 +12,13 @@ struct Object {
 };
 }
 
-extern "C" void fn_02491a88(void *arg0, s32 arg1) {
+extern "C" void fn_02491a88(void *object, s32 state) {
     void *handle;
 
-    handle = ((Object *)arg0)->handle;
-    ((Object *)arg0)->state = arg1;
+    handle = static_cast<Object *>(object)->handle;
+    static_cast<Object *>(object)->state = state;
     if (handle != 0 && fn_03485c18(handle) == 0) {
-        fn_02491824(arg0);
+        fn_02491824(object);
         fn_03485e4c(handle);
     }
 }

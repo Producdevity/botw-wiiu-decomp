@@ -10,10 +10,10 @@ struct Follower {
 extern "C" void fn_02216fbc(void *);
 extern "C" void fn_034aa718(void*, float);
 
-extern "C" void fn_021f9b18(void *arg0) {
-    Follower *follower = (Follower *)arg0;
+extern "C" void fn_021f9b18(void *object) {
+    Follower *follower = (Follower *)object;
     if (follower->target != 0) {
         fn_034aa718(follower->target, follower->amount);
     }
-    fn_02216fbc(arg0);
+    fn_02216fbc(object);
 }

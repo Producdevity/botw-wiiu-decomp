@@ -14,9 +14,9 @@ struct Holder {
 };
 }
 
-extern "C" void fn_025e8858(void* * arg0) {
-    Holder *self = (Holder *)arg0;
+extern "C" void fn_025e8858(void* * object) {
+    Holder *self = reinterpret_cast<Holder *>(object);
     fn_0294e1d0(self->target, (void*)(fn_02b62ba8()), 0, 0);
     self->target->flags |= 0x02000000;
-    fn_037b8284(arg0, data_100f1638, 0);
+    fn_037b8284(object, data_100f1638, 0);
 }

@@ -7,7 +7,7 @@ extern "C" void fn_037946f0(void *, int, int, int, int, float);
 extern "C" f32 data_10066c9c;
 extern "C" s32 data_10066ca0;
 
-extern "C" void fn_022695e0(void *arg0) {
-    fn_02438238(arg0);
-    fn_037946f0(arg0, (s32) &data_10066ca0, 0, 0, 0, data_10066c9c);
+extern "C" void fn_022695e0(void *object) {
+    fn_02438238(object);
+    fn_037946f0(object, (s32) &data_10066ca0, 0, 0, 0, data_10066c9c);
 }

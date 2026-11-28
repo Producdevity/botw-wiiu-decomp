@@ -18,9 +18,9 @@ struct Source {
 };
 }
 
-extern "C" void fn_029517e8(void* arg0, void* arg1, int arg2) {
-    int handle = ((Actor *)arg1)->vtable->getHandle(arg1);
+extern "C" void fn_029517e8(void* source, void* actor, int index) {
+    int handle = ((Actor *)actor)->vtable->getHandle(actor);
     if (handle != 0) {
-        fn_032c4568(handle, fn_033943e0(arg0, arg2), ((Source *)arg0)->data);
+        fn_032c4568(handle, fn_033943e0(source, index), ((Source *)source)->data);
     }
 }

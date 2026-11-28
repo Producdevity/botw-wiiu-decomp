@@ -1,15 +1,27 @@
-typedef signed char s8;
-typedef int s32;
-
 extern "C" void fn_03467dd8(void);
 
-extern "C" void fn_0230c72c(void *arg0) {
-    void* const* vt1;
-    void *temp_r3;
+namespace {
+struct Vtable {
+    unsigned char padding_0[0x16C];
+    int (*check)(void *);
+};
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0)));
-    (*(s8 *)((char *)(arg0) + (0x24))) = 0;
-    if (((s32 (*)(void *))(vt1 = *(void* const**)((char *)(temp_r3) + (0xE8)))[91])(temp_r3) != 0) {
+struct Target {
+    unsigned char padding_0[0xE8];
+    Vtable *vtable;
+};
+
+struct Object {
+    Target *target;
+    unsigned char padding_4[0x20];
+    signed char flag_24;
+};
+}
+
+extern "C" void fn_0230c72c(void *object) {
+    Target *target = static_cast<Object *>(object)->target;
+    static_cast<Object *>(object)->flag_24 = 0;
+    if (target->vtable->check(target) != 0) {
         fn_03467dd8();
     }
 }

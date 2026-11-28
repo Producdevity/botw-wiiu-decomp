@@ -3,8 +3,8 @@ extern "C" void fn_030ea2cc(void *);
 
 extern "C" void *data_10467c80;
 
-extern "C" void fn_02199ef0(void *arg0) {
+extern "C" void fn_02199ef0(void *object) {
     if (((void *) data_10467c80 != 0) && (fn_02e402c0(data_10467c80) != 0)) {
-        fn_030ea2cc(arg0);
+        fn_030ea2cc(object);
     }
 }

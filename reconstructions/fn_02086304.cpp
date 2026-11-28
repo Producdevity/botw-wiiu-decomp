@@ -10,14 +10,13 @@ struct Object {
 };
 }
 
-extern "C" u8 fn_02086304(void *arg0) {
+extern "C" u8 fn_02086304(void *object) {
     s32 result;
     void *target;
-    Object *object = (Object *)arg0;
 
-    target = object->target;
+    target = ((Object *)object)->target;
     result = 1;
-    if ((target != 0) && (fn_03485c18(target) != 0)) {
+    if (target != 0 && fn_03485c18(target) != 0) {
         result = 0;
     }
     return result;

@@ -7,9 +7,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_021d67a8(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
-    if (*object->source != 0) {
-        object->flag = 1;
+extern "C" void fn_021d67a8(void *object) {
+    Object *self = static_cast<Object *>(object);
+    if (*self->source != 0) {
+        self->flag = 1;
     }
 }
