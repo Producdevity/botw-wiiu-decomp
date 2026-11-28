@@ -13,10 +13,10 @@ struct Object {
 };
 }
 
-extern "C" u8 fn_037ee0e0(void *arg0) {
+extern "C" u8 fn_037ee0e0(void *object) {
     s32 result = 1;
 
-    if (fn_037d7204(((Object *)arg0)->first) == 0 && fn_037d7204(((Object *)arg0)->second) == 0) {
+    if (fn_037d7204(((Object *)object)->first) == 0 && fn_037d7204(((Object *)object)->second) == 0) {
         result = 0;
     }
     return result;

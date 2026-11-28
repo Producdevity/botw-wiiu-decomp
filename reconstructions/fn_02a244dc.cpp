@@ -13,13 +13,13 @@ struct Owner {
 };
 }
 
-extern "C" void fn_02a244dc(void* arg0, struct ProcAccessor* arg1) {
+extern "C" void fn_02a244dc(void* object, struct ProcAccessor* accessor) {
     int message;
-    if (fn_030dff10(arg1, ((Owner*)arg0)->key) == 0) {
-        fn_02a240a0(arg0);
-        if (fn_030e005c(arg1, ((Owner*)arg0)->key) != 0) {
+    if (fn_030dff10(accessor, ((Owner*)object)->key) == 0) {
+        fn_02a240a0(object);
+        if (fn_030e005c(accessor, ((Owner*)object)->key) != 0) {
             message = 0x080000B6;
-            fn_03626870(((Owner*)arg0)->sender, fn_030e0414(arg1), &message, 0, 1);
+            fn_03626870(((Owner*)object)->sender, fn_030e0414(accessor), &message, 0, 1);
         }
     }
 }

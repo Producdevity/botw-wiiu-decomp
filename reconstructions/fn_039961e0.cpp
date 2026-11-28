@@ -5,12 +5,12 @@ struct Source {
 };
 }
 
-extern "C" void fn_039961e0(int* arg0, unsigned short* arg1, void* arg2) {
-    Source* source = (Source*)arg2;
-    if (arg0 != 0) {
-        *arg0 = source->first;
+extern "C" void fn_039961e0(int* out_first, unsigned short* out_second, void* data) {
+    Source* source = (Source*)data;
+    if (out_first != 0) {
+        *out_first = source->first;
     }
-    if (arg1 != 0) {
-        *arg1 = source->second;
+    if (out_second != 0) {
+        *out_second = source->second;
     }
 }

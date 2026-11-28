@@ -9,10 +9,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_0399c200(void *arg0, void *arg1, void *arg2) {
-    void *first = ((Object *)arg0)->first;
+extern "C" void fn_0399c200(void *object, void *context, void *extra) {
+    void *first = ((Object *)object)->first;
     if (first != 0) {
-        fn_030c078c(first, arg1, arg2);
-        fn_030c44cc(((Object *)arg0)->second, arg1, ((Object *)arg0)->first);
+        fn_030c078c(first, context, extra);
+        fn_030c44cc(((Object *)object)->second, context, ((Object *)object)->first);
     }
 }

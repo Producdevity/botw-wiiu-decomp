@@ -11,8 +11,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_030d7ed8(void *arg0) {
-    s32 mode = fn_030d730c(arg0);
-    fn_030d733c((s32) arg0, mode);
-    ((Object *)arg0)->mode = (s8) mode;
+extern "C" void fn_030d7ed8(void *self) {
+    s32 mode = fn_030d730c(self);
+    fn_030d733c((s32) self, mode);
+    ((Object *)self)->mode = (s8) mode;
 }

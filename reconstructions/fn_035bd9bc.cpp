@@ -5,9 +5,9 @@ struct Counters {
 };
 }
 
-extern "C" void fn_035bd9bc(void *arg0, unsigned int arg1) {
-    Counters *counters = (Counters *) arg0;
-    switch (arg1) {
+extern "C" void fn_035bd9bc(void *object, unsigned int kind) {
+    Counters *counters = (Counters *) object;
+    switch (kind) {
     case 1:
         counters->first++;
         return;

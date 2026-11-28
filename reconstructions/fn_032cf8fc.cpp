@@ -8,8 +8,8 @@ struct Owner {
 extern "C" int data_1054d368;
 extern "C" int data_1054d390;
 
-extern "C" int* fn_032cf8fc(void* arg0) {
-    Owner* owner = (Owner*)arg0;
+extern "C" int* fn_032cf8fc(void* object) {
+    Owner* owner = (Owner*)object;
     if (*owner->flag != 0) {
         return &data_1054d368;
     }

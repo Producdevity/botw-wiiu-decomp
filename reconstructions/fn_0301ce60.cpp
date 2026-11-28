@@ -8,8 +8,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_0301ce60(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_0301ce60(void *owner) {
+    Object *object = (Object *)owner;
     void *first;
     void *second;
 

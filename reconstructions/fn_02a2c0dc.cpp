@@ -7,10 +7,10 @@ struct Object {
 
 extern "C" int fn_030b0964(void*, int);
 
-extern "C" int fn_02a2c0dc(void* arg0) {
-    Object *self = (Object *)arg0;
+extern "C" int fn_02a2c0dc(void* object) {
+    Object* self = (Object*)object;
     int snapshot = self->value;
-    if ((snapshot == 0) || (fn_030b0964(&snapshot, 4) == 2)) {
+    if (snapshot == 0 || fn_030b0964(&snapshot, 4) == 2) {
         return 0;
     }
     return self->value;

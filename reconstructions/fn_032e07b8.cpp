@@ -16,13 +16,12 @@ struct Object {
 extern "C" void fn_032e0620(void*);
 extern "C" void fn_032f9348(void*, void*);
 
-extern "C" int fn_032e07b8(void* arg0, void* arg1) {
-    ((Object*)arg0)->context = (Context*)arg1;
-    fn_032f9348(((Object*)arg0)->sub, ((Context*)arg1)->field_394);
-    int* first = &((Object*)arg0)->first;
-    int* second = &((Object*)arg0)->second;
-    *second = 0;
-    *first = 0;
-    fn_032e0620(arg0);
+extern "C" int fn_032e07b8(void* self, void* context) {
+    Object* object = (Object*)self;
+    object->context = (Context*)context;
+    fn_032f9348(object->sub, object->context->field_394);
+    object->second = 0;
+    object->first = 0;
+    fn_032e0620(self);
     return 1;
 }

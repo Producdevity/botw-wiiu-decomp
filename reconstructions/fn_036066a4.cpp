@@ -11,11 +11,11 @@ struct StateView {
 };
 }
 
-extern "C" u8 fn_036066a4(struct SignedStateBytes *arg0) {
+extern "C" u8 fn_036066a4(struct SignedStateBytes *state) {
     s32 result;
 
     result = 0;
-    if ((((StateView *)arg0)->valid != 0) && (fn_03a3e4dc(arg0) != 0)) {
+    if ((((StateView *)state)->valid != 0) && (fn_03a3e4dc(state) != 0)) {
         result = 1;
     }
     return result;

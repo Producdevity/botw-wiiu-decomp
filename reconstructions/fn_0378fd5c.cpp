@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_0378fd5c(void* arg0) {
-    Object* object = (Object*)arg0;
+extern "C" void fn_0378fd5c(void* self) {
+    Object* object = (Object*)self;
     unsigned char counter = object->counter;
     if (counter != 0xFF) {
         object->counter = counter + 1;

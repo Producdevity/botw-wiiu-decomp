@@ -19,15 +19,15 @@ struct Dest {
 };
 }
 
-extern "C" void fn_02e86904(void* arg0, void* arg1) {
-    ((Dest*)arg0)->data.a = ((Block*)arg1)->a;
-    ((Dest*)arg0)->data.b = ((Block*)arg1)->b;
-    ((Dest*)arg0)->data.c = ((Block*)arg1)->c;
-    ((Dest*)arg0)->data.d = ((Block*)arg1)->d;
-    ((Dest*)arg0)->data.e = ((Block*)arg1)->e;
-    ((Dest*)arg0)->data.f = ((Block*)arg1)->f;
-    ((Dest*)arg0)->data.g = ((Block*)arg1)->g;
-    ((Dest*)arg0)->data.h = ((Block*)arg1)->h;
-    ((Dest*)arg0)->data.flag = ((Block*)arg1)->flag;
-    ((Dest*)arg0)->data.tail = ((Block*)arg1)->tail;
+extern "C" void fn_02e86904(void* dest, void* source) {
+    ((Dest*)dest)->data.a = ((Block*)source)->a;
+    ((Dest*)dest)->data.b = ((Block*)source)->b;
+    ((Dest*)dest)->data.c = ((Block*)source)->c;
+    ((Dest*)dest)->data.d = ((Block*)source)->d;
+    ((Dest*)dest)->data.e = ((Block*)source)->e;
+    ((Dest*)dest)->data.f = ((Block*)source)->f;
+    ((Dest*)dest)->data.g = ((Block*)source)->g;
+    ((Dest*)dest)->data.h = ((Block*)source)->h;
+    ((Dest*)dest)->data.flag = ((Block*)source)->flag;
+    ((Dest*)dest)->data.tail = ((Block*)source)->tail;
 }

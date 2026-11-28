@@ -7,8 +7,8 @@ struct Object {
 };
 }
 
-extern "C" int fn_034b2a3c(void* arg0) {
-    Object* object = (Object*)arg0;
+extern "C" int fn_034b2a3c(void* self) {
+    Object* object = (Object*)self;
     if (object->flags & 8) {
         return object->second;
     }

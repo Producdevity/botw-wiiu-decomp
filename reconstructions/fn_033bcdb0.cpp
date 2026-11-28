@@ -10,13 +10,13 @@ struct Target {
 };
 }
 
-extern "C" s32 fn_033bcdb0(void *object, void *arg1) {
+extern "C" s32 fn_033bcdb0(void *object, void *context) {
     Target *target;
 
-    target = (Target *)fn_033bccd8(object, arg1);
+    target = (Target *)fn_033bccd8(object, context);
     if (target != 0) {
         ((s32 (*)())(target->vtable)[349])();
-        fn_033bcd9c(object, arg1);
+        fn_033bcd9c(object, context);
     }
     return 1;
 }

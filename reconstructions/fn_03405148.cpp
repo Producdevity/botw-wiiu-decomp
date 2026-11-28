@@ -11,10 +11,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_03405148(void *arg0, s8 arg1) {
-    Object *self = (Object *)arg0;
+extern "C" void fn_03405148(void *object, s8 flag) {
+    Object *self = (Object *)object;
     void *lock = self->lock;
     fn_030bb668(lock);
-    self->flag = arg1;
+    self->flag = flag;
     fn_030bb69c(lock);
 }

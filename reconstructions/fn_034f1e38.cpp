@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_034f1e38(void* arg0) {
-    Object* object = (Object*)arg0;
+extern "C" void fn_034f1e38(void* self) {
+    Object* object = (Object*)self;
     unsigned short counter = object->counter;
     if (counter != 0) {
         object->counter = counter - 1;

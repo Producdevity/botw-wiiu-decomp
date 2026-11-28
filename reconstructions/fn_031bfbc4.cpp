@@ -5,9 +5,9 @@ struct Object {
 };
 }
 
-extern "C" int fn_031bfbc4(void* arg0) {
-    if (((Object*)arg0)->state == 0x15) {
-        ((Object*)arg0)->state = 0x16;
+extern "C" int fn_031bfbc4(void* object) {
+    if (((Object*)object)->state == 0x15) {
+        ((Object*)object)->state = 0x16;
     }
     return 1;
 }

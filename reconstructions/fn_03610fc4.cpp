@@ -6,12 +6,12 @@ struct Object {
 };
 }
 
-extern "C" void fn_03610fc4(void* arg0, int enabled, int value) {
+extern "C" void fn_03610fc4(void* object, int enabled, int value) {
     if (enabled != 0) {
-        ((Object*)arg0)->first = value;
-        ((Object*)arg0)->second = 1;
+        static_cast<Object*>(object)->first = value;
+        static_cast<Object*>(object)->second = 1;
         return;
     }
-    ((Object*)arg0)->first = -1;
-    ((Object*)arg0)->second = -1;
+    static_cast<Object*>(object)->first = -1;
+    static_cast<Object*>(object)->second = -1;
 }

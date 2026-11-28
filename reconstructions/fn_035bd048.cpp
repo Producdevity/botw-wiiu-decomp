@@ -8,8 +8,8 @@ struct Object {
 };
 }
 
-extern "C" float fn_035bd048(void *arg0) {
-    if (static_cast<Object *>(arg0)->flags & 0x220) {
+extern "C" float fn_035bd048(void *self) {
+    if (static_cast<Object *>(self)->flags & 0x220) {
         return data_102e95ec;
     }
     return data_102e94d8;

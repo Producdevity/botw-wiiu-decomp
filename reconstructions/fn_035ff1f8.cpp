@@ -14,10 +14,10 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_035ff1f8(void *arg0) {
-    Other *other = (Other *)fn_035fd628(arg0);
+extern "C" s32 fn_035ff1f8(void *object) {
+    Other *other = (Other *)fn_035fd628(object);
     if (other != 0) {
         return other->value;
     }
-    return ((Object *)arg0)->value;
+    return ((Object *)object)->value;
 }

@@ -8,11 +8,11 @@ struct Triple {
 };
 }
 
-extern "C" void fn_030ca898(void* arg0, int* arg1, int* arg2, int* arg3) {
-    Triple *out = (Triple *)arg0;
+extern "C" void fn_030ca898(void* memory, int* x, int* y, int* z) {
+    Triple *out = (Triple *)memory;
     if ((out != 0) || (out = (Triple *)fn_0308e578(0xCU), out != 0)) {
-        out->x = *arg1;
-        out->y = *arg2;
-        out->z = *arg3;
+        out->x = *x;
+        out->y = *y;
+        out->z = *z;
     }
 }

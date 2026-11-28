@@ -8,10 +8,10 @@ struct Pair {
 
 extern "C" void fn_0378dc60(int, int);
 
-extern "C" void fn_02e5658c(int arg0, int arg1) {
-    Pair *dst = (Pair *) arg0;
-    Pair *src = (Pair *) arg1;
-    fn_0378dc60(arg0, arg1);
+extern "C" void fn_02e5658c(int destination, int source) {
+    Pair* dst = (Pair*)destination;
+    Pair* src = (Pair*)source;
+    fn_0378dc60(destination, source);
     int first = src->first;
     dst->first = first;
     dst->second = src->second;

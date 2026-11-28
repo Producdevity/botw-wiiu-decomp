@@ -1,6 +1,3 @@
-typedef int s32;
-typedef unsigned char u8;
-
 namespace {
 struct Node {
     unsigned char padding_0[0x14];
@@ -9,11 +6,11 @@ struct Node {
 };
 }
 
-extern "C" bool fn_0378da88(void *);
+extern "C" bool fn_0378da88(void*);
 
-extern "C" u8 fn_02a3ff4c(void *arg0) {
-    Node *node = (Node *)arg0;
-    s32 result = 0;
+extern "C" unsigned char fn_02a3ff4c(void* object) {
+    Node* node = (Node*)object;
+    int result = 0;
     if (node->state != 1 && fn_0378da88(node->list) == 0) {
         result = 1;
     }

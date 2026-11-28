@@ -13,8 +13,8 @@ struct Table {
 };
 }
 
-extern "C" s32 fn_0383a3b4(void *arg0, s32 arg1) {
-    Entry *entry = ((Table *)arg0)->entries + arg1;
+extern "C" s32 fn_0383a3b4(void *table, s32 index) {
+    Entry *entry = ((Table *)table)->entries + index;
     void *const *vtable = entry->vtable;
     ((s32 (*)(void *))vtable[7])(entry);
     return entry->value;

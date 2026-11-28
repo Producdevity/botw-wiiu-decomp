@@ -11,10 +11,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_03253140(void *arg0) {
+extern "C" void fn_03253140(void *object) {
     s32 state = 0;
-    if (fn_03253098(arg0, ((Object *)arg0)->target) == 0) {
+    if (fn_03253098(object, ((Object *)object)->target) == 0) {
         state = 3;
     }
-    ((Object *)arg0)->state = state;
+    ((Object *)object)->state = state;
 }

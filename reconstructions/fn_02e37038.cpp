@@ -7,8 +7,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_02e37038(int arg0, void *arg1, int arg2) {
-    if (arg2 == 0 || static_cast<Object *>(arg1)->dirty != 0) {
-        fn_0434bff8(reinterpret_cast<int>(arg1), arg0 + 0x3C, 0xC0, 0);
+extern "C" void fn_02e37038(int base, void* object, int force) {
+    if (force == 0 || static_cast<Object*>(object)->dirty != 0) {
+        fn_0434bff8(reinterpret_cast<int>(object), base + 0x3C, 0xC0, 0);
     }
 }

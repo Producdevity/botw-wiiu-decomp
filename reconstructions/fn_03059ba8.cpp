@@ -10,8 +10,8 @@ struct Destination {
 };
 }
 
-extern "C" void fn_03059ba8(void* arg0, void* arg1) {
-    if (arg1 != 0) {
-        ((Destination*)arg1)->value = ((Source*)arg0)->value;
+extern "C" void fn_03059ba8(void* source, void* destination) {
+    if (destination != 0) {
+        ((Destination*)destination)->value = ((Source*)source)->value;
     }
 }

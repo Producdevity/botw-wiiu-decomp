@@ -7,8 +7,8 @@ struct Owner {
 
 extern "C" int data_1046c86c;
 
-extern "C" int fn_03092d38(void* arg0) {
-    int value = ((Owner*)arg0)->override_value;
+extern "C" int fn_03092d38(void* owner) {
+    int value = ((Owner*)owner)->override_value;
     if (value == 0) {
         return data_1046c86c + 0x24;
     }

@@ -10,7 +10,7 @@ struct Object {
 };
 }
 
-extern "C" int fn_03b85260(void* arg0) {
-    Object* object = (Object*)arg0;
+extern "C" int fn_03b85260(void *owner) {
+    Object* object = (Object*)owner;
     return (object->vtable->getFlags() >> 2) & 1;
 }

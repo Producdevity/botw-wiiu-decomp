@@ -14,9 +14,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_035048dc(void *arg0) {
-    fn_0350e33c(arg0);
-    Target *target = ((Object *)arg0)->target;
+extern "C" void fn_035048dc(void *object) {
+    fn_0350e33c(object);
+    Target *target = ((Object *)object)->target;
     if (target != 0) {
         target->flags |= 0x400;
     }

@@ -8,12 +8,12 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03195a74(void *arg0) {
-    Owner *self = (Owner *)arg0;
+extern "C" void fn_03195a74(void *object) {
+    Owner *self = (Owner *)object;
     void *child = self->child;
     if (child != 0) {
         fn_031925fc(child, 1);
         self->child = 0;
     }
-    fn_03195a10(arg0);
+    fn_03195a10(object);
 }

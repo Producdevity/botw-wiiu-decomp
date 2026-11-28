@@ -10,9 +10,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_03983fb0(void **arg0) {
-    Object *object = static_cast<Object *>(*arg0);
+extern "C" void fn_03983fb0(void **slot) {
+    Object *object = static_cast<Object *>(*slot);
     if (object->vtable->check(object) == 0) {
-        *arg0 = 0;
+        *slot = 0;
     }
 }

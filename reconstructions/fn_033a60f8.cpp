@@ -11,9 +11,9 @@ struct Block {
 };
 }
 
-extern "C" void fn_033a60f8(void* arg0, void* arg1) {
-    Block* dst = (Block*)arg0;
-    Block* src = (Block*)arg1;
+extern "C" void fn_033a60f8(void* destination, void* source) {
+    Block* dst = (Block*)destination;
+    Block* src = (Block*)source;
     dst->v6 = src->v6;
     dst->tail = src->tail;
     dst->v0 = src->v0;

@@ -10,9 +10,9 @@ struct Info {
 };
 }
 
-extern "C" unsigned char fn_0308ff04(void *arg0, void *arg1) {
-    if (static_cast<Object *>(arg0)->enabled != 0) {
-        return static_cast<Info *>(arg1)->value;
+extern "C" unsigned char fn_0308ff04(void *object, void *info) {
+    if (static_cast<Object *>(object)->enabled != 0) {
+        return static_cast<Info *>(info)->value;
     }
     return 0;
 }

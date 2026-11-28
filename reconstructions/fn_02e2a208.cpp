@@ -11,10 +11,10 @@ struct Destination {
 };
 }
 
-extern "C" void fn_02e2a208(void* arg0, void* arg1) {
-    if (arg1 != 0) {
-        Source* source = (Source*)arg0;
-        Destination* destination = (Destination*)arg1;
+extern "C" void fn_02e2a208(void* object, void* out) {
+    if (out != 0) {
+        Source* source = (Source*)object;
+        Destination* destination = (Destination*)out;
         destination->x = source->x;
         destination->y = source->y;
     }

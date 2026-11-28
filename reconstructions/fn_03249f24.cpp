@@ -10,10 +10,10 @@ struct Object {
 extern "C" int fn_0324d56c(void *);
 extern "C" int fn_0324d61c(void*, void*);
 
-extern "C" s32 fn_03249f24(void *arg0) {
+extern "C" s32 fn_03249f24(void *object) {
     s32 result = 0;
-    if (fn_0324d56c(arg0) != 0) {
-        result = fn_0324d61c(arg0, ((Object *)arg0)->member);
+    if (fn_0324d56c(object) != 0) {
+        result = fn_0324d61c(object, ((Object *)object)->member);
     }
     return result;
 }

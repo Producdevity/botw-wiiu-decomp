@@ -7,10 +7,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_02b9a028(void* arg0) {
-    Object* object = (Object*)arg0;
-    unsigned int value = *object->source;
+extern "C" void fn_02b9a028(void* object) {
+    Object* self = (Object*)object;
+    unsigned int value = *self->source;
     if (value < 2) {
-        object->flag = (char)value;
+        self->flag = value;
     }
 }
