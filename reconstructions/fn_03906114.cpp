@@ -10,9 +10,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_03906114(void *arg0)
+extern "C" void fn_03906114(void *memory)
 {
-    Object* self = (Object*) arg0;
+    Object* self = (Object*) memory;
     if (self == 0) {
         self = (Object*) fn_0308e578(0xC);
     }

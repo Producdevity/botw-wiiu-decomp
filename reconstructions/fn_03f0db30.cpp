@@ -1,11 +1,21 @@
 extern "C" int fn_03f0b7cc(void*, void*, void*);
 
-extern "C" void fn_03f0db30(void* object, void* arg1, void* arg2)
+namespace {
+struct Object {
+    int start;
+    char padding_4[0x3C];
+    int length;
+    int mark;
+    int end;
+};
+}
+
+extern "C" void fn_03f0db30(void* object, void* first, void* second)
 {
-    int end = fn_03f0b7cc(object, arg1, arg2);
-    char* self = (char*)object;
-    *(int*)(self + 0x48) = end;
-    *(int*)(self + 0x44) = end;
-    int* length = (int*)(self + 0x40);
-    *length = (short)((end - *(int*)self) >> 4);
+    int end = fn_03f0b7cc(object, first, second);
+    Object* self = (Object*) object;
+    self->end = end;
+    self->mark = end;
+    int* length = &self->length;
+    *length = (short) ((end - self->start) >> 4);
 }
