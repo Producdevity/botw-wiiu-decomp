@@ -1,12 +1,19 @@
-typedef unsigned char u8;
-typedef int s32;
-
 extern "C" void fn_0362aee8(void*, void*);
 extern "C" void fn_037988ac(void*, void*);
 
-extern "C" void fn_024688f0(void *arg0) {
-    if ((s32) (*(u8 *)((char *)(arg0) + (0x10))) != 0) {
-        fn_037988ac((*(void **)((char *)(arg0) + (0))), (char *)arg0 + 0x10);
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0x10 - 4];
+    unsigned char entry[0x9C];
+    char member[1];
+};
+}
+
+extern "C" void fn_024688f0(void *object) {
+    Object *self = (Object *) object;
+    if (self->entry[0] != 0) {
+        fn_037988ac(self->owner, self->entry);
     }
-    fn_0362aee8((char *)arg0 + 0xAC, 0);
+    fn_0362aee8(self->member, 0);
 }

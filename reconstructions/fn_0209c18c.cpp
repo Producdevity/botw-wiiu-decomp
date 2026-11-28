@@ -1,11 +1,18 @@
-typedef int s32;
-
 extern "C" void fn_03bb60c8(void *, float, float);
 extern "C" const float data_10012ad8;
+extern "C" int data_1049cd6c;
 
-extern "C" s32 data_1049cd6c;
+namespace {
+struct Object {
+    char padding_0[0xBEC];
+    char member_bec[0x18];
+    int value_c04;
+};
+}
 
-extern "C" void fn_0209c18c(void *arg0) {
-    fn_03bb60c8((char *)arg0 + 0xBEC, data_10012ad8, data_10012ad8);
-    (*(s32 *)((char *)(arg0) + (0xC04))) = (s32) data_1049cd6c;
+extern "C" void fn_0209c18c(void *object)
+{
+    Object *view = (Object *)object;
+    fn_03bb60c8(view->member_bec, data_10012ad8, data_10012ad8);
+    view->value_c04 = data_1049cd6c;
 }

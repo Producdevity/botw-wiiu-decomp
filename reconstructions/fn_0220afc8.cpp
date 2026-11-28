@@ -1,12 +1,23 @@
-typedef int s32;
-
 extern "C" void fn_0294f828(void*, void*);
 
-extern "C" void fn_0220afc8(void *arg0) {
-    if ((s32) (*(s32 *)((char *)(arg0) + (0xE0))) != 0) {
-        fn_0294f828((*(void **)((char *)(arg0) + (0))), (char *)arg0 + 0xD8);
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0xBC - 4];
+    char entry_bc[8];
+    int active_c4;
+    char padding_c8[0xD8 - 0xC8];
+    char entry_d8[8];
+    int active_e0;
+};
+}
+
+extern "C" void fn_0220afc8(void *object) {
+    Object *self = (Object *) object;
+    if (self->active_e0 != 0) {
+        fn_0294f828(self->owner, self->entry_d8);
     }
-    if ((s32) (*(s32 *)((char *)(arg0) + (0xC4))) != 0) {
-        fn_0294f828((*(void **)((char *)(arg0) + (0))), (char *)arg0 + 0xBC);
+    if (self->active_c4 != 0) {
+        fn_0294f828(self->owner, self->entry_bc);
     }
 }

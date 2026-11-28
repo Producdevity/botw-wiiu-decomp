@@ -1,11 +1,21 @@
-extern "C" void fn_03bf8bd0(void*, void*);
+extern "C" void fn_03bf8bd0(void *, void *);
 
-extern "C" void fn_039e2044(void* self, void* arg)
+namespace {
+struct Object {
+    char padding_0[4];
+    char member_4[4];
+    int flags_8;
+    char padding_c[0x74];
+    int value_80;
+};
+}
+
+extern "C" void fn_039e2044(void *self, void *argument)
 {
-    int flags = *(int*)((char*)self + 8);
+    int flags = ((Object *)self)->flags_8;
     if (flags & 1) {
-        fn_03bf8bd0((char*)self + 4, arg);
+        fn_03bf8bd0(((Object *)self)->member_4, argument);
     }
-    int* field = (int*)((char*)self + 0x80);
+    int *field = &((Object *)self)->value_80;
     *field = 0;
 }

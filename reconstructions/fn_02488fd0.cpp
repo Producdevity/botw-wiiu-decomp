@@ -1,12 +1,21 @@
-typedef int s32;
-
 extern "C" void fn_02b27174(void*);
 
-extern "C" void fn_02488fd0(void *arg0) {
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x1CD0))) != 0) {
-        fn_02b27174((char *)arg0 + 0x1B64);
+namespace {
+struct Object {
+    char padding_0[0x1B64];
+    char entry_a[0x16C];
+    int active_a;
+    char padding_b[4];
+    char entry_b[0x16C];
+    int active_b;
+};
+}
+
+extern "C" void fn_02488fd0(void *object) {
+    if (((Object *) object)->active_a != 0) {
+        fn_02b27174(((Object *) object)->entry_a);
     }
-    if ((s32) (*(s32 *)((char *)(arg0) + (0x1E44))) != 0) {
-        fn_02b27174((char *)arg0 + 0x1CD8);
+    if (((Object *) object)->active_b != 0) {
+        fn_02b27174(((Object *) object)->entry_b);
     }
 }

@@ -1,12 +1,19 @@
-typedef float (*FloatGetter)(void *);
-
 extern "C" const float data_101bdfbc;
 
-extern "C" bool fn_02bfe40c(void *self) {
+namespace {
+typedef float (*FloatGetter)(void *);
+
+struct Object {
+    char padding_0[0xC];
+    FloatGetter *vtable;
+};
+}
+
+extern "C" bool fn_02bfe40c(void *object) {
     void *receiver;
     int slot;
-    FloatGetter *table = *(FloatGetter **)((char *)self + 0xC);
+    FloatGetter *vtable = ((Object *) object)->vtable;
     slot = 0x17C / sizeof(FloatGetter);
-    receiver = self;
-    return table[slot](receiver) == data_101bdfbc;
+    receiver = object;
+    return vtable[slot](receiver) == data_101bdfbc;
 }

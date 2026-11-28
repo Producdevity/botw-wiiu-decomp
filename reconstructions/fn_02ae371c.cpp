@@ -1,11 +1,23 @@
-extern "C" void* fn_02af8fd8(void*);
+extern "C" void *fn_02af8fd8(void *);
 
-extern "C" unsigned char fn_02ae371c(void* object)
+namespace {
+struct Object {
+    char padding_0[0xD8];
+    unsigned char flags_d8;
+};
+
+struct Target {
+    char padding_0[0x7DC];
+    unsigned char value_7dc;
+};
+}
+
+extern "C" unsigned char fn_02ae371c(void *object)
 {
-    void* target;
-    int invalid = ((*(unsigned char*)((char*)object + 0xD8) >> 3) & 1) || ((target = fn_02af8fd8(object)) == 0);
+    Target *target;
+    int invalid = ((((Object *)object)->flags_d8 >> 3) & 1) || ((target = (Target *)fn_02af8fd8(object)) == 0);
     if (invalid) {
         return 0;
     }
-    return *(unsigned char*)((char*)target + 0x7DC);
+    return target->value_7dc;
 }

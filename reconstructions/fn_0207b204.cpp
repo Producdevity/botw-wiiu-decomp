@@ -1,11 +1,18 @@
-typedef signed char s8;
-typedef int s32;
+extern "C" void fn_020ebafc(void *, void *);
 
-extern "C" void fn_020ebafc(void*, void*);
+namespace {
+struct Object {
+    char padding_0[0x74];
+    signed char flag_74;
+    char padding_75[3];
+    void *const *vtable_78;
+};
+}
 
-extern "C" void fn_0207b204(void *arg0, void *arg1) {
-    void* const* vt1;
-    fn_020ebafc(arg0, arg1);
-    (*(s8 *)((char *)(arg0) + (0x74))) = 0;
-    ((s32 (*)(void *, void *))(vt1 = *(void* const**)((char *)(arg0) + (0x78)))[17])((char *)arg0 + 0x70, arg1);
+extern "C" void fn_0207b204(void *object, void *argument)
+{
+    void *const *vtable;
+    fn_020ebafc(object, argument);
+    ((Object *)object)->flag_74 = 0;
+    ((int (*)(void *, void *))(vtable = ((Object *)object)->vtable_78)[17])((char *)object + 0x70, argument);
 }

@@ -1,11 +1,19 @@
-extern "C" void fn_03511f40(void*, void*);
+extern "C" void fn_03511f40(void *, void *);
 
-extern "C" void fn_03517ddc(void* object, void* arg)
+namespace {
+struct Object {
+    char padding_0[4];
+    char member_4[0x60];
+    unsigned char flag_64;
+};
+}
+
+extern "C" void fn_03517ddc(void *object, void *argument)
 {
-    int flag = *(unsigned char*)((char*)object + 0x64);
+    int flag = ((Object *)object)->flag_64;
     if (flag == 0) {
-        void* member = (char*)object + 4;
-        fn_03511f40(member, arg);
-        *(unsigned char*)((char*)object + 0x64) = 1;
+        void *member = ((Object *)object)->member_4;
+        fn_03511f40(member, argument);
+        ((Object *)object)->flag_64 = 1;
     }
 }
