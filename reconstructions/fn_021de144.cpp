@@ -1,23 +1,27 @@
-typedef int s32;
-
 extern "C" void fn_0245d800(void*);
 extern "C" void fn_0339e0c0(void *, void *);
 extern "C" void fn_0339e1a4(void*, void*);
 extern "C" const unsigned char data_10549dd0[];
 
-extern "C" void fn_021de144(void *arg0) {
-    s32 temp_r0;
+namespace {
+struct Owner {
+    void* target;
+    char padding_4[0x44];
+    int state;
+};
+}
 
-    temp_r0 = (*(s32 *)((char *)(arg0) + (0x48)));
-    if (temp_r0 == 2) {
-        fn_0245d800(arg0);
+extern "C" void fn_021de144(void *object) {
+    int state = ((Owner*)object)->state;
+    if (state == 2) {
+        fn_0245d800(object);
         return;
     }
-    if (temp_r0 == 1) {
-        fn_0339e0c0((*(void **)((char *)(arg0) + (0))), (void *)(data_10549dd0));
-        fn_0339e1a4((*(void **)((char *)(arg0) + (0))), (void *)(data_10549dd0));
-        (*(s32 *)((char *)(arg0) + (0x48))) = (s32) ((*(s32 *)((char *)(arg0) + (0x48))) + 1);
+    if (state == 1) {
+        fn_0339e0c0(((Owner*)object)->target, (void *)(data_10549dd0));
+        fn_0339e1a4(((Owner*)object)->target, (void *)(data_10549dd0));
+        ((Owner*)object)->state += 1;
         return;
     }
-    (*(s32 *)((char *)(arg0) + (0x48))) = 1;
+    ((Owner*)object)->state = 1;
 }

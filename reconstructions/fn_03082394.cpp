@@ -4,26 +4,35 @@ typedef int s32;
 extern "C" void fn_03a31898(void *, void *, void *, int);
 extern "C" void fn_03a3bc0c(void*, void*);
 
-extern "C" void fn_03082394(void *arg0, void *arg1, s32 arg2) {
-    u8 temp_r0;
-    void *temp_r3;
-    void *temp_r4;
-    void *var_r5;
+namespace {
+struct Node {
+    char padding_0[0x44];
+    void *handle;
+    char padding_48[0xD];
+    u8 state;
+};
+}
 
-    if (arg0 != 0) {
-        temp_r0 = (*(u8 *)((char *)(arg0) + (0x55)));
-        if (((s32) temp_r0 == 0) || ((s32) temp_r0 == 3)) {
-            var_r5 = (void *)1;
-            if (arg2 != 0) {
-                var_r5 = 0;
+extern "C" void fn_03082394(void *object, void *other, s32 skip) {
+    u8 state;
+    void *handle;
+    void *otherHandle;
+    void *flag;
+
+    if (object != 0) {
+        state = ((Node *)object)->state;
+        if (((s32)state == 0) || ((s32)state == 3)) {
+            flag = (void *)1;
+            if (skip != 0) {
+                flag = 0;
             }
-            fn_03a31898(arg0, 0, var_r5, 1);
+            fn_03a31898(object, 0, flag, 1);
         }
-        temp_r3 = (*(void **)((char *)(arg0) + (0x44)));
-        if ((temp_r3 != 0) && (arg1 != 0) && ((s32) (*(u8 *)((char *)(arg1) + (0x55))) != 0)) {
-            temp_r4 = (*(void **)((char *)(arg1) + (0x44)));
-            if (temp_r4 != 0) {
-                fn_03a3bc0c(temp_r3, temp_r4);
+        handle = ((Node *)object)->handle;
+        if ((handle != 0) && (other != 0) && ((s32)((Node *)other)->state != 0)) {
+            otherHandle = ((Node *)other)->handle;
+            if (otherHandle != 0) {
+                fn_03a3bc0c(handle, otherHandle);
             }
         }
     }

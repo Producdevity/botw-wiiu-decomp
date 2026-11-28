@@ -7,18 +7,23 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_1016d65c;
 
-extern "C" void fn_029539a8(void *arg0) {
-    struct { const void* f8; const void* fC; } sp;
-    s32 temp_r3_2;
-    void *temp_r3;
+namespace {
+struct Object {
+    char padding_0[0x3D0];
+    void *target;
+};
+}
 
-    temp_r3 = (*(void **)((char *)(arg0) + (0x3D0)));
-    if (temp_r3 != 0) {
-        sp.fC = &data_10263910;
-        sp.f8 = &data_1016d65c;
-        temp_r3_2 = fn_03171cd8(temp_r3, &sp.f8);
-        if (temp_r3_2 != 0) {
-            fn_03170948((struct InferredObject *) temp_r3_2, 1U);
+extern "C" void fn_029539a8(void *object) {
+    struct { const void* f8; const void* fC; } key;
+
+    void *target = ((Object *)object)->target;
+    if (target != 0) {
+        key.fC = &data_10263910;
+        key.f8 = &data_1016d65c;
+        s32 found = fn_03171cd8(target, &key.f8);
+        if (found != 0) {
+            fn_03170948((struct InferredObject *)found, 1U);
         }
     }
 }

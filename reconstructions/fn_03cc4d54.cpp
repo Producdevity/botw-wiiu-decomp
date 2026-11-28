@@ -6,27 +6,36 @@ extern "C" s32 fn_03cc71fc(void *);
 extern "C" s32 fn_03cc7c98(void *);
 extern "C" void fn_0434bda8(void *, void *);
 
-extern "C" s32 fn_03cc4d54(void *arg0) {
-    s32 var_r3;
-    void *temp_r4;
-    void *temp_r4_2;
+namespace {
+struct Object {
+    char padding_0[4];
+    void *owner;
+    char padding_8[0x28];
+    char first[0xFC];
+    void *secondResource;
+    char padding_130[0x14];
+    void *firstResource;
+    char second[1];
+};
+}
 
-    var_r3 = fn_03cc7c98((char *)arg0 + 0x30);
-    if (var_r3 == 0) {
-        var_r3 = fn_03cc71fc((char *)arg0 + 0x148);
-        if (var_r3 == 0) {
-            temp_r4 = (*(void **)((char *)(arg0) + (0x144)));
-            if (temp_r4 != 0) {
-                fn_0434bda8((*(void **)((char *)(arg0) + (4))), temp_r4);
+extern "C" s32 fn_03cc4d54(void *object) {
+    s32 result = fn_03cc7c98(((Object *)object)->first);
+    if (result == 0) {
+        result = fn_03cc71fc(((Object *)object)->second);
+        if (result == 0) {
+            void *firstResource = ((Object *)object)->firstResource;
+            if (firstResource != 0) {
+                fn_0434bda8(((Object *)object)->owner, firstResource);
             }
-            temp_r4_2 = (*(void **)((char *)(arg0) + (0x12C)));
-            if (temp_r4_2 != 0) {
-                fn_0434bda8((*(void **)((char *)(arg0) + (4))), temp_r4_2);
+            void *secondResource = ((Object *)object)->secondResource;
+            if (secondResource != 0) {
+                fn_0434bda8(((Object *)object)->owner, secondResource);
             }
-            fn_03c92f98(arg0);
-            fn_03cc48ac(arg0);
-            var_r3 = 0;
+            fn_03c92f98(object);
+            fn_03cc48ac(object);
+            result = 0;
         }
     }
-    return var_r3;
+    return result;
 }

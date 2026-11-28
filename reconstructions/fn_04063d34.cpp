@@ -7,19 +7,30 @@ extern "C" unsigned char data_1045cc14[];
 
 extern "C" s32 data_10407574;
 
-extern "C" s32 **fn_04063d34(s32 **arg0, s32 *arg1) {
-    void* const* vt1;
-    struct { s32 f8; } sp;
-    s32 **var_r31;
-    s32 temp_r30;
-    void **temp_r3;
+namespace {
+struct Allocator {
+    void *const *vtable;
+};
 
-    var_r31 = arg0;
-    temp_r30 = *arg1;
-    if ((var_r31 != 0) || (temp_r3 = (*(void ***)((char *)(*fn_0434d168(data_1045cc14)) + (0x2C))), var_r31 = ((s32 ** (*)(void **, s32))(vt1 = *(void* const**)&(*temp_r3))[5])(temp_r3, 0x10), ((var_r31 == 0) == 0))) {
-        sp.f8 = temp_r30;
-        fn_0405b640(var_r31, &sp.f8);
-        *var_r31 = &data_10407574;
+struct Context {
+    char padding_0[0x2C];
+    Allocator *allocator;
+};
+
+typedef s32 **(*AllocateFn)(Allocator *, s32);
+}
+
+extern "C" s32 **fn_04063d34(s32 **memory, s32 *source) {
+    s32 **object = memory;
+    s32 value = *source;
+    if (object == 0) {
+        Allocator *allocator = ((Context *)*fn_0434d168(data_1045cc14))->allocator;
+        object = ((AllocateFn)allocator->vtable[5])(allocator, 0x10);
     }
-    return var_r31;
+    if (object != 0) {
+        s32 argument = value;
+        fn_0405b640(object, &argument);
+        *object = &data_10407574;
+    }
+    return object;
 }

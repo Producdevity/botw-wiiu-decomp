@@ -8,18 +8,29 @@ struct StatefulEntry;
 extern "C" StatefulEntry* fn_0378af4c(void *);
 extern "C" unsigned char data_1016da20[];
 
-extern "C" void fn_0295bb34(void *arg0, s32 arg1) {
-    struct StatefulEntry *temp_r3;
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[8];
+    u8 *vtable;
+};
 
-    if (arg0 != 0) {
-        (*(u8 **)((char *)(arg0) + (0xC))) = data_1016da20;
-        temp_r3 = fn_0378af4c((*(void **)((char *)(arg0) + (0))));
-        if ((temp_r3 != 0) && ((s32) (*(u8 *)((char *)(temp_r3) + (0x54))) == 2)) {
-            fn_0378a374((s32) temp_r3, 0);
+struct EntryView {
+    char padding_0[0x54];
+    u8 state;
+};
+}
+
+extern "C" void fn_0295bb34(void *self, s32 flags) {
+    if (self != 0) {
+        ((Object *)self)->vtable = data_1016da20;
+        StatefulEntry *entry = fn_0378af4c(((Object *)self)->owner);
+        if ((entry != 0) && ((s32)((EntryView *)entry)->state == 2)) {
+            fn_0378a374((s32)entry, 0);
         }
-        fn_025e7324(arg0, 0U);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+        fn_025e7324(self, 0U);
+        if (flags & 1) {
+            fn_0308e6d0(self);
         }
     }
 }

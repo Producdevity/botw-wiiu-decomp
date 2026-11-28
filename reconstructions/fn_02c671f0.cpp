@@ -2,19 +2,26 @@ extern "C" void* fn_0330c2b0(int);
 extern "C" void fn_0378a24c(void*, void*);
 extern "C" int fn_0378dce8(int, void*, void*);
 
-extern "C" void fn_02c671f0(int* arg0) {
-    int temp_r3_3;
-    void* temp_r3;
-    void* temp_r3_2;
+namespace {
+struct VirtualObject {
+    char padding_0[0xE8];
+    void* const* vtable;
+};
+struct Provider {
+    char padding_0[0xFC];
+    void* const* vtable;
+};
+}
 
-    temp_r3 = fn_0330c2b0(*arg0);
-    if (temp_r3 != 0) {
-        temp_r3_2 = (*(void*(**)())((char*)((*(void**)((char*)temp_r3 + 232))) + 1052))();
-        if (temp_r3_2 != 0) {
-            temp_r3_3 = (*(int (**)())((char*)((*(void**)((char*)temp_r3_2 + 252))) + 324))();
-            if (temp_r3_3 != 0) {
-                fn_0378dce8(temp_r3_3 + 1352, 0, 0);
-                fn_0378a24c((void*)(temp_r3_3), 0);
+extern "C" void fn_02c671f0(int* handle) {
+    void* instance = fn_0330c2b0(*handle);
+    if (instance != 0) {
+        Provider* provider = ((Provider*(*)(void*))((VirtualObject*)instance)->vtable[263])(instance);
+        if (provider != 0) {
+            int target = ((int (*)(void*))provider->vtable[81])(provider);
+            if (target != 0) {
+                fn_0378dce8(target + 1352, 0, 0);
+                fn_0378a24c((void*)target, 0);
             }
         }
     }

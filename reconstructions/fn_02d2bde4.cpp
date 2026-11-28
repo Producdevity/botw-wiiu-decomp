@@ -11,19 +11,27 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_101e1cbc;
 
-extern "C" void fn_02d2bde4(void *arg0) {
-    struct { s32 f8; } sp;
-    void *temp_r3;
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0x10];
+    u16 id;
+};
+}
 
-    temp_r3 = fn_037966a8((*(void **)((char *)(arg0) + (0))));
-    if (temp_r3 != 0) {
-        sp.f8 = 3;
-        fn_0344a898(temp_r3, &sp.f8);
+extern "C" void fn_02d2bde4(void *object) {
+    struct { s32 f8; } request;
+    void *target;
+
+    target = fn_037966a8(((Object *)object)->owner);
+    if (target != 0) {
+        request.f8 = 3;
+        fn_0344a898(target, &request.f8);
     }
-    fn_02d816bc((*(void **)((char *)(arg0) + (0))));
-    if (fn_037b7cac(arg0) != 0) {
-        fn_037b7e9c(arg0, (u32) (*(u16 *)((char *)(arg0) + (0x14))), 0);
+    fn_02d816bc(((Object *)object)->owner);
+    if (fn_037b7cac(object) != 0) {
+        fn_037b7e9c(object, (u32)((Object *)object)->id, 0);
         return;
     }
-    fn_037b8284(arg0, &data_101e1cbc, 0);
+    fn_037b8284(object, &data_101e1cbc, 0);
 }

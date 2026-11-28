@@ -8,19 +8,27 @@ extern "C" void fn_039883bc(DualInterfaceObject *, unsigned);
 
 extern "C" s32 data_1012d120;
 
-extern "C" void fn_0278ba5c(void *arg0, s32 arg1) {
-    void *temp_r29;
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[8];
+    s32 *vtable;
+    char padding_10[0x198];
+    char member[1];
+};
+}
 
-    if (arg0 != 0) {
-        temp_r29 = (char *)arg0 + 0x1A8;
-        (*(s32 **)((char *)(arg0) + (0xC))) = &data_1012d120;
-        fn_037988ac((*(void **)((char *)(arg0) + (0))), temp_r29);
-        if (temp_r29 != 0) {
-            fn_039883bc((DualInterfaceObject *)((char *)temp_r29 + 0x18), 2U);
+extern "C" void fn_0278ba5c(void *object, s32 flags) {
+    if (object != 0) {
+        void *member = ((Object *)object)->member;
+        ((Object *)object)->vtable = &data_1012d120;
+        fn_037988ac(((Object *)object)->owner, member);
+        if (member != 0) {
+            fn_039883bc((DualInterfaceObject *)((char *)member + 0x18), 2U);
         }
-        fn_027b8364(arg0, 0U);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+        fn_027b8364(object, 0U);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

@@ -1,23 +1,34 @@
-typedef int s32;
-typedef float f32;
-
 extern "C" void* fn_02c0378c(void* holder);
 
-extern "C" s32 fn_02bd8a30(void *arg0, void *arg1) {
-    void *temp_r3;
+namespace {
+struct Source {
+    char padding_0[0x9E8];
+    float position[3];
+};
+struct Owner {
+    char padding_0[0x10];
+    char holder;
+    char padding_11[0x2F];
+    float first[3];
+    float second[3];
+    float third[3];
+};
+}
 
-    temp_r3 = fn_02c0378c((char *)arg0 + 0x10);
-    if (temp_r3 == 0) {
+extern "C" int fn_02bd8a30(void *object, void *context) {
+    void *source = fn_02c0378c(&((Owner*)object)->holder);
+    if (source == 0) {
         return 0;
     }
-    (*(f32 *)((char *)(arg0) + (0x40))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9E8)));
-    (*(f32 *)((char *)(arg0) + (0x44))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9EC)));
-    (*(f32 *)((char *)(arg0) + (0x48))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9F0)));
-    (*(f32 *)((char *)(arg0) + (0x4C))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9E8)));
-    (*(f32 *)((char *)(arg0) + (0x50))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9EC)));
-    (*(f32 *)((char *)(arg0) + (0x54))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9F0)));
-    (*(f32 *)((char *)(arg0) + (0x58))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9E8)));
-    (*(f32 *)((char *)(arg0) + (0x5C))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9EC)));
-    (*(f32 *)((char *)(arg0) + (0x60))) = (f32) (*(f32 *)((char *)(temp_r3) + (0x9F0)));
+    float *position = ((Source*)source)->position;
+    ((Owner*)object)->first[0] = position[0];
+    ((Owner*)object)->first[1] = position[1];
+    ((Owner*)object)->first[2] = position[2];
+    ((Owner*)object)->second[0] = position[0];
+    ((Owner*)object)->second[1] = position[1];
+    ((Owner*)object)->second[2] = position[2];
+    ((Owner*)object)->third[0] = position[0];
+    ((Owner*)object)->third[1] = position[1];
+    ((Owner*)object)->third[2] = position[2];
     return 1;
 }

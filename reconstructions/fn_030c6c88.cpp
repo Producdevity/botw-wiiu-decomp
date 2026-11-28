@@ -8,24 +8,29 @@ extern "C" void fn_030c77d0(void*);
 extern "C" void fn_03c1942c(void *);
 extern "C" unsigned char fn_03c2dabc(void);
 
-extern "C" void fn_030c6c88(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
-    void *temp_r31;
+namespace {
+struct Object {
+    char padding_0[4];
+    char member[0x178];
+    void *handler;
+    char padding_180[4];
+    char lock[0x3C];
+    u8 locked;
+};
+}
 
-    if ((fn_030c66dc(arg0, arg1, arg2, arg3, arg4) != 0) && (fn_03c2dabc() != 0)) {
-        if ((s32) (*(u8 *)((char *)(arg0) + (0x1C0))) != 0) {
-            temp_r31 = (char *)arg0 + 0x184;
-            fn_030bb668(temp_r31);
-            fn_03c1942c((char *)arg0 + 4);
-            fn_030bb69c(temp_r31);
-            if ((void *) (*(void **)((char *)(arg0) + (0x17C))) != 0) {
-                goto block_6;
-            }
+extern "C" void fn_030c6c88(void *object, void *first, void *second, void *third, void *fourth) {
+    if ((fn_030c66dc(object, first, second, third, fourth) != 0) && (fn_03c2dabc() != 0)) {
+        if ((s32)((Object *)object)->locked != 0) {
+            void *lock = ((Object *)object)->lock;
+            fn_030bb668(lock);
+            fn_03c1942c(((Object *)object)->member);
+            fn_030bb69c(lock);
         } else {
-            fn_03c1942c((char *)arg0 + 4);
-            if ((void *) (*(void **)((char *)(arg0) + (0x17C))) != 0) {
-block_6:
-                fn_030c77d0((*(void **)((char *)(arg0) + (0x17C))));
-            }
+            fn_03c1942c(((Object *)object)->member);
+        }
+        if (((Object *)object)->handler != 0) {
+            fn_030c77d0(((Object *)object)->handler);
         }
     }
 }

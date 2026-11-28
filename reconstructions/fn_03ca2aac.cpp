@@ -2,28 +2,34 @@ typedef unsigned char u8;
 typedef int s32;
 typedef unsigned int u32;
 
-extern "C" void fn_03ca2aac(void *arg0, u32 arg1, s32 arg2) {
-    s32 var_r5;
+namespace {
+struct Object {
+    char padding_0[0x42C];
+    u8 first;
+    u8 second;
+    u8 third;
+};
+}
 
-    var_r5 = arg2;
-    switch (arg1) {
+extern "C" void fn_03ca2aac(void *object, u32 index, s32 value) {
+    switch (index) {
     case 1:
-        if (var_r5 != 0) {
-            var_r5 = (s32) (*(u8 *)((char *)(arg0) + (0x42C)));
+        if (value != 0) {
+            value = ((Object *)object)->first;
         }
-        (*(u8 *)((char *)(arg0) + (0x42C))) = (u8) var_r5;
+        ((Object *)object)->first = (u8)value;
         return;
     case 2:
-        if (var_r5 != 0) {
-            var_r5 = (s32) (*(u8 *)((char *)(arg0) + (0x42D)));
+        if (value != 0) {
+            value = ((Object *)object)->second;
         }
-        (*(u8 *)((char *)(arg0) + (0x42D))) = (u8) var_r5;
+        ((Object *)object)->second = (u8)value;
         return;
     case 3:
-        if (var_r5 != 0) {
-            var_r5 = (s32) (*(u8 *)((char *)(arg0) + (0x42E)));
+        if (value != 0) {
+            value = ((Object *)object)->third;
         }
-        (*(u8 *)((char *)(arg0) + (0x42E))) = (u8) var_r5;
+        ((Object *)object)->third = (u8)value;
         return;
     }
 }

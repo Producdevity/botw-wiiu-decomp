@@ -1,21 +1,24 @@
-typedef unsigned short u16;
-typedef int s32;
-
 extern "C" void* fn_0308e578(unsigned);
 extern "C" void fn_03a26258(void*);
 extern "C" void fn_03a2706c(void*, void*, void*, void*);
 
-extern "C" s32 data_1035b7c4;
+extern "C" int data_1035b7c4;
 
-extern "C" void *fn_03a29a78(void *arg0, void *arg1, void *arg2, void *arg3) {
-    void *var_r31;
+namespace {
+struct Object {
+    char padding_0[0x10];
+    int* vtable;
+    char padding_14[0xA];
+    unsigned short flags;
+};
+}
 
-    var_r31 = arg0;
-    if ((var_r31 != 0) || (var_r31 = fn_0308e578(0x3CU), ((var_r31 == 0) == 0))) {
-        fn_03a26258(var_r31);
-        (*(s32 **)((char *)(var_r31) + (0x10))) = &data_1035b7c4;
-        fn_03a2706c(var_r31, arg1, arg2, arg3);
-        (*(u16 *)((char *)(var_r31) + (0x1E))) = (u16) ((*(u16 *)((char *)(var_r31) + (0x1E))) | 0x20);
+extern "C" void *fn_03a29a78(void *object, void *first, void *second, void *third) {
+    if ((object != 0) || (object = fn_0308e578(0x3CU), object != 0)) {
+        fn_03a26258(object);
+        ((Object*)object)->vtable = &data_1035b7c4;
+        fn_03a2706c(object, first, second, third);
+        ((Object*)object)->flags |= 0x20;
     }
-    return var_r31;
+    return object;
 }

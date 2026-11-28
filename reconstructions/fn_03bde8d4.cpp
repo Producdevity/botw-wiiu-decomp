@@ -1,20 +1,26 @@
-typedef unsigned short u16;
-typedef int s32;
+namespace {
+struct Header {
+    char padding_0[6];
+    unsigned short version;
+    char padding_8[0xC];
+    int offsetA;
+    int offsetB;
+};
+}
 
-extern "C" void *fn_03bde8d4(void **arg0) {
-    u16 temp_r0;
-    void *temp_r12;
+extern "C" void *fn_03bde8d4(void **holder) {
+    unsigned short version;
+    Header *header;
 
-    temp_r12 = *arg0;
-    if (temp_r12 != 0) {
-        temp_r0 = (*(u16 *)((char *)(temp_r12) + (6)));
-        if (temp_r0 >= 0x300U) {
-            return (char *)temp_r12 + (*(s32 *)((char *)(temp_r12) + (0x18))) + 8;
+    header = (Header*)*holder;
+    if (header != 0) {
+        version = header->version;
+        if (version >= 0x300U) {
+            return (char *)header + header->offsetB + 8;
         }
-        if ((s32) temp_r0 == 0x100) {
-            return (char *)temp_r12 + (*(s32 *)((char *)(temp_r12) + (0x14))) + 8;
+        if (version == 0x100) {
+            return (char *)header + header->offsetA + 8;
         }
-        
         return 0;
     }
     return 0;

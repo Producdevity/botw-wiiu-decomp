@@ -3,25 +3,36 @@ typedef unsigned int u32;
 extern "C" void* fn_02c1974c(void *, int);
 extern "C" void* fn_037b4dd0(void);
 
-extern "C" void *fn_0247c98c(void *arg0) {
-    u32 temp_r0;
-    void *temp_r3;
-    void *var_r3;
+namespace {
+struct Owner {
+    char padding_0[0x488];
+    void *fallback;
+};
 
-    temp_r0 = (*(u32 *)((char *)(arg0) + (0x40)));
-    switch (temp_r0) {
+struct Object {
+    char padding_0[8];
+    Owner *owner;
+    char padding_c[0x34];
+    u32 kind;
+};
+}
+
+extern "C" void *fn_0247c98c(void *object) {
+    void *result;
+
+    switch (((Object *)object)->kind) {
     case 0:
-        temp_r3 = fn_02c1974c((*(void **)((char *)(arg0) + (8))), 0);
-        if (temp_r3 != 0) {
-            return (char *)temp_r3 + 0xB0;
+        result = fn_02c1974c(((Object *)object)->owner, 0);
+        if (result != 0) {
+            return (char *)result + 0xB0;
         }
         return fn_037b4dd0();
     case 2:
-        var_r3 = (*(void **)((char *)((*(void **)((char *)(arg0) + (8)))) + (0x488)));
-        if (var_r3 == 0) {
-            var_r3 = fn_037b4dd0();
+        result = ((Object *)object)->owner->fallback;
+        if (result == 0) {
+            result = fn_037b4dd0();
         }
-        return var_r3;
+        return result;
     default:
         return fn_037b4dd0();
     }

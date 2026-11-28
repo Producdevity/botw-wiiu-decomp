@@ -1,21 +1,19 @@
-typedef int s32;
+extern "C" void fn_03190464(int index, int count, int *previous, int *next, int *current, int *following) {
+    int nextIndex;
 
-extern "C" void fn_03190464(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3, s32 *arg4, s32 *arg5) {
-    s32 var_r0;
-
-    if (arg0 == 0) {
-        *arg2 = 0;
-        *arg3 = 1;
-        *arg4 = 0;
-        *arg5 = 2;
+    if (index == 0) {
+        *previous = 0;
+        *next = 1;
+        *current = 0;
+        *following = 2;
         return;
     }
-    var_r0 = arg0 + 1;
-    *arg2 = arg0 - 1;
-    *arg3 = var_r0;
-    *arg4 = arg0;
-    if (arg0 < (s32) (arg1 - 1)) {
-        var_r0 = arg0 + 2;
+    nextIndex = index + 1;
+    *previous = index - 1;
+    *next = nextIndex;
+    *current = index;
+    if (index < count - 1) {
+        nextIndex = index + 2;
     }
-    *arg5 = var_r0;
+    *following = nextIndex;
 }

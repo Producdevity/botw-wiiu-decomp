@@ -1,21 +1,33 @@
-typedef int s32;
-
-struct ListLink;
-extern "C" void fn_0308e808(ListLink *);
+extern "C" void fn_0308e808(struct ListLink *);
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 extern "C" void fn_036d2f2c(void*, void*);
 extern "C" void fn_036de330(void*, void*);
 
-extern "C" void fn_036d2f94(void *arg0, void *arg1) {
-    void *temp_r29;
+namespace {
+struct Owner {
+    char padding_0[0x50];
+    char lock;
+    char padding_51[0x1147];
+    char list;
+    char padding_1199[0x21A0 - 0x1199];
+    int count;
+    int linkOffset;
+};
+struct Node {
+    char padding_0[0x2C];
+    unsigned flags;
+};
+}
 
-    temp_r29 = (char *)arg0 + 0x50;
-    fn_030bb668(temp_r29);
-    fn_0308e808((ListLink *)((char *)arg1 + (*(s32 *)((char *)(arg0) + (0x21A4)))));
-    (*(s32 *)((char *)(arg0) + (0x21A0))) = (s32) ((*(s32 *)((char *)(arg0) + (0x21A0))) - 1);
-    fn_036de330((char *)arg0 + 0x1198, arg1);
-    (*(s32 *)((char *)(arg1) + (0x2C))) = (s32) ((*(s32 *)((char *)(arg1) + (0x2C))) & 0xBFFFFFFF);
-    fn_036d2f2c(arg0, arg1);
-    fn_030bb69c(temp_r29);
+extern "C" void fn_036d2f94(void *object, void *node) {
+    Owner *owner = (Owner*)object;
+    void *lock = &owner->lock;
+    fn_030bb668(lock);
+    fn_0308e808((ListLink *)((char *)node + owner->linkOffset));
+    owner->count -= 1;
+    fn_036de330(&owner->list, node);
+    ((Node*)node)->flags &= 0xBFFFFFFF;
+    fn_036d2f2c(object, node);
+    fn_030bb69c(lock);
 }
