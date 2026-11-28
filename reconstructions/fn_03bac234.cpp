@@ -7,10 +7,10 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03bac234(void *arg0) {
-    void *child = ((Owner *)arg0)->child;
+extern "C" void fn_03bac234(void *self) {
+    void *child = static_cast<Owner *>(self)->child;
     if (child != 0) {
-        fn_03bc2170(child, arg0);
-        ((Owner *)arg0)->child = 0;
+        fn_03bc2170(child, self);
+        static_cast<Owner *>(self)->child = 0;
     }
 }

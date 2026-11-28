@@ -19,14 +19,14 @@ struct Parent {
 
 extern "C" void* fn_03bbe6f4(void*);
 
-extern "C" void fn_03bbfa3c(void* arg0) {
-    Child* child = ((Parent*)arg0)->first;
-    ((Parent*)arg0)->value = 0;
+extern "C" void fn_03bbfa3c(void* self) {
+    Child* child = static_cast<Parent*>(self)->first;
+    static_cast<Parent*>(self)->value = 0;
     while (child != 0) {
         int value = child->config->value;
         if (child->config->value != 0) {
-            ((Parent*)arg0)->value = value;
+            static_cast<Parent*>(self)->value = value;
         }
-        child = (Child*)fn_03bbe6f4(child);
+        child = static_cast<Child*>(fn_03bbe6f4(child));
     }
 }

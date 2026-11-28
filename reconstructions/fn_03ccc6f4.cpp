@@ -1,11 +1,11 @@
-extern "C" int fn_03ccc6f4(int arg0, int arg1) {
-    int remainder = arg0;
+extern "C" int fn_03ccc6f4(int dividend, int divisor) {
+    int remainder = dividend;
     int quotient = 0;
-    if (remainder >= arg1) {
+    if (remainder >= divisor) {
         do {
-            remainder -= arg1;
+            remainder -= divisor;
             quotient += 1;
-        } while (remainder >= arg1);
+        } while (remainder >= divisor);
     }
     return quotient;
 }

@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_03bd5c20(void* arg0) {
-    Object* object = (Object*)arg0;
+extern "C" void fn_03bd5c20(void* self) {
+    Object* object = static_cast<Object*>(self);
     int counter = object->counter;
     if (counter > 0) {
         object->counter = counter - 1;

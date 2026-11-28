@@ -4,7 +4,7 @@ extern "C" void fn_04158488(void);
 
 extern "C" unsigned char data_105c9af4;
 
-extern "C" int fn_04121b54(void *arg0, void *arg1, void *arg2, void *arg3) {
+extern "C" int fn_04121b54(void *first, void *second, void *third, void *fourth) {
     if (data_105c9af4 == 0) {
         fn_04158488();
         fn_04157ff0(&data_105c9af4);
@@ -12,6 +12,6 @@ extern "C" int fn_04121b54(void *arg0, void *arg1, void *arg2, void *arg3) {
             return 0;
         }
     }
-    fn_04129ba0(arg0, arg1, arg2, arg3);
+    fn_04129ba0(first, second, third, fourth);
     return 1;
 }

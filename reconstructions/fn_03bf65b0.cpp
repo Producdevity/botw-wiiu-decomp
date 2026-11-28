@@ -1,5 +1,3 @@
-typedef unsigned int u32;
-
 extern "C" unsigned fn_03bf65a0(void *);
 extern "C" unsigned fn_03bf65a8(void *);
 extern "C" void fn_0434ac38(void *, unsigned int);
@@ -7,14 +5,14 @@ extern "C" void fn_0434ac38(void *, unsigned int);
 namespace {
 struct Object {
     char padding_0[0x20];
-    u32 first_size;
+    unsigned int first_size;
     char padding_24[4];
-    u32 second_size;
+    unsigned int second_size;
 };
 }
 
-extern "C" void fn_03bf65b0(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_03bf65b0(void *self) {
+    Object *object = static_cast<Object *>(self);
     void *second;
 
     fn_0434ac38((void *)fn_03bf65a0(object), object->first_size);

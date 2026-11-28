@@ -6,12 +6,12 @@ struct Source {
 };
 }
 
-extern "C" int fn_03cab8e8(void* arg0, int* arg1, int* arg2) {
-    if (arg1 == 0 || arg2 == 0) {
+extern "C" int fn_03cab8e8(void* self, int* firstOut, int* secondOut) {
+    if (firstOut == 0 || secondOut == 0) {
         return 0xFF676984;
     }
-    Source* source = (Source*)arg0;
-    *arg1 = source->first;
-    *arg2 = source->second;
+    Source* source = static_cast<Source*>(self);
+    *firstOut = source->first;
+    *secondOut = source->second;
     return 0;
 }

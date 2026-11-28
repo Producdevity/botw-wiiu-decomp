@@ -10,10 +10,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_03baa3e8(void *arg0, void *arg1) {
-    Object *object = static_cast<Object *>(arg0);
-    object->source = arg1;
-    if (arg1 != 0) {
-        object->value = static_cast<Source *>(arg1)->value;
+extern "C" void fn_03baa3e8(void *self, void *source) {
+    Object *object = static_cast<Object *>(self);
+    object->source = source;
+    if (source != 0) {
+        object->value = static_cast<Source *>(source)->value;
     }
 }

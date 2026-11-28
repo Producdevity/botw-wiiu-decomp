@@ -8,8 +8,8 @@ struct Object {
 
 extern "C" void fn_040651ec();
 
-extern "C" void fn_040651fc(void* arg0, int value) {
-    Object* object = (Object*)arg0;
+extern "C" void fn_040651fc(void* self, int value) {
+    Object* object = static_cast<Object*>(self);
     object->value = value;
     object->handler = fn_040651ec;
 }

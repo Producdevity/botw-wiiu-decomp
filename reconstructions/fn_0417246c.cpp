@@ -16,17 +16,17 @@ struct ThreadAllocatorContext_ {
     Allocator* allocator;
 };
 inline void* allocateFromThread(int size) {
-    Allocator* allocator = ((ThreadAllocatorContext_*) *fn_0434d168(data_1045cc14))->allocator;
+    Allocator* allocator = reinterpret_cast<ThreadAllocatorContext_*>(*fn_0434d168(data_1045cc14))->allocator;
     return allocator->vtable->allocate(allocator, size);
 }
 }
 
-extern "C" void fn_0417246c(int* arg0) {
-    int* value = arg0;
-    if (value == 0) {
-        value = (int*) allocateFromThread(4);
+extern "C" void fn_0417246c(int* memory) {
+    int* object = memory;
+    if (object == 0) {
+        object = (int*) allocateFromThread(4);
     }
-    if (value != 0) {
-        *value = 2;
+    if (object != 0) {
+        *object = 2;
     }
 }

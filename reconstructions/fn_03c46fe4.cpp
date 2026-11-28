@@ -9,9 +9,8 @@ struct Object {
 };
 }
 
-extern "C" unsigned short fn_03c46fe4(void *arg0) {
-    Object *object = (Object *) arg0;
-    Inner *inner = object->inner;
+extern "C" unsigned short fn_03c46fe4(void *self) {
+    Inner *inner = static_cast<Object *>(self)->inner;
     if (inner != 0) {
         return inner->value;
     }

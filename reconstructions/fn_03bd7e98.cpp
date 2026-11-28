@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" int fn_03bd7e98(void* arg0, int index) {
-    if (index < 0x10 && !(((Object*)arg0)->mask & (1 << index))) {
+extern "C" int fn_03bd7e98(void* object, int index) {
+    if (index < 0x10 && !(static_cast<Object*>(object)->mask & (1 << index))) {
         return 0;
     }
     return 1;

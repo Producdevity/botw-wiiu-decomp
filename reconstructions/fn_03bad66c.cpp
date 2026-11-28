@@ -6,8 +6,8 @@ struct Object {
 };
 }
 
-extern "C" unsigned char fn_03bad66c(void *arg0, int index) {
-    Object *object = static_cast<Object *>(arg0);
+extern "C" unsigned char fn_03bad66c(void *self, int index) {
+    Object *object = static_cast<Object *>(self);
     if (index < 0 || index >= object->count) {
         return 0;
     }
