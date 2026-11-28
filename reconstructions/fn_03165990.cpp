@@ -1,13 +1,20 @@
-typedef int s32;
-
 extern "C" void fn_037e5f68(void *);
 extern "C" void fn_037efe7c(void*, void*);
 
 extern "C" void *data_1047c3c8;
 
-extern "C" void fn_03165990(void *arg0) {
-    if (((s32) (*(s32 *)((char *)(arg0) + (0xB0))) != 0) || ((s32) (*(s32 *)((char *)(arg0) + (0xAC))) != 0)) {
-        fn_037efe7c(data_1047c3c8, (char *)arg0 + 0xAC);
+namespace {
+struct Object {
+    char padding_0[0x7C];
+    char member_7c[0x30];
+    int value_ac;
+    int value_b0;
+};
+}
+
+extern "C" void fn_03165990(void *object) {
+    if (((Object *) object)->value_b0 != 0 || ((Object *) object)->value_ac != 0) {
+        fn_037efe7c(data_1047c3c8, &((Object *) object)->value_ac);
     }
-    fn_037e5f68((char *)arg0 + 0x7C);
+    fn_037e5f68(((Object *) object)->member_7c);
 }

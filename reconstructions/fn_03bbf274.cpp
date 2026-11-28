@@ -1,13 +1,35 @@
-extern "C" void fn_03bbf274(void* object, int value) {
-    void* child;
-    void* node;
+namespace {
+struct Child;
+struct ChildClass {
+    char padding_0[0x44];
+    void (*visit)(Child *, int);
+};
+struct Child {
+    char padding_0[8];
+    ChildClass *child_class;
+};
+struct Node {
+    char padding_0[8];
+    Node *next;
+    char padding_c[4];
+    Child *child;
+};
+struct Object {
+    char padding_0[0x40];
+    Node *first;
+};
+}
 
-    node = *(void**)((char*)object + 0x40);
+extern "C" void fn_03bbf274(void* object, int value) {
+    Child* child;
+    Node* node;
+
+    node = ((Object *) object)->first;
     if (node != 0) {
         do {
-            child = *(void**)((char*)node + 0x10);
-            (*(void (**)(void*, int))((char*)*(void**)((char*)child + 8) + 0x44))(child, value);
-            node = *(void**)((char*)node + 8);
+            child = node->child;
+            child->child_class->visit(child, value);
+            node = node->next;
         } while (node != 0);
     }
 }

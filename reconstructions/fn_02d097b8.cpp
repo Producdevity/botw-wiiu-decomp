@@ -1,14 +1,31 @@
 extern "C" void fn_02b3df00(void*);
 extern "C" void fn_03467dbc(unsigned char*);
+namespace {
+typedef unsigned char *(*GetTarget)(void *);
+struct Table {
+    char padding_0[0x16C];
+    GetTarget getTarget;
+};
+struct Owner {
+    char padding_0[0xE8];
+    Table *table;
+};
+struct Object {
+    void *owner;
+    char padding_4[0x2C];
+    int value_30;
+};
+}
+
 extern "C" void fn_02d097b8(void* self)
 {
-    void* owner = *(void**)((char*)self + 0);
-    unsigned char* (**slot)(void*) = (unsigned char* (**)(void*))((char*)*(void**)((char*)owner + 0xE8) + 0x16C);
-    unsigned char* target = (*slot)(owner);
+    void *owner = ((Object *)self)->owner;
+    Table *table = ((Owner *)owner)->table;
+    GetTarget *slot = &table->getTarget;
+    unsigned char *target = (*slot)(owner);
     if (target != 0) {
-        char* object = (char*)self;
         fn_03467dbc(target);
-        fn_02b3df00(object + 0x30);
-        *(int*)(object + 0x30) = 0;
+        fn_02b3df00(&((Object *)self)->value_30);
+        ((Object *)self)->value_30 = 0;
     }
 }
