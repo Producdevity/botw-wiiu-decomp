@@ -26,16 +26,16 @@ struct Dest {
 };
 }
 
-extern "C" void fn_03c23ccc(void* arg0, void* arg1) {
-    ((Dest*)arg1)->e = ((Source*)arg0)->field_2F0;
-    ((Dest*)arg1)->a = ((Source*)arg0)->field_16C;
-    Link* link = ((Source*)arg0)->link;
+extern "C" void fn_03c23ccc(void* source, void* dest) {
+    static_cast<Dest*>(dest)->e = static_cast<Source*>(source)->field_2F0;
+    static_cast<Dest*>(dest)->a = static_cast<Source*>(source)->field_16C;
+    Link* link = static_cast<Source*>(source)->link;
     if (link != 0) {
-        ((Dest*)arg1)->b = link->field_18;
-        ((Dest*)arg1)->c = link->field_10;
-        ((Dest*)arg1)->d = ((Source*)arg0)->field_2DC;
+        static_cast<Dest*>(dest)->b = link->field_18;
+        static_cast<Dest*>(dest)->c = link->field_10;
+        static_cast<Dest*>(dest)->d = static_cast<Source*>(source)->field_2DC;
         return;
     }
-    ((Dest*)arg1)->b = 0;
-    ((Dest*)arg1)->d = ((Source*)arg0)->field_2DC;
+    static_cast<Dest*>(dest)->b = 0;
+    static_cast<Dest*>(dest)->d = static_cast<Source*>(source)->field_2DC;
 }

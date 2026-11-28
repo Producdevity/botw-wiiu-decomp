@@ -12,13 +12,13 @@ struct Source {
 };
 }
 
-extern "C" int fn_03cb3464(void* arg0, void* arg1) {
-    if (arg1 == 0) {
+extern "C" int fn_03cb3464(void* dest, void* source) {
+    if (source == 0) {
         return 0xFF676984;
     }
-    Pair* out = (Pair*)arg0;
-    Source* source = (Source*)arg1;
-    out->first = source->first;
-    out->second = source->second;
+    Pair* out = static_cast<Pair*>(dest);
+    Source* in = static_cast<Source*>(source);
+    out->first = in->first;
+    out->second = in->second;
     return 0;
 }

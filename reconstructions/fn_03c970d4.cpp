@@ -6,14 +6,14 @@ struct Object {
 };
 }
 
-extern "C" void fn_03c970d4(void *arg0, unsigned int arg1, signed char arg2) {
-    Object *object = (Object *) arg0;
-    switch (arg1) {
+extern "C" void fn_03c970d4(void *self, unsigned int slot, signed char value) {
+    Object *object = static_cast<Object *>(self);
+    switch (slot) {
     case 2:
-        object->flag_55 = arg2;
+        object->flag_55 = value;
         return;
     case 3:
-        object->flag_56 = arg2;
+        object->flag_56 = value;
         return;
     }
 }

@@ -1,12 +1,12 @@
-extern "C" int fn_03c758b4(int arg0) {
-    if (arg0 <= 0) {
+extern "C" int fn_03c758b4(int value) {
+    if (value <= 0) {
         return 5000;
     }
-    if (arg0 > 100) {
+    if (value > 100) {
         return 0;
     }
-    if (arg0 < 50) {
-        return 5000 / arg0;
+    if (value < 50) {
+        return 5000 / value;
     }
-    return 200 - arg0 * 2;
+    return 200 - value * 2;
 }

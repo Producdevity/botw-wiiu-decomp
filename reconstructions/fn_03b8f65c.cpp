@@ -10,7 +10,6 @@ struct Object {
 };
 }
 
-extern "C" int fn_03b8f65c(void* arg0) {
-    Object* object = (Object*)arg0;
-    return (object->vtable->getFlags() >> 2) & 1;
+extern "C" int fn_03b8f65c(void* object) {
+    return (static_cast<Object*>(object)->vtable->getFlags() >> 2) & 1;
 }

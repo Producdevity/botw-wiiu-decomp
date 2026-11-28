@@ -1,6 +1,6 @@
-extern "C" int fn_03c21bb4(unsigned int arg0) {
+extern "C" int fn_03c21bb4(unsigned int kind) {
     int result = 2;
-    switch (arg0) {
+    switch (kind) {
     case 1:
         result = 0;
         break;

@@ -5,17 +5,17 @@ struct Object {
 };
 }
 
-extern "C" void fn_03cafde4(void *arg0, unsigned int arg1, int arg2) {
-    Object *object = (Object *) arg0;
-    switch (arg1) {
+extern "C" void fn_03cafde4(void *self, unsigned int slot, int value) {
+    Object *object = static_cast<Object *>(self);
+    switch (slot) {
     case 1:
-        object->values[0] = arg2;
+        object->values[0] = value;
         return;
     case 2:
-        object->values[1] = arg2;
+        object->values[1] = value;
         return;
     case 3:
-        object->values[2] = arg2;
+        object->values[2] = value;
         return;
     }
 }

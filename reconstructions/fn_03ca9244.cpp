@@ -1,20 +1,18 @@
-typedef int s32;
-
 extern "C" int fn_03ca2fc4(void*, void*);
 
 namespace {
 struct Entry {
     char padding_0[0x388];
-    s32 id;
+    int id;
 };
 }
 
-extern "C" s32 fn_03ca9244(void *arg0, void *arg1) {
+extern "C" int fn_03ca9244(void *key, void *table) {
     Entry *entry;
-    s32 result;
+    int result;
 
     result = -1;
-    entry = (Entry *)fn_03ca2fc4(arg1, arg0);
+    entry = (Entry *)fn_03ca2fc4(table, key);
     if (entry != 0) {
         result = entry->id;
     }

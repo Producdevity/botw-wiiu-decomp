@@ -1,14 +1,35 @@
 extern "C" void fn_021cce40(void*);
+
+namespace {
+struct Target {
+    char padding_0[0x12];
+    unsigned char flags;
+};
+
+struct Owner {
+    char padding_0[0x1C];
+    int linked;
+    char padding_20[4];
+    Target** targets;
+};
+
+struct Object {
+    char padding_0[0x330];
+    Owner* owner;
+};
+}
+
 extern "C" void fn_0233f870(void** self)
 {
     fn_021cce40(self);
-    char* owner = *(char**)((char*)*self + 0x330);
+    Owner* owner = static_cast<Object*>(*self)->owner;
     if (owner != 0) {
-        char* target = 0;
-        if (*(int*)(owner + 0x1C) != 0) {
-            owner = *(char**)(owner + 0x24);
-            target = *(char**)owner;
+        Target** targets = 0;
+        Target* target = 0;
+        if (owner->linked != 0) {
+            targets = owner->targets;
+            target = *targets;
         }
-        *(unsigned char*)(target + 0x12) |= 0x20;
+        target->flags |= 0x20;
     }
 }

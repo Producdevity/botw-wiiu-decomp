@@ -5,12 +5,12 @@ struct Range {
 };
 }
 
-extern "C" void fn_03bc83f4(void *arg0, int arg1) {
-    if (arg1 == 0) {
-        ((Range *) arg0)->min = 0;
-        ((Range *) arg0)->max = 0x7FFFFFFF;
+extern "C" void fn_03bc83f4(void *range, int signedRange) {
+    if (signedRange == 0) {
+        static_cast<Range *>(range)->min = 0;
+        static_cast<Range *>(range)->max = 0x7FFFFFFF;
         return;
     }
-    ((Range *) arg0)->min = 0x80000000;
-    ((Range *) arg0)->max = -1;
+    static_cast<Range *>(range)->min = 0x80000000;
+    static_cast<Range *>(range)->max = -1;
 }

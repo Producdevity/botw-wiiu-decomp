@@ -1,5 +1,3 @@
-typedef int s32;
-
 struct ThreadAllocatorContext;
 extern "C" ThreadAllocatorContext** fn_0434d168(void *);
 extern "C" unsigned char data_1045cc14[];
@@ -9,17 +7,17 @@ struct Allocator {
     void* const* vtable;
 };
 
-struct Context {
+struct ThreadContext {
     unsigned char padding_0[0x2C];
     Allocator *allocator;
 };
 }
 
-extern "C" void fn_0415848c(s32 arg0) {
+extern "C" void fn_0415848c(int object) {
     Allocator *allocator;
 
-    if (arg0 == 0) {
-        allocator = ((Context *)*fn_0434d168(data_1045cc14))->allocator;
-        ((s32 (*)(Allocator *, s32))allocator->vtable[5])(allocator, 8);
+    if (object == 0) {
+        allocator = reinterpret_cast<ThreadContext *>(*fn_0434d168(data_1045cc14))->allocator;
+        ((int (*)(Allocator *, int))allocator->vtable[5])(allocator, 8);
     }
 }

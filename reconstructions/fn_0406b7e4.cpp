@@ -12,11 +12,11 @@ struct Owner {
 };
 }
 
-extern "C" void fn_0406b7e4(void* arg0, signed char arg1) {
-    Owner* owner = (Owner*)arg0;
+extern "C" void fn_0406b7e4(void* self, signed char value) {
+    Owner* owner = static_cast<Owner*>(self);
     Linked* linked = owner->linked;
-    owner->value = arg1;
+    owner->value = value;
     if (linked != 0) {
-        linked->value = arg1;
+        linked->value = value;
     }
 }

@@ -10,33 +10,32 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03ca28b4(void* arg0, int arg1, int arg2, unsigned int arg3) {
-    
-    switch (arg3) {
+extern "C" void fn_03ca28b4(void* self, int kind, int id, unsigned int slot) {
+    switch (slot) {
     case 1:
-        if (((Owner*)arg0)->kind1 == 0xFF || arg1 == 0xFF) {
-            ((Owner*)arg0)->kind1 = arg1;
+        if (static_cast<Owner*>(self)->kind1 == 0xFF || kind == 0xFF) {
+            static_cast<Owner*>(self)->kind1 = kind;
         }
-        if (((Owner*)arg0)->id1 == -1 || arg2 == -1) {
-            ((Owner*)arg0)->id1 = arg2;
+        if (static_cast<Owner*>(self)->id1 == -1 || id == -1) {
+            static_cast<Owner*>(self)->id1 = id;
             return;
         }
         return;
     case 2:
-        if (((Owner*)arg0)->kind2 == 0xFF || arg1 == 0xFF) {
-            ((Owner*)arg0)->kind2 = arg1;
+        if (static_cast<Owner*>(self)->kind2 == 0xFF || kind == 0xFF) {
+            static_cast<Owner*>(self)->kind2 = kind;
         }
-        if (((Owner*)arg0)->id2 == -1 || arg2 == -1) {
-            ((Owner*)arg0)->id2 = arg2;
+        if (static_cast<Owner*>(self)->id2 == -1 || id == -1) {
+            static_cast<Owner*>(self)->id2 = id;
             return;
         }
         break;
     case 3:
-        if (((Owner*)arg0)->kind3 == 0xFF || arg1 == 0xFF) {
-            ((Owner*)arg0)->kind3 = arg1;
+        if (static_cast<Owner*>(self)->kind3 == 0xFF || kind == 0xFF) {
+            static_cast<Owner*>(self)->kind3 = kind;
         }
-        if (((Owner*)arg0)->id3 == -1 || arg2 == -1) {
-            ((Owner*)arg0)->id3 = arg2;
+        if (static_cast<Owner*>(self)->id3 == -1 || id == -1) {
+            static_cast<Owner*>(self)->id3 = id;
             return;
         }
         break;

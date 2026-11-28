@@ -7,18 +7,18 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03ca2a78(void* arg0, int arg1, int arg2, int arg3) {
-    Owner* owner = (Owner*)arg0;
-    if (arg1 != 0) {
-        arg1 = owner->a;
+extern "C" void fn_03ca2a78(void* self, int a, int b, int c) {
+    Owner* owner = static_cast<Owner*>(self);
+    if (a != 0) {
+        a = owner->a;
     }
-    owner->a = arg1;
-    if (arg2 != 0) {
-        arg2 = owner->b;
+    owner->a = a;
+    if (b != 0) {
+        b = owner->b;
     }
-    owner->b = arg2;
-    if (arg3 != 0) {
-        arg3 = owner->c;
+    owner->b = b;
+    if (c != 0) {
+        c = owner->c;
     }
-    owner->c = arg3;
+    owner->c = c;
 }

@@ -11,9 +11,9 @@ struct Pair {
 };
 }
 
-extern "C" int fn_03cb3434(void *arg0, void *arg1) {
-    Pair *out = (Pair *) arg0;
-    Source *src = (Source *) arg1;
+extern "C" int fn_03cb3434(void *dest, void *source) {
+    Pair *out = static_cast<Pair *>(dest);
+    Source *src = static_cast<Source *>(source);
     if (src == 0) {
         return 0xFF676984;
     }

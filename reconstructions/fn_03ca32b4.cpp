@@ -1,5 +1,3 @@
-typedef int s32;
-
 extern "C" void fn_03ca1dd0(void*);
 extern "C" void fn_0434bda8(void*, void*);
 
@@ -10,9 +8,9 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_03ca32b4(void *arg0, void *destination) {
+extern "C" int fn_03ca32b4(void *self, void *destination) {
     void *source;
-    Object *object = (Object *)arg0;
+    Object *object = static_cast<Object *>(self);
 
     source = object->source;
     if (source != 0) {

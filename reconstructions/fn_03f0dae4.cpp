@@ -14,11 +14,11 @@ struct Table {
 
 extern "C" void* fn_03f0b8ac(void*);
 
-extern "C" int fn_03f0dae4(int* arg0) {
-    short index = ((Table*)fn_03f0b8ac(arg0))->index;
+extern "C" int fn_03f0dae4(int* object) {
+    short index = static_cast<Table*>(fn_03f0b8ac(object))->index;
     int result = -1;
     if (index != -1) {
-        result = ((Record*)(*arg0) + index)->value;
+        result = (reinterpret_cast<Record*>(*object) + index)->value;
     }
     return result;
 }

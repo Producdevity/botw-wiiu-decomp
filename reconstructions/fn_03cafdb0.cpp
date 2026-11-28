@@ -7,17 +7,17 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03cafdb0(void* arg0, unsigned int arg1, int arg2) {
-    Owner* owner = (Owner*)arg0;
-    switch (arg1) {
+extern "C" void fn_03cafdb0(void* self, unsigned int slot, int value) {
+    Owner* owner = static_cast<Owner*>(self);
+    switch (slot) {
     case 1:
-        owner->slot1 = arg2;
+        owner->slot1 = value;
         return;
     case 2:
-        owner->slot2 = arg2;
+        owner->slot2 = value;
         return;
     case 3:
-        owner->slot3 = arg2;
+        owner->slot3 = value;
         return;
     }
 }
