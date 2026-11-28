@@ -5,12 +5,19 @@ extern "C" void fn_030eb73c(void *, unsigned);
 
 extern "C" s32 data_10009d0c;
 
-extern "C" void fn_0226c824(void *arg0, void *arg1) {
-    if (arg0 != 0) {
-        (*(s32 **)((char *)(arg0) + (0x10))) = &data_10009d0c;
-        fn_030eb73c((char *)arg0 + 4, 2U);
-        if ((s32) arg1 & 1) {
-            fn_0308e6d0(arg0);
+namespace {
+struct Layout {
+    char padding_0[0x10];
+    s32 *vtable;
+};
+}
+
+extern "C" void fn_0226c824(void *object, void *flags) {
+    if (object != 0) {
+        ((Layout *) object)->vtable = &data_10009d0c;
+        fn_030eb73c((char *)object + 4, 2U);
+        if ((s32) flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

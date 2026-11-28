@@ -1,11 +1,18 @@
-typedef int s32;
+namespace {
+typedef int (*Method)(void *);
+typedef int (*MethodWithValue)(void *, int);
+
+struct VirtualObject {
+    char padding_0[0x94];
+    void *const *vtable;
+};
+}
 
 extern "C" void fn_03acb7a8(void*);
 
-extern "C" void fn_03acb83c(void *arg0) {
-    void* const* vt1;
-    void* const* vt2;
-    fn_03acb7a8(arg0);
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg0) + (0x94)))[7])(arg0);
-    ((s32 (*)(void *, s32))(vt2 = *(void* const**)((char *)(arg0) + (0x94)))[3])(arg0, 3);
+extern "C" void fn_03acb83c(void *object) {
+    VirtualObject *view = (VirtualObject *) object;
+    fn_03acb7a8(object);
+    ((Method) view->vtable[7])(object);
+    ((MethodWithValue) view->vtable[3])(object, 3);
 }

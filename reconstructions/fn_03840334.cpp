@@ -1,8 +1,22 @@
-typedef int s32;
+namespace {
+typedef int (*Method)(void *);
 
-extern "C" void fn_03840334(void *arg0, void *arg1, s32 arg2) {
-    void* const* vt1;
-    (*(s32 *)((char *)(arg0) + (0x14))) = ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg1) + (0xC)))[31])(arg1);
-    (*(void **)((char *)(arg0) + (0x18))) = arg1;
-    (*(s32 *)((char *)(arg0) + (0x1C))) = arg2;
+struct VirtualObject {
+    char padding_0[0xC];
+    void *const *vtable;
+};
+
+struct Binding {
+    char padding_0[0x14];
+    int result;
+    void *source;
+    int index;
+};
+}
+
+extern "C" void fn_03840334(void *object, void *source, int index) {
+    Binding *binding = (Binding *) object;
+    binding->result = ((Method) ((VirtualObject *) source)->vtable[31])(source);
+    binding->source = source;
+    binding->index = index;
 }

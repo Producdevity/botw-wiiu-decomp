@@ -1,12 +1,19 @@
 extern "C" int fn_03344560(void*, int);
 extern "C" int fn_033445d8(void*, int);
 
-extern "C" void fn_03344a50(void* arg0, int arg1) {
-    if (((int) (*(unsigned char*)((char*)arg0 + 388)) != 0) && (fn_03344560(arg0, arg1) == 0)) {
-        (*(unsigned char*)((char*)arg0 + 388)) = 0U;
+namespace {
+struct Object {
+    char padding_0[0x184];
+    unsigned char flag;
+};
+}
+
+extern "C" void fn_03344a50(void* object, int value) {
+    if (((Object *) object)->flag != 0 && fn_03344560(object, value) == 0) {
+        ((Object *) object)->flag = 0;
         return;
     }
-    if (fn_033445d8(arg0, arg1) != 0) {
-        (*(unsigned char*)((char*)arg0 + 388)) = 1U;
+    if (fn_033445d8(object, value) != 0) {
+        ((Object *) object)->flag = 1;
     }
 }

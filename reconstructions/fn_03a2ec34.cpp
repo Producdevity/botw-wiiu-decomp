@@ -1,12 +1,18 @@
-typedef unsigned int u32;
+namespace {
+struct Object {
+    char padding_0[0x24];
+    unsigned int first;
+    unsigned int second;
+};
+}
 
 extern "C" void fn_03a2de18(void*, void*);
 
-extern "C" void fn_03a2ec34(void *arg0, u32 arg1) {
-    if (arg1 == (u32) (*(u32 *)((char *)(arg0) + (0x24)))) {
-        fn_03a2de18(arg0, 0);
+extern "C" void fn_03a2ec34(void *object, unsigned int value) {
+    if (value == ((Object *) object)->first) {
+        fn_03a2de18(object, 0);
     }
-    if (arg1 == (u32) (*(u32 *)((char *)(arg0) + (0x28)))) {
-        (*(u32 *)((char *)(arg0) + (0x28))) = 0U;
+    if (value == ((Object *) object)->second) {
+        ((Object *) object)->second = 0U;
     }
 }

@@ -1,10 +1,22 @@
+namespace {
+typedef int (*Method)(void *, int);
+
+struct Object {
+    char padding_0[4];
+    unsigned char enabled;
+    unsigned char pending;
+    char padding_6[2];
+    void *const *vtable;
+};
+}
+
 extern "C" void fn_038f31c4(void*);
 
-extern "C" void fn_038f3280(void* arg0, int arg1) {
-    if ((int) (*(unsigned char*)((char*)arg0 + 5)) != 0) {
-        fn_038f31c4(arg0);
+extern "C" void fn_038f3280(void* object, int value) {
+    if (((Object *) object)->pending != 0) {
+        fn_038f31c4(object);
     }
-    if ((int) (*(unsigned char*)((char*)arg0 + 4)) != 0) {
-        (*(int (**)(void*, int))((char*)((*(void**)((char*)arg0 + 8))) + 44))(arg0, arg1);
+    if (((Object *) object)->enabled != 0) {
+        ((Method) ((Object *) object)->vtable[11])(object, value);
     }
 }
