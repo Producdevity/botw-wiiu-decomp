@@ -5,16 +5,25 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_10100858;
 
-extern "C" void fn_0265222c(void **arg0) {
-    void *temp_r12;
-    void *temp_r3;
-    void *temp_r4;
+namespace {
+struct Inner {
+    unsigned char padding_0[0xF4];
+    void *source;
+    unsigned char padding_F8[0x3A0 - 0xF8];
+    void *target;
+};
+}
 
-    temp_r12 = *arg0;
-    temp_r4 = (*(void **)((char *)(temp_r12) + (0xF4)));
-    temp_r3 = (*(void **)((char *)(temp_r12) + (0x3A0)));
-    if ((temp_r4 != 0) && (temp_r3 != 0)) {
-        fn_034c1264(temp_r3, temp_r4);
+extern "C" void fn_0265222c(void **owner) {
+    Inner *inner;
+    void *source;
+    void *target;
+
+    inner = (Inner *)*owner;
+    source = inner->source;
+    target = inner->target;
+    if ((source != 0) && (target != 0)) {
+        fn_034c1264(target, source);
     }
-    fn_037b8284(arg0, &data_10100858, 0);
+    fn_037b8284(owner, &data_10100858, 0);
 }

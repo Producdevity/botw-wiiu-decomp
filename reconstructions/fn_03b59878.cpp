@@ -1,18 +1,35 @@
 extern "C" void fn_03b57174(void*);
 
-extern "C" void fn_03b59878(void* arg0, int arg1) {
-    void* var_r30;
+namespace {
+struct Child {
+    char padding_0[28];
+    int value;
+    char padding_20[120 - 32];
+    Child *next;
+    char padding_7c[264 - 124];
+    int enabled;
+};
 
-    var_r30 = (*(void**)((char*)arg0 + 256));
-    (*(signed char*)((char*)arg0 + 6)) = 1;
-    (*(int*)((char*)arg0 + 44)) = arg1;
-    if (var_r30 != 0) {
-        do {
-            if ((int) (*(int*)((char*)var_r30 + 264)) != 0) {
-                (*(int*)((char*)var_r30 + 28)) = (int) (*(int*)((char*)arg0 + 44));
-                fn_03b57174(var_r30);
-            }
-            var_r30 = (*(void**)((char*)var_r30 + 120));
-        } while (var_r30 != 0);
+struct Object {
+    char padding_0[6];
+    signed char dirty;
+    char padding_7[44 - 7];
+    int value;
+    char padding_30[256 - 48];
+    Child *children;
+};
+}
+
+extern "C" void fn_03b59878(void* object, int value) {
+    Child *child;
+
+    child = ((Object *)object)->children;
+    ((Object *)object)->dirty = 1;
+    ((Object *)object)->value = value;
+    for (; child != 0; child = child->next) {
+        if (child->enabled != 0) {
+            child->value = ((Object *)object)->value;
+            fn_03b57174(child);
+        }
     }
 }

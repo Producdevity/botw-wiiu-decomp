@@ -8,11 +8,26 @@ extern "C" void* data_10463748;
 
 extern "C" f32 data_100dfcec;
 
-extern "C" s32 fn_02560bd8(void *arg0) {
-    void *temp_r31;
+namespace {
+struct Manager {
+    char padding_0[0x14];
+    s32 side;
+    char padding_18[0xA80 - 0x18];
+    u32 flags[2];
+    char padding_a88[0xA98 - 0xA88];
+    f32 value;
+};
 
-    temp_r31 = data_10463748;
-    if ((temp_r31 == 0) || ((s32) *(*(u8 **)((char *)(arg0) + (0x20))) == 0) || (fn_02b62774(arg0) != 0) || (((u32) (*(u32 *)((char *)(((char *)temp_r31 + (((*(s32 *)((char *)(temp_r31) + (0x14))) ^ 1) * 4))) + (0xA80))) >> 2U) & 1) || !((*(f32 *)((char *)(temp_r31) + (0xA98))) > data_100dfcec)) {
+struct Object {
+    char padding_0[0x20];
+    u8 *state;
+};
+}
+
+extern "C" s32 fn_02560bd8(void *object) {
+    Manager *manager = (Manager *)data_10463748;
+
+    if ((manager == 0) || (*((Object *)object)->state == 0) || (fn_02b62774(object) != 0) || ((manager->flags[manager->side ^ 1] >> 2U) & 1) || !(manager->value > data_100dfcec)) {
         return 1;
     }
     return 0;

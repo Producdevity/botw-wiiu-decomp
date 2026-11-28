@@ -7,14 +7,24 @@ extern "C" void fn_0378c734(ProcLink *);
 
 extern "C" void *data_1046fe50;
 
-extern "C" void fn_0214c93c(void *arg0) {
-    void *temp_r4;
+namespace {
+struct Object {
+    unsigned char padding_0[0x140];
+    s32 linkHead;
+    u8 linkFlag;
+    unsigned char padding_145[3];
+    void *entry;
+};
+}
 
-    if (((s32) (*(s32 *)((char *)(arg0) + (0x140))) != 0) || ((s32) (*(u8 *)((char *)(arg0) + (0x144))) != 0)) {
-        fn_0378c734((ProcLink *)((char *)arg0 + 0x140));
+extern "C" void fn_0214c93c(void *object) {
+    void *entry;
+
+    if ((((Object *)object)->linkHead != 0) || (((Object *)object)->linkFlag != 0)) {
+        fn_0378c734((ProcLink *)&((Object *)object)->linkHead);
     }
-    temp_r4 = (*(void **)((char *)(arg0) + (0x148)));
-    if (temp_r4 != 0) {
-        fn_03479bc8(data_1046fe50, temp_r4);
+    entry = ((Object *)object)->entry;
+    if (entry != 0) {
+        fn_03479bc8(data_1046fe50, entry);
     }
 }

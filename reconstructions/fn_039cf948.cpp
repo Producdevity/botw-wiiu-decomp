@@ -6,15 +6,33 @@ extern "C" int fn_039cf8c0(void*, void*, void*);
 extern "C" void fn_03a5add8(void*, void*, int);
 extern "C" void fn_03a5b498(void*, void*, int, void*, void*);
 
-extern "C" void fn_039cf948(void *arg0, void *arg1, void *arg2) {
-    void *temp_r3;
+namespace {
+struct Target {
+    unsigned char padding_0[0x4A4];
+    u8 pending;
+};
 
-    if (fn_039cf8c0(arg0, arg1, arg2) != 0) {
-        fn_03a5b498((*(void **)((char *)(arg0) + (0x230))), arg1, (s32) (*(u8 *)((char *)(arg2) + (0))), (*(void **)((char *)(arg2) + (0x1B0))), 0);
+struct Owner {
+    unsigned char padding_0[0x230];
+    Target *target;
+};
+
+struct Request {
+    u8 kind;
+    unsigned char padding_1[0x1AF];
+    void *payload;
+};
+}
+
+extern "C" void fn_039cf948(void *owner, void *context, void *request) {
+    Target *target;
+
+    if (fn_039cf8c0(owner, context, request) != 0) {
+        fn_03a5b498(((Owner *)owner)->target, context, (s32)((Request *)request)->kind, ((Request *)request)->payload, 0);
     }
-    temp_r3 = (*(void **)((char *)(arg0) + (0x230)));
-    if ((s32) (*(u8 *)((char *)(temp_r3) + (0x4A4))) != 0) {
-        fn_03a5add8(temp_r3, arg1, (s32) (*(u8 *)((char *)(arg2) + (0))));
-        fn_0399c200(arg2, arg1, 0);
+    target = ((Owner *)owner)->target;
+    if ((s32)target->pending != 0) {
+        fn_03a5add8(target, context, (s32)((Request *)request)->kind);
+        fn_0399c200(request, context, 0);
     }
 }

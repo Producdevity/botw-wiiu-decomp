@@ -6,14 +6,27 @@ extern "C" void fn_037b8284(void *, const void *, void *);
 
 extern "C" s32 data_1015e498;
 
-extern "C" void fn_028f9f94(void *arg0) {
-    void *temp_r3;
+namespace {
+struct Type {
+    char padding_0[0x38C];
+    void *resource;
+};
 
-    if ((s32) (*(u8 *)((char *)(arg0) + (0x71))) != 0) {
-        temp_r3 = (*(void **)((char *)((*(void **)((char *)(arg0) + (0)))) + (0x38C)));
-        if (temp_r3 != 0) {
-            fn_0317f700(temp_r3, 0);
+struct Object {
+    Type *type;
+    char padding_4[0x71 - 4];
+    u8 enabled;
+};
+}
+
+extern "C" void fn_028f9f94(void *object) {
+    Object *self = (Object *)object;
+
+    if (self->enabled != 0) {
+        void *resource = self->type->resource;
+        if (resource != 0) {
+            fn_0317f700(resource, 0);
         }
     }
-    fn_037b8284(arg0, &data_1015e498, 0);
+    fn_037b8284(object, &data_1015e498, 0);
 }
