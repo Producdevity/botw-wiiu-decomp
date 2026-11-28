@@ -2,8 +2,8 @@ typedef int s32;
 
 extern "C" char* fn_0204151c(void *);
 extern "C" int fn_02674b2c(void*);
-extern "C" void fn_02674e00(void *, int);
-extern "C" void fn_02674e3c(void *, void *);
+extern "C" void* fn_02674e00(void *, int);
+extern "C" void* fn_02674e3c(void *, void *);
 extern "C" void fn_03487a04(void*, void*);
 extern "C" void fn_03487ae4(void*, void*);
 extern "C" void fn_0348da08(void*, int, void*);
