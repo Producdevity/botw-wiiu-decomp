@@ -1,1 +1,1 @@
-extern "C" void fn_039a269c() {}
+extern "C" void fn_039a269c(void*) {}
