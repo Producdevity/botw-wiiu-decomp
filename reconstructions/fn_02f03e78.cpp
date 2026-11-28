@@ -3,9 +3,22 @@ extern "C" void fn_02e90c30(void *, float);
 extern "C" float fn_02ea6a4c(int);
 extern "C" void fn_02ea6a8c(void *, void *);
 
-extern "C" void fn_02f03e78(void *self, int arg1) {
-    int offset = 0x648;
-    fn_02e90bfc((char *)*(void **)((char *)self + 0x478) + offset);
-    fn_02e90c30((char *)*(void **)((char *)self + 0x478) + offset, fn_02ea6a4c(arg1));
-    fn_02ea6a8c(*(void **)((char *)self + 0x478), (void *)arg1);
+namespace {
+struct Inner {
+    char padding_0[0x648];
+    char member_648[1];
+};
+
+struct Object {
+    char padding_0[0x478];
+    Inner *inner_478;
+};
+}
+
+extern "C" void fn_02f03e78(void *self, int value)
+{
+    Object *object = (Object *)self;
+    fn_02e90bfc(object->inner_478->member_648);
+    fn_02e90c30(object->inner_478->member_648, fn_02ea6a4c(value));
+    fn_02ea6a8c(object->inner_478, (void *)value);
 }

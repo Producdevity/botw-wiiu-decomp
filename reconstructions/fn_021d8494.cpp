@@ -1,11 +1,20 @@
-typedef unsigned char u8;
-typedef int s32;
-
 extern "C" void fn_02b616bc(void *, void *);
-extern "C" int fn_02b61950(void*, void*);
+extern "C" int fn_02b61950(void *, void *);
 
-extern "C" void fn_021d8494(void *arg0) {
-    if ((s32) *(*(u8 **)((char *)(arg0) + (0x1C))) != 0) {
-        fn_02b616bc((char *)arg0 + 0x48, (void *)(fn_02b61950((char *)arg0 + 0x48, (*(void **)((char *)(arg0) + (0))))));
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0x18];
+    unsigned char *flag_1c;
+    char padding_20[0x28];
+    char member_48[1];
+};
+}
+
+extern "C" void fn_021d8494(void *object)
+{
+    Object *view = (Object *)object;
+    if (*view->flag_1c != 0) {
+        fn_02b616bc(view->member_48, (void *)fn_02b61950(view->member_48, view->owner));
     }
 }

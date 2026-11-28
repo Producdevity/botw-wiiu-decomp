@@ -1,11 +1,25 @@
-typedef float f32;
-
-extern "C" void fn_0230274c(void*);
+extern "C" void fn_0230274c(void *);
 extern "C" void fn_02b7f998(float *, void *);
 extern "C" float fn_03c6fcf0(const float *);
 
-extern "C" void fn_02303d58(void *arg0) {
-    fn_0230274c(arg0);
-    fn_02b7f998((float *)((char *)arg0 + 0x128), (*(void **)((char *)(arg0) + (0))));
-    (*(f32 *)((char *)(arg0) + (0x14C))) = fn_03c6fcf0((const float *)((char *)(*(void **)((char *)(arg0) + (0))) + 0x268));
+namespace {
+struct Owner {
+    char padding_0[0x268];
+    float value_268[1];
+};
+
+struct Object {
+    Owner *owner;
+    char padding_4[0x124];
+    float value_128[9];
+    float value_14c;
+};
+}
+
+extern "C" void fn_02303d58(void *object)
+{
+    Object *view = (Object *)object;
+    fn_0230274c(object);
+    fn_02b7f998(view->value_128, view->owner);
+    view->value_14c = fn_03c6fcf0(view->owner->value_268);
 }
