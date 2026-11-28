@@ -2,14 +2,26 @@ extern "C" float fn_023b7dc8(void*, void*);
 extern "C" float fn_023b7e30(void*);
 extern "C" void fn_023b7e78(void*);
 
+namespace {
+struct Object {
+    unsigned char padding_0[0xB];
+    unsigned char flags;
+    unsigned char padding_c[0x6C];
+    float value_78;
+    float value_7c;
+    char value_80;
+    char value_81;
+};
+}
+
 extern "C" void fn_023b7e98(void* self, void* arg)
 {
-    *((unsigned char*)self + 0xb) |= 4;
+    ((Object*)self)->flags |= 4;
     float first = fn_023b7dc8(self, arg);
-    *(float*)((char*)self + 0x78) = first;
+    ((Object*)self)->value_78 = first;
     float second = fn_023b7e30(self);
-    *(float*)((char*)self + 0x7c) = second;
-    *((char*)self + 0x81) = 1;
+    ((Object*)self)->value_7c = second;
+    ((Object*)self)->value_81 = 1;
     fn_023b7e78(self);
-    *((char*)self + 0x80) = 0;
+    ((Object*)self)->value_80 = 0;
 }
