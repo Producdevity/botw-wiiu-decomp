@@ -1,6 +1,6 @@
 extern "C" void fn_0328d744(void*);
 extern "C" void fn_037988ac(void*, void*);
-extern "C" void fn_0379b9c0(void*);
+extern "C" bool fn_0379b9c0(void*);
 
 namespace {
 struct Object {

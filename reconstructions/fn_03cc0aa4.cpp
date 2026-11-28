@@ -1,7 +1,7 @@
 typedef int s32;
 
 extern "C" void fn_03cc0a14(void*);
-extern "C" void fn_03ca7de4(void*);
+extern "C" void* fn_03ca7de4(void*);
 
 extern "C" s32 data_103e6230;
 
