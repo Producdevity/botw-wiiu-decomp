@@ -1,10 +1,24 @@
-extern "C" void fn_03c40120(void* p, int v);
+namespace {
+struct Owner {
+    char padding_0[0x3D];
+    unsigned char value_3d;
+    char padding_3e[0x18A];
+    void *slots[16];
+};
 
-extern "C" void fn_03c40128(void* self, int index, void* object) {
+struct Item {
+    char padding_0[0x15D];
+    unsigned char value_15d;
+};
+}
+
+extern "C" void fn_03c40120(void* item, int index);
+
+extern "C" void fn_03c40128(void* self, int index, void* item) {
     if (index > 15) {
         return;
     }
-    ((void**)((char*)self + 0x1c8))[index] = object;
-    fn_03c40120(object, index);
-    *((unsigned char*)object + 0x15d) = *((unsigned char*)self + 0x3d);
+    ((Owner *)self)->slots[index] = item;
+    fn_03c40120(item, index);
+    ((Item *)item)->value_15d = ((Owner *)self)->value_3d;
 }

@@ -1,8 +1,20 @@
 extern "C" void fn_02af0df4(void *);
 
-extern "C" void fn_02af0ea0(void *self, void *other)
+namespace {
+struct VTable {
+    char padding_0[0x134];
+    void (*method_134)(void*);
+};
+
+struct Other {
+    char padding_0[0xE8];
+    VTable* vtable;
+};
+}
+
+extern "C" void fn_02af0ea0(void* object, void* other)
 {
-  char *vtable = (char *)*(void **)((char *)other + 0xE8);
-  (*(void (**)(void *))(vtable + 0x134))(other);
-  fn_02af0df4(self);
+    Other* target = (Other*)other;
+    target->vtable->method_134(target);
+    fn_02af0df4(object);
 }

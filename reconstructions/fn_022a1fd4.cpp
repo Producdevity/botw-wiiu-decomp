@@ -1,9 +1,19 @@
-typedef int s32;
-
 extern "C" void fn_02344990(void *);
 
-extern "C" void fn_022a1fd4(void *arg0) {
-    void* const* vt1;
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg0) + (0x2C)))[21])((char *)arg0 + 0x24);
-    fn_02344990(arg0);
+namespace {
+typedef int (*Method)(void*);
+
+struct Object {
+    char padding_0[0x24];
+    char field_24;
+    char padding_25[7];
+    Method* vtable;
+};
+}
+
+extern "C" void fn_022a1fd4(void* object)
+{
+    Object* self = (Object*)object;
+    self->vtable[21](&self->field_24);
+    fn_02344990(object);
 }

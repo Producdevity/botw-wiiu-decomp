@@ -1,8 +1,20 @@
 extern "C" float fn_02b6bce4(void*, void*);
 
-extern "C" float fn_028a6930(void *self) {
-    void ***keyRef = (void ***)((char *)self + 0x24);
-    float **scaleRef = (float **)((char *)self + 0xC0);
-    float *base = *(float **)((char *)self + 0xBC);
-    return fn_02b6bce4(*(void **)self, **keyRef) * **scaleRef + *base;
+namespace {
+struct Object {
+    void* owner;
+    char padding_4[0x20];
+    void** key;
+    char padding_28[0x94];
+    float* base;
+    float* scale;
+};
+}
+
+extern "C" float fn_028a6930(void* object)
+{
+    void*** keyRef = &((Object*)object)->key;
+    float** scaleRef = &((Object*)object)->scale;
+    float* base = ((Object*)object)->base;
+    return fn_02b6bce4(((Object*)object)->owner, **keyRef) * **scaleRef + *base;
 }

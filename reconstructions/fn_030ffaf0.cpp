@@ -1,10 +1,24 @@
+namespace {
+struct Vtable {
+    char padding_0[0x4C];
+    void (*method_4C)(void *);
+};
+
+struct Object {
+    char padding_0[7];
+    unsigned char state;
+    char padding_8[4];
+    int value_c;
+    Vtable *vtable;
+};
+}
 
 extern "C" int fn_030ffaf0(void* self)
 {
-    if (*(unsigned char*)((char*)self + 7) == 2) {
-        (*(void (**)(void*))(*(char**)((char*)self + 0x10) + 0x4C))(self);
-        *(unsigned char*)((char*)self + 7) = 0;
+    if (((Object *)self)->state == 2) {
+        ((Object *)self)->vtable->method_4C(self);
+        ((Object *)self)->state = 0;
     }
-    char* object = (char*)self;
-    return *(int*)(object + 0xC);
+    Object *object = (Object *)self;
+    return object->value_c;
 }

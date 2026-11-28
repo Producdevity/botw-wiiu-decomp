@@ -1,7 +1,24 @@
-extern "C" void fn_02d49a0c(void *self, void *value)
+namespace {
+struct VTable {
+    char padding_0[0x2BC];
+    void** (*method_2bc)(void*);
+};
+
+struct Owner {
+    char padding_0[0xE8];
+    VTable* vtable;
+};
+
+struct Object {
+    char padding_0[0x30];
+    Owner* owner;
+};
+}
+
+extern "C" void fn_02d49a0c(void* object, void* value)
 {
-  void *owner = *(void **)((char *)self + 0x30);
-  if (owner != 0) {
-    *(*(void **(**)(void *))(*(char **)((char *)owner + 0xE8) + 0x2BC))(owner) = value;
-  }
+    Owner* owner = ((Object*)object)->owner;
+    if (owner != 0) {
+        *owner->vtable->method_2bc(owner) = value;
+    }
 }

@@ -1,10 +1,24 @@
+namespace {
+struct Vtable {
+    char padding_0[0x44];
+    void (*method_44)(void *);
+};
+
+struct Object {
+    char padding_0[7];
+    unsigned char state;
+    char padding_8[4];
+    int value_c;
+    Vtable *vtable;
+};
+}
 
 extern "C" int fn_030ffb44(void* self)
 {
-    if (*(unsigned char*)((char*)self + 7) == 1) {
-        (*(void (**)(void*))(*(char**)((char*)self + 0x10) + 0x44))(self);
+    if (((Object *)self)->state == 1) {
+        ((Object *)self)->vtable->method_44(self);
     }
-    void* object = self;
-    *(unsigned char*)((char*)object + 7) = 0;
-    return *(int*)((char*)object + 0xC);
+    Object *object = (Object *)self;
+    object->state = 0;
+    return object->value_c;
 }
