@@ -6,14 +6,19 @@ extern "C" void fn_030eb73c(void *, unsigned);
 struct ProcLink;
 extern "C" void fn_0378c734(ProcLink *);
 
-extern "C" void fn_02242e34(void *arg0, s32 arg1) {
-    const s32 flags = arg1;
+namespace {
+inline void destroy(void *object, unsigned flags) {
     __schedule_barrier();
-    if (arg0 != 0) {
-        fn_0378c734((ProcLink *)((char *)arg0 + 0x58));
-        fn_030eb73c((char *)arg0 + 4, 2U);
+    if (object != 0) {
+        fn_0378c734((ProcLink *)((char *) object + 0x58));
+        fn_030eb73c((char *) object + 4, 2U);
         if (flags & 1) {
-            fn_0308e6d0(arg0);
+            fn_0308e6d0(object);
         }
     }
+}
+}
+
+extern "C" void fn_02242e34(void *object, s32 flags) {
+    destroy(object, flags);
 }

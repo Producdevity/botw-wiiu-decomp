@@ -7,11 +7,11 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_10114a80;
 
-extern "C" void fn_026d804c(void *arg0) {
-    struct { const void* f8; const void* fC; } sp;
+extern "C" void fn_026d804c(void *object) {
+    struct { const void *string; const void *vtable; } name;
 
-    fn_026d8584((InWaterSelect*)arg0);
-    sp.fC = &data_10263910;
-    sp.f8 = &data_10114a80;
-    fn_030ea23c(arg0, (char *)arg0 + 0x30, &sp.f8);
+    fn_026d8584((InWaterSelect*)object);
+    name.vtable = &data_10263910;
+    name.string = &data_10114a80;
+    fn_030ea23c(object, (char *)object + 0x30, &name.string);
 }

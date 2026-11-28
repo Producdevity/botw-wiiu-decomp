@@ -1,18 +1,12 @@
-typedef int s32;
-
 extern "C" void fn_0294f720(void *, int, void *);
-
 namespace {
 struct Target {
     char padding_0[0xE8];
     void* const* vtable;
 };
 }
-
 extern "C" void fn_0268a320(void **object) {
-    Target *target;
-
-    target = (Target *)*object;
-    ((s32 (*)(void *))target->vtable[255])(target);
+    Target *target = (Target *)*object;
+    ((int (*)(void *))target->vtable[255])(target);
     fn_0294f720(*object, 4, (char *)object + 0x7C);
 }
