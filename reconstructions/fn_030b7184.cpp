@@ -4,16 +4,21 @@ extern "C" unsigned char data_1027a5ac[];
 extern "C" void fn_0308e6d0(void *);
 extern "C" void fn_0308e6d4(void *);
 
-extern "C" void fn_030b7184(void* arg0, unsigned arg1) {
-    const unsigned flags = arg1;
+namespace {
+inline void destroy(void *object, unsigned flags) {
     __schedule_barrier();
-    if (arg0 != 0) {
-        (*(const void**)arg0) = data_1027a5ac;
-        if ((*(int*)((char*)arg0 + 16)) & 1) {
-            fn_0308e6d4((*(void**)((char*)arg0 + 4)));
+    if (object != 0) {
+        (*(const void**)object) = data_1027a5ac;
+        if ((*(int*)((char*)object + 16)) & 1) {
+            fn_0308e6d4((*(void**)((char*)object + 4)));
         }
         if (flags & 1) {
-            fn_0308e6d0(arg0);
+            fn_0308e6d0(object);
         }
     }
+}
+}
+
+extern "C" void fn_030b7184(void *object, unsigned flags) {
+    destroy(object, flags);
 }
