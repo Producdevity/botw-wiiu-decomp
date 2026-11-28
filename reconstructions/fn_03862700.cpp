@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" short fn_03862700(void *arg0) {
-    short value = static_cast<Object *>(arg0)->value;
+extern "C" short fn_03862700(void *object) {
+    short value = static_cast<Object *>(object)->value;
     if (value >= 0) {
         return value;
     }

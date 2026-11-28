@@ -16,22 +16,22 @@ extern "C" void fn_02ea577c(void*);
 extern "C" void fn_02ea57e0(void*);
 extern "C" void fn_02ea5844(void*);
 
-extern "C" void fn_02ea58a8(void *arg0) {
-    fn_02ea52ec(arg0);
-    fn_02ea5350(arg0);
-    fn_02ea53b4(arg0);
-    fn_02ea5418(arg0);
-    fn_02ea5484(arg0);
-    fn_02ea54e8(arg0);
-    fn_02ea554c(arg0);
-    fn_02ea55b0(arg0);
-    fn_02ea55c4(arg0);
-    fn_02ea55d8(arg0);
-    fn_02ea55ec(arg0);
-    fn_02ea5650(arg0);
-    fn_02ea56b4(arg0);
-    fn_02ea5718(arg0);
-    fn_02ea577c(arg0);
-    fn_02ea57e0(arg0);
-    fn_02ea5844(arg0);
+extern "C" void fn_02ea58a8(void *object) {
+    fn_02ea52ec(object);
+    fn_02ea5350(object);
+    fn_02ea53b4(object);
+    fn_02ea5418(object);
+    fn_02ea5484(object);
+    fn_02ea54e8(object);
+    fn_02ea554c(object);
+    fn_02ea55b0(object);
+    fn_02ea55c4(object);
+    fn_02ea55d8(object);
+    fn_02ea55ec(object);
+    fn_02ea5650(object);
+    fn_02ea56b4(object);
+    fn_02ea5718(object);
+    fn_02ea577c(object);
+    fn_02ea57e0(object);
+    fn_02ea5844(object);
 }

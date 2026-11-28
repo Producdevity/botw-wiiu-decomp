@@ -9,13 +9,13 @@ struct Object {
 };
 }
 
-extern "C" void *fn_03a34054(void *arg0, void *arg1, void *arg2, void *arg3) {
-    Object* self = (Object*) arg0;
+extern "C" void *fn_03a34054(void *memory, void *first, void *second, void *third) {
+    Object* self = (Object*) memory;
     if (self == 0) {
         self = (Object*) fn_0308e578(0xB0);
     }
     if (self != 0) {
-        fn_03c48004(self, arg1, arg2, arg3);
+        fn_03c48004(self, first, second, third);
         self->vtable = data_1035c894;
     }
     return self;

@@ -27,12 +27,12 @@ struct Owner {
 
 extern "C" int fn_03942768(void*);
 
-extern "C" void fn_03942a38(void* arg0) {
-    Owner* owner = (Owner*)arg0;
+extern "C" void fn_03942a38(void* object) {
+    Owner* owner = (Owner*)object;
     Child* second = owner->second;
     Child* first = owner->first;
-    fn_03942768(arg0);
-    owner->vtable->notify(arg0, 3);
+    fn_03942768(object);
+    owner->vtable->notify(object, 3);
     second->callbacks->finish(second);
     first->callbacks->finish(first);
 }

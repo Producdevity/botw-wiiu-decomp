@@ -10,8 +10,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_02e8ef2c(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_02e8ef2c(void *self) {
+    Object *object = (Object *)self;
     s32 old_state;
     s32 new_state;
 

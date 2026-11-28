@@ -8,9 +8,9 @@ struct Object {
 
 extern "C" void fn_0378dc60(int, int);
 
-extern "C" void fn_02e56548(int arg0, int arg1, int value) {
-    Object* object = (Object*)arg0;
-    fn_0378dc60(arg0, arg1);
-    object->value = value;
-    object->mode = 2;
+extern "C" void fn_02e56548(int object, int other, int value) {
+    Object* self = (Object*)object;
+    fn_0378dc60(object, other);
+    self->value = value;
+    self->mode = 2;
 }

@@ -12,8 +12,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_0350bd50(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_0350bd50(void *self) {
+    Object *object = (Object *)self;
     s32 count;
 
     count = fn_0350b68c(object);

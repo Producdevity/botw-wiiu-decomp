@@ -12,9 +12,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_03a051e0(void *arg0) {
+extern "C" void fn_03a051e0(void *owner) {
     void *resource;
-    Object *object = (Object *)arg0;
+    Object *object = (Object *)owner;
 
     resource = object->resource;
     if (resource != 0) {

@@ -6,11 +6,11 @@ struct Object {
 };
 }
 
-extern "C" unsigned char fn_02fda670(void *arg0, unsigned char *arg1) {
-    Object *object = static_cast<Object *>(arg0);
-    if (arg1 == 0) {
+extern "C" unsigned char fn_02fda670(void *source, unsigned char *out_second) {
+    Object *object = static_cast<Object *>(source);
+    if (out_second == 0) {
         return 0;
     }
-    *arg1 = object->second;
+    *out_second = object->second;
     return object->first;
 }

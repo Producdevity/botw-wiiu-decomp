@@ -18,11 +18,11 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03711de8(void* arg0, int arg1) {
-    Node *node = ((Owner *)arg0)->head;
+extern "C" void fn_03711de8(void* owner, int context) {
+    Node *node = ((Owner *)owner)->head;
     if (node != 0) {
         do {
-            fn_03711d64(node, ((Owner *)arg0)->second, ((Owner *)arg0)->first, node->payload, node->value, arg1);
+            fn_03711d64(node, ((Owner *)owner)->second, ((Owner *)owner)->first, node->payload, node->value, context);
             node = node->next;
         } while (node != 0);
     }

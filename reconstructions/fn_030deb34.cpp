@@ -10,8 +10,8 @@ struct Object {
 };
 }
 
-extern "C" s32 *fn_030deb34(s32 *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" s32 *fn_030deb34(s32 *memory) {
+    Object *object = (Object *)memory;
 
     if (object != 0 || (object = (Object *)fn_0308e578(0x40U), object != 0)) {
         object->head = 0;

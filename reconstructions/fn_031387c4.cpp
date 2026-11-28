@@ -10,11 +10,11 @@ struct Object {
 };
 }
 
-extern "C" s32 fn_031387c4(void *arg0, void *arg1) {
-    Object *object = (Object *)arg0;
+extern "C" s32 fn_031387c4(void *owner, void *heap) {
+    Object *object = (Object *)owner;
     void *child;
 
-    child = fn_0308e5a0(0x38U, arg1, 4);
+    child = fn_0308e5a0(0x38U, heap, 4);
     if (child != 0) {
         child = (void *)fn_0313d09c();
     }

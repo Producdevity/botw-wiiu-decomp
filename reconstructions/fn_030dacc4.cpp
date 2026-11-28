@@ -14,10 +14,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_030dacc4(void* arg0, int enabled) {
-    ((Object*)arg0)->enabled = enabled;
+extern "C" void fn_030dacc4(void* object, int enabled) {
+    ((Object*)object)->enabled = enabled;
     if (enabled == 0) {
-        ((Object*)arg0)->vtable->onDisable(arg0);
-        ((Object*)arg0)->vtable->onReset(arg0);
+        ((Object*)object)->vtable->onDisable(object);
+        ((Object*)object)->vtable->onReset(object);
     }
 }

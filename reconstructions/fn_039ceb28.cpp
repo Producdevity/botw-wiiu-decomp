@@ -10,8 +10,8 @@ struct Object {
 };
 }
 
-extern "C" int fn_039ceb28(void *arg0) {
-    int value = static_cast<Object *>(arg0)->inner->value;
+extern "C" int fn_039ceb28(void *object) {
+    int value = static_cast<Object *>(object)->inner->value;
     if (value != 0) {
         return value + 4;
     }

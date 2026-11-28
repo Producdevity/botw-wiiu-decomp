@@ -8,10 +8,10 @@ struct Owner {
 };
 }
 
-extern "C" void fn_03021dc4(void *arg0) {
-    void *slot = ((Owner *)arg0)->slot;
+extern "C" void fn_03021dc4(void *object) {
+    void *slot = ((Owner *)object)->slot;
     if (slot != (void *)-1) {
-        fn_03021a40(arg0, slot, 0);
-        fn_03a3fd18(arg0);
+        fn_03021a40(object, slot, 0);
+        fn_03a3fd18(object);
     }
 }

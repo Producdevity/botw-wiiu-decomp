@@ -8,9 +8,9 @@ struct Binding {
 };
 }
 
-extern "C" void fn_035800bc(void *arg0) {
+extern "C" void fn_035800bc(void *object) {
     void *resource;
-    Binding *binding = (Binding *)arg0;
+    Binding *binding = (Binding *)object;
 
     if (binding->owner != 0) {
         resource = binding->resource;

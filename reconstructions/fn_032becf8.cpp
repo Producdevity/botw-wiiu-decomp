@@ -11,10 +11,10 @@ struct Source {
 };
 }
 
-extern "C" void fn_032becf8(void *arg0) {
+extern "C" void fn_032becf8(void *object) {
     s32 value;
     void *target;
-    Source *source = (Source *)arg0;
+    Source *source = (Source *)object;
 
     target = fn_037966a8(source->owner);
     if (target != 0) {

@@ -11,11 +11,11 @@ struct Node {
 };
 }
 
-extern "C" void fn_03124f38(void *arg0, int arg1) {
-    void *node = arg0;
+extern "C" void fn_03124f38(void *head, int argument) {
+    void *node = head;
     if (node != 0) {
         do {
-            ((Node *) node)->vtable->visit(node, arg1);
+            ((Node *) node)->vtable->visit(node, argument);
             node = ((Node *) node)->next;
         } while (node != 0);
     }

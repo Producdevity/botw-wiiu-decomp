@@ -12,7 +12,7 @@ struct Object {
 
 extern "C" unsigned int fn_03488464(void *);
 
-extern "C" void fn_0348846c(void *arg0) {
-    Object *object = reinterpret_cast<Object *>(fn_03488464(arg0));
+extern "C" void fn_0348846c(void *self) {
+    Object *object = reinterpret_cast<Object *>(fn_03488464(self));
     object->vtable->callback();
 }

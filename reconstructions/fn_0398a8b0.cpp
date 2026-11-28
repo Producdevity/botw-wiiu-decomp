@@ -5,11 +5,11 @@ struct Object {
 };
 }
 
-extern "C" void fn_0398a8b0(void *arg0, int arg1) {
-    Object *object = (Object *) arg0;
+extern "C" void fn_0398a8b0(void *owner, int enabled) {
+    Object *object = (Object *) owner;
     void *self = 0;
-    if (arg1 != 0) {
-        self = arg0;
+    if (enabled != 0) {
+        self = owner;
     }
     object->self = self;
 }

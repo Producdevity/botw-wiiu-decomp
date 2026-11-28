@@ -8,12 +8,12 @@ struct Object {
 extern "C" int fn_0344a6b4(void *, int);
 extern "C" int fn_0344a798(void *, int, int);
 
-extern "C" void fn_0344a830(void *arg0, int arg1) {
-    Object *object = (Object *) arg0;
+extern "C" void fn_0344a830(void *self, int value) {
+    Object *object = (Object *) self;
     int enabled = 0;
     if ((object->flags >> 16) & 1) {
-        fn_0344a6b4(arg0, arg1);
+        fn_0344a6b4(self, value);
         enabled = 1;
     }
-    fn_0344a798(arg0, arg1, enabled);
+    fn_0344a798(self, value, enabled);
 }

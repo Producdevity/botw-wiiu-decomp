@@ -5,10 +5,10 @@ struct Object {
 };
 }
 
-extern "C" void fn_03610fec(void *arg0, int arg1) {
+extern "C" void fn_03610fec(void *object, int enabled) {
     signed char mode = 2;
-    if (arg1 != 0) {
+    if (enabled != 0) {
         mode = 1;
     }
-    static_cast<Object *>(arg0)->mode = mode;
+    static_cast<Object *>(object)->mode = mode;
 }

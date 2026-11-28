@@ -12,8 +12,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_0316fea8(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
+extern "C" void fn_0316fea8(void *self) {
+    Object *object = static_cast<Object *>(self);
     Source *source = object->source;
     if (source != 0) {
         object->value = source->value;

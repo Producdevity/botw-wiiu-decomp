@@ -17,12 +17,12 @@ struct Owner {
 };
 }
 
-extern "C" void fn_0384bea0(void *owner, void *source, s32 arg2, s32 arg3) {
+extern "C" void fn_0384bea0(void *owner, void *source, s32 extra, s32 value) {
     void* const* vtable;
     void *data;
 
     ((s32 (*)(void *))(vtable = ((Source *)source)->vtable)[7])(source);
     data = ((Source *)source)->data;
-    fn_037b5e8c(data_1047c2b8, data, (void *)(fn_03792364(data_1047c250)), ((Owner *)owner)->record, arg2, 0, 2);
-    ((Owner *)owner)->value = arg3;
+    fn_037b5e8c(data_1047c2b8, data, (void *)(fn_03792364(data_1047c250)), ((Owner *)owner)->record, extra, 0, 2);
+    ((Owner *)owner)->value = value;
 }

@@ -17,15 +17,15 @@ extern "C" int data_102543f0;
 extern "C" int data_10254400;
 extern "C" int data_10254418;
 
-extern "C" void fn_03021808(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        ((Component *) arg0)->table_10 = &data_102543f0;
-        ((Component *) arg0)->table_a8 = &data_10254400;
-        ((Component *) arg0)->table_a4 = &data_10254418;
-        fn_02e6cc74(((Component *) arg0)->member, 2);
-        fn_03008534(arg0, 0U);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+extern "C" void fn_03021808(void *object, int flags) {
+    if (object != 0) {
+        ((Component *) object)->table_10 = &data_102543f0;
+        ((Component *) object)->table_a8 = &data_10254400;
+        ((Component *) object)->table_a4 = &data_10254418;
+        fn_02e6cc74(((Component *) object)->member, 2);
+        fn_03008534(object, 0U);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

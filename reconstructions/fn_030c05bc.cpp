@@ -11,9 +11,9 @@ struct Vec4 {
 };
 }
 
-extern "C" u8 fn_030c05bc(void *arg0, void *arg1) {
+extern "C" u8 fn_030c05bc(void *left, void *right) {
     s32 equal = 0;
-    if ((((Vec4 *)arg0)->x == ((Vec4 *)arg1)->x) && (((Vec4 *)arg0)->y == ((Vec4 *)arg1)->y) && (((Vec4 *)arg0)->z == ((Vec4 *)arg1)->z) && (((Vec4 *)arg0)->w == ((Vec4 *)arg1)->w)) {
+    if (((Vec4 *)left)->x == ((Vec4 *)right)->x && ((Vec4 *)left)->y == ((Vec4 *)right)->y && ((Vec4 *)left)->z == ((Vec4 *)right)->z && ((Vec4 *)left)->w == ((Vec4 *)right)->w) {
         equal = 1;
     }
     return equal;

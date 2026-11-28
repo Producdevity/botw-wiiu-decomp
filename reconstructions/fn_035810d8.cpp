@@ -11,8 +11,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_035810d8(void *arg0) {
-    Object *self = (Object *)arg0;
+extern "C" void fn_035810d8(void *object) {
+    Object *self = (Object *)object;
     void *lock = self->lock;
     fn_030bb668(lock);
     self->counter += 1;

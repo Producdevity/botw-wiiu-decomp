@@ -3,18 +3,28 @@
 extern "C" unsigned char data_1031d268[];
 extern "C" unsigned char data_1031d288[];
 extern "C" void fn_0308e6d0(void *);
-extern "C" void fn_0309f8cc(void *arg0);
+extern "C" void fn_0309f8cc(void *);
 extern "C" void fn_030a5ab4(void* object, unsigned flags);
 
-extern "C" void fn_037d4acc(void* arg0, unsigned arg1) {
+namespace {
+struct Object {
+    unsigned char padding_0[0x1C];
+    unsigned char member[0xC];
+    const void *second_vtable;
+    unsigned char padding_2C[0x24];
+    const void *vtable;
+};
+}
+
+extern "C" void fn_037d4acc(void* object, unsigned flags) {
     __schedule_barrier();
-    if (arg0 != 0) {
-        (*(const void**)((char*)arg0 + 80)) = data_1031d268;
-        (*(const void**)((char*)arg0 + 40)) = data_1031d288;
-        fn_0309f8cc(arg0);
-        fn_030a5ab4((char*)arg0 + 28, 0);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+    if (object != 0) {
+        static_cast<Object *>(object)->vtable = data_1031d268;
+        static_cast<Object *>(object)->second_vtable = data_1031d288;
+        fn_0309f8cc(object);
+        fn_030a5ab4(static_cast<Object *>(object)->member, 0);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

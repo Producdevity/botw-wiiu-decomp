@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" int fn_0380f978(void* arg0) {
-    Object* object = (Object*)arg0;
+extern "C" int fn_0380f978(void* owner) {
+    Object* object = (Object*)owner;
     if ((object->flags >> 4) & 1) {
         return 0;
     }

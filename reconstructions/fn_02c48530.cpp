@@ -5,7 +5,7 @@ struct Vtable {
 };
 }
 
-extern "C" int fn_02c48530(void **arg0) {
-    Vtable *vtable = static_cast<Vtable *>(*arg0);
+extern "C" int fn_02c48530(void** object) {
+    Vtable* vtable = static_cast<Vtable*>(*object);
     return vtable->check() == 0;
 }

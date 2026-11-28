@@ -9,8 +9,8 @@ struct Object {
 };
 }
 
-extern "C" int fn_034ab670(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
+extern "C" int fn_034ab670(void *self) {
+    Object *object = static_cast<Object *>(self);
     if (object->flags & 2) {
         return object->secondary;
     }

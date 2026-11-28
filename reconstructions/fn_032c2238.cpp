@@ -23,8 +23,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_032c2238(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_032c2238(void *instance) {
+    Object *object = (Object *)instance;
     Source *source = object->source;
 
     object->x = source->x;

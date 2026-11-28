@@ -10,7 +10,7 @@ struct Object {
 };
 }
 
-extern "C" int fn_03b8f62c(void *arg0) {
-    Object *object = static_cast<Object *>(arg0);
+extern "C" int fn_03b8f62c(void *owner) {
+    Object *object = static_cast<Object *>(owner);
     return (object->vtable->getFlags() >> 1) & 1;
 }

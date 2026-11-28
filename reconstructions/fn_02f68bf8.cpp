@@ -4,7 +4,7 @@ extern "C" void fn_02f687e4(void*, void*);
 
 extern "C" void *data_104698f8;
 
-extern "C" void fn_02f68bf8(void *arg0) {
+extern "C" void fn_02f68bf8(void *object) {
     fn_02ea952c(data_104698f8);
-    fn_02f687e4(arg0, (void *)(fn_02ea7a9c(data_104698f8)));
+    fn_02f687e4(object, (void *)(fn_02ea7a9c(data_104698f8)));
 }

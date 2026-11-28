@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_03679320(void *arg0) {
-    if (static_cast<Object *>(arg0)->count <= 1) {
-        static_cast<Object *>(arg0)->count = 0;
+extern "C" void fn_03679320(void *object) {
+    if (static_cast<Object *>(object)->count <= 1) {
+        static_cast<Object *>(object)->count = 0;
     }
 }

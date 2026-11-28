@@ -11,12 +11,12 @@ struct Object {
 };
 }
 
-extern "C" void fn_03491ad8(void* arg0, int arg1, int arg2) {
-    Object *self = (Object *)arg0;
+extern "C" void fn_03491ad8(void* self, int first, int second) {
+    Object *object = (Object *)self;
     int adjusted_base;
 
     fn_0348e6e0();
-    adjusted_base = self->base + 240;
-    fn_0348e6e8(arg0);
-    fn_034afa20(self->handle, arg1, arg2, adjusted_base);
+    adjusted_base = object->base + 240;
+    fn_0348e6e8(self);
+    fn_034afa20(object->handle, first, second, adjusted_base);
 }

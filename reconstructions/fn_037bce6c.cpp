@@ -5,12 +5,12 @@ struct Entry {
 };
 }
 
-extern "C" int fn_037bce6c(void* arg0, void* arg1) {
-    if (arg0 == 0) {
+extern "C" int fn_037bce6c(void* first, void* second) {
+    if (first == 0) {
         return 1;
     }
-    if (arg1 != 0) {
-        return ((Entry*)arg1)->key - ((Entry*)arg0)->key;
+    if (second != 0) {
+        return ((Entry*)second)->key - ((Entry*)first)->key;
     }
     return -1;
 }

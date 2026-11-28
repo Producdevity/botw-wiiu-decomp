@@ -8,10 +8,10 @@ struct Owner {
 extern "C" void fn_03ac4e2c(void*, void*);
 extern "C" void *data_1047eb9c;
 
-extern "C" void fn_03b15664(void *arg0) {
-    void *buffer = ((Owner *)arg0)->buffer;
+extern "C" void fn_03b15664(void *object) {
+    void *buffer = ((Owner *)object)->buffer;
     if (buffer != 0) {
         fn_03ac4e2c(data_1047eb9c, buffer);
-        ((Owner *)arg0)->buffer = 0;
+        ((Owner *)object)->buffer = 0;
     }
 }

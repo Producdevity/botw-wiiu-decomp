@@ -5,14 +5,14 @@ struct Timer {
 };
 }
 
-extern "C" void fn_032bd908(void* arg0, int arg1) {
-    Timer* timer = (Timer*)arg0;
-    if (arg1 < 0) {
+extern "C" void fn_032bd908(void* object, int value) {
+    Timer* timer = (Timer*)object;
+    if (value < 0) {
         timer->value = 0;
         return;
     }
-    if (arg1 > 0x5B8D7F) {
-        arg1 = 0x5B8D7F;
+    if (value > 0x5B8D7F) {
+        value = 0x5B8D7F;
     }
-    timer->value = arg1;
+    timer->value = value;
 }

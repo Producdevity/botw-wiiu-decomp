@@ -11,8 +11,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_0329ddd8(void *arg0) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_0329ddd8(void *storage) {
+    Object *object = (Object *)storage;
 
     if (object != 0 || (object = (Object *)fn_0308e578(8U), object != 0)) {
         object->value = 0;

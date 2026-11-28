@@ -15,9 +15,9 @@ struct Entity {
 };
 }
 
-extern "C" void fn_033b8e4c(void *arg0, s8 flag, s32 propagate) {
+extern "C" void fn_033b8e4c(void *self, s8 flag, s32 propagate) {
     Linked *linked;
-    Entity *entity = (Entity *)arg0;
+    Entity *entity = (Entity *)self;
 
     entity->flag = flag;
     if (propagate != 0) {

@@ -5,9 +5,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_02c02d08(void *arg0, int arg1) {
-    Object *object = static_cast<Object *>(arg0);
-    if (arg1 != 0 && object->value == 0) {
-        object->value = arg1;
+extern "C" void fn_02c02d08(void* object, int value) {
+    Object* self = static_cast<Object*>(object);
+    if (value != 0 && self->value == 0) {
+        self->value = value;
     }
 }

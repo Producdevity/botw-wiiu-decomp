@@ -5,8 +5,8 @@ struct Object {
 };
 }
 
-extern "C" void fn_03ac9454(void* arg0, int enabled) {
-    Object* object = (Object*)arg0;
+extern "C" void fn_03ac9454(void* owner, int enabled) {
+    Object* object = (Object*)owner;
     int mode = 5;
     if (enabled != 0) {
         mode = 3;

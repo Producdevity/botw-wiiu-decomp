@@ -14,9 +14,9 @@ struct Entity {
 };
 }
 
-extern "C" void fn_0330be60(void *arg0) {
+extern "C" void fn_0330be60(void *self) {
     Target *target;
-    Entity *entity = (Entity *)arg0;
+    Entity *entity = (Entity *)self;
 
     if (entity != 0) {
         target = (Target *)((void * (*)())entity->vtable[263])();

@@ -9,9 +9,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_0371f8c8(void *arg0, void *arg1) {
-    void *lock = ((Object *)arg0)->lock;
+extern "C" void fn_0371f8c8(void *object, void *item) {
+    void *lock = ((Object *)object)->lock;
     fn_030bb668(lock);
-    fn_03743cd0(arg1);
+    fn_03743cd0(item);
     fn_030bb69c(lock);
 }

@@ -11,11 +11,11 @@ struct Object {
 };
 }
 
-extern "C" void fn_0393ebbc(void *arg0, s32 arg1) {
-    Object *object = (Object *)arg0;
+extern "C" void fn_0393ebbc(void *memory, s32 value) {
+    Object *object = (Object *)memory;
 
     if (object != 0 || (object = (Object *)fn_0308e578(8U), object != 0)) {
-        object->value = arg1;
+        object->value = value;
         object->table = &data_1033ec1c;
     }
 }

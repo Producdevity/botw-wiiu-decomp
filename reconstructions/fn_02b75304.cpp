@@ -5,21 +5,21 @@ struct Entry {
 };
 }
 
-extern "C" void* fn_02b62bc8(void *);
-extern "C" void* fn_02c1974c(void *, int);
+extern "C" void* fn_02b62bc8(void*);
+extern "C" void* fn_02c1974c(void*, int);
 extern "C" int fn_02c19788(void*);
 
-extern "C" void *fn_02b75304(void *arg0) {
-    Entry *entry = (Entry *) fn_02b62bc8(arg0);
+extern "C" void* fn_02b75304(void* object) {
+    Entry* entry = (Entry*)fn_02b62bc8(object);
     if (entry != 0) {
         int index = entry->index;
         if (index >= 0) {
-            return fn_02c1974c(arg0, index);
+            return fn_02c1974c(object, index);
         }
     }
-    void *result = 0;
-    if (fn_02c19788(arg0) != 0) {
-        result = fn_02c1974c(arg0, 0);
+    void* result = 0;
+    if (fn_02c19788(object) != 0) {
+        result = fn_02c1974c(object, 0);
     }
     return result;
 }

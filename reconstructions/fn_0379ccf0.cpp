@@ -7,8 +7,8 @@ struct Owner {
 };
 }
 
-extern "C" void fn_0379ccf0(void *arg0) {
-    Owner *self = (Owner *)arg0;
+extern "C" void fn_0379ccf0(void *object) {
+    Owner *self = (Owner *)object;
     void *child = self->child;
     if (child != 0) {
         fn_0389ffe8(child, 3);

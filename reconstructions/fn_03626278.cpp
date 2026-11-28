@@ -5,9 +5,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_03626278(void *arg0, signed char *arg1) {
-    if (arg1 != 0) {
-        static_cast<Object *>(arg0)->buffer = arg1;
-        *arg1 = 0;
+extern "C" void fn_03626278(void *object, signed char *buffer) {
+    if (buffer != 0) {
+        static_cast<Object *>(object)->buffer = buffer;
+        *buffer = 0;
     }
 }

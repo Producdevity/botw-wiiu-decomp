@@ -11,9 +11,9 @@ struct Object {
 };
 }
 
-extern "C" void fn_03448be8(void *arg0, s32 enabled) {
+extern "C" void fn_03448be8(void *self, s32 enabled) {
     u8 mode;
-    Object *object = (Object *)arg0;
+    Object *object = (Object *)self;
 
     mode = 1;
     if (enabled != 0) {
