@@ -1,11 +1,19 @@
 extern "C" unsigned int fn_0348609c(int);
 extern "C" void fn_03489294(void*, int);
 
-extern "C" void fn_02520d40(void* arg0, unsigned int arg1) {
-    if (fn_0348609c((*(int*)((char*)arg0 + 384))) != arg1) {
-        fn_03489294((*(void**)((char*)arg0 + 384)), arg1);
+namespace {
+struct Object {
+    char padding_0[0x17C];
+    void *member_17c;
+    void *member_180;
+};
+}
+
+extern "C" void fn_02520d40(void* object, unsigned int value) {
+    if (fn_0348609c((int) ((Object *) object)->member_180) != value) {
+        fn_03489294(((Object *) object)->member_180, value);
     }
-    if (fn_0348609c((*(int*)((char*)arg0 + 380))) != arg1) {
-        fn_03489294((*(void**)((char*)arg0 + 380)), arg1);
+    if (fn_0348609c((int) ((Object *) object)->member_17c) != value) {
+        fn_03489294(((Object *) object)->member_17c, value);
     }
 }

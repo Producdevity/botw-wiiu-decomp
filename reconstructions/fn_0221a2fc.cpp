@@ -1,11 +1,18 @@
-typedef unsigned char u8;
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[7];
+    unsigned char flags;
+};
+}
 
 extern "C" int fn_030ea2f4(void*);
 extern "C" void fn_0339a0c4(void *);
 
-extern "C" void fn_0221a2fc(void *arg0) {
-    if (fn_030ea2f4(arg0) != 0) {
-        fn_0339a0c4((*(void **)((char *)(arg0) + (0))));
+extern "C" void fn_0221a2fc(void *object) {
+    Object *view = (Object *) object;
+    if (fn_030ea2f4(object) != 0) {
+        fn_0339a0c4(view->owner);
     }
-    (*(u8 *)((char *)(arg0) + (0xB))) = (u8) ((*(u8 *)((char *)(arg0) + (0xB))) | 4);
+    view->flags |= 4;
 }

@@ -1,7 +1,16 @@
+namespace {
+struct Object {
+    char padding_0[0xC];
+    void *first;
+    char padding_10[0x10];
+    void *second;
+};
+}
+
 extern "C" void fn_030c078c(void*, void*, void*);
 extern "C" void fn_030c44cc(void*, void*, void*);
 
-extern "C" void fn_03aea874(void *arg0, void *arg1, void *arg2) {
-    fn_030c078c((*(void **)((char *)(arg0) + (0xC))), arg1, arg2);
-    fn_030c44cc((*(void **)((char *)(arg0) + (0x20))), arg1, (*(void **)((char *)(arg0) + (0xC))));
+extern "C" void fn_03aea874(void *object, void *second, void *third) {
+    fn_030c078c(((Object *) object)->first, second, third);
+    fn_030c44cc(((Object *) object)->second, second, ((Object *) object)->first);
 }

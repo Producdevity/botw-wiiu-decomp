@@ -1,12 +1,18 @@
-typedef unsigned char u8;
-typedef int s32;
+namespace {
+struct Object {
+    char padding_0[0x418];
+    unsigned char first;
+    unsigned char second;
+    unsigned char third;
+};
+}
 
-extern "C" s32 fn_03ca2cd8(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
-    if ((arg1 == 0) || (arg2 == 0) || (arg3 == 0)) {
+extern "C" int fn_03ca2cd8(void *object, unsigned char *first, unsigned char *second, unsigned char *third) {
+    if ((first == 0) || (second == 0) || (third == 0)) {
         return 0xFF676984;
     }
-    *arg1 = (*(u8 *)((char *)(arg0) + (0x418)));
-    *arg2 = (*(u8 *)((char *)(arg0) + (0x419)));
-    *arg3 = (*(u8 *)((char *)(arg0) + (0x41A)));
+    *first = ((Object *) object)->first;
+    *second = ((Object *) object)->second;
+    *third = ((Object *) object)->third;
     return 0;
 }

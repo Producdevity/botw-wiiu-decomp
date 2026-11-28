@@ -1,11 +1,19 @@
 typedef unsigned char u8;
-typedef int s32;
 
 extern "C" void fn_0361eae4(void*, void*);
 
-extern "C" void fn_0361eba4(void *arg0) {
-    if ((s32) (*(u8 *)((char *)(arg0) + (0x14))) != 0) {
-        fn_0361eae4(arg0, (*(void **)((char *)(arg0) + (0x18))));
-        (*(void **)((char *)(arg0) + (0x18))) = (void *) ((char *)(*(void **)((char *)(arg0) + (0x18))) + 1);
+namespace {
+struct Object {
+    char padding_0[0x14];
+    u8 active;
+    char padding_15[3];
+    char *cursor;
+};
+}
+
+extern "C" void fn_0361eba4(void *object) {
+    if (((Object *) object)->active != 0) {
+        fn_0361eae4(object, ((Object *) object)->cursor);
+        ((Object *) object)->cursor = ((Object *) object)->cursor + 1;
     }
 }

@@ -1,14 +1,20 @@
-typedef unsigned char u8;
-typedef int s32;
+namespace {
+typedef int (*Method)(void *, int);
+
+struct VirtualObject {
+    char padding_0[0x3C];
+    void *const *vtable;
+};
+}
 
 extern "C" void fn_02e91f88(void*);
 
-extern "C" u8 data_1046991c;
+extern "C" unsigned char data_1046991c;
 
-extern "C" void fn_02e9c020(void *arg0) {
-    void* const* vt1;
-    fn_02e91f88(arg0);
-    if ((s32) data_1046991c != 0) {
-        ((s32 (*)(void *, s32))(vt1 = *(void* const**)((char *)(arg0) + (0x3C)))[49])(arg0, 0);
+extern "C" void fn_02e9c020(void *object) {
+    void *const *vtable;
+    fn_02e91f88(object);
+    if (data_1046991c != 0) {
+        ((Method) (vtable = ((VirtualObject *) object)->vtable)[49])(object, 0);
     }
 }

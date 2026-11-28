@@ -1,11 +1,19 @@
-typedef int s32;
+namespace {
+typedef int (*Method)(void *);
+
+struct Object {
+    void *owner;
+    char padding_4[8];
+    void *const *vtable;
+};
+}
 
 extern "C" void fn_02d6b514(void *);
 extern "C" void fn_02d7a7d4(void*);
 
-extern "C" void fn_02ce16fc(void *arg0) {
-    void* const* vt1;
-    fn_02d7a7d4((*(void **)((char *)(arg0) + (0))));
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg0) + (0xC)))[65])(arg0);
-    fn_02d6b514((*(void **)((char *)(arg0) + (0))));
+extern "C" void fn_02ce16fc(void *object) {
+    Object *view = (Object *) object;
+    fn_02d7a7d4(view->owner);
+    ((Method) view->vtable[65])(object);
+    fn_02d6b514(view->owner);
 }
