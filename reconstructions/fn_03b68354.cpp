@@ -1,11 +1,22 @@
 typedef unsigned char u8;
-typedef int s32;
 typedef float f32;
 
 extern "C" void fn_03b68268(void*, int, int, int);
 extern "C" void fn_03b68320(void*, float, float);
 
-extern "C" void fn_03b68354(void *arg0, void *arg1) {
-    fn_03b68268(arg0, (s32) (*(u8 *)((char *)(arg1) + (0xA))), (s32) (*(u8 *)((char *)(arg1) + (8))), (s32) (*(u8 *)((char *)(arg1) + (9))));
-    fn_03b68320(arg0, (*(f32 *)((char *)(arg1) + (0xC))), (*(f32 *)((char *)(arg1) + (0x10))));
+namespace {
+struct Settings {
+    char padding_0[8];
+    u8 value_8;
+    u8 value_9;
+    u8 value_a;
+    char padding_b[1];
+    f32 value_c;
+    f32 value_10;
+};
+}
+
+extern "C" void fn_03b68354(void *object, void *settings) {
+    fn_03b68268(object, ((Settings *) settings)->value_a, ((Settings *) settings)->value_8, ((Settings *) settings)->value_9);
+    fn_03b68320(object, ((Settings *) settings)->value_c, ((Settings *) settings)->value_10);
 }

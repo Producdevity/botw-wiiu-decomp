@@ -1,14 +1,30 @@
 typedef float f32;
 
-extern "C" void fn_034acae0(void *arg0, void *arg1, void *arg2) {
-    if (arg1 != 0) {
-        (*(f32 *)((char *)(arg1) + (0))) = (f32) (*(f32 *)((char *)(arg0) + (4)));
-        (*(f32 *)((char *)(arg1) + (4))) = (f32) (*(f32 *)((char *)(arg0) + (8)));
-        (*(f32 *)((char *)(arg1) + (8))) = (f32) (*(f32 *)((char *)(arg0) + (0xC)));
+namespace {
+struct Source {
+    char padding_0[4];
+    f32 first_x, first_y, first_z;
+    char padding_10[4];
+    f32 second_x, second_y, second_z;
+};
+
+struct Vec3 {
+    f32 x, y, z;
+};
+}
+
+extern "C" void fn_034acae0(void *object, void *first, void *second) {
+    const Source *source = reinterpret_cast<const Source *>(object);
+    if (first != 0) {
+        Vec3 *out = reinterpret_cast<Vec3 *>(first);
+        out->x = source->first_x;
+        out->y = source->first_y;
+        out->z = source->first_z;
     }
-    if (arg2 != 0) {
-        (*(f32 *)((char *)(arg2) + (0))) = (f32) (*(f32 *)((char *)(arg0) + (0x14)));
-        (*(f32 *)((char *)(arg2) + (4))) = (f32) (*(f32 *)((char *)(arg0) + (0x18)));
-        (*(f32 *)((char *)(arg2) + (8))) = (f32) (*(f32 *)((char *)(arg0) + (0x1C)));
+    if (second != 0) {
+        Vec3 *out = reinterpret_cast<Vec3 *>(second);
+        out->x = source->second_x;
+        out->y = source->second_y;
+        out->z = source->second_z;
     }
 }

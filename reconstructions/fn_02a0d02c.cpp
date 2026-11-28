@@ -7,9 +7,19 @@ extern "C" void fn_0348cfa4(void*, float);
 
 extern "C" f32 data_10186ca4;
 
-extern "C" void fn_02a0d02c(void *arg0) {
-    fn_0348cfa4((*(void **)((char *)(arg0) + (0x2C))), data_10186ca4);
-    fn_03487920((*(void **)((char *)(arg0) + (0x2C))));
-    fn_03485f68((*(void **)((char *)(arg0) + (0x2C))));
-    (*(s32 *)((char *)(arg0) + (0x18))) = (s32) ((*(s32 *)((char *)(arg0) + (0x18))) | 4);
+namespace {
+struct Object {
+    char padding_0[0x18];
+    s32 flags;
+    char padding_1c[0x10];
+    void *child;
+};
+}
+
+extern "C" void fn_02a0d02c(void *object) {
+    Object *self = reinterpret_cast<Object *>(object);
+    fn_0348cfa4(self->child, data_10186ca4);
+    fn_03487920(self->child);
+    fn_03485f68(self->child);
+    self->flags |= 4;
 }

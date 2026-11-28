@@ -1,16 +1,19 @@
 typedef float f32;
 
-extern "C" void fn_02022744(void *arg0, void *arg1, void *arg2) {
-    (*(f32 *)((char *)(arg0) + (0))) = (f32) ((*(f32 *)((char *)(arg1) + (0))) * (*(f32 *)((char *)(arg2) + (0))));
-    (*(f32 *)((char *)(arg0) + (0x10))) = (f32) ((*(f32 *)((char *)(arg1) + (0x10))) * (*(f32 *)((char *)(arg2) + (0))));
-    (*(f32 *)((char *)(arg0) + (0x20))) = (f32) ((*(f32 *)((char *)(arg1) + (0x20))) * (*(f32 *)((char *)(arg2) + (0))));
-    (*(f32 *)((char *)(arg0) + (4))) = (f32) ((*(f32 *)((char *)(arg1) + (4))) * (*(f32 *)((char *)(arg2) + (4))));
-    (*(f32 *)((char *)(arg0) + (0x14))) = (f32) ((*(f32 *)((char *)(arg1) + (0x14))) * (*(f32 *)((char *)(arg2) + (4))));
-    (*(f32 *)((char *)(arg0) + (0x24))) = (f32) ((*(f32 *)((char *)(arg1) + (0x24))) * (*(f32 *)((char *)(arg2) + (4))));
-    (*(f32 *)((char *)(arg0) + (8))) = (f32) ((*(f32 *)((char *)(arg1) + (8))) * (*(f32 *)((char *)(arg2) + (8))));
-    (*(f32 *)((char *)(arg0) + (0x18))) = (f32) ((*(f32 *)((char *)(arg1) + (0x18))) * (*(f32 *)((char *)(arg2) + (8))));
-    (*(f32 *)((char *)(arg0) + (0x28))) = (f32) ((*(f32 *)((char *)(arg1) + (0x28))) * (*(f32 *)((char *)(arg2) + (8))));
-    (*(f32 *)((char *)(arg0) + (0xC))) = (f32) (*(f32 *)((char *)(arg1) + (0xC)));
-    (*(f32 *)((char *)(arg0) + (0x1C))) = (f32) (*(f32 *)((char *)(arg1) + (0x1C)));
-    (*(f32 *)((char *)(arg0) + (0x2C))) = (f32) (*(f32 *)((char *)(arg1) + (0x2C)));
+extern "C" void fn_02022744(void *result, void *matrix, void *scale) {
+    f32 *out = reinterpret_cast<f32 *>(result);
+    const f32 *in = reinterpret_cast<const f32 *>(matrix);
+    const f32 *factors = reinterpret_cast<const f32 *>(scale);
+    out[0] = in[0] * factors[0];
+    out[4] = in[4] * factors[0];
+    out[8] = in[8] * factors[0];
+    out[1] = in[1] * factors[1];
+    out[5] = in[5] * factors[1];
+    out[9] = in[9] * factors[1];
+    out[2] = in[2] * factors[2];
+    out[6] = in[6] * factors[2];
+    out[10] = in[10] * factors[2];
+    out[3] = in[3];
+    out[7] = in[7];
+    out[11] = in[11];
 }
