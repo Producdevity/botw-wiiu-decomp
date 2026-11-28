@@ -6,11 +6,22 @@ extern "C" void fn_0318bbbc(void*, void*);
 
 extern "C" f32 data_1028be64;
 
-extern "C" void fn_03188b74(void *arg0) {
-    struct { f32 f8; } sp;
+namespace {
+struct Object {
+    char padding_0[4];
+    f32 value_4;
+    char padding_8[4];
+    char member_c[1];
+    char padding_d[0xAB];
+    char member_b8[1];
+};
+}
 
-    fn_0318bbbc((char *)arg0 + 0xC, (char *)arg0 + 4);
-    sp.f8 = data_1028be64 - (*(f32 *)((char *)(arg0) + (4)));
-    fn_03187d9c((char *)arg0 + 0xB8, &sp.f8);
-    fn_0318822c((char *)arg0 + 0xB8);
+extern "C" void fn_03188b74(void *object) {
+    f32 value;
+
+    fn_0318bbbc(static_cast<Object *>(object)->member_c, &static_cast<Object *>(object)->value_4);
+    value = data_1028be64 - static_cast<Object *>(object)->value_4;
+    fn_03187d9c(static_cast<Object *>(object)->member_b8, &value);
+    fn_0318822c(static_cast<Object *>(object)->member_b8);
 }
