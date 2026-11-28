@@ -2,8 +2,18 @@ typedef int s32;
 
 extern "C" int fn_03a64738(void*, void*);
 
-extern "C" s32 fn_034f349c(void *arg0, void *arg1) {
-    void* const* vt1;
-    ((s32 (*)(void *))(vt1 = *(void* const**)((char *)(arg1) + (4)))[7])(arg1);
-    return fn_03a64738((*(void **)((char *)(arg0) + (4))), (*(void **)((char *)(arg1) + (0)))) != 0;
+namespace {
+struct First {
+    char padding_0[4];
+    void *value;
+};
+struct Second {
+    void *value;
+    void *const *vtable;
+};
+}
+
+extern "C" s32 fn_034f349c(void *first, void *second) {
+    ((s32 (*)(void *)) ((Second *) second)->vtable[7])(second);
+    return fn_03a64738(((First *) first)->value, ((Second *) second)->value) != 0;
 }

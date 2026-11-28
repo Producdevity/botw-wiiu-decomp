@@ -4,10 +4,18 @@ typedef float f32;
 
 extern "C" void fn_035625a4(void*);
 
-extern "C" s32 fn_035625cc(void *arg0, f32 farg0) {
-    if (((s32) (*(u8 *)((char *)(arg0) + (0x24))) != 0) && !(farg0 < (*(f32 *)((char *)(arg0) + (0x20))))) {
+namespace {
+struct Object {
+    char padding_0[0x20];
+    f32 limit;
+    u8 enabled;
+};
+}
+
+extern "C" s32 fn_035625cc(void *object, f32 value) {
+    if (((Object *) object)->enabled != 0 && !(value < ((Object *) object)->limit)) {
         return 0;
     }
-    fn_035625a4(arg0);
+    fn_035625a4(object);
     return 1;
 }

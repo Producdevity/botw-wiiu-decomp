@@ -2,8 +2,19 @@ typedef int s32;
 
 extern "C" int fn_0406ea3c(void*, void*);
 
-extern "C" void fn_034d99b8(void *arg0) {
-    void* const* vt1;
-    fn_0406ea3c((*(void **)((char *)((*(void **)((char *)(arg0) + (4)))) + (0x5C))), arg0);
-    ((s32 (*)(void *, s32))(vt1 = *(void* const**)((char *)(arg0) + (0)))[9])(arg0, 3);
+namespace {
+struct Owner {
+    char padding_0[0x5C];
+    void *target;
+};
+struct Object {
+    void *const *vtable;
+    Owner *owner;
+};
+}
+
+extern "C" void fn_034d99b8(void *object) {
+    Object *self = (Object *) object;
+    fn_0406ea3c(self->owner->target, object);
+    ((s32 (*)(void *, s32)) self->vtable[9])(object, 3);
 }

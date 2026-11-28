@@ -3,8 +3,15 @@ typedef unsigned int u32;
 
 extern "C" void fn_0386d1a8(void *, unsigned);
 
-extern "C" s32 fn_03191aec(s32 arg0, void *arg1) {
-    fn_0386d1a8((void *)(arg0 + 0x14), (*(u32 *)((char *)(arg1) + (0))));
-    fn_0386d1a8((void *)(arg0 + 0xE8), (*(u32 *)((char *)(arg1) + (4))));
+namespace {
+struct Values {
+    u32 first;
+    u32 second;
+};
+}
+
+extern "C" s32 fn_03191aec(s32 base, void *values) {
+    fn_0386d1a8((void *) (base + 0x14), ((Values *) values)->first);
+    fn_0386d1a8((void *) (base + 0xE8), ((Values *) values)->second);
     return 1;
 }
