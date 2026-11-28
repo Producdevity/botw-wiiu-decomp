@@ -3,12 +3,19 @@ extern "C" void fn_030a6528(void *);
 extern "C" void fn_030bb668(void *);
 extern "C" void fn_030bb69c(void *);
 
+namespace {
+struct Object {
+    char padding_0[0x54];
+    char lock[0x3C];
+    unsigned short flags;
+};
+}
+
 extern "C" void fn_030a7ff4(void *self) {
-    unsigned short *flags = (unsigned short *)((char *)self + 0x90);
-    int lockedFlag = 1;
+    Object *object = (Object *)self;
     void *lock = 0;
-    if (*flags & lockedFlag) {
-        lock = (char *)self + 0x54;
+    if (object->flags & 1) {
+        lock = object->lock;
         fn_030bb668(lock);
     }
     fn_030a6494(self);

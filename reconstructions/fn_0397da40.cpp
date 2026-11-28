@@ -4,10 +4,11 @@ struct VTable {
     int (*check)(void*);
 };
 
-struct Object {
+struct Fields {
     char padding_0[0x48];
     int state;
-    char padding_4C[0x18];
+    char padding_4C[0x10];
+    char member_5C[8];
     VTable* vtable;
     void* handle;
     char padding_6C[4];
@@ -17,10 +18,10 @@ struct Object {
 
 extern "C" void fn_0308e6d4(void*);
 
-extern "C" void fn_0397da40(void* arg0) {
-    if (((Object*)arg0)->vtable->check((char*)arg0 + 0x5C) != 0) {
-        fn_0308e6d4(((Object*)arg0)->handle);
-        ((Object*)arg0)->flag = 0;
+extern "C" void fn_0397da40(void* object) {
+    if (((Fields*)object)->vtable->check(((Fields*)object)->member_5C) != 0) {
+        fn_0308e6d4(((Fields*)object)->handle);
+        ((Fields*)object)->flag = 0;
     }
-    ((Object*)arg0)->state = 0;
+    ((Fields*)object)->state = 0;
 }

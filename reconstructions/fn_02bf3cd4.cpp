@@ -1,4 +1,3 @@
-typedef int s32;
 typedef float f32;
 
 extern "C" void* fn_02c0378c(void* holder);
@@ -18,12 +17,9 @@ struct Object {
 }
 
 extern "C" void fn_02bf3cd4(void *object, void *unused) {
-    Object *self;
-    Parent *parent;
-
-    self = (Object *)object;
-    parent = (Parent *)fn_02c0378c((char *)object + 0x10);
+    Object *self = (Object *)object;
+    Parent *parent = (Parent *)fn_02c0378c((char *)object + 0x10);
     if (parent != 0) {
-        self->result = (f32) ((parent->extent - self->offset) - self->margin);
+        self->result = parent->extent - self->offset - self->margin;
     }
 }

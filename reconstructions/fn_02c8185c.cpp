@@ -1,19 +1,35 @@
-extern "C" void* fn_0308e578(unsigned size);
 extern "C" void* fn_02c6430c(void* storage, const void* source);
+extern "C" void* fn_0308e578(unsigned size);
 extern "C" int data_101cd010;
+
+namespace {
+struct Triple {
+    int first;
+    int second;
+    int third;
+};
+
+struct Object {
+    char padding_0[0xC];
+    int *vtable;
+    char padding_10[0x4];
+    Triple list;
+    int flag;
+};
+}
 
 extern "C" void* fn_02c8185c(void* self, const void* source)
 {
     if (self != 0 || (self = fn_0308e578(0x24)) != 0) {
         fn_02c6430c(self, source);
-        char* list = (char*)self + 0x14;
-        *(int**)((char*)self + 0xC) = &data_101cd010;
-        if (list != 0 || (list = (char*)fn_0308e578(0xC)) != 0) {
-            *(int*)(list + 0) = 0;
-            *(int*)(list + 4) = 0;
-            *(int*)(list + 8) = 0;
+        Triple *list = &((Object *)self)->list;
+        ((Object *)self)->vtable = &data_101cd010;
+        if (list != 0 || (list = (Triple *)fn_0308e578(sizeof(Triple))) != 0) {
+            list->first = 0;
+            list->second = 0;
+            list->third = 0;
         }
-        *(int*)((char*)self + 0x20) = 0;
+        ((Object *)self)->flag = 0;
     }
     return self;
 }

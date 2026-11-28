@@ -1,18 +1,29 @@
 extern "C" void fn_021d5860(void*);
 extern "C" void fn_02b62e04(void*);
 extern "C" float data_1004770c;
+
+namespace {
+struct Object {
+    void *owner;
+    char padding_4[0x90];
+    float *source;
+    char padding_98[4];
+    float value_9C;
+    float value_A0;
+    float value_A4;
+    char active;
+};
+}
+
 extern "C" void fn_021d66cc(void* self)
 {
-    void* object = self;
-    int offset = 0xA0;
-    char* flag = (char*)self + 0xA8;
-    float value = **(float**)((char*)object + 0x94);
-    *(float*)((char*)self + 0xA4) = data_1004770c;
-    *(float*)((char*)self + offset) = value;
+    float value = *((Object *)self)->source;
+    ((Object *)self)->value_A4 = data_1004770c;
+    ((Object *)self)->value_A0 = value;
     if (self != 0) {
-        *flag = 0;
+        ((Object *)self)->active = 0;
     }
-    *(float*)((char*)self + 0x9C) = value;
+    ((Object *)self)->value_9C = value;
     fn_021d5860(self);
-    fn_02b62e04(*(void**)((char*)self + 0));
+    fn_02b62e04(((Object *)self)->owner);
 }

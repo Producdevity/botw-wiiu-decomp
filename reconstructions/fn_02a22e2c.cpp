@@ -10,14 +10,26 @@ extern "C" char* data_1047c2b8;
 extern "C" void *data_10463788;
 extern "C" void *data_10463f6c;
 
-extern "C" void fn_02a22e2c(void *arg0) {
-    if (((s32) (*(s32 *)((char *)(arg0) + (0xE4))) != 0) || ((s32) (*(u8 *)((char *)(arg0) + (0xE8))) != 0)) {
-        if (fn_0378c7b0((char *)arg0 + 0xE4) != 0) {
-            fn_0378c734((ProcLink *)((char *)arg0 + 0xE4));
-            goto block_4;
+namespace {
+struct Table {
+    char padding_0[0x10];
+    void *handler;
+};
+
+struct Object {
+    char padding_0[0xE4];
+    s32 link;
+    u8 valid;
+};
+}
+
+extern "C" void fn_02a22e2c(void *object) {
+    if (((Object *)object)->link != 0 || ((Object *)object)->valid != 0) {
+        if (fn_0378c7b0(&((Object *)object)->link) != 0) {
+            fn_0378c734((ProcLink *)&((Object *)object)->link);
+            fn_037b5e8c(data_1047c2b8, data_10463788, ((Table *)data_10463f6c)->handler, &((Object *)object)->link, 0, 0, 2);
         }
     } else {
-block_4:
-        fn_037b5e8c(data_1047c2b8, data_10463788, (*(void **)((char *)(data_10463f6c) + (0x10))), (char *)arg0 + 0xE4, 0, 0, 2);
+        fn_037b5e8c(data_1047c2b8, data_10463788, ((Table *)data_10463f6c)->handler, &((Object *)object)->link, 0, 0, 2);
     }
 }

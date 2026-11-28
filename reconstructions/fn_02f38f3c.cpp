@@ -5,6 +5,16 @@ extern "C" int data_1022b1c0;
 extern "C" int data_1022b1d0;
 extern "C" int data_1022b1e8;
 
+namespace {
+struct Object {
+    char padding_0[0x10];
+    void *vtable_10;
+    char padding_14[0x90];
+    void *vtable_A4;
+    void *vtable_A8;
+};
+}
+
 extern "C" void fn_02f38f3c(void *self, int flags)
 {
   if (self != 0) {
