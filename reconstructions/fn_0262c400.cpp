@@ -5,12 +5,19 @@ extern "C" void fn_037b7d90(void *, unsigned);
 struct DualInterfaceObject;
 extern "C" void fn_039883bc(DualInterfaceObject *, unsigned);
 
-extern "C" void fn_0262c400(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_039883bc((DualInterfaceObject *)((char *)arg0 + 0x1E0), 2U);
-        fn_037b7d90(arg0, 0U);
-        if (arg1 & 1) {
-            fn_0308e6d0(arg0);
+namespace {
+struct Object {
+    char padding_1E0[0x1E0];
+    char dual_interface;
+};
+}
+
+extern "C" void fn_0262c400(void *object, s32 flags) {
+    if (object != 0) {
+        fn_039883bc((DualInterfaceObject *) &((Object *) object)->dual_interface, 2U);
+        fn_037b7d90(object, 0U);
+        if (flags & 1) {
+            fn_0308e6d0(object);
         }
     }
 }

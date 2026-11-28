@@ -6,11 +6,23 @@ extern "C" const unsigned char data_10263910;
 
 extern "C" s32 data_100a6ac8;
 
-extern "C" void fn_023e8ac8(void *arg0) {
-    struct { const void* f8; const void* fC; } sp;
+namespace {
+struct Object {
+    unsigned char padding_0[0x80];
+    unsigned char member_80[1];
+};
 
-    fn_023e8e14(arg0);
-    sp.fC = &data_10263910;
-    sp.f8 = &data_100a6ac8;
-    fn_030e9aa8(arg0, (char *)arg0 + 0x80, &sp.f8);
+struct TypeRecord {
+    const void *type;
+    const void *base;
+};
+}
+
+extern "C" void fn_023e8ac8(void *object) {
+    TypeRecord record;
+
+    fn_023e8e14(object);
+    record.base = &data_10263910;
+    record.type = &data_100a6ac8;
+    fn_030e9aa8(object, ((Object *) object)->member_80, &record.type);
 }
